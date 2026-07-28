@@ -54,3 +54,53 @@ event-sonification-workbench/
 ├── pyproject.toml
 ├── .env.example
 └── .gitignore
+
+Data
+
+MOT17 and KITTI Tracking data will be stored locally and will not be committed to this repository.
+
+Local dataset paths will be configured using environment variables documented in .env.example.
+
+Generated outputs such as audio files, event records and evaluation reports will also be excluded from version control unless they are deliberately retained as small test fixtures or reference outputs.
+
+Reproducibility
+
+The project will support reproducibility through:
+
+versioned configuration files;
+deterministic processing;
+fixed test samples;
+stable event and cue identifiers;
+recorded software and dataset versions;
+provenance and suppression logs;
+file hashes;
+automated tests;
+repeat-run output comparison.
+Project Management
+
+Project work will be managed using GitHub Issues and a GitHub Project board.
+
+Supporting records will be stored under:
+
+docs/project-management/
+├── project-plan.md
+├── progress-log.md
+├── risk-register.md
+└── supervision-log.md
+
+Issues, commits and tests will be linked where possible to provide a traceable record of planning, implementation and evaluation.
+
+Installation
+
+Installation instructions will be added once the initial Python package and dependencies have been established.
+
+Usage
+
+Command-line usage examples will be added when the first end-to-end pipeline is implemented.
+
+Author
+
+Kori Flowers
+MSc Data Science
+University of the West of England
+Student ID: 24046378
