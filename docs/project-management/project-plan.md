@@ -13,7 +13,7 @@ Design, implement and evaluate a reproducible workbench that converts annotated 
 | Stage | Main work | Evidence of completion | Status |
 |---|---|---|---|
 | 0. Project setup | Repository structure, environment, documentation and project tracking | Working package scaffold, CI test, README and project records | Complete, 28 July 2026 |
-| 1. Data ingestion and normalisation | Parse MOT17 and KITTI Tracking annotations into a common event schema | Parsers, schema, validation outputs and tests | Ready to start |
+| 1. Data ingestion and normalisation | Parse MOT17 and KITTI Tracking annotations into a common event schema | Parsers, schema, validation outputs, provenance records and tests | In progress, started 28 July 2026 |
 | 2. Sonification | Map normalised events into scheduled audio cues | Mapping presets, cue schedules, audio files and logs | Planned |
 | 3. Technical evaluation | Measure coverage, alignment, traceability, cue density, overlap and reproducibility | Evaluation reports, comparison results and repeat-run checks | Planned |
 | 4. Artefact assembly and release | Validate, document and package the complete workbench | Reproducible release, final documentation and tagged version | Planned |
@@ -21,14 +21,35 @@ Design, implement and evaluate a reproducible workbench that converts annotated 
 
 ## Working Method
 
-The project will be developed iteratively. Work will be recorded through GitHub Issues and commits, automated tests, configuration and provenance files, the progress log, the risk register and supervision records.
+The project will be developed iteratively. Work will be recorded through GitHub Issues and commits, automated tests, configuration and provenance files, the progress log, the risk register, supervision records and decision records.
 
-## Stage 1 Tasks
+## Stage 1 Work Order
+
+1. Define the common event schema.
+2. Create small fixed annotation fixtures.
+3. Implement and test the MOT17 parser.
+4. Implement and test the KITTI Tracking parser.
+5. Validate normalised event records.
+6. Write structured event and provenance outputs.
+
+## Current Stage 1 Issues
 
 - Issue #1: Define the common event schema.
 - Issue #2: Implement the MOT17 annotation parser.
 - Issue #3: Create a fixed MOT17 test fixture.
 - Issue #4: Validate normalised event records.
+
+Additional issues will be created for KITTI Tracking and structured provenance outputs before those tasks begin.
+
+## Stage 1 Completion Criteria
+
+Stage 1 will be complete when:
+
+- both selected dataset formats can be converted into the shared schema;
+- fixed fixtures and automated parser tests pass in CI;
+- invalid records are reported through structured validation results;
+- output records preserve source dataset, sequence, file and conversion information; and
+- the implementation and assumptions are documented.
 
 ## Key Milestones
 
