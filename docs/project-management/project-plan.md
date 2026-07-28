@@ -12,8 +12,8 @@ Design, implement and evaluate a reproducible workbench that converts annotated 
 
 | Stage | Main work | Evidence of completion | Status |
 |---|---|---|---|
-| 0. Project setup | Repository structure, environment, documentation and project tracking | Working repository, README, configuration files and project records | In progress |
-| 1. Data ingestion and normalisation | Parse MOT17 and KITTI Tracking annotations into a common event schema | Parsers, schema, validation outputs and tests | Planned |
+| 0. Project setup | Repository structure, environment, documentation and project tracking | Working package scaffold, CI test, README and project records | Complete, 28 July 2026 |
+| 1. Data ingestion and normalisation | Parse MOT17 and KITTI Tracking annotations into a common event schema | Parsers, schema, validation outputs and tests | Ready to start |
 | 2. Sonification | Map normalised events into scheduled audio cues | Mapping presets, cue schedules, audio files and logs | Planned |
 | 3. Technical evaluation | Measure coverage, alignment, traceability, cue density, overlap and reproducibility | Evaluation reports, comparison results and repeat-run checks | Planned |
 | 4. Artefact assembly and release | Validate, document and package the complete workbench | Reproducible release, final documentation and tagged version | Planned |
@@ -21,14 +21,14 @@ Design, implement and evaluate a reproducible workbench that converts annotated 
 
 ## Working Method
 
-The project will be developed iteratively. Work will be recorded through:
+The project will be developed iteratively. Work will be recorded through GitHub Issues and commits, automated tests, configuration and provenance files, the progress log, the risk register and supervision records.
 
-- GitHub Issues and commits;
-- automated tests;
-- configuration and provenance files;
-- the progress log;
-- the risk register;
-- supervision records.
+## Stage 1 Tasks
+
+- Issue #1: Define the common event schema.
+- Issue #2: Implement the MOT17 annotation parser.
+- Issue #3: Create a fixed MOT17 test fixture.
+- Issue #4: Validate normalised event records.
 
 ## Key Milestones
 
