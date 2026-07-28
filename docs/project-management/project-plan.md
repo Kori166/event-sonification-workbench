@@ -32,14 +32,14 @@ The project will be developed iteratively. Work will be recorded through GitHub 
 5. Validate normalised event records.
 6. Write structured event and provenance outputs.
 
-## Current Stage 1 Issues
+## Stage 1 Issues
 
 - Issue #1: Define the common event schema.
 - Issue #2: Implement the MOT17 annotation parser.
 - Issue #3: Create a fixed MOT17 test fixture.
 - Issue #4: Validate normalised event records.
-
-Additional issues will be created for KITTI Tracking and structured provenance outputs before those tasks begin.
+- Issue #5: Implement the KITTI Tracking annotation parser.
+- Issue #6: Write normalised event and provenance outputs.
 
 ## Stage 1 Completion Criteria
 
