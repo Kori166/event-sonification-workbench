@@ -21,7 +21,7 @@ The workbench is research infrastructure. It is not presented as a validated acc
 
 **Stage 0: Project Setup is complete.**
 
-The next stage is **Stage 1: Data Ingestion and Normalisation**.
+**Stage 1: Data Ingestion and Normalisation is in progress.** Current work begins with the common event schema, fixed test data, dataset parsers and event validation.
 
 ## Project Stages
 
@@ -37,9 +37,11 @@ The next stage is **Stage 1: Data Ingestion and Normalisation**.
 ```text
 event-sonification-workbench/
 ├── src/                   # Application source code
-├── tests/                 # Automated tests and test fixtures
+├── tests/                 # Automated tests and fixed fixtures
 ├── configs/               # Schemas and sonification presets
-├── docs/                  # Technical and project documentation
+├── docs/
+│   ├── decisions/         # Significant project and technical decisions
+│   └── project-management/# Plans, progress, risks and supervision records
 ├── data/                  # Local datasets, excluded from Git
 ├── outputs/               # Generated events, logs, reports and audio
 ├── README.md
@@ -50,17 +52,17 @@ event-sonification-workbench/
 
 ## Data
 
-MOT17 and KITTI Tracking data will be stored locally and will not be committed to this repository.
+MOT17 and KITTI Tracking data are stored locally and are not committed to this repository.
 
-Local dataset paths are configured using environment variables documented in `.env.example`.
+Local dataset paths are configured using environment variables documented in `.env.example`. Small fixed fixtures may be committed under `tests/fixtures/` for deterministic automated testing where redistribution is permitted.
 
 ## Reproducibility
 
-The project will use versioned configuration files, fixed test samples, deterministic processing, stable identifiers, provenance logs, file hashes, automated tests and repeat-run comparisons.
+The project uses versioned configuration files, fixed test samples, deterministic processing, stable identifiers, provenance logs, file hashes, automated tests and repeat-run comparisons.
 
 ## Project Management
 
-Project work is recorded through GitHub Issues, commits and the files under `docs/project-management/`.
+Project work is recorded through GitHub Issues and commits, together with the files under `docs/project-management/`. Significant technical, methodological and scope decisions are recorded under `docs/decisions/`.
 
 ## Installation
 
