@@ -71,6 +71,7 @@ This log records project activity, decisions, problems and next actions. Entries
 - Marked Stage 1 as in progress in the README and project plan.
 - Added a Stage 1 work order and completion criteria.
 - Added decision records for project scope, dataset storage, Python package layout, implementation order and project-management evidence.
+- Added Stage 1 Issues #5 and #6 for KITTI parsing and structured event and provenance outputs.
 - Reviewed and extended the risk register.
 
 **Decisions made**
@@ -96,5 +97,5 @@ This log records project activity, decisions, problems and next actions. Entries
 - Complete Issue #1: define the common event schema.
 - Complete Issue #3: create the fixed MOT17 test fixture.
 - Implement and test the MOT17 parser under Issue #2.
-- Add normalised event validation under Issue #4.
-- Create further issues before beginning KITTI parsing and provenance-output implementation.
+- Implement the KITTI Tracking parser under Issue #5.
+- Add validation and provenance outputs under Issues #4 and #6.
