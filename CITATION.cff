@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+message: "Please cite this software if you use it."
+title: "Event Sonification Workbench"
+type: software
+author: Kori Flowers
+version: 0.1.0
+date-released: 2026-07-28
+repository-code: "https://github.com/Kori166/event-sonification-workbench"

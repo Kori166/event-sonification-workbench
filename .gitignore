@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Virtual environments
+.venv/
+venv/
+
+# Testing and tooling
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Environment configuration
+.env
+
+# Local datasets
+data/raw/
+data/interim/
+data/processed/
+
+# Generated outputs
+outputs/*
+!outputs/README.md
+
+# Generated media
+*.wav
+*.mp3
+*.mp4
+*.avi
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
