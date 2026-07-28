@@ -18,13 +18,17 @@ This log records project activity, decisions, problems and next actions. Entries
 
 - 
 
+**Actions taken**
+
+- 
+
 **Next actions**
 
 - 
 
 ---
 
-## 2026-07-28
+## 2026-07-28 — Stage 0 completion
 
 **Work completed**
 
@@ -55,7 +59,43 @@ This log records project activity, decisions, problems and next actions. Entries
 
 **Next actions**
 
+- Begin Stage 1 by defining the common event schema.
+
+---
+
+## 2026-07-28 — Stage 1 initiation
+
+**Work completed**
+
+- Reviewed repository readiness after Stage 0 completion.
+- Marked Stage 1 as in progress in the README and project plan.
+- Added a Stage 1 work order and completion criteria.
+- Added decision records for project scope, dataset storage, Python package layout, implementation order and project-management evidence.
+- Added Stage 1 Issues #5 and #6 for KITTI parsing and structured event and provenance outputs.
+- Reviewed and extended the risk register.
+
+**Decisions made**
+
+- Use a schema-first implementation sequence before dataset-specific parsers are treated as stable.
+- Keep the installable Python package under `src/event_sonification_workbench/`.
+- Keep full datasets outside Git and commit only small documented test fixtures where permitted.
+- Evaluate the workbench technically without making participant-based accessibility claims.
+
+**Problems or risks**
+
+- A schema designed only around MOT17 could require disruptive changes when KITTI Tracking is added.
+- Project records may drift from implementation status unless updated when issues are closed.
+
+**Actions taken**
+
+- Added these risks and mitigations to the risk register.
+- Recorded significant decisions under `docs/decisions/`.
+- Added a Stage 1 checklist and project-management index.
+
+**Next actions**
+
 - Complete Issue #1: define the common event schema.
 - Complete Issue #3: create the fixed MOT17 test fixture.
 - Implement and test the MOT17 parser under Issue #2.
-- Add normalised event validation under Issue #4.
+- Implement the KITTI Tracking parser under Issue #5.
+- Add validation and provenance outputs under Issues #4 and #6.
