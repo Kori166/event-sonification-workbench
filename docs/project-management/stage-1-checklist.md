@@ -23,10 +23,10 @@
 - [x] Local `mot17-check` command added.
 - [x] Deterministic dataset-fixture extraction and manifest generation added.
 - [x] MOT17 conversion rules and difficulties recorded.
+- [x] Complete automated suite passes in CI.
 - [ ] Dataset-derived MOT17 fixture selected, documented and committed where permitted.
 - [ ] Expected common events added for the dataset-derived fixture.
 - [ ] Selected real MOT17 sequence passes `mot17-check`.
-- [ ] Complete suite passes in CI.
 - [ ] Issues #2 and #3 closed with acceptance-criterion evidence.
 
 ### Remaining Stage 1 work
