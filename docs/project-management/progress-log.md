@@ -1,6 +1,8 @@
 # Progress Log
 
-This log records completed work, decisions, problems, actions and next steps. Entries should remain brief and should be added when the project state changes materially.
+This log records completed work, decisions, problems, actions and next steps. Entries should remain
+brief and should be added when the project state changes materially. Detailed milestone records may
+be added where a short entry would omit important implementation evidence.
 
 ## Entry Template
 
@@ -70,20 +72,24 @@ This log records completed work, decisions, problems, actions and next steps. En
 - Reviewed repository readiness after Stage 0 completion.
 - Marked Stage 1 as in progress in the README and project plan.
 - Added a Stage 1 work order and completion criteria.
-- Added decision records for project scope, dataset storage, Python package layout, implementation order and project-management evidence.
+- Added decision records for project scope, dataset storage, Python package layout,
+  implementation order and project-management evidence.
 - Added Stage 1 Issues #5 and #6 for KITTI parsing and structured event and provenance outputs.
 - Reviewed and extended the risk register.
 
 **Decisions made**
 
-- A schema-first implementation sequence will be used before dataset-specific parsers are treated as stable.
+- A schema-first implementation sequence will be used before dataset-specific parsers are treated
+  as stable.
 - The installable Python package will remain under `src/event_sonification_workbench/`.
-- Full datasets will remain outside Git. Only small documented fixtures may be committed where permitted.
+- Full datasets will remain outside Git. Only small documented fixtures may be committed where
+  permitted.
 - The workbench will be evaluated technically without participant-based accessibility claims.
 
 **Problems or risks**
 
-- A schema designed only around MOT17 could require disruptive changes when KITTI Tracking is added.
+- A schema designed only around MOT17 could require disruptive changes when KITTI Tracking is
+  added.
 - GitHub Issues and project records could drift from the actual implementation status.
 
 **Actions taken**
@@ -107,25 +113,32 @@ This log records completed work, decisions, problems, actions and next steps. En
 **Work completed**
 
 - Added provisional common event schema version `0.1.0` under `configs/schemas/`.
-- Added a documented synthetic source annotation and manually constructed expected event under `tests/fixtures/synthetic/`.
-- Added deterministic event-ID, canonical hashing and event-validation modules under `src/event_sonification_workbench/`.
-- Added automated tests for schema validity, semantic calculations, source traceability and deterministic hashing.
+- Added a documented synthetic source annotation and manually constructed expected event under
+  `tests/fixtures/synthetic/`.
+- Added deterministic event-ID, canonical hashing and event-validation modules under
+  `src/event_sonification_workbench/`.
+- Added automated tests for schema validity, semantic calculations, source traceability and
+  deterministic hashing.
 - Added the common-event data-model document and Decision 0006.
 - Ran the complete local test suite successfully, with eight tests passing.
 
 **Decisions made**
 
 - The common event will use a flat record to simplify parser outputs and later JSON and CSV export.
-- The common frame index will be zero-based. Timestamps will be derived in seconds from the declared frame rate.
+- The common frame index will be zero-based. Timestamps will be derived in seconds from the
+  declared frame rate.
 - Native and common object classes will be stored separately.
-- Schema version `0.1.0` will remain provisional until it has been reviewed against both real datasets.
-- Out-of-frame normalised centres will be permitted and reported as warnings rather than rejected automatically.
+- Schema version `0.1.0` will remain provisional until it has been reviewed against both real
+  datasets.
+- Out-of-frame normalised centres will be permitted and reported as warnings rather than rejected
+  automatically.
 
 **Problems or risks**
 
 - The synthetic fixture cannot provide evidence of compatibility with MOT17 or KITTI Tracking.
 - The common class vocabulary and treatment of KITTI-specific quality fields remain unresolved.
-- Later schema changes could be concealed if the initial schema task is treated as permanently complete rather than provisionally complete.
+- Later schema changes could be concealed if the initial schema task is treated as permanently
+  complete rather than provisionally complete.
 
 **Actions taken**
 
@@ -139,3 +152,53 @@ This log records completed work, decisions, problems, actions and next steps. En
 - Complete the fixed MOT17 fixture under Issue #3.
 - Implement the first MOT17 row-to-event vertical slice under Issue #2.
 - Revisit Decision 0006 if parser evidence requires a schema change.
+
+---
+
+## 2026-07-29 — Stage 1 Milestone 2 implementation: MOT17 vertical slice
+
+**Work completed**
+
+- Implemented the MOT17 ground-truth adapter and sequence-metadata parser.
+- Added the provisional MOT17 class mapping and configuration hashes.
+- Added controlled valid and invalid MOT17-format rows for unit testing.
+- Added a local `mot17-check` command for parser and event-validation summaries.
+- Added deterministic extraction of explicit source rows into a fixture with a provenance manifest.
+- Extended event validation to resolve source files from a configured dataset root.
+- Added adapter, command-line, fixture-extraction and common-schema integration tests.
+- Added Decision 0007, adapter documentation and a detailed Milestone 2 work log.
+- Ran the combined Milestone 1 and Milestone 2 local suite successfully, with 20 tests passing.
+
+**Decisions made**
+
+- The adapter will accept the nine-column MOT17 ground-truth format only.
+- One-based frames and bounding-box origins will be converted explicitly to zero-based values.
+- The MOT17 ground-truth evaluation mark will remain in metadata and will not be used as common
+  confidence.
+- Structurally valid marked and unmarked rows will be retained during ingestion.
+- A real-data fixture and local sequence run are required before Milestone 2 can be completed.
+
+**Problems or risks**
+
+- The connected repository environment cannot access the local OneDrive datasets.
+- The `conf` name used in format descriptions can be mistaken for detector confidence even though
+  the ground-truth value is an evaluation mark.
+- MOT17 ground truth and tracker-result files use different field counts.
+- A dataset-derived fixture cannot be selected responsibly without inspecting the source rows and
+  redistribution conditions.
+
+**Actions taken**
+
+- Recorded the semantic and indexing decisions in Decision 0007.
+- Added strict field-count and value validation with structured row diagnostics.
+- Added a synthetic format fixture while clearly excluding it from real-data evidence.
+- Added a deterministic fixture-extraction command that records source rows and hashes.
+- Updated the risk register and milestone completion criteria.
+
+**Next actions**
+
+- Obtain `seqinfo.ini` and `gt/gt.txt` for the selected local MOT17 sequence.
+- Inspect and select representative physical rows for the fixed fixture.
+- Generate the dataset-derived fixture and expected common events.
+- Run `mot17-check` against the real sequence.
+- Run the complete suite in CI and then review Issues #2 and #3 for closure.
