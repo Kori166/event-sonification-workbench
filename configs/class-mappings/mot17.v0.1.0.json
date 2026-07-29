@@ -1,0 +1,20 @@
+{
+  "version": "0.1.0",
+  "dataset": "mot17",
+  "description": "Provisional MOT17 source-to-common class mapping for Stage 1.",
+  "classes": {
+    "1": {"source_name": "pedestrian", "common_class": "pedestrian"},
+    "2": {"source_name": "person_on_vehicle", "common_class": "person_on_vehicle"},
+    "3": {"source_name": "car", "common_class": "car"},
+    "4": {"source_name": "bicycle", "common_class": "bicycle"},
+    "5": {"source_name": "motorbike", "common_class": "motorbike"},
+    "6": {"source_name": "non_motorized_vehicle", "common_class": "non_motorized_vehicle"},
+    "7": {"source_name": "static_person", "common_class": "static_person"},
+    "8": {"source_name": "distractor", "common_class": "distractor"},
+    "9": {"source_name": "occluder", "common_class": "occluder"},
+    "10": {"source_name": "occluder_on_ground", "common_class": "occluder_on_ground"},
+    "11": {"source_name": "occluder_full", "common_class": "occluder_full"},
+    "12": {"source_name": "reflection", "common_class": "reflection"},
+    "13": {"source_name": "crowd", "common_class": "crowd"}
+  }
+}
