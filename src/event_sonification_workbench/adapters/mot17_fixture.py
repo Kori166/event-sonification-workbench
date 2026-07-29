@@ -4,12 +4,13 @@ from __future__ import annotations
 
 import json
 import shutil
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 from ..provenance import sha256_file
-from .mot17 import MOT17ParseError, PARSER_VERSION, build_source_reference, load_sequence_metadata
+from .mot17 import PARSER_VERSION, MOT17ParseError, build_source_reference, load_sequence_metadata
 
 
 @dataclass(frozen=True)
