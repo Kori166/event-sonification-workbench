@@ -1,0 +1,43 @@
+{
+  "schema_version": "0.1.0",
+  "event_id": "evt:synthetic:sequence_001:f000024:t1:r000002",
+  "dataset": "synthetic",
+  "sequence": "sequence_001",
+  "frame": 24,
+  "timestamp": 0.96,
+  "frame_rate": 25.0,
+  "track_id": "1",
+  "object_class": "pedestrian",
+  "source_object_class": "Pedestrian",
+  "image_width": 1920,
+  "image_height": 1080,
+  "bbox_x": 100.0,
+  "bbox_y": 50.0,
+  "bbox_width": 80.0,
+  "bbox_height": 160.0,
+  "centre_x": 140.0,
+  "centre_y": 130.0,
+  "centre_x_normalised": 0.07291666666666667,
+  "centre_y_normalised": 0.12037037037037036,
+  "bbox_area": 12800.0,
+  "bbox_area_normalised": 0.006172839506172839,
+  "confidence": 1.0,
+  "visibility": 0.95,
+  "source_file": "tests/fixtures/synthetic/source_annotation.csv",
+  "source_file_sha256": "5e32570210ebb652e6fcfa943664209007dff58aecc178b1af37c6c5db5db5e4",
+  "source_row": 2,
+  "parser": "manual_fixture",
+  "parser_version": "0.1.0",
+  "class_mapping_version": "0.1.0",
+  "conversion_notes": [
+    "Converted one-based source frame 25 to zero-based common frame 24.",
+    "Mapped source class Pedestrian to common class pedestrian.",
+    "Derived timestamp, centre and area fields using the documented formulas."
+  ],
+  "metadata": {
+    "fixture_type": "synthetic",
+    "source_frame": 25,
+    "source_frame_indexing": "one-based",
+    "bbox_convention": "top-left-x-y-width-height-pixels"
+  }
+}
