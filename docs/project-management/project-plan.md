@@ -6,7 +6,8 @@
 
 ## Aim
 
-Design, implement and evaluate a reproducible workbench that converts annotated video data into normalised events, deterministic audio cues and traceable technical outputs.
+Design, implement and evaluate a reproducible workbench that converts annotated video data into
+normalised events, deterministic audio cues and traceable technical outputs.
 
 ## Project Stages
 
@@ -21,16 +22,33 @@ Design, implement and evaluate a reproducible workbench that converts annotated 
 
 ## Working Method
 
-The project will be developed iteratively. Work will be recorded through GitHub Issues and commits, automated tests, configuration and provenance files, the progress log, the risk register, supervision records and decision records.
+The project will be developed iteratively. Work will be recorded through GitHub Issues and commits,
+automated tests, configuration and provenance files, the progress log, the risk register,
+supervision records and decision records.
 
 ## Stage 1 Milestones
 
 | Milestone | Work | Status |
 |---|---|---|
 | 1. Schema and synthetic fixture | Define a provisional common schema and validate one manually constructed event | Complete, 29 July 2026 |
-| 2. MOT17 vertical slice | Create a fixed MOT17 fixture and convert it through the first dataset parser | Next |
+| 2. MOT17 vertical slice | Create a fixed MOT17 fixture and convert it through the first dataset parser | In progress, parser ready; real-data evidence pending |
 | 3. KITTI extension | Add a fixed KITTI Tracking fixture and parser without changing the downstream interface unnecessarily | Planned |
 | 4. Stage 1 quality gate | Validate both adapters, write structured outputs and complete repeat-run checks | Planned |
+
+## Milestone 2 Quality Gate
+
+Milestone 2 will be complete only when:
+
+- the MOT17 ground-truth format is parsed through explicit type conversion;
+- a small dataset-derived fixture records its sequence, source rows, selection rationale and hashes;
+- the fixed fixture produces expected common events;
+- invalid rows produce structured diagnostics;
+- the selected real sequence passes the local parser and event-validation command;
+- the complete automated suite passes in CI; and
+- Issues #2 and #3 have evidence for every acceptance criterion.
+
+Controlled format tests support implementation development but do not replace the dataset-derived
+fixture or real-sequence run.
 
 ## Stage 1 Work Order
 
@@ -44,9 +62,9 @@ The project will be developed iteratively. Work will be recorded through GitHub 
 ## Stage 1 Issues
 
 - Issue #1: Define the common event schema. **Complete, 29 July 2026.**
-- Issue #2: Implement the MOT17 annotation parser. **Open.**
-- Issue #3: Create a fixed MOT17 test fixture. **Open.**
-- Issue #4: Validate normalised event records. **Open.**
+- Issue #2: Implement the MOT17 annotation parser. **In progress; real-data verification pending.**
+- Issue #3: Create a fixed MOT17 test fixture. **Blocked pending source-file access.**
+- Issue #4: Validate normalised event records. **Open; common validation supports the current vertical slice.**
 - Issue #5: Implement the KITTI Tracking annotation parser. **Open.**
 - Issue #6: Write normalised event and provenance outputs. **Open.**
 
@@ -74,6 +92,8 @@ Stage 1 will be complete only when:
 
 ## Scope Control
 
-Core deliverables are limited to MOT17, KITTI Tracking, a common event schema, deterministic sonification, provenance records and technical evaluation.
+Core deliverables are limited to MOT17, KITTI Tracking, a common event schema, deterministic
+sonification, provenance records and technical evaluation.
 
-Participant studies, accessibility claims, interactive interfaces and additional datasets remain future work rather than core MSc deliverables.
+Participant studies, accessibility claims, interactive interfaces and additional datasets remain
+future work rather than core MSc deliverables.
