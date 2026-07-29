@@ -1,8 +1,8 @@
 # Decision Records
 
-I use this directory to record significant technical, methodological and scope decisions so that my reasoning remains traceable throughout the project.
+This directory records significant technical, methodological and scope decisions so that the project reasoning remains traceable.
 
-Each record contains its status, context, decision, rationale and consequences. When a decision changes, I will supersede or amend it explicitly rather than silently rewriting the project history.
+Each record contains its status, context, decision, rationale and consequences. A changed decision must be amended or superseded explicitly rather than silently rewritten.
 
 ## Current Records
 
