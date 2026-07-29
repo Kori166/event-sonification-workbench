@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import argparse
 import json
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Sequence
 
-from .adapters.mot17 import MOT17ParseError, PARSER_VERSION, parse_sequence
+from .adapters.mot17 import PARSER_VERSION, MOT17ParseError, parse_sequence
 from .adapters.mot17_fixture import extract_mot17_fixture, parse_row_selection
 from .event_validation import load_json_object, validate_event
 
