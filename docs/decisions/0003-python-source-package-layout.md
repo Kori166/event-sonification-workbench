@@ -6,25 +6,25 @@ Accepted
 
 ## Context
 
-The GitHub repository is named `event-sonification-workbench`, but Python import names cannot contain hyphens. I also need reliable editable installation and test imports.
+The GitHub repository is named `event-sonification-workbench`, but Python import names cannot contain hyphens. The project also requires reliable editable installation and test imports.
 
 ## Decision
 
-I will use the `src` layout and the importable package name `event_sonification_workbench`:
+Python code will use the `src` layout and the importable package name `event_sonification_workbench`:
 
 ```text
 src/
 └── event_sonification_workbench/
 ```
 
-I will retain hyphens in the repository name and use underscores in the Python package name.
+The repository name will retain hyphens. The Python package name will use underscores.
 
 ## Rationale
 
-I chose the `src` layout to prevent accidental imports from the repository root and to ensure that tests exercise the installed package configuration. I chose the underscore name because it follows Python module naming rules.
+The `src` layout was selected to prevent accidental imports from the repository root and ensure that tests exercise the installed package configuration. The underscore name follows Python module naming rules.
 
 ## Consequences
 
-- I will use `event_sonification_workbench` in imports.
-- I will place new application modules inside the package directory.
-- I will keep `pyproject.toml` as the source of package and command-line configuration.
+- Imports will use `event_sonification_workbench`.
+- New application modules must be placed inside the package directory.
+- `pyproject.toml` will remain the source of package and command-line configuration.
