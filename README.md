@@ -23,7 +23,7 @@ The workbench is research infrastructure. It is not presented as a validated acc
 
 **Stage 1: Data Ingestion and Normalisation is in progress.**
 
-I have completed Stage 1 Milestone 1 by adding a provisional common event schema, one synthetic source annotation, one manually constructed expected event and automated validation tests. I will retain schema version `0.1.0` until I have reviewed it against real MOT17 and KITTI Tracking rows.
+Stage 1 Milestone 1 is complete. It added a provisional common event schema, one synthetic source annotation, one manually constructed expected event and automated validation tests. Schema version `0.1.0` will remain provisional until it has been reviewed against real MOT17 and KITTI Tracking rows.
 
 ## Project Stages
 
@@ -62,7 +62,7 @@ MOT17 and KITTI Tracking data are stored locally and are not committed to this r
 
 Local dataset paths are configured using environment variables documented in `.env.example`. Small fixed fixtures may be committed under `tests/fixtures/` for deterministic automated testing where redistribution is permitted.
 
-I created the current Milestone 1 fixture synthetically, so it contains no copied dataset content. I still need to create the separate fixed MOT17 fixture.
+The current Milestone 1 fixture is synthetic and contains no copied dataset content. A separate fixed MOT17 fixture remains outstanding.
 
 ## Reproducibility
 
