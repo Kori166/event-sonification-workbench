@@ -59,9 +59,18 @@ def validate_event(
     event: dict[str, Any],
     schema: dict[str, Any],
     *,
-    repository_root: Path,
+    repository_root: Path | None = None,
+    source_root: Path | None = None,
 ) -> EventValidationReport:
-    """Validate one event against the schema and common deterministic rules."""
+    """Validate one event against the schema and common deterministic rules.
+
+    ``source_root`` resolves dataset-relative source paths. ``repository_root`` is retained for
+    repository fixtures and backwards compatibility. Exactly one effective root is required.
+    """
+    effective_source_root = source_root or repository_root
+    if effective_source_root is None:
+        raise ValueError("source_root or repository_root must be provided")
+
     schema_errors = _collect_schema_errors(event, schema)
     if schema_errors:
         return EventValidationReport(
@@ -126,7 +135,7 @@ def validate_event(
     if not 0 <= event["centre_y_normalised"] <= 1:
         warnings.append("centre_y_normalised is outside the image range [0, 1].")
 
-    source_path = repository_root / event["source_file"]
+    source_path = effective_source_root / event["source_file"]
     checks["source_file_exists"] = source_path.is_file()
     if not checks["source_file_exists"]:
         semantic_errors.append(f"Source file does not exist: {event['source_file']}")
