@@ -1,22 +1,22 @@
 # Supervision Log
 
-This log records completed supervision meetings, feedback and resulting actions. Meeting details must not be reconstructed where no supporting notes or correspondence are available.
+I use this log to record completed supervision meetings, feedback and resulting actions. I will not reconstruct meeting details where I do not have supporting notes or correspondence.
 
-No completed supervision meetings have yet been recorded in the rebuilt repository.
+I have not yet recorded a completed supervision meeting in the rebuilt repository.
 
 ## Entry Template
 
 ### YYYY-MM-DD
 
-**Topics discussed**
+**Topics I discussed**
 
 - 
 
-**Feedback received**
+**Feedback I received**
 
 - 
 
-**Actions agreed**
+**Actions I agreed**
 
 - [ ] 
 
