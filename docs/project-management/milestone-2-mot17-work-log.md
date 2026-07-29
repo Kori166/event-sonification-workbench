@@ -65,6 +65,14 @@ without inspecting the local source would create weak or fabricated provenance.
 **Resolution:** a deterministic extraction command now records selected physical row numbers,
 source hashes and fixture hashes. Final row selection remains pending source inspection.
 
+### Continuous-integration lint failure
+
+The first pull-request CI run failed before the test stage. Ruff required abstract collection types to
+be imported from `collections.abc` and required two import blocks to be reordered.
+
+**Resolution:** the imports were corrected without changing parser behaviour. The subsequent CI
+run passed lint and the complete automated suite.
+
 ## Validation evidence
 
 The complete local test suite passed after the implementation was combined with the Milestone 1
@@ -74,11 +82,14 @@ tests:
 20 passed
 ```
 
-Python compilation also passed. No Python source or test line exceeded the configured 100-character
-limit. Ruff was not available in the execution environment, so no Ruff result is recorded.
+Python compilation passed. No Python source or test line exceeded the configured 100-character
+limit.
 
-The test result covers synthetic and controlled inputs only. It is not evidence of a successful run
-against the local MOT17 dataset.
+GitHub Actions CI run 25 completed successfully after the Ruff corrections. This confirms the
+configured lint and automated test workflow on the milestone branch.
+
+The tests cover synthetic and controlled inputs only. They do not provide evidence of a successful
+run against the local MOT17 dataset.
 
 ## Remaining milestone actions
 
@@ -87,7 +98,6 @@ against the local MOT17 dataset.
 - Generate and review the dataset-derived fixture and manifest.
 - Run `mot17-check` against the selected real sequence.
 - Add expected normalised events for the fixed fixture.
-- Run the complete suite in CI.
 - Close Issues #2 and #3 only when their acceptance criteria are supported by real-data evidence.
 
 ## Evidence boundary
