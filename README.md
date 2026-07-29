@@ -21,7 +21,9 @@ The workbench is research infrastructure. It is not presented as a validated acc
 
 **Stage 0: Project Setup is complete.**
 
-**Stage 1: Data Ingestion and Normalisation is in progress.** Current work begins with the common event schema, fixed test data, dataset parsers and event validation.
+**Stage 1: Data Ingestion and Normalisation is in progress.**
+
+I have completed Stage 1 Milestone 1 by adding a provisional common event schema, one synthetic source annotation, one manually constructed expected event and automated validation tests. I will retain schema version `0.1.0` until I have reviewed it against real MOT17 and KITTI Tracking rows.
 
 ## Project Stages
 
@@ -36,14 +38,18 @@ The workbench is research infrastructure. It is not presented as a validated acc
 
 ```text
 event-sonification-workbench/
-├── src/                   # Application source code
-├── tests/                 # Automated tests and fixed fixtures
-├── configs/               # Schemas and sonification presets
+├── src/
+│   └── event_sonification_workbench/  # Installable application package
+├── tests/
+│   └── fixtures/                      # Small fixed and documented test inputs
+├── configs/
+│   └── schemas/                       # Versioned event schemas
 ├── docs/
-│   ├── decisions/         # Significant project and technical decisions
-│   └── project-management/# Plans, progress, risks and supervision records
-├── data/                  # Local datasets, excluded from Git
-├── outputs/               # Generated events, logs, reports and audio
+│   ├── data-model/                    # Schema and technical data contracts
+│   ├── decisions/                     # Significant project and technical decisions
+│   └── project-management/            # Plans, progress, risks and supervision records
+├── data/                              # Local datasets, excluded from Git
+├── outputs/                           # Generated events, logs, reports and audio
 ├── README.md
 ├── pyproject.toml
 ├── .env.example
@@ -56,9 +62,20 @@ MOT17 and KITTI Tracking data are stored locally and are not committed to this r
 
 Local dataset paths are configured using environment variables documented in `.env.example`. Small fixed fixtures may be committed under `tests/fixtures/` for deterministic automated testing where redistribution is permitted.
 
+I created the current Milestone 1 fixture synthetically, so it contains no copied dataset content. I still need to create the separate fixed MOT17 fixture.
+
 ## Reproducibility
 
 The project uses versioned configuration files, fixed test samples, deterministic processing, stable identifiers, provenance logs, file hashes, automated tests and repeat-run comparisons.
+
+Milestone 1 establishes:
+
+- schema version `0.1.0`;
+- deterministic event identifiers;
+- canonical event hashing;
+- source-file hashing;
+- independent checks of time and geometry calculations; and
+- an explicit record of schema decisions and unresolved questions.
 
 ## Project Management
 
@@ -72,6 +89,16 @@ python -m pip install -e ".[dev]"
 pytest
 ```
 
+## Milestone 1 Validation
+
+Run the schema and synthetic-fixture tests with:
+
+```bash
+python -m pytest tests/test_event_schema.py tests/test_synthetic_event.py
+```
+
+The fixture and its manual derivation are documented in `tests/fixtures/synthetic/README.md`. The schema contract is documented in `docs/data-model/common-event-schema.md`.
+
 ## Usage
 
 The current command-line placeholder can be run with:
@@ -80,7 +107,7 @@ The current command-line placeholder can be run with:
 event-sonification
 ```
 
-Dataset-processing commands will be added during Stage 1.
+Dataset-processing commands will be added during the remaining Stage 1 milestones.
 
 ## Author
 

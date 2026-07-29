@@ -1,0 +1,2 @@
+frame_number,track_id,source_class,bbox_x,bbox_y,bbox_width,bbox_height,confidence,visibility,image_width,image_height,frame_rate
+25,1,Pedestrian,100,50,80,160,1.0,0.95,1920,1080,25.0
