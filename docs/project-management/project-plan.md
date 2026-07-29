@@ -6,7 +6,7 @@
 
 ## Aim
 
-I will design, implement and evaluate a reproducible workbench that converts annotated video data into normalised events, deterministic audio cues and traceable technical outputs.
+Design, implement and evaluate a reproducible workbench that converts annotated video data into normalised events, deterministic audio cues and traceable technical outputs.
 
 ## Project Stages
 
@@ -21,7 +21,7 @@ I will design, implement and evaluate a reproducible workbench that converts ann
 
 ## Working Method
 
-I will develop the project iteratively. I will record the work through GitHub Issues and commits, automated tests, configuration and provenance files, the progress log, the risk register, supervision records and decision records.
+The project will be developed iteratively. Work will be recorded through GitHub Issues and commits, automated tests, configuration and provenance files, the progress log, the risk register, supervision records and decision records.
 
 ## Stage 1 Milestones
 
@@ -34,12 +34,12 @@ I will develop the project iteratively. I will record the work through GitHub Is
 
 ## Stage 1 Work Order
 
-1. I will define the common event schema.
-2. I will create small fixed annotation fixtures.
-3. I will implement and test the MOT17 parser.
-4. I will implement and test the KITTI Tracking parser.
-5. I will validate normalised event records.
-6. I will write structured event and provenance outputs.
+1. Define the common event schema.
+2. Create small fixed annotation fixtures.
+3. Implement and test the MOT17 parser.
+4. Implement and test the KITTI Tracking parser.
+5. Validate normalised event records.
+6. Write structured event and provenance outputs.
 
 ## Stage 1 Issues
 
@@ -52,13 +52,13 @@ I will develop the project iteratively. I will record the work through GitHub Is
 
 ## Stage 1 Completion Criteria
 
-I will treat Stage 1 as complete only when:
+Stage 1 will be complete only when:
 
-- I can convert both selected dataset formats into the shared schema;
-- the fixed fixtures and automated parser tests pass in CI;
-- I report invalid records through structured validation results;
+- both selected dataset formats can be converted into the shared schema;
+- fixed fixtures and automated parser tests pass in CI;
+- invalid records are reported through structured validation results;
 - output records preserve source dataset, sequence, file and conversion information; and
-- I have documented the implementation and its assumptions.
+- the implementation and its assumptions are documented.
 
 ## Key Project Milestones
 
@@ -74,6 +74,6 @@ I will treat Stage 1 as complete only when:
 
 ## Scope Control
 
-I will limit the core deliverables to MOT17, KITTI Tracking, a common event schema, deterministic sonification, provenance records and technical evaluation.
+Core deliverables are limited to MOT17, KITTI Tracking, a common event schema, deterministic sonification, provenance records and technical evaluation.
 
-I will treat participant studies, accessibility claims, interactive interfaces and additional datasets as future work rather than core MSc deliverables.
+Participant studies, accessibility claims, interactive interfaces and additional datasets remain future work rather than core MSc deliverables.

@@ -6,11 +6,11 @@ Accepted
 
 ## Context
 
-I need to provide clear evidence of planning, implementation progress, risk management, supervision and changes in direction without creating unnecessary duplicate administration.
+The project must provide clear evidence of planning, implementation progress, risk management, supervision and changes in direction. This evidence should not create unnecessary duplicate administration.
 
 ## Decision
 
-I will record project-management evidence through:
+Project-management evidence will be recorded through:
 
 - GitHub Issues for planned and active tasks;
 - commits and pull requests for implementation history;
@@ -20,14 +20,14 @@ I will record project-management evidence through:
 - `supervision-log.md` for verified meeting feedback and agreed actions; and
 - decision records for significant technical, methodological or scope choices.
 
-I will update these records when I complete an issue, change the scope, revise a risk or begin or end a project stage.
+These records must be updated when an issue is completed, the scope changes, a risk is revised or a project stage begins or ends.
 
 ## Rationale
 
-I chose this record set to create a traceable chain from planning to implementation and evaluation while keeping the administrative burden proportionate to the MSc project.
+This record set was selected to create a traceable chain from planning to implementation and evaluation. It also keeps the administrative burden proportionate to the MSc project.
 
 ## Consequences
 
-- I must describe actual work in progress entries rather than reconstruct activity retrospectively.
-- I must not invent supervision records where supporting notes are unavailable.
-- I must reflect completed issues in the project plan or progress log where they affect stage status.
+- Progress entries must describe actual work rather than reconstructed activity.
+- Supervision records must not be created without supporting notes or correspondence.
+- Completed issues must be reflected in the project plan or progress log where they affect stage status.
