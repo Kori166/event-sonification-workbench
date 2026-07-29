@@ -6,20 +6,20 @@ Accepted
 
 ## Context
 
-MOT17 and KITTI Tracking are too large to store sensibly in the repository, and their licences and distribution terms must be respected. The workbench must still document exactly which inputs were used.
+MOT17 and KITTI Tracking are too large to store sensibly in the repository, and I must respect their licences and distribution terms. I still need to document exactly which inputs I use so that another researcher can reconstruct a run.
 
 ## Decision
 
-Full datasets will be stored locally and excluded from Git. Local paths will be supplied through environment variables documented in `.env.example`.
+I will store the full datasets locally and exclude them from Git. I will supply local paths through environment variables documented in `.env.example`.
 
-Small fixed fixtures may be committed under `tests/fixtures/` where permitted. Each fixture must document its dataset, sequence, selection method and intended testing purpose. Dataset versions, configuration and relevant file hashes will be recorded in run metadata or provenance outputs.
+I may commit small fixed fixtures under `tests/fixtures/` where redistribution is permitted. For each fixture, I will document the dataset, sequence, selection method and testing purpose. I will record dataset versions, configuration and relevant file hashes in run metadata or provenance outputs.
 
 ## Rationale
 
-This keeps the repository lightweight while preserving enough information for another researcher to obtain the source data and reproduce a run.
+I chose this approach to keep the repository lightweight while preserving enough information for another researcher to obtain the source data and reproduce a run.
 
 ## Consequences
 
-- Users must acquire the original datasets separately.
-- Tests must not depend on untracked full datasets unless explicitly marked as integration tests.
-- Fixture provenance and redistribution permissions must be checked before committing data.
+- I must require users to acquire the original datasets separately.
+- I must not make automated tests depend on untracked full datasets unless I mark them explicitly as integration tests.
+- I must check fixture provenance and redistribution permissions before committing dataset-derived content.

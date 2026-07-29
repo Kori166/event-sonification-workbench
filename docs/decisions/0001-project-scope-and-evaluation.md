@@ -6,20 +6,20 @@ Accepted
 
 ## Context
 
-The project must deliver a technically credible MSc artefact within limited time. The wider sonification domain includes accessibility, navigation and assistive-technology applications, but claims in those areas require participant-based evidence.
+I need to deliver a technically credible MSc artefact within the remaining project time. The wider sonification domain includes accessibility, navigation and assistive-technology applications, but claims in those areas would require participant-based evidence that is outside my current evaluation design.
 
 ## Decision
 
-The core artefact will support MOT17 and KITTI Tracking, a common event schema, deterministic sonification, provenance records and technical evaluation.
+I will limit the core artefact to MOT17 and KITTI Tracking support, a common event schema, deterministic sonification, provenance records and technical evaluation.
 
-The project will not claim validated accessibility, usability, navigation or safety benefits. Participant studies, additional datasets and interactive deployment are outside the core MSc scope.
+I will not claim validated accessibility, usability, navigation or safety benefits. I will treat participant studies, additional datasets and interactive deployment as future work rather than core MSc deliverables.
 
 ## Rationale
 
-This boundary keeps the project achievable and aligns the evaluation with evidence that can be generated through software tests, controlled experiments and reproducibility checks.
+I chose this boundary to keep the project achievable and to align the evaluation with evidence I can generate through software tests, controlled experiments and reproducibility checks.
 
 ## Consequences
 
-- Technical findings may be reported where supported by logged outputs and tests.
-- Human benefit claims must remain future work.
-- Proposed extensions must not displace the essential artefact, evaluation and report deliverables.
+- I may report technical findings only where they are supported by logged outputs and tests.
+- I must reserve claims about human benefit for future participant-based work.
+- I must not allow optional extensions to displace the essential artefact, evaluation and report deliverables.
