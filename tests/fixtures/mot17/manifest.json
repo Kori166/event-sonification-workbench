@@ -1,0 +1,43 @@
+{
+  "dataset": "MOT17",
+  "split": "train",
+  "sequence": "MOT17-02-DPM",
+  "source_annotation_path": "MOT17/train/MOT17-02-DPM/gt/gt.txt",
+  "source_annotation_sha256": "2e3ecb488da8886d3200d402b2b08890c6d2879923839444e9b74fa43a551440",
+  "source_sequence_metadata_path": "MOT17/train/MOT17-02-DPM/seqinfo.ini",
+  "source_sequence_metadata_sha256": "5c9a86813ed1e4bf640b11785e9dc51f443712d721f9cc5e334b7e0f21606ad6",
+  "selected_source_line_numbers": [
+    1,
+    2,
+    3,
+    601,
+    602,
+    603,
+    3613,
+    3614,
+    3615,
+    4856,
+    4857,
+    4858
+  ],
+  "selection_rule": "Inspect the first 5,000 physical annotation lines. Select the earliest three-frame interval. Retain four tracks in source order that jointly preserve an unmarked static person, a marked pedestrian, a partially visible marked pedestrian and a lower-visibility unmarked person on a vehicle. Retain all three consecutive observations for each selected track and preserve physical source order.",
+  "expected_row_count": 12,
+  "generated_fixture_sha256": "a4d5ec744f02febec5a2887080cc95c2f49b09189fa600d2e37c3252210f835f",
+  "sequence_metadata": {
+    "name": "MOT17-02-DPM",
+    "frame_rate": 30,
+    "image_width": 1920,
+    "image_height": 1080,
+    "sequence_length": 600,
+    "image_directory": "img1",
+    "image_extension": ".jpg"
+  },
+  "licence_decision": "Redistribution permission is unresolved. No terms or licence file was supplied under the local MOT17 root, and the official format documentation inspected does not grant redistribution permission. Dataset-derived rows remain Git-ignored.",
+  "date_of_fixture_generation": "2026-08-04",
+  "fixture_generation_version": "0.1.0",
+  "limitations": [
+    "The selection is deterministic but not statistically representative of the sequence.",
+    "The generated private fixture contains annotations and sequence metadata only.",
+    "The committed manifest cannot replace a local MOT17 copy for integration testing."
+  ]
+}

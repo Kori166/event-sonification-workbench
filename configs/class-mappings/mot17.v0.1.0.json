@@ -1,20 +1,26 @@
 {
   "version": "0.1.0",
   "dataset": "mot17",
-  "description": "Provisional MOT17 source-to-common class mapping for Stage 1.",
+  "authoritative_source": "Milan et al., MOT16: A Benchmark for Multi-Object Tracking (2016), Table 6, https://arxiv.org/abs/1603.00831",
+  "unsupported_class_behaviour": "error",
+  "description": "Provisional MOT17 source-to-common class mapping for Stage 1. Native labels are normalised to lower-case snake case without broader semantic collapse.",
   "classes": {
-    "1": {"source_name": "pedestrian", "common_class": "pedestrian"},
-    "2": {"source_name": "person_on_vehicle", "common_class": "person_on_vehicle"},
-    "3": {"source_name": "car", "common_class": "car"},
-    "4": {"source_name": "bicycle", "common_class": "bicycle"},
-    "5": {"source_name": "motorbike", "common_class": "motorbike"},
-    "6": {"source_name": "non_motorized_vehicle", "common_class": "non_motorized_vehicle"},
-    "7": {"source_name": "static_person", "common_class": "static_person"},
-    "8": {"source_name": "distractor", "common_class": "distractor"},
-    "9": {"source_name": "occluder", "common_class": "occluder"},
-    "10": {"source_name": "occluder_on_ground", "common_class": "occluder_on_ground"},
-    "11": {"source_name": "occluder_full", "common_class": "occluder_full"},
-    "12": {"source_name": "reflection", "common_class": "reflection"},
-    "13": {"source_name": "crowd", "common_class": "crowd"}
-  }
+    "1": {"source_name": "Pedestrian", "common_class": "pedestrian"},
+    "2": {"source_name": "Person on vehicle", "common_class": "person_on_vehicle"},
+    "3": {"source_name": "Car", "common_class": "car"},
+    "4": {"source_name": "Bicycle", "common_class": "bicycle"},
+    "5": {"source_name": "Motorbike", "common_class": "motorbike"},
+    "6": {"source_name": "Non motorized vehicle", "common_class": "non_motorized_vehicle"},
+    "7": {"source_name": "Static person", "common_class": "static_person"},
+    "8": {"source_name": "Distractor", "common_class": "distractor"},
+    "9": {"source_name": "Occluder", "common_class": "occluder"},
+    "10": {"source_name": "Occluder on the ground", "common_class": "occluder_on_ground"},
+    "11": {"source_name": "Occluder full", "common_class": "occluder_full"},
+    "12": {"source_name": "Reflection", "common_class": "reflection"}
+  },
+  "notes": [
+    "The authoritative source defines native class identifiers 1 to 12.",
+    "Unknown identifiers are rejected because no evidence supports an implicit 'other' mapping.",
+    "The common values remain provisional pending review against KITTI Tracking."
+  ]
 }

@@ -6,6 +6,7 @@ import configparser
 import csv
 import json
 import math
+import os
 from dataclasses import asdict, dataclass
 from pathlib import Path, PurePosixPath
 from typing import Any
@@ -16,10 +17,15 @@ from ..provenance import sha256_file
 PARSER_NAME = "mot17_gt"
 PARSER_VERSION = "0.1.0"
 SCHEMA_VERSION = "0.1.0"
+PREFERRED_SEQUENCE = "MOT17-02-DPM"
 
 
 class MOT17ParseError(ValueError):
     """Raised when MOT17 input cannot be interpreted safely."""
+
+
+class MOT17ConfigurationError(MOT17ParseError):
+    """Raised when the configured MOT17 dataset cannot be accessed safely."""
 
 
 @dataclass(frozen=True)
@@ -50,6 +56,9 @@ class MOT17ClassMapping:
     """Versioned class mapping used by the MOT17 adapter."""
 
     version: str
+    dataset: str
+    authoritative_source: str
+    unsupported_class_behaviour: str
     classes: dict[int, MOT17ClassDefinition]
     source_sha256: str
 
@@ -74,6 +83,7 @@ class MOT17GroundTruthRow:
 class MOT17ParseIssue:
     """Structured parser diagnostic for one physical source row."""
 
+    source_file: str
     source_row: int
     message: str
     raw_line: str
@@ -89,6 +99,7 @@ class MOT17ParseResult:
 
     events: list[dict[str, Any]]
     errors: list[MOT17ParseIssue]
+    warnings: list[MOT17ParseIssue]
     physical_rows: int
     blank_rows: int
 
@@ -105,7 +116,60 @@ class MOT17ParseResult:
             "valid_rows": self.valid_rows,
             "invalid_rows": len(self.errors),
             "errors": [issue.to_dict() for issue in self.errors],
+            "warning_count": len(self.warnings),
+            "warnings": [issue.to_dict() for issue in self.warnings],
         }
+
+
+def resolve_mot17_root(path: Path | None = None) -> Path:
+    """Resolve and validate the MOT17 root from an argument or ``MOT17_ROOT``."""
+    configured = path
+    if configured is None:
+        raw_value = os.environ.get("MOT17_ROOT", "").strip()
+        if not raw_value:
+            raise MOT17ConfigurationError(
+                "MOT17_ROOT is not configured. Set it to the root containing train and test."
+            )
+        configured = Path(raw_value)
+
+    root = configured.expanduser()
+    if not root.is_dir():
+        raise MOT17ConfigurationError(f"MOT17_ROOT does not exist or is not a directory: {root}")
+    if not (root / "train").is_dir():
+        raise MOT17ConfigurationError(f"MOT17 training directory does not exist: {root / 'train'}")
+    return root
+
+
+def resolve_training_sequence(
+    mot17_root: Path | None = None,
+    *,
+    sequence: str = PREFERRED_SEQUENCE,
+) -> Path:
+    """Resolve a readable MOT17 training sequence and its required input files."""
+    root = resolve_mot17_root(mot17_root)
+    sequence_directory = root / "train" / sequence
+    if not sequence_directory.is_dir():
+        raise MOT17ConfigurationError(
+            f"MOT17 training sequence does not exist: {sequence_directory}"
+        )
+
+    required = (sequence_directory / "gt" / "gt.txt", sequence_directory / "seqinfo.ini")
+    for path in required:
+        if not path.is_file():
+            raise MOT17ConfigurationError(f"Required MOT17 file does not exist: {path}")
+        try:
+            with path.open("rb") as handle:
+                handle.read(1)
+        except OSError as exc:
+            raise MOT17ConfigurationError(
+                f"Required MOT17 file is not readable or is not available offline: {path}"
+            ) from exc
+
+    load_sequence_metadata(
+        sequence_directory / "seqinfo.ini",
+        expected_sequence_name=sequence_directory.name,
+    )
+    return sequence_directory
 
 
 def _required_positive_int(section: configparser.SectionProxy, key: str) -> int:
@@ -118,7 +182,11 @@ def _required_positive_int(section: configparser.SectionProxy, key: str) -> int:
     return value
 
 
-def load_sequence_metadata(path: Path) -> MOT17SequenceMetadata:
+def load_sequence_metadata(
+    path: Path,
+    *,
+    expected_sequence_name: str | None = None,
+) -> MOT17SequenceMetadata:
     """Load and validate MOTChallenge sequence metadata."""
     if not path.is_file():
         raise MOT17ParseError(f"Sequence metadata file does not exist: {path}")
@@ -126,7 +194,7 @@ def load_sequence_metadata(path: Path) -> MOT17SequenceMetadata:
     parser = configparser.ConfigParser(interpolation=None)
     try:
         loaded = parser.read(path, encoding="utf-8")
-    except configparser.Error as exc:
+    except (OSError, UnicodeError, configparser.Error) as exc:
         raise MOT17ParseError(f"Could not parse sequence metadata: {path}") from exc
 
     if not loaded or "Sequence" not in parser:
@@ -136,6 +204,11 @@ def load_sequence_metadata(path: Path) -> MOT17SequenceMetadata:
     source_name = section.get("name", "").strip()
     if not source_name:
         raise MOT17ParseError("seqinfo.ini field 'name' must not be empty.")
+    if expected_sequence_name is not None and source_name != expected_sequence_name:
+        raise MOT17ParseError(
+            "Sequence directory name does not match seqinfo.ini field 'name': "
+            f"{expected_sequence_name!r} != {source_name!r}."
+        )
 
     image_directory = section.get("imDir", "").strip()
     image_extension = section.get("imExt", "").strip()
@@ -143,6 +216,13 @@ def load_sequence_metadata(path: Path) -> MOT17SequenceMetadata:
         raise MOT17ParseError("seqinfo.ini field 'imDir' must not be empty.")
     if not image_extension.startswith(".") or len(image_extension) < 2:
         raise MOT17ParseError("seqinfo.ini field 'imExt' must be a file extension.")
+
+    try:
+        source_sha256 = sha256_file(path)
+    except OSError as exc:
+        raise MOT17ParseError(
+            f"Could not read sequence metadata; the file may not be available offline: {path}"
+        ) from exc
 
     return MOT17SequenceMetadata(
         source_name=source_name,
@@ -153,7 +233,7 @@ def load_sequence_metadata(path: Path) -> MOT17SequenceMetadata:
         image_height=_required_positive_int(section, "imHeight"),
         image_directory=image_directory,
         image_extension=image_extension,
-        source_sha256=sha256_file(path),
+        source_sha256=source_sha256,
     )
 
 
@@ -171,11 +251,24 @@ def load_class_mapping(path: Path) -> MOT17ClassMapping:
         raise MOT17ParseError("Class mapping must be a JSON object.")
 
     version = value.get("version")
+    dataset = value.get("dataset")
+    authoritative_source = value.get("authoritative_source")
+    unsupported_class_behaviour = value.get("unsupported_class_behaviour")
     raw_classes = value.get("classes")
     if not isinstance(version, str) or not version.strip():
         raise MOT17ParseError("Class mapping field 'version' must be a non-empty string.")
     if not isinstance(raw_classes, dict) or not raw_classes:
         raise MOT17ParseError("Class mapping field 'classes' must be a non-empty object.")
+    if dataset != "mot17":
+        raise MOT17ParseError("Class mapping field 'dataset' must be 'mot17'.")
+    if not isinstance(authoritative_source, str) or not authoritative_source.strip():
+        raise MOT17ParseError(
+            "Class mapping field 'authoritative_source' must be a non-empty string."
+        )
+    if unsupported_class_behaviour != "error":
+        raise MOT17ParseError(
+            "MOT17 unsupported_class_behaviour must be 'error'; silent fallback is not allowed."
+        )
 
     classes: dict[int, MOT17ClassDefinition] = {}
     for raw_id, definition in raw_classes.items():
@@ -202,6 +295,9 @@ def load_class_mapping(path: Path) -> MOT17ClassMapping:
 
     return MOT17ClassMapping(
         version=version.strip(),
+        dataset=dataset,
+        authoritative_source=authoritative_source.strip(),
+        unsupported_class_behaviour=unsupported_class_behaviour,
         classes=classes,
         source_sha256=sha256_file(path),
     )
@@ -298,6 +394,12 @@ def build_source_reference(path: Path, *, source_root: Path) -> str:
     return _validate_source_reference(relative.as_posix())
 
 
+def build_mot17_source_reference(path: Path, *, mot17_root: Path) -> str:
+    """Return a logical ``MOT17/...`` path without exposing the local dataset root."""
+    relative = build_source_reference(path, source_root=mot17_root)
+    return _validate_source_reference((PurePosixPath("MOT17") / relative).as_posix())
+
+
 def normalise_ground_truth_row(
     row: MOT17GroundTruthRow,
     *,
@@ -323,8 +425,8 @@ def normalise_ground_truth_row(
         ) from exc
 
     common_frame = row.frame - 1
-    bbox_x = row.bbox_left - 1.0
-    bbox_y = row.bbox_top - 1.0
+    bbox_x = row.bbox_left
+    bbox_y = row.bbox_top
     centre_x = bbox_x + row.bbox_width / 2.0
     centre_y = bbox_y + row.bbox_height / 2.0
     bbox_area = row.bbox_width * row.bbox_height
@@ -368,7 +470,7 @@ def normalise_ground_truth_row(
         "class_mapping_version": class_mapping.version,
         "conversion_notes": [
             "Converted the one-based MOT17 frame index to a zero-based common frame.",
-            "Converted the one-based MOT17 bounding-box origin to zero-based coordinates.",
+            "Preserved the native MOT17 top-left bounding-box coordinates and dimensions.",
             "Stored the MOT17 ground-truth evaluation mark in metadata; common confidence is null.",
         ],
         "metadata": {
@@ -399,44 +501,77 @@ def parse_ground_truth_file(
     if not path.is_file():
         raise MOT17ParseError(f"Ground-truth file does not exist: {path}")
 
-    source_sha256 = sha256_file(path)
+    try:
+        source_sha256 = sha256_file(path)
+    except OSError as exc:
+        raise MOT17ParseError(
+            f"Could not read ground-truth annotations; the file may not be available offline: {path}"
+        ) from exc
     events: list[dict[str, Any]] = []
     errors: list[MOT17ParseIssue] = []
+    warnings: list[MOT17ParseIssue] = []
     blank_rows = 0
     physical_rows = 0
 
-    with path.open("r", encoding="utf-8", newline="") as handle:
-        for source_row, raw_line in enumerate(handle, start=1):
-            physical_rows = source_row
-            line = raw_line.strip()
-            if not line:
-                blank_rows += 1
-                continue
+    try:
+        with path.open("r", encoding="utf-8", newline="") as handle:
+            for source_row, raw_line in enumerate(handle, start=1):
+                physical_rows = source_row
+                line = raw_line.strip()
+                if not line:
+                    blank_rows += 1
+                    continue
 
-            try:
-                parsed = parse_ground_truth_row(line, source_row=source_row)
-                event = normalise_ground_truth_row(
-                    parsed,
-                    metadata=metadata,
-                    class_mapping=class_mapping,
-                    source_reference=source_reference,
-                    source_sha256=source_sha256,
-                )
-            except MOT17ParseError as exc:
-                errors.append(
-                    MOT17ParseIssue(
-                        source_row=source_row,
-                        message=str(exc),
-                        raw_line=line,
+                try:
+                    parsed = parse_ground_truth_row(line, source_row=source_row)
+                    event = normalise_ground_truth_row(
+                        parsed,
+                        metadata=metadata,
+                        class_mapping=class_mapping,
+                        source_reference=source_reference,
+                        source_sha256=source_sha256,
                     )
-                )
-                continue
+                except MOT17ParseError as exc:
+                    errors.append(
+                        MOT17ParseIssue(
+                            source_file=source_reference,
+                            source_row=source_row,
+                            message=str(exc),
+                            raw_line=line,
+                        )
+                    )
+                    continue
 
-            events.append(event)
+                right = parsed.bbox_left + parsed.bbox_width
+                bottom = parsed.bbox_top + parsed.bbox_height
+                if (
+                    parsed.bbox_left < 0
+                    or parsed.bbox_top < 0
+                    or right > metadata.image_width
+                    or bottom > metadata.image_height
+                ):
+                    warnings.append(
+                        MOT17ParseIssue(
+                            source_file=source_reference,
+                            source_row=source_row,
+                            message=(
+                                f"Row {source_row}: bounding box extends outside the declared "
+                                "image bounds; native geometry was preserved."
+                            ),
+                            raw_line=line,
+                        )
+                    )
+
+                events.append(event)
+    except (OSError, UnicodeError) as exc:
+        raise MOT17ParseError(
+            f"Could not parse ground-truth annotations; the file may not be available offline: {path}"
+        ) from exc
 
     return MOT17ParseResult(
         events=events,
         errors=errors,
+        warnings=warnings,
         physical_rows=physical_rows,
         blank_rows=blank_rows,
     )
@@ -446,15 +581,21 @@ def parse_sequence(
     sequence_directory: Path,
     *,
     class_mapping_path: Path,
-    source_root: Path,
+    mot17_root: Path,
 ) -> MOT17ParseResult:
     """Parse the ``gt/gt.txt`` file for one MOT17 training sequence."""
     ground_truth_path = sequence_directory / "gt" / "gt.txt"
-    metadata = load_sequence_metadata(sequence_directory / "seqinfo.ini")
+    metadata = load_sequence_metadata(
+        sequence_directory / "seqinfo.ini",
+        expected_sequence_name=sequence_directory.name,
+    )
     class_mapping = load_class_mapping(class_mapping_path)
     return parse_ground_truth_file(
         ground_truth_path,
         metadata=metadata,
         class_mapping=class_mapping,
-        source_reference=build_source_reference(ground_truth_path, source_root=source_root),
+        source_reference=build_mot17_source_reference(
+            ground_truth_path,
+            mot17_root=mot17_root,
+        ),
     )
