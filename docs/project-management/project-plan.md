@@ -31,26 +31,22 @@ supervision records and decision records.
 | Milestone | Work | Status |
 |---|---|---|
 | 1. Schema and synthetic fixture | Define a provisional common schema and validate one manually constructed event | Complete, 29 July 2026 |
-| 2. MOT17 vertical slice | Create a fixed MOT17 fixture and convert it through the first dataset parser | In progress; parser and private integration pass, fixture redistribution unresolved |
+| 2. MOT17 vertical slice | Create a fixed MOT17 fixture and convert it through the first dataset parser | Complete, 4 August 2026 |
 | 3. KITTI extension | Add a fixed KITTI Tracking fixture and parser without changing the downstream interface unnecessarily | Planned |
 | 4. Stage 1 quality gate | Validate both adapters, write structured outputs and complete repeat-run checks | Planned |
 
 ## Milestone 2 Quality Gate
 
-Milestone 2 will be complete only when:
+Milestone 2 is complete because:
 
 - the MOT17 ground-truth format is parsed through explicit type conversion;
-- a small dataset-derived fixture or approved private generation mechanism records its sequence,
-  source rows, selection rationale and hashes;
+- a small dataset-derived fixture records its sequence, source rows, selection rationale, hashes,
+  attribution and licence;
 - the fixed synthetic equivalent produces independently calculated expected common events;
 - invalid rows produce structured diagnostics;
 - the selected real sequence passes the local parser and event-validation command;
 - the complete automated suite passes in CI; and
-- Issues #2 and #3 have evidence for every acceptance criterion.
-
-The parser, private generator, synthetic expected events and real-sequence run now pass. The
-milestone remains incomplete because Issue #3 must remain open while redistribution permission is
-unresolved.
+- Issues #2 and #3 contain evidence for every acceptance criterion.
 
 ## Stage 1 Work Order
 
@@ -65,7 +61,7 @@ unresolved.
 
 - Issue #1: Define the common event schema. **Complete, 29 July 2026.**
 - Issue #2: Implement the MOT17 annotation parser. **Complete, 4 August 2026.**
-- Issue #3: Create a fixed MOT17 test fixture. **Open; redistribution permission unresolved.**
+- Issue #3: Create a fixed MOT17 test fixture. **Complete, 4 August 2026.**
 - Issue #4: Validate normalised event records. **Open; common validation supports the current vertical slice.**
 - Issue #5: Implement the KITTI Tracking annotation parser. **Open.**
 - Issue #6: Write normalised event and provenance outputs. **Open.**
