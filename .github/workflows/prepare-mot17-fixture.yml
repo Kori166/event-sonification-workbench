@@ -6,6 +6,9 @@ on:
       - docs/complete-mot17-fixture-milestone
     paths:
       - .github/workflows/prepare-mot17-fixture.yml
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write
