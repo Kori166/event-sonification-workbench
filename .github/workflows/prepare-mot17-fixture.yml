@@ -1,0 +1,64 @@
+name: Prepare MOT17 fixture
+
+on:
+  push:
+    branches:
+      - docs/complete-mot17-fixture-milestone
+    paths:
+      - .github/workflows/prepare-mot17-fixture.yml
+
+permissions:
+  contents: write
+
+jobs:
+  generate-fixture:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: docs/complete-mot17-fixture-milestone
+
+      - name: Download official MOT17 labels
+        run: |
+          curl --fail --location --retry 5 --retry-delay 5 \
+            https://motchallenge.net/data/MOT17Labels.zip \
+            --output /tmp/MOT17Labels.zip
+          unzip -q /tmp/MOT17Labels.zip -d /tmp/mot17-labels
+
+      - name: Generate fixed fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          SOURCE_FILE="$(find /tmp/mot17-labels -type f -path '*/train/MOT17-02-DPM/gt/gt.txt' -print -quit)"
+          if [ -z "$SOURCE_FILE" ]; then
+            echo "MOT17-02-DPM ground-truth file was not found in the official labels archive." >&2
+            exit 1
+          fi
+
+          EXPECTED_SOURCE_HASH="2e3ecb488da8886d3200d402b2b08890c6d2879923839444e9b74fa43a551440"
+          ACTUAL_SOURCE_HASH="$(sha256sum "$SOURCE_FILE" | cut -d ' ' -f 1)"
+          test "$ACTUAL_SOURCE_HASH" = "$EXPECTED_SOURCE_HASH"
+
+          mkdir -p tests/fixtures/mot17/dataset-derived
+          sed -n '1p;2p;3p;601p;602p;603p;3613p;3614p;3615p;4856p;4857p;4858p' \
+            "$SOURCE_FILE" | sed 's/\r$//' > tests/fixtures/mot17/dataset-derived/gt_fixture.txt
+
+          test "$(wc -l < tests/fixtures/mot17/dataset-derived/gt_fixture.txt)" -eq 12
+          EXPECTED_FIXTURE_HASH="a4d5ec744f02febec5a2887080cc95c2f49b09189fa600d2e37c3252210f835f"
+          ACTUAL_FIXTURE_HASH="$(sha256sum tests/fixtures/mot17/dataset-derived/gt_fixture.txt | cut -d ' ' -f 1)"
+          test "$ACTUAL_FIXTURE_HASH" = "$EXPECTED_FIXTURE_HASH"
+
+      - name: Commit fixture
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- tests/fixtures/mot17/dataset-derived/gt_fixture.txt; then
+            echo "Fixture already matches the declared source selection."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tests/fixtures/mot17/dataset-derived/gt_fixture.txt
+          git commit -m "test: add attributed MOT17 fixture"
+          git push origin HEAD:docs/complete-mot17-fixture-milestone
