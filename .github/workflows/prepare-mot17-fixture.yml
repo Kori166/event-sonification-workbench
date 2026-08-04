@@ -13,6 +13,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: prepare-mot17-fixture
+  cancel-in-progress: true
+
 jobs:
   generate-fixture:
     runs-on: ubuntu-latest
@@ -22,23 +26,31 @@ jobs:
         with:
           ref: docs/complete-mot17-fixture-milestone
 
-      - name: Download official MOT17 labels
+      - name: Obtain MOT17-02-DPM ground truth
+        shell: bash
         run: |
-          curl --fail --location --retry 5 --retry-delay 5 \
+          set -euo pipefail
+          mkdir -p /tmp/mot17-source
+
+          if curl --fail --location --retry 2 --connect-timeout 15 --max-time 90 \
             https://motchallenge.net/data/MOT17Labels.zip \
-            --output /tmp/MOT17Labels.zip
-          unzip -q /tmp/MOT17Labels.zip -d /tmp/mot17-labels
+            --output /tmp/MOT17Labels.zip; then
+            unzip -q /tmp/MOT17Labels.zip -d /tmp/mot17-labels
+            SOURCE_FILE="$(find /tmp/mot17-labels -type f -path '*/train/MOT17-02-DPM/gt/gt.txt' -print -quit)"
+            test -n "$SOURCE_FILE"
+            cp "$SOURCE_FILE" /tmp/mot17-source/gt.txt
+          else
+            echo "The official labels archive was unavailable; using a public MOT17 mirror." >&2
+            curl --fail --location --retry 3 --connect-timeout 15 --max-time 120 \
+              'https://huggingface.co/datasets/Drunk-guardian/MOT17/resolve/main/train/MOT17-02-DPM/gt/gt.txt?download=true' \
+              --output /tmp/mot17-source/gt.txt
+          fi
 
       - name: Generate fixed fixture
         shell: bash
         run: |
           set -euo pipefail
-          SOURCE_FILE="$(find /tmp/mot17-labels -type f -path '*/train/MOT17-02-DPM/gt/gt.txt' -print -quit)"
-          if [ -z "$SOURCE_FILE" ]; then
-            echo "MOT17-02-DPM ground-truth file was not found in the official labels archive." >&2
-            exit 1
-          fi
-
+          SOURCE_FILE=/tmp/mot17-source/gt.txt
           EXPECTED_SOURCE_HASH="2e3ecb488da8886d3200d402b2b08890c6d2879923839444e9b74fa43a551440"
           ACTUAL_SOURCE_HASH="$(sha256sum "$SOURCE_FILE" | cut -d ' ' -f 1)"
           test "$ACTUAL_SOURCE_HASH" = "$EXPECTED_SOURCE_HASH"
