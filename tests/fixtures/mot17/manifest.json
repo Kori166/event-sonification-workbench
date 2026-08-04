@@ -23,6 +23,8 @@
   "selection_rule": "Inspect the first 5,000 physical annotation lines. Select the earliest three-frame interval. Retain four tracks in source order that jointly preserve an unmarked static person, a marked pedestrian, a partially visible marked pedestrian and a lower-visibility unmarked person on a vehicle. Retain all three consecutive observations for each selected track and preserve physical source order.",
   "expected_row_count": 12,
   "generated_fixture_sha256": "a4d5ec744f02febec5a2887080cc95c2f49b09189fa600d2e37c3252210f835f",
+  "committed_fixture_path": "tests/fixtures/mot17/dataset-derived/gt_fixture.txt",
+  "fixture_notice_path": "tests/fixtures/mot17/dataset-derived/NOTICE.md",
   "sequence_metadata": {
     "name": "MOT17-02-DPM",
     "frame_rate": 30,
@@ -32,12 +34,12 @@
     "image_directory": "img1",
     "image_extension": ".jpg"
   },
-  "licence_decision": "Redistribution permission is unresolved. No terms or licence file was supplied under the local MOT17 root, and the official format documentation inspected does not grant redistribution permission. Dataset-derived rows remain Git-ignored.",
+  "licence_decision": "The official MOTChallenge website states that datasets provided on the site are published under Creative Commons Attribution-NonCommercial-ShareAlike 3.0. The 12-row extract is committed for non-commercial academic testing with attribution and a licence notice.",
   "date_of_fixture_generation": "2026-08-04",
   "fixture_generation_version": "0.1.0",
   "limitations": [
     "The selection is deterministic but not statistically representative of the sequence.",
-    "The generated private fixture contains annotations and sequence metadata only.",
-    "The committed manifest cannot replace a local MOT17 copy for integration testing."
+    "The committed fixture contains 12 annotation rows only; images and complete annotation files are not included.",
+    "A local MOT17 copy remains required for the full real-sequence integration test."
   ]
 }
