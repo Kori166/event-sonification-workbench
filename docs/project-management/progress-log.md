@@ -172,7 +172,8 @@ be added where a short entry would omit important implementation evidence.
 **Decisions made**
 
 - The adapter will accept the nine-column MOT17 ground-truth format only.
-- One-based frames and bounding-box origins will be converted explicitly to zero-based values.
+- The provisional implementation converted frames and bounding-box origins. Real-data review on
+  4 August 2026 retained frame conversion but superseded the coordinate-origin conversion.
 - The MOT17 ground-truth evaluation mark will remain in metadata and will not be used as common
   confidence.
 - Structurally valid marked and unmarked rows will be retained during ingestion.
@@ -180,7 +181,8 @@ be added where a short entry would omit important implementation evidence.
 
 **Problems or risks**
 
-- The connected repository environment cannot access the local OneDrive datasets.
+- The earlier branch-building environment did not have access to the local dataset. The files were
+  available during the 4 August 2026 real-data review.
 - The `conf` name used in format descriptions can be mistaken for detector confidence even though
   the ground-truth value is an evaluation mark.
 - MOT17 ground truth and tracker-result files use different field counts.
@@ -202,3 +204,67 @@ be added where a short entry would omit important implementation evidence.
 - Generate the dataset-derived fixture and expected common events.
 - Run `mot17-check` against the real sequence.
 - Run the complete suite in CI and then review Issues #2 and #3 for closure.
+
+---
+
+## 2026-08-04 — Stage 1 Milestone 2 real-data verification
+
+**Work completed**
+
+- Inspected `MOT17-02-DPM` sequence metadata and all 30,003 ground-truth rows.
+- Recorded a deterministic 12-line real-data selection and both source and generated hashes.
+- Added manifest-driven private fixture generation under an ignored directory.
+- Replaced the five-row format sample with a 12-row structurally equivalent synthetic fixture.
+- Added independently calculated expected-event projections and controlled malformed rows.
+- Corrected coordinate preservation, authoritative class support and out-of-frame warnings.
+- Added unit, golden, determinism, command-line and private integration tests.
+- Completed the MOT17 adapter, mapping, decision, fixture and development documentation.
+
+**Decisions made**
+
+- Native bounding-box coordinates are preserved; only the frame index is converted.
+- The ground-truth evaluation mark remains metadata and common confidence remains `null`.
+- Native class identifiers outside the authoritative range 1 to 12 are rejected.
+- Copied MOT17 rows remain outside Git because redistribution permission is unresolved.
+- A committed manifest and synthetic CI fixture provide reproducibility without claiming permission.
+
+**Problems or risks**
+
+- Rebuilt `origin/main` and the legacy local `main` had no common ancestor.
+- GitHub CLI was unavailable.
+- Windows line endings invalidated the existing synthetic source hash.
+- The first full event-validation command timed out because the same source file was re-hashed for
+  every event.
+- Issue #3 cannot close while the fixture redistribution criterion remains unresolved.
+
+**Actions taken**
+
+- Preserved the legacy worktree artefacts and used the rebuilt remote history without joining it.
+- Used connected GitHub operations where the absent CLI would otherwise be required.
+- Enforced LF for hashed fixture files and normalised the affected source fixture.
+- Cached the compiled schema and source hash within a validation run without removing checks.
+- Recorded the licence limitation explicitly and kept dataset-derived rows ignored.
+
+**Validation evidence**
+
+- Normal tests: 45 passed and 1 integration test deselected.
+- Real-data integration selection: 1 passed and 45 tests deselected.
+- Complete suite: 46 passed twice, with zero failures, skips or pytest warnings.
+- Full real sequence: 30,003 valid events, zero invalid events and 988 geometry warnings.
+- Fixture generation: 12 rows with SHA-256
+  `a4d5ec744f02febec5a2887080cc95c2f49b09189fa600d2e37c3252210f835f`.
+- Ruff: passed.
+- Repeated synthetic conversion: identical order, event IDs, canonical JSON and event hashes.
+
+**Remaining work**
+
+- Complete final staged-tree privacy and branch CI checks.
+- Close Issue #2 after publication evidence is added.
+- Keep Issue #3 and Milestone 2 open until the redistribution criterion is resolved.
+- Do not begin KITTI implementation until the Milestone 2 status is settled.
+
+**Next actions**
+
+- Publish and review the MOT17 parser changes.
+- Resolve the fixture redistribution or acceptance-criterion question recorded in Issue #3.
+- Begin Milestone 3 only after Milestone 2 can be marked complete.

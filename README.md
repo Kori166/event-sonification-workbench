@@ -1,146 +1,141 @@
 # Event Sonification Workbench
 
-A reproducible workbench for converting annotated video datasets into deterministic and traceable
-audio cues.
+A reproducible workbench for converting annotated video datasets into deterministic, traceable
+events and later audio cues.
 
-## Project Overview
+## Project
 
-This repository contains the artefact for the MSc project:
+This repository contains the rebuilt artefact for the MSc Data Science dissertation:
 
 **A Reproducible Workbench for Event-Based Sonification of Annotated Video Datasets**
 
-The project will:
+The workbench is research infrastructure. It is not a validated accessibility, navigation, usability
+or assistive system.
 
-1. Convert MOT17 and KITTI Tracking annotations into a common event schema.
-2. Map normalised visual events into configurable audio cues.
-3. Preserve provenance through records, logs, configuration files and hashes.
-4. Evaluate outputs using technical and reproducibility-focused metrics.
+The bounded dataset scope is MOT17 and KITTI Tracking. The artefact will normalise annotations,
+map events to configurable cues, preserve provenance and support technical evaluation.
 
-The workbench is research infrastructure. It is not presented as a validated accessibility,
-navigation or assistive system.
+## Status
 
-## Project Status
+Stage 0 is complete. Stage 1 is in progress.
 
-**Stage 0: Project Setup is complete.**
+Milestone 1 established provisional common schema version `0.1.0` and deterministic validation.
+The Milestone 2 MOT17 parser, private fixture generator, synthetic golden fixture and real-data
+integration test are implemented. A full check of `MOT17-02-DPM` produced 30,003 valid events and
+zero invalid events from the inspected dataset copy.
 
-**Stage 1: Data Ingestion and Normalisation is in progress.**
+Milestone 2 remains open because redistribution permission for copied MOT17 annotation rows is
+unresolved. Issue #3 therefore remains open. Stage 1 and KITTI Tracking are not complete.
 
-Stage 1 Milestone 1 is complete. It established provisional schema version `0.1.0`, a manually
-constructed event and deterministic validation tests.
-
-Stage 1 Milestone 2 is in progress. The MOT17 ground-truth adapter, class mapping, controlled
-format fixture, local validation command and automated tests have been implemented. A
-MOT17-derived fixture and real-sequence run remain required before the milestone can be marked
-complete.
-
-## Project Stages
-
-1. Project setup
-2. Data ingestion and normalisation
-3. Sonification mapping and cue generation
-4. Technical evaluation
-5. Artefact assembly, validation and release
-6. Reporting and viva preparation
-
-## Repository Structure
+## Repository structure
 
 ```text
 event-sonification-workbench/
-├── src/
-│   └── event_sonification_workbench/
-│       └── adapters/                   # Dataset-specific ingestion adapters
-├── tests/
-│   └── fixtures/                       # Small fixed and documented test inputs
-├── configs/
-│   ├── class-mappings/                 # Versioned source-to-common class mappings
-│   └── schemas/                        # Versioned event schemas
-├── docs/
-│   ├── data-model/                     # Schema and adapter contracts
-│   ├── decisions/                      # Significant project and technical decisions
-│   └── project-management/             # Plans, progress, risks and work records
-├── data/                               # Local datasets, excluded from Git
-├── outputs/                            # Generated events, logs, reports and audio
-├── README.md
-├── pyproject.toml
-├── .env.example
-└── .gitignore
+|-- configs/
+|   |-- class-mappings/
+|   `-- schemas/
+|-- docs/
+|   |-- data-model/
+|   |-- decisions/
+|   |-- development/
+|   `-- project-management/
+|-- src/event_sonification_workbench/
+|   `-- adapters/
+|-- tests/
+|   `-- fixtures/
+|-- .env.example
+|-- pyproject.toml
+`-- README.md
 ```
 
-## Data
+## Data configuration
 
-MOT17 and KITTI Tracking data are stored locally and are not committed to this repository.
-Local dataset paths are configured through environment variables documented in `.env.example`.
+Full datasets remain outside Git. Copy `.env.example` to `.env` and configure local roots. `.env`
+is excluded from version control.
 
-Small fixtures may be committed under `tests/fixtures/` where redistribution is permitted. The
-current `mot17_format` fixture is synthetic. It tests parser behaviour but does not provide evidence
-of compatibility with a real MOT17 release.
+```text
+MOT17_ROOT=
+KITTI_TRACKING_ROOT=
+```
 
-## Reproducibility
-
-The project uses versioned configuration files, fixed test samples, deterministic processing,
-stable identifiers, provenance records, file hashes, automated tests and repeat-run comparisons.
-
-Current controls include:
-
-- schema version `0.1.0`;
-- deterministic event identifiers and canonical event hashing;
-- source-file, sequence-metadata and class-mapping hashes;
-- explicit frame and coordinate conversion rules;
-- structured row-level parser diagnostics; and
-- a deterministic fixture-extraction manifest.
-
-## Project Management
-
-Project work is recorded through GitHub Issues and commits, together with the files under
-`docs/project-management/`. Significant technical, methodological and scope decisions are
-recorded under `docs/decisions/`.
+MOT17 provenance paths are logical dataset-relative values such as
+`MOT17/train/MOT17-02-DPM/gt/gt.txt`. Events do not contain private absolute paths.
 
 ## Installation
 
 ```bash
 python -m venv .venv
 python -m pip install -e ".[dev]"
-pytest
 ```
 
-## MOT17 Local Check
+## MOT17 parser
 
-The command below parses and validates one local training sequence without writing output files:
+The parser accepts nine-column MOT17 training ground truth and reads sequence values from
+`seqinfo.ini`. It converts one-based source frames to zero-based common frames. Native box
+coordinates and dimensions are preserved. The evaluation mark remains dataset-specific metadata,
+and common confidence is `null`.
+
+Run the preferred real sequence check with `MOT17_ROOT` configured:
 
 ```bash
-event-sonification mot17-check \
-  --source-root "/path/to/MOT17/train" \
-  --sequence-dir "/path/to/MOT17/train/MOT17-02-DPM"
+python -m event_sonification_workbench.cli mot17-check \
+  --sequence MOT17-02-DPM
 ```
 
-The command prints a JSON summary and returns a non-zero status when parsing or event validation
-fails. Further details are provided in `docs/data-model/mot17-adapter.md`.
+The command reports parsed rows, validation results and warnings. It does not write event packages.
 
-## MOT17 Fixture Extraction
+## Fixture decision
 
-After representative physical rows have been inspected, a documented fixture can be extracted:
+No local terms file or explicit redistribution grant was found. Copied MOT17 rows are therefore not
+committed. `tests/fixtures/mot17/manifest.json` records the selected sequence, physical source lines,
+source hashes, selection rule and expected generated hash.
+
+Generate the private fixture under the ignored output directory:
 
 ```bash
-event-sonification mot17-fixture \
-  --source-root "/path/to/MOT17/train" \
-  --sequence-dir "/path/to/MOT17/train/MOT17-02-DPM" \
-  --rows "1,2,250,251" \
-  --output-root "tests/fixtures/mot17"
+python -m event_sonification_workbench.cli mot17-fixture \
+  --manifest tests/fixtures/mot17/manifest.json \
+  --output .local-fixtures/mot17
 ```
 
-The row numbers are examples only. The selected rows and rationale must be based on the inspected
-source data.
+Normal CI uses a 12-row structurally equivalent synthetic fixture with independently calculated
+expected events and deliberately malformed rows.
 
-## Tests
+## Validation
 
-Run the complete suite with:
+Run normal tests without the private dataset:
 
 ```bash
-python -m pytest
+python -m pytest -m "not integration"
+python -m ruff check .
 ```
 
-The current local suite combines the Milestone 1 schema tests with MOT17 adapter, validation,
-command-line and fixture-extraction tests.
+Run the real-data integration selection with `MOT17_ROOT` configured:
+
+```bash
+python -m pytest -m integration
+```
+
+An integration skip means that private data was unavailable. It is not evidence of a pass.
+
+## Reproducibility controls
+
+- schema, parser and class-mapping versions;
+- deterministic event identifiers and canonical JSON hashes;
+- dataset-relative source paths and source-row references;
+- source, sequence-metadata, mapping and fixture hashes;
+- manifest-driven source-line selection;
+- schema, semantic, provenance and determinism tests;
+- LF-normalised hashed fixtures; and
+- explicit evidence boundaries between synthetic CI and private integration data.
+
+## Documentation
+
+- `docs/data-model/common-event-schema.md`: provisional common schema contract.
+- `docs/data-model/mot17-adapter.md`: MOT17 format and conversion rules.
+- `docs/decisions/0007-mot17-ground-truth-mapping.md`: mapping decision.
+- `docs/development/milestone-2-mot17-vertical-slice.md`: development and validation evidence.
+- `tests/fixtures/mot17/README.md`: fixture selection and reproduction evidence.
 
 ## Author
 

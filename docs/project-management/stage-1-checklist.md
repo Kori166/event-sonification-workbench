@@ -15,18 +15,22 @@
 
 - [x] Nine-column MOT17 ground-truth rows parsed through explicit type conversion.
 - [x] `seqinfo.ini` metadata parsed and validated.
-- [x] Frame and bounding-box origins converted explicitly from one-based values.
+- [x] One-based source frames converted to zero-based common frames.
+- [x] Native bounding-box coordinates preserved and the decision documented.
 - [x] MOT17 evaluation mark preserved without mislabelling it as confidence.
 - [x] Versioned MOT17 class mapping added.
 - [x] Invalid rows produce structured diagnostics.
-- [x] Controlled MOT17-format fixture and parser tests added.
+- [x] Twelve-row synthetic MOT17-format fixture, golden projection and parser tests added.
 - [x] Local `mot17-check` command added.
-- [x] Deterministic dataset-fixture extraction and manifest generation added.
+- [x] Manifest-driven private dataset-fixture generation and hash verification added.
 - [x] MOT17 conversion rules and difficulties recorded.
-- [x] Complete automated suite passes in CI.
-- [ ] Dataset-derived MOT17 fixture selected, documented and committed where permitted.
-- [ ] Expected common events added for the dataset-derived fixture.
-- [ ] Selected real MOT17 sequence passes `mot17-check`.
+- [ ] Latest milestone branch automated suite passes in CI.
+- [x] Dataset-derived MOT17 selection documented with source lines and hashes.
+- [x] Private fixture generated and verified under a Git-ignored path.
+- [x] Expected common events independently calculated for the synthetic equivalent.
+- [x] Selected real MOT17 sequence passes `mot17-check`.
+- [x] Real-data integration test passes locally with provenance validation.
+- [ ] Redistribution permission established or Issue #3 acceptance criteria revised explicitly.
 - [ ] Issues #2 and #3 closed with acceptance-criterion evidence.
 
 ### Remaining Stage 1 work

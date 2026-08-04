@@ -4,7 +4,8 @@
 
 The common event schema defines the contract between Stage 1 dataset ingestion and every downstream stage. The MOT17 and KITTI Tracking parsers will convert native annotation rows into this representation. Sonification, output writing and technical evaluation will consume the common representation rather than dataset-specific columns.
 
-The current schema is provisional version `0.1.0`. It is sufficient for the synthetic fixture but must be reviewed against real MOT17 and KITTI Tracking annotations before version `1.0.0` is declared stable.
+The current schema is provisional version `0.1.0`. It supports the inspected MOT17 sequence but
+must still be reviewed against KITTI Tracking before version `1.0.0` is declared stable.
 
 Machine-readable schema: `configs/schemas/event.schema.v0.1.0.json`.
 
@@ -16,13 +17,15 @@ One event record represents one valid normalised annotation observation. Sonific
 
 - `frame` uses zero-based indexing.
 - `timestamp` is measured in seconds from the start of the sequence and calculated as `frame / frame_rate`.
-- Bounding boxes use top-left `x`, `y`, `width`, `height` values in pixels.
+- Bounding boxes use top-left `x`, `y`, `width`, `height` values in pixels. Dataset adapters may
+  preserve native coordinate origins when the conversion notes state that decision.
 - Source and common object classes are stored separately.
 - Unavailable source values are represented as `null`; replacement values are not invented.
 - Absolute local paths are not stored in event records.
 - `event_id` is constructed deterministically from dataset, sequence, frame, track and source-row components.
 - Derived geometry is stored explicitly and checked against the source values.
-- Normalised centres may fall outside `[0, 1]` for legitimate truncated or out-of-frame annotations. These cases are reported as warnings.
+- Bounding boxes may extend beyond the declared image for legitimate truncated annotations. These
+  cases are reported as warnings rather than rejected or clipped.
 
 ## Field dictionary
 
@@ -43,7 +46,7 @@ One event record represents one valid normalised annotation observation. Sonific
 | `bbox_width`, `bbox_height` | number | Native or converted geometry | Record positive box dimensions in pixels. |
 | `centre_x`, `centre_y` | number | Derived from box geometry | Provide spatial mapping inputs in pixels. |
 | `centre_x_normalised`, `centre_y_normalised` | number | Centre divided by image dimension | Provide dataset-independent spatial mapping inputs. |
-| `bbox_area` | number | `width × height` | Provides apparent scale in square pixels. |
+| `bbox_area` | number | `width` multiplied by `height` | Provides apparent scale in square pixels. |
 | `bbox_area_normalised` | number | Area divided by image area | Provides dataset-independent apparent scale. |
 | `confidence` | number or null | Native annotation | Preserves source confidence where available. |
 | `visibility` | number or null | Native annotation | Preserves source visibility where available. |
@@ -91,4 +94,5 @@ Implementation evidence is still required to resolve:
 - whether dataset-specific quality attributes require additional shared fields; and
 - the canonical collection ordering and event-file format for multi-event outputs.
 
-These questions must be resolved through the real MOT17 and KITTI parser work rather than unsupported assumptions.
+The MOT17 evidence did not require a schema revision. The remaining questions must be resolved
+through the KITTI parser work rather than unsupported assumptions.

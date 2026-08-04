@@ -1,126 +1,155 @@
 # MOT17 Ground-Truth Adapter
 
-## Purpose
+## 1. Purpose
 
-The MOT17 adapter converts one training-sequence ground-truth file into common event records.
-It provides the first dataset-specific vertical slice through Stage 1:
+The adapter converts MOT17 training ground-truth annotations into provisional common events. It
+ends after normalisation and validation. It does not perform filtering, sonification, output-package
+generation or technical evaluation.
 
-```text
-seqinfo.ini + gt/gt.txt
-        ↓
-explicit row parsing
-        ↓
-MOT17-to-common conversion
-        ↓
-common schema and semantic validation
-```
+## 2. Native input files
 
-The adapter does not write final event packages. Structured output writing remains part of the
-Stage 1 quality gate.
+The preferred input is `MOT17/train/MOT17-02-DPM/gt/gt.txt`. Sequence metadata is read from
+`MOT17/train/MOT17-02-DPM/seqinfo.ini`. `MOT17_ROOT` must identify the directory containing the
+`train` and `test` directories. Images are not required for annotation parsing.
 
-## Supported input
+The selected files were readable during the 4 August 2026 integration run. No offline-file failure
+occurred.
 
-The adapter targets the nine-column MOT17 ground-truth format:
+## 3. MOT17 column definitions
 
-```text
-frame, track_id, bbox_left, bbox_top, bbox_width, bbox_height, mark, class_id, visibility
-```
+Each supported ground-truth row contains exactly nine comma-separated values:
 
-The ten-column tracker-result format is not accepted. Treating both formats as interchangeable
-would conceal a source-format error, so an incorrect field count produces a row-level diagnostic.
-
-Sequence dimensions, frame rate and sequence length are read from `seqinfo.ini`. Dataset paths
-are supplied at runtime and are not stored as absolute paths in events.
-
-## Conversion rules
-
-| MOT17 value | Common representation | Rule |
+| Column | Native value | Interpretation |
 |---|---|---|
-| `frame` | `frame` | Subtract one to convert the one-based source frame to zero-based indexing. |
-| `frame` and frame rate | `timestamp` | Calculate `(source frame - 1) / frame_rate`. |
-| `track_id` | `track_id` | Preserve the identifier as a string. |
-| `bbox_left`, `bbox_top` | `bbox_x`, `bbox_y` | Subtract one to convert the one-based source origin to zero-based coordinates. |
-| box width and height | box dimensions | Preserve positive pixel dimensions. |
-| `class_id` | source and common class | Resolve through the versioned MOT17 class mapping. |
-| `visibility` | `visibility` | Preserve values in the range `[0, 1]`. |
-| `mark` | `metadata.mot17_gt_mark` | Preserve the ground-truth evaluation mark. |
-| unavailable confidence | `confidence` | Store `null`; do not reinterpret the evaluation mark as detection confidence. |
+| 1 | Frame number | One-based sequence frame. |
+| 2 | Track identifier | Positive trajectory identifier. |
+| 3 | Bounding-box left | Native top-left horizontal coordinate. |
+| 4 | Bounding-box top | Native top-left vertical coordinate. |
+| 5 | Bounding-box width | Positive width in pixels. |
+| 6 | Bounding-box height | Positive height in pixels. |
+| 7 | MOT evaluation mark | Ground-truth inclusion flag. It is not detector confidence. |
+| 8 | Class identifier | Native MOT class identifier. |
+| 9 | Visibility ratio | Visible proportion in the range zero to one. |
 
-Derived centre and area fields are calculated after coordinate conversion. Source frame,
-source coordinates, class identifier, sequence metadata hash and class-mapping hash are retained
-in `metadata`.
+The definitions follow Table 5 of Milan et al., *MOT16: A Benchmark for Multi-Object Tracking*,
+which documents the annotation format inherited by MOT17. Table 6 supplies native class labels.
+The official MOTChallenge instructions confirm that the ground-truth confidence-position value
+acts as an evaluation flag and that source frames and boxes are one-based.
 
-## Ground-truth mark
+Sources:
 
-The seventh MOT17 ground-truth value controls whether an annotation is included in benchmark
-evaluation. It is not treated as a model confidence score. The common `confidence` field is
-therefore `null`, while the source value is retained as:
+- <https://arxiv.org/abs/1603.00831>
+- <https://motchallenge.net/instructions/>
 
-- `metadata.mot17_gt_mark`; and
-- `metadata.mot17_marked_for_evaluation`.
+## 4. Sequence metadata
 
-Rows with a mark of zero are not removed during ingestion. This preserves the source record and
-keeps filtering decisions outside the dataset adapter. Later stages may exclude classes or marks
-through explicit, logged rules.
+`seqinfo.ini` supplies the sequence name, frame rate, sequence length, image width, image height,
+image directory and image extension. Missing, empty, non-integer or non-positive required values
+are errors. The directory name must match the declared sequence name. Source frames must not
+exceed the declared sequence length.
 
-## Class mapping
+The selected sequence declares 30 frames per second, 600 frames and images of 1920 by 1080 pixels.
 
-The provisional mapping is stored at:
+## 5. Common-field mapping
 
-`configs/class-mappings/mot17.v0.1.0.json`
+| Native evidence | Common field | Conversion |
+|---|---|---|
+| Frame | `frame` | Subtract one. |
+| Frame and frame rate | `timestamp` | Calculate `frame / frame_rate` after frame conversion. |
+| Track identifier | `track_id` | Convert to a stable string. |
+| Left, top, width and height | Bounding-box fields | Preserve native numeric values. |
+| Class identifier | `object_class` | Resolve through mapping version `0.1.0`. |
+| Native class label | `source_object_class` | Preserve the mapped native label. |
+| Visibility | `visibility` | Preserve without thresholding. |
+| Evaluation mark | `metadata.mot17_gt_mark` | Preserve as dataset-specific metadata. |
+| Unavailable detection confidence | `confidence` | Store `null`. |
 
-The mapping preserves all known MOT17 class identifiers. Common class names currently match the
-normalised MOT17 labels. This decision must be reviewed when the KITTI Tracking adapter is added,
-because cross-dataset class harmonisation may require a smaller shared vocabulary.
+The source class identifier is also retained as `metadata.source_class_id`.
 
-## Error handling
+## 6. Frame-index conversion
 
-Each row is converted through explicit integer and floating-point parsing. A row is rejected when:
+MOT17 frame one becomes common frame zero. Common frame `f` is `source_frame - 1`. The native
+frame remains available as `metadata.source_frame`.
 
-- the field count is not nine;
-- a value has the wrong type or is not finite;
-- the frame or track identifier is below one;
-- a box dimension is not positive;
-- the ground-truth mark is not zero or one;
-- the class identifier is absent from the mapping;
-- visibility is outside `[0, 1]`; or
-- the frame exceeds the sequence length.
+## 7. Timestamp calculation
 
-File parsing retains valid events and records structured diagnostics for invalid rows. The command
-line returns a non-zero status when parsing or event validation fails.
+The timestamp is measured from sequence start. It is calculated as `common_frame / frame_rate`.
+For source frame two at 25 frames per second, the common frame is one and the timestamp is 0.04
+seconds.
 
-## Local dataset check
+## 8. Evaluation-mark treatment
 
-From the repository root:
+The selected source contains marks zero and one. Both values are accepted and preserved. Marked
+and unmarked rows remain events because ingestion must not apply later evaluation or sonification
+filters. Other values are rejected under parser version `0.1.0`.
 
-```bash
-event-sonification mot17-check \
-  --source-root "/path/to/MOT17/train" \
-  --sequence-dir "/path/to/MOT17/train/MOT17-02-DPM"
+## 9. Confidence treatment
+
+The ground-truth evaluation mark is not a probabilistic detector confidence. Common `confidence`
+is therefore `null`. The conversion note records this decision on every event.
+
+## 10. Class mapping
+
+`configs/class-mappings/mot17.v0.1.0.json` records the 12 class identifiers and labels supported by
+the authoritative source. Native labels are normalised to provisional common values without
+semantic collapse. Unknown identifiers produce a row-specific error. No implicit `other` mapping
+is applied. The mapping must be reviewed during the KITTI Tracking milestone.
+
+## 11. Visibility handling
+
+Visibility is preserved as a floating-point ratio. Values outside zero to one and non-finite values
+are rejected. No minimum-visibility threshold is applied.
+
+## 12. Bounding-box handling
+
+Native left, top, width and height values are preserved. Centre and area values are derived from
+that geometry. The schema does not require a zero-based bounding-box origin, so a coordinate shift
+would reduce direct source traceability without improving schema compatibility.
+
+Boxes extending outside the declared image are retained and warned. The real sequence check found
+988 such rows among 30,003 valid rows. This count describes the inspected dataset copy only.
+
+## 13. Provenance fields
+
+Each event records the logical source path, physical source row, source-file SHA-256, parser name,
+parser version, class-mapping version and conversion notes. Dataset-specific metadata records the
+source frame, source class identifier, evaluation mark, sequence metadata hash and mapping hash.
+Absolute local paths are excluded.
+
+## 14. Invalid-row behaviour
+
+Rows are rejected for an incorrect field count, failed numeric conversion, non-finite values,
+frames or tracks below one, non-positive dimensions, unsupported marks, unsupported classes,
+invalid visibility or frames beyond sequence length. Diagnostics identify the logical source file,
+physical source row and reason. Valid rows remain in source order.
+
+## 15. Warning behaviour
+
+An otherwise valid box outside the declared image is a warning. The geometry remains unchanged.
+Warnings do not make an event invalid.
+
+## 16. Example transformation
+
+Synthetic source row 1 is:
+
+```text
+1,101,300,200,40,80,0,7,1.0
 ```
 
-The command prints a JSON summary. It does not copy the dataset or write normalised event files.
-The summary includes parsed rows, invalid rows, validated events and warnings.
+The common frame is zero and the timestamp is zero seconds. The centre is `(320, 240)`. The area
+is 3,200 square pixels. Normalised centre coordinates are `(0.5, 0.5)`. The common class is
+`static_person`. Confidence is `null`, visibility is `1.0`, and the evaluation mark remains zero in
+metadata. These values were calculated independently in the golden fixture.
 
-## Dataset-derived fixture extraction
+## 17. Limitations
 
-A fixed fixture can be extracted after representative source rows have been inspected:
+Redistribution permission for copied MOT17 annotation rows remains unresolved. The repository
+therefore commits a selection manifest and synthetic equivalent only. The real fixture is generated
+under `.local-fixtures/` and requires the private dataset. The 12 selected rows are not statistically
+representative. Full event-package writing remains outside this milestone.
 
-```bash
-event-sonification mot17-fixture \
-  --source-root "/path/to/MOT17/train" \
-  --sequence-dir "/path/to/MOT17/train/MOT17-02-DPM" \
-  --rows "1,2,250,251" \
-  --output-root "tests/fixtures/mot17"
-```
+## 18. Consequences for KITTI Tracking
 
-The row numbers above are examples only. The selected rows must be justified from the inspected
-source sequence. The extractor records source hashes, selected physical row numbers, fixture
-hashes and the selection method in `fixture_manifest.json`.
-
-## Evidence boundary
-
-The committed `mot17_format` fixture is synthetic. It verifies format handling and conversion
-rules but does not demonstrate compatibility with a real MOT17 release. Milestone 2 remains
-incomplete until a dataset-derived fixture is added and the adapter passes a local check against
-the selected sequence.
+Schema version `0.1.0` supports the inspected MOT17 values without modification. This result does
+not establish KITTI compatibility. The next adapter must review class harmonisation, truncation,
+occlusion, confidence treatment and dataset-specific metadata before the schema can be stabilised.

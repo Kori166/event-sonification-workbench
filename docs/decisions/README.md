@@ -14,4 +14,4 @@ must be amended or superseded explicitly rather than silently rewritten.
 - [0004: Stage 1 schema-first implementation order](0004-stage-1-schema-first-order.md)
 - [0005: Project management recording](0005-project-management-recording.md)
 - [0006: Provisional common event schema v0.1.0](0006-common-event-schema-v0.1.0.md)
-- [0007: MOT17 ground-truth normalisation](0007-mot17-ground-truth-normalisation.md)
+- [0007: MOT17 ground-truth mapping](0007-mot17-ground-truth-mapping.md)
