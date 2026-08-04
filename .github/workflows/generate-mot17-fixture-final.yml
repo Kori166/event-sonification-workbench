@@ -22,12 +22,56 @@ jobs:
         with:
           ref: docs/complete-mot17-fixture-milestone
 
-      - name: Inspect mirror path
+      - name: Download ground-truth parquet mirror
         shell: bash
         run: |
           set -euo pipefail
-          curl --fail --location --connect-timeout 15 --max-time 60 \
-            'https://huggingface.co/api/datasets/Drunk-guardian/MOT17/tree/main/train/MOT17-02-DPM?recursive=true&expand=false' \
-            --output /tmp/tree.json
-          cat /tmp/tree.json
-          exit 1
+          curl --fail --location --retry 3 --connect-timeout 15 --max-time 180 \
+            'https://huggingface.co/datasets/Lekim89/mot17-parquet/resolve/main/data/gt/train-00000-of-00001.parquet?download=true' \
+            --output /tmp/gt.parquet
+          python -m pip install --quiet pyarrow
+
+      - name: Inspect selected records and candidate formatting
+        shell: bash
+        run: |
+          python - <<'PY'
+          from __future__ import annotations
+
+          import hashlib
+          import json
+          from pathlib import Path
+
+          import pyarrow.compute as pc
+          import pyarrow.parquet as pq
+
+          table = pq.read_table('/tmp/gt.parquet')
+          selected = table.filter(pc.equal(table['sequence'], 'MOT17-02')).to_pylist()
+          indices = [0, 1, 2, 600, 601, 602, 3612, 3613, 3614, 4855, 4856, 4857]
+          rows = [selected[index] for index in indices]
+          print(json.dumps(rows, indent=2, sort_keys=True))
+
+          columns = [
+              'frame', 'track_id', 'bbox_left', 'bbox_top', 'bbox_width',
+              'bbox_height', 'conf', 'class_id', 'visibility'
+          ]
+
+          def compact(value: object) -> str:
+              if isinstance(value, float) and value.is_integer():
+                  return str(int(value))
+              if isinstance(value, float):
+                  return format(value, '.15g')
+              return str(value)
+
+          def fixed(value: object) -> str:
+              if isinstance(value, float):
+                  return f'{value:.6f}'
+              return str(value)
+
+          for name, formatter in [('compact', compact), ('fixed6', fixed)]:
+              text = ''.join(','.join(formatter(row[column]) for column in columns) + '\n' for row in rows)
+              print(f'--- {name} ---')
+              print(text, end='')
+              print(hashlib.sha256(text.encode('utf-8')).hexdigest())
+
+          raise SystemExit(1)
+          PY
