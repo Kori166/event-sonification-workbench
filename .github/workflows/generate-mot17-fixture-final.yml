@@ -6,6 +6,9 @@ on:
       - automation/generate-mot17-fixture-final
     paths:
       - .github/workflows/generate-mot17-fixture-final.yml
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write
