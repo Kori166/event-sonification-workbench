@@ -64,7 +64,7 @@ unresolved.
 ## Stage 1 Issues
 
 - Issue #1: Define the common event schema. **Complete, 29 July 2026.**
-- Issue #2: Implement the MOT17 annotation parser. **Acceptance evidence complete; closure pending publication.**
+- Issue #2: Implement the MOT17 annotation parser. **Complete, 4 August 2026.**
 - Issue #3: Create a fixed MOT17 test fixture. **Open; redistribution permission unresolved.**
 - Issue #4: Validate normalised event records. **Open; common validation supports the current vertical slice.**
 - Issue #5: Implement the KITTI Tracking annotation parser. **Open.**

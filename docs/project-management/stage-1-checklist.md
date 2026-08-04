@@ -24,7 +24,7 @@
 - [x] Local `mot17-check` command added.
 - [x] Manifest-driven private dataset-fixture generation and hash verification added.
 - [x] MOT17 conversion rules and difficulties recorded.
-- [ ] Latest milestone branch automated suite passes in CI.
+- [x] Latest implementation head passes the automated CI suite.
 - [x] Dataset-derived MOT17 selection documented with source lines and hashes.
 - [x] Private fixture generated and verified under a Git-ignored path.
 - [x] Expected common events independently calculated for the synthetic equivalent.

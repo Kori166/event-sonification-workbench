@@ -199,9 +199,9 @@ class, visibility and evaluation-mark decisions must not be projected onto KITTI
 ## 23. Final completion assessment
 
 The parser, private fixture mechanism, synthetic golden fixture, integration evidence, provenance
-and determinism requirements are implemented. Issue #2 can close after publication evidence is
-added. Issue #3 and Milestone 2 remain open because redistribution permission is unresolved. Stage 1
-and KITTI Tracking remain incomplete.
+and determinism requirements are implemented. Issue #2 closed after its acceptance evidence and CI
+result were added. Issue #3 and Milestone 2 remain open because redistribution permission is
+unresolved. Stage 1 and KITTI Tracking remain incomplete.
 
 The staged-tree search for the four prohibited private path and username patterns returned no
 matches. `.env`, `.local-fixtures/`, distribution output and generated package metadata were ignored

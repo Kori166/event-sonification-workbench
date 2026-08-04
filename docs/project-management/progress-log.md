@@ -254,12 +254,13 @@ be added where a short entry would omit important implementation evidence.
 - Fixture generation: 12 rows with SHA-256
   `a4d5ec744f02febec5a2887080cc95c2f49b09189fa600d2e37c3252210f835f`.
 - Ruff: passed.
+- GitHub Actions CI run 28: passed on implementation head `d17e891`.
 - Repeated synthetic conversion: identical order, event IDs, canonical JSON and event hashes.
 
 **Remaining work**
 
-- Complete final staged-tree privacy and branch CI checks.
-- Close Issue #2 after publication evidence is added.
+- Complete the final documentation-only branch CI check before merge.
+- Issue #2 closed after all parser acceptance criteria were evidenced.
 - Keep Issue #3 and Milestone 2 open until the redistribution criterion is resolved.
 - Do not begin KITTI implementation until the Milestone 2 status is settled.
 
