@@ -43,9 +43,16 @@ def _is_close(left: float, right: float, *, tolerance: float = 1e-12) -> bool:
     return math.isclose(left, right, rel_tol=tolerance, abs_tol=tolerance)
 
 
-def _collect_schema_errors(event: dict[str, Any], schema: dict[str, Any]) -> list[str]:
-    Draft202012Validator.check_schema(schema)
-    validator = Draft202012Validator(schema)
+def _collect_schema_errors(
+    event: dict[str, Any],
+    schema: dict[str, Any],
+    *,
+    schema_validator: Draft202012Validator | None = None,
+) -> list[str]:
+    validator = schema_validator
+    if validator is None:
+        Draft202012Validator.check_schema(schema)
+        validator = Draft202012Validator(schema)
     errors = sorted(validator.iter_errors(event), key=lambda error: list(error.absolute_path))
 
     messages: list[str] = []
@@ -59,10 +66,25 @@ def validate_event(
     event: dict[str, Any],
     schema: dict[str, Any],
     *,
-    repository_root: Path,
+    repository_root: Path | None = None,
+    source_root: Path | None = None,
+    schema_validator: Draft202012Validator | None = None,
+    source_hash_cache: dict[Path, str] | None = None,
 ) -> EventValidationReport:
-    """Validate one event against the schema and common deterministic rules."""
-    schema_errors = _collect_schema_errors(event, schema)
+    """Validate one event against the schema and common deterministic rules.
+
+    ``source_root`` resolves dataset-relative source paths. ``repository_root`` is retained for
+    repository fixtures and backwards compatibility. Exactly one effective root is required.
+    """
+    effective_source_root = source_root or repository_root
+    if effective_source_root is None:
+        raise ValueError("source_root or repository_root must be provided")
+
+    schema_errors = _collect_schema_errors(
+        event,
+        schema,
+        schema_validator=schema_validator,
+    )
     if schema_errors:
         return EventValidationReport(
             valid=False,
@@ -106,7 +128,7 @@ def validate_event(
     expected_area = event["bbox_width"] * event["bbox_height"]
     checks["bbox_area"] = _is_close(event["bbox_area"], expected_area)
     if not checks["bbox_area"]:
-        semantic_errors.append("bbox_area must equal bbox_width × bbox_height.")
+        semantic_errors.append("bbox_area must equal bbox_width multiplied by bbox_height.")
 
     expected_centre_x_normalised = event["centre_x"] / event["image_width"]
     expected_centre_y_normalised = event["centre_y"] / event["image_height"]
@@ -121,17 +143,32 @@ def validate_event(
     if not checks["normalised_geometry"]:
         semantic_errors.append("Normalised geometry is inconsistent with pixel geometry.")
 
-    if not 0 <= event["centre_x_normalised"] <= 1:
-        warnings.append("centre_x_normalised is outside the image range [0, 1].")
-    if not 0 <= event["centre_y_normalised"] <= 1:
-        warnings.append("centre_y_normalised is outside the image range [0, 1].")
+    right = event["bbox_x"] + event["bbox_width"]
+    bottom = event["bbox_y"] + event["bbox_height"]
+    if (
+        event["bbox_x"] < 0
+        or event["bbox_y"] < 0
+        or right > event["image_width"]
+        or bottom > event["image_height"]
+    ):
+        warnings.append(
+            "Bounding box extends outside the declared image bounds; geometry is preserved."
+        )
 
-    source_path = repository_root / event["source_file"]
+    source_path = effective_source_root / event["source_file"]
     checks["source_file_exists"] = source_path.is_file()
     if not checks["source_file_exists"]:
         semantic_errors.append(f"Source file does not exist: {event['source_file']}")
     else:
-        checks["source_file_sha256"] = sha256_file(source_path) == event["source_file_sha256"]
+        observed_source_hash: str
+        if source_hash_cache is None:
+            observed_source_hash = sha256_file(source_path)
+        elif source_path in source_hash_cache:
+            observed_source_hash = source_hash_cache[source_path]
+        else:
+            observed_source_hash = sha256_file(source_path)
+            source_hash_cache[source_path] = observed_source_hash
+        checks["source_file_sha256"] = observed_source_hash == event["source_file_sha256"]
         if not checks["source_file_sha256"]:
             semantic_errors.append("source_file_sha256 does not match the source file.")
 

@@ -29,6 +29,9 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = [
+    "integration: requires the private local MOT17 dataset and is not part of normal CI"
+]
 
 [tool.ruff]
 line-length = 100

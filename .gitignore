@@ -23,6 +23,7 @@ htmlcov/
 data/raw/
 data/interim/
 data/processed/
+.local-fixtures/
 
 # Generated outputs
 outputs/*
