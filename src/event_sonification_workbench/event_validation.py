@@ -198,6 +198,7 @@ def _validate_event_with_issues(
     source_root: Path,
     schema_validator: Draft202012Validator | None = None,
     source_hash_cache: dict[Path, str] | None = None,
+    verify_source_files: bool = True,
 ) -> tuple[EventValidationReport, list[_ValidationIssue]]:
     schema_issues = _collect_schema_issues(
         event,
@@ -381,36 +382,37 @@ def _validate_event_with_issues(
             )
         )
 
-    source_path = source_root / event["source_file"]
-    checks["source_file_exists"] = source_path.is_file()
-    if not checks["source_file_exists"]:
-        issues.append(
-            _ValidationIssue(
-                code="source_file_missing",
-                severity="error",
-                message=f"Source file does not exist: {event['source_file']}",
-                field="source_file",
-            )
-        )
-    else:
-        observed_source_hash: str
-        if source_hash_cache is None:
-            observed_source_hash = sha256_file(source_path)
-        elif source_path in source_hash_cache:
-            observed_source_hash = source_hash_cache[source_path]
-        else:
-            observed_source_hash = sha256_file(source_path)
-            source_hash_cache[source_path] = observed_source_hash
-        checks["source_file_sha256"] = observed_source_hash == event["source_file_sha256"]
-        if not checks["source_file_sha256"]:
+    if verify_source_files:
+        source_path = source_root / event["source_file"]
+        checks["source_file_exists"] = source_path.is_file()
+        if not checks["source_file_exists"]:
             issues.append(
                 _ValidationIssue(
-                    code="source_file_hash_mismatch",
+                    code="source_file_missing",
                     severity="error",
-                    message="source_file_sha256 does not match the source file.",
-                    field="source_file_sha256",
+                    message=f"Source file does not exist: {event['source_file']}",
+                    field="source_file",
                 )
             )
+        else:
+            observed_source_hash: str
+            if source_hash_cache is None:
+                observed_source_hash = sha256_file(source_path)
+            elif source_path in source_hash_cache:
+                observed_source_hash = source_hash_cache[source_path]
+            else:
+                observed_source_hash = sha256_file(source_path)
+                source_hash_cache[source_path] = observed_source_hash
+            checks["source_file_sha256"] = observed_source_hash == event["source_file_sha256"]
+            if not checks["source_file_sha256"]:
+                issues.append(
+                    _ValidationIssue(
+                        code="source_file_hash_mismatch",
+                        severity="error",
+                        message="source_file_sha256 does not match the source file.",
+                        field="source_file_sha256",
+                    )
+                )
 
     event_sha256: str | None
     try:
@@ -453,15 +455,19 @@ def validate_event(
     source_root: Path | None = None,
     schema_validator: Draft202012Validator | None = None,
     source_hash_cache: dict[Path, str] | None = None,
+    verify_source_files: bool = True,
 ) -> EventValidationReport:
     """Validate one event against the schema and common deterministic rules.
 
     ``source_root`` resolves dataset-relative source paths. ``repository_root`` is retained for
-    repository fixtures and backwards compatibility. Exactly one effective root is required.
+    repository fixtures and backwards compatibility. A root is required when source files are
+    verified; package consumers can disable that check after verifying package provenance.
     """
     effective_source_root = source_root or repository_root
-    if effective_source_root is None:
+    if effective_source_root is None and verify_source_files:
         raise ValueError("source_root or repository_root must be provided")
+    if effective_source_root is None:
+        effective_source_root = Path()
 
     report, _ = _validate_event_with_issues(
         event,
@@ -469,6 +475,7 @@ def validate_event(
         source_root=effective_source_root,
         schema_validator=schema_validator,
         source_hash_cache=source_hash_cache,
+        verify_source_files=verify_source_files,
     )
     return report
 
@@ -505,6 +512,7 @@ def validate_event_collection(
     *,
     repository_root: Path | None = None,
     source_root: Path | None = None,
+    verify_source_files: bool = True,
 ) -> EventCollectionValidationReport:
     """Validate an event collection without modifying or reordering its records.
 
@@ -514,8 +522,10 @@ def validate_event_collection(
     later occurrence receives ``duplicate_event_id``.
     """
     effective_source_root = source_root or repository_root
-    if effective_source_root is None:
+    if effective_source_root is None and verify_source_files:
         raise ValueError("source_root or repository_root must be provided")
+    if effective_source_root is None:
+        effective_source_root = Path()
 
     Draft202012Validator.check_schema(schema)
     schema_validator = Draft202012Validator(schema)
@@ -531,6 +541,7 @@ def validate_event_collection(
             source_root=effective_source_root,
             schema_validator=schema_validator,
             source_hash_cache=source_hash_cache,
+            verify_source_files=verify_source_files,
         )
         event_id, source_file, source_row = _diagnostic_context(event)
         event_errors = [issue for issue in issues if issue.severity == "error"]

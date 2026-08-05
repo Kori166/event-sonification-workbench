@@ -28,8 +28,14 @@ report_sha256 = write_validation_report(report, Path("validation_report.json"))
 ```
 
 `source_root` resolves each event's dataset-relative `source_file`. `repository_root` remains an
-alias for repository fixtures. One root is required. Collections that use different dataset roots
-are validated separately; their schemas and report format are identical.
+alias for repository fixtures. One root is required by default. Collections that use different
+dataset roots are validated separately; their schemas and report format are identical.
+
+Stage 2 package consumption can pass `verify_source_files=False` only after verifying the complete
+Stage 1 package, its recorded source provenance and file hashes. That option retains all schema,
+semantic, duplicate and canonical-event checks but does not reopen a private annotation path.
+Parser, fixture and ordinary collection validation continue to verify source existence and hash by
+default.
 
 ## Checks
 

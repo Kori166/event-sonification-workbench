@@ -1,0 +1,6 @@
+frame,track_id,class,centre_x_normalised,centre_y_normalised,bbox_area_normalised,confidence
+0,1,pedestrian,0.25,0.25,0.10,0.90
+1,2,car,0.75,0.50,0.40,0.80
+2,3,distractor,0.50,0.75,0.04,0.95
+3,4,pedestrian,0.10,0.90,0.02,0.25
+4,-1,dont_care,0.90,0.10,0.03,

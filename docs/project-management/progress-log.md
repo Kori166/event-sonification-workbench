@@ -493,3 +493,55 @@ be added where a short entry would omit important implementation evidence.
 - Publish the documentation-only close-out pull request and require its CI to pass before merge.
 - Begin Stage 2 from versioned preset and deterministic cue-mapping design; do not treat the new
   checklist as completed implementation.
+
+---
+
+## 2026-08-05 - Stage 2 Milestone 1 cue scheduling
+
+**Work completed**
+
+- Created and assigned Issue #19 for versioned presets and deterministic cue schedules.
+- Started from fetched `origin/main` on `stage-2/milestone-1-cue-scheduling` while preserving
+  unrelated local interface changes outside milestone scope.
+- Added preset schema `0.1.0` and baseline preset `0.1.0` with explicit bounds, mapping methods,
+  class modifiers, suppression policy, priority and event order.
+- Added structured preset diagnostics and exact-file/configuration hashes.
+- Reused Stage 1 validation, ordering, canonical JSON, CSV and SHA-256 code for package consumption
+  and deterministic cue output.
+- Added cue/suppression accounting, stable cue IDs, content-derived run IDs, canonical JSON logs,
+  fixed LF CSV and path-free metadata.
+- Added `schedule-cues` with strict event-package, validation, schema, preset and output-path gates.
+- Added a five-event synthetic fixture with hand-calculated expected cues/suppressions and tests
+  against the complete committed MOT17 and KITTI collections.
+- Documented formulas, constants, confidence semantics, suppression treatment, file contracts,
+  limitations and Decision 0011. Common event schema `0.2.0` remains unchanged.
+
+**Decisions made**
+
+- Normalised mapping inputs clamp to `[0, 1]`; cue parameters round using preset precision.
+- Class modifiers remain explicit renderer inputs and do not silently alter another cue parameter.
+- Each event yields exactly one cue or one suppression record in preset-defined priority.
+- A verified Stage 1 package is revalidated without reopening private dataset files; default event
+  validation still verifies physical source existence and hash.
+- Preset settings are technical configuration and carry no perceptual or accessibility claim.
+
+**Problems and actions**
+
+- GitHub CLI remained unavailable; the connected GitHub capability created Issue #19.
+- Unrelated README, web and launcher work was retained without staging it into this milestone.
+- The package gate was tightened to compare `events.csv` bytes with the shared Stage 1 serialiser,
+  in addition to recorded hashes and schema/semantic validation.
+
+**Validation evidence**
+
+- `python -m ruff check .`: passed.
+- `python -m pytest -m "not integration"`: 144 passed, 2 deselected.
+- `python -m pytest`: 144 passed, 2 private-data integrations skipped clearly.
+- Focused preset/scheduler tests: 23 passed within the final suite.
+- Separate output roots produced identical cue run IDs, order, bytes and file hashes.
+
+**Next actions**
+
+- Audit and stage only Issue #19 implementation and documentation files.
+- Open pull request `Stage 2: add deterministic cue scheduling` and require CI before merge.
+- Keep audio rendering and technical evaluation outside this milestone.

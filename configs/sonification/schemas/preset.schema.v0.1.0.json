@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:event-sonification-workbench:schema:sonification-preset:0.1.0",
+  "title": "Versioned event-to-cue sonification preset",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "preset_schema_version",
+    "preset_name",
+    "preset_version",
+    "supported_event_schema_version",
+    "cue",
+    "ranges",
+    "mapping",
+    "class_modifiers",
+    "suppression",
+    "event_order"
+  ],
+  "properties": {
+    "preset_schema_version": {
+      "const": "0.1.0"
+    },
+    "preset_name": {
+      "type": "string",
+      "pattern": "^[a-z0-9_-]+$",
+      "minLength": 1
+    },
+    "preset_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$"
+    },
+    "supported_event_schema_version": {
+      "const": "0.2.0"
+    },
+    "cue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["duration_seconds"],
+      "properties": {
+        "duration_seconds": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 10
+        }
+      }
+    },
+    "ranges": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frequency_hz", "amplitude", "stereo_pan"],
+      "properties": {
+        "frequency_hz": {"$ref": "#/$defs/bounded_range"},
+        "amplitude": {"$ref": "#/$defs/bounded_range"},
+        "stereo_pan": {"$ref": "#/$defs/bounded_range"}
+      }
+    },
+    "mapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "start_time_method",
+        "stereo_pan_method",
+        "frequency_method",
+        "amplitude_method",
+        "class_modifier_method",
+        "normalised_input_policy",
+        "value_rounding_decimal_places"
+      ],
+      "properties": {
+        "start_time_method": {"const": "event_timestamp"},
+        "stereo_pan_method": {"const": "linear_centre_x"},
+        "frequency_method": {"const": "linear_inverted_centre_y"},
+        "amplitude_method": {"const": "linear_bbox_area"},
+        "class_modifier_method": {"const": "class_lookup"},
+        "normalised_input_policy": {"const": "clamp_0_1"},
+        "value_rounding_decimal_places": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 12
+        }
+      }
+    },
+    "class_modifiers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["default", "values"],
+      "properties": {
+        "default": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 4
+        },
+        "values": {
+          "type": "object",
+          "propertyNames": {"pattern": "^[a-z0-9_-]+$"},
+          "additionalProperties": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 4
+          }
+        }
+      }
+    },
+    "suppression": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "included_object_classes",
+        "excluded_object_classes",
+        "minimum_confidence",
+        "frame_stride",
+        "include_dont_care",
+        "rule_priority"
+      ],
+      "properties": {
+        "included_object_classes": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/class_list"}
+          ]
+        },
+        "excluded_object_classes": {"$ref": "#/$defs/class_list"},
+        "minimum_confidence": {
+          "type": ["number", "null"]
+        },
+        "frame_stride": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "include_dont_care": {
+          "type": "boolean"
+        },
+        "rule_priority": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "dont_care_excluded",
+              "class_not_included",
+              "class_excluded",
+              "confidence_below_minimum",
+              "frame_stride"
+            ]
+          }
+        }
+      }
+    },
+    "event_order": {
+      "const": ["dataset", "sequence", "frame", "track_id", "source_row", "event_id"]
+    }
+  },
+  "$defs": {
+    "bounded_range": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["minimum", "maximum"],
+      "properties": {
+        "minimum": {"type": "number"},
+        "maximum": {"type": "number"}
+      }
+    },
+    "class_list": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9_-]+$",
+        "minLength": 1
+      }
+    }
+  }
+}

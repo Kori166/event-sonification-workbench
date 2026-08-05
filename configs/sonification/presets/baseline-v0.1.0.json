@@ -1,0 +1,76 @@
+{
+  "preset_schema_version": "0.1.0",
+  "preset_name": "baseline",
+  "preset_version": "0.1.0",
+  "supported_event_schema_version": "0.2.0",
+  "cue": {
+    "duration_seconds": 0.12
+  },
+  "ranges": {
+    "frequency_hz": {
+      "minimum": 220.0,
+      "maximum": 1760.0
+    },
+    "amplitude": {
+      "minimum": 0.1,
+      "maximum": 0.8
+    },
+    "stereo_pan": {
+      "minimum": -1.0,
+      "maximum": 1.0
+    }
+  },
+  "mapping": {
+    "start_time_method": "event_timestamp",
+    "stereo_pan_method": "linear_centre_x",
+    "frequency_method": "linear_inverted_centre_y",
+    "amplitude_method": "linear_bbox_area",
+    "class_modifier_method": "class_lookup",
+    "normalised_input_policy": "clamp_0_1",
+    "value_rounding_decimal_places": 6
+  },
+  "class_modifiers": {
+    "default": 1.0,
+    "values": {
+      "bicycle": 1.1,
+      "car": 0.8,
+      "cyclist": 1.1,
+      "motorbike": 1.1,
+      "pedestrian": 1.0,
+      "person_on_vehicle": 1.05,
+      "person_sitting": 0.9,
+      "static_person": 0.9,
+      "tram": 0.75,
+      "truck": 0.75,
+      "van": 0.8
+    }
+  },
+  "suppression": {
+    "included_object_classes": null,
+    "excluded_object_classes": [
+      "distractor",
+      "occluder",
+      "occluder_full",
+      "occluder_on_ground",
+      "reflection"
+    ],
+    "minimum_confidence": 0.5,
+    "frame_stride": 1,
+    "include_dont_care": false,
+    "rule_priority": [
+      "dont_care_excluded",
+      "class_not_included",
+      "class_excluded",
+      "confidence_below_minimum",
+      "frame_stride"
+    ]
+  },
+  "event_order": [
+    "dataset",
+    "sequence",
+    "frame",
+    "track_id",
+    "source_row",
+    "event_id"
+  ]
+}
