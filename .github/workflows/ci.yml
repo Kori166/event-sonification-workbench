@@ -26,3 +26,5 @@ jobs:
       - name: Lint
         run: ruff check .
 
+      - name: Run automated tests
+        run: python -m pytest -m "not integration"

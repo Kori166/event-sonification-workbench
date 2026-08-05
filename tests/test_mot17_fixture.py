@@ -4,7 +4,11 @@ from pathlib import Path
 
 import pytest
 
-from event_sonification_workbench.adapters.mot17 import MOT17ParseError, parse_sequence
+from event_sonification_workbench.adapters.mot17 import (
+    MOT17ParseError,
+    parse_ground_truth_row,
+    parse_sequence,
+)
 from event_sonification_workbench.adapters.mot17_fixture import (
     generate_private_fixture,
     load_fixture_manifest,
@@ -16,6 +20,7 @@ from event_sonification_workbench.provenance import canonical_json_bytes, sha256
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE_ROOT = ROOT / "tests" / "fixtures" / "mot17"
+DATASET_FIXTURE_PATH = FIXTURE_ROOT / "dataset-derived" / "gt_fixture.txt"
 SYNTHETIC_ROOT = FIXTURE_ROOT / "synthetic"
 MOT17_ROOT = SYNTHETIC_ROOT / "MOT17"
 SEQUENCE_DIR = MOT17_ROOT / "train" / "MOT17-SYNTHETIC-01"
@@ -170,17 +175,41 @@ def test_manifest_generator_rejects_source_dataset_drift(tmp_path: Path) -> None
         )
 
 
-def test_real_fixture_manifest_has_complete_reproducibility_fields() -> None:
+def test_committed_dataset_fixture_matches_manifest_and_licence() -> None:
     manifest = load_fixture_manifest(FIXTURE_ROOT / "manifest.json")
 
     assert manifest["sequence"] == "MOT17-02-DPM"
     assert manifest["selected_source_line_numbers"] == [
-        1, 2, 3, 601, 602, 603, 3613, 3614, 3615, 4856, 4857, 4858
+        1,
+        2,
+        3,
+        601,
+        602,
+        603,
+        3613,
+        3614,
+        3615,
+        4856,
+        4857,
+        4858,
     ]
     assert manifest["expected_row_count"] == 12
-    assert len(manifest["source_annotation_sha256"]) == 64
-    assert len(manifest["generated_fixture_sha256"]) == 64
-    assert "unresolved" in manifest["licence_decision"].lower()
+    assert manifest["source_annotation_sha256"] == (
+        "2e3ecb488da8886d3200d402b2b08890c6d2879923839444e9b74fa43a551440"
+    )
+    assert manifest["generated_fixture_sha256"] == sha256_file(DATASET_FIXTURE_PATH)
+    assert manifest["committed_fixture_path"] == (
+        "tests/fixtures/mot17/dataset-derived/gt_fixture.txt"
+    )
+    assert "creative commons attribution-noncommercial-sharealike 3.0" in str(
+        manifest["licence_decision"]
+    ).lower()
+
+    fixture_rows = DATASET_FIXTURE_PATH.read_text(encoding="utf-8").splitlines()
+    assert len(fixture_rows) == 12
+    for source_row, text in zip(manifest["selected_source_line_numbers"], fixture_rows, strict=True):
+        parsed = parse_ground_truth_row(text, source_row=source_row)
+        assert parsed.source_row == source_row
 
 
 def test_mot17_check_command_reports_deterministic_summary(

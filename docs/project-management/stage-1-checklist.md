@@ -30,8 +30,9 @@
 - [x] Expected common events independently calculated for the synthetic equivalent.
 - [x] Selected real MOT17 sequence passes `mot17-check`.
 - [x] Real-data integration test passes locally with provenance validation.
-- [ ] Redistribution permission established or Issue #3 acceptance criteria revised explicitly.
-- [ ] Issues #2 and #3 closed with acceptance-criterion evidence.
+- [x] Official MOTChallenge licence terms reviewed and attribution recorded.
+- [x] Twelve-row dataset-derived fixture committed with its licence notice.
+- [x] Issues #2 and #3 closed with acceptance-criterion evidence.
 
 ### Milestone 3: KITTI Tracking extension
 
@@ -60,5 +61,5 @@
 - [ ] All Stage 1 automated tests pass in CI.
 - [ ] Progress log and risk register reviewed at Stage 1 completion.
 
-Stage 1 is complete only when the completion criteria in `project-plan.md` are satisfied. Parser
-implementation alone does not complete Milestone 2 or Stage 1.
+Stage 1 is complete only when the completion criteria in `project-plan.md` are satisfied. Completion
+of the MOT17 milestone does not complete Stage 1.

@@ -2,8 +2,8 @@
 
 ## Purpose
 
-This directory supports deterministic MOT17 parser tests without committing copied dataset rows.
-It contains a real-data selection manifest and a structurally equivalent synthetic fixture for CI.
+This directory supports deterministic MOT17 parser tests with a small dataset-derived fixture and a
+structurally equivalent synthetic fixture for CI.
 
 ## Dataset and selection
 
@@ -16,13 +16,16 @@ It contains a real-data selection manifest and a structurally equivalent synthet
 - Row count: 12.
 - Source annotation SHA-256:
   `2e3ecb488da8886d3200d402b2b08890c6d2879923839444e9b74fa43a551440`.
-- Generated private fixture SHA-256:
+- Dataset-derived fixture SHA-256:
   `a4d5ec744f02febec5a2887080cc95c2f49b09189fa600d2e37c3252210f835f`.
 
 The first 5,000 physical source lines were inspected. The earliest three-frame interval was
 selected. Four tracks were retained in source order to preserve an unmarked static person, a marked
 pedestrian, a partially visible marked pedestrian and a lower-visibility unmarked person on a
 vehicle. All three consecutive observations were retained for each track.
+
+The committed extract is stored at `dataset-derived/gt_fixture.txt`. Its attribution and licence
+information are stored in `dataset-derived/NOTICE.md`.
 
 ## Sequence metadata
 
@@ -32,12 +35,12 @@ The metadata-file SHA-256 is
 
 ## Licence decision
 
-No licence, terms, README, format document or PDF was supplied under the local MOT17 root. The
-official format documentation inspected defines the data but does not grant redistribution
-permission. Public availability was not treated as permission. No copied MOT17 row is committed.
+The official MOTChallenge website states that datasets provided on the site are published under the
+Creative Commons Attribution-NonCommercial-ShareAlike 3.0 licence. This permits redistribution for
+non-commercial use when attribution is provided and adaptations use the same licence.
 
-The real fixture is generated locally under `.local-fixtures/`, which is excluded from Git. Issue #3
-remains open because its redistribution-dependent acceptance criterion is unresolved.
+The 12-row extract is committed for non-commercial academic testing. Attribution and licence links
+are recorded in `dataset-derived/NOTICE.md`. Images and complete annotation files are not included.
 
 ## Synthetic CI fixture
 
@@ -81,7 +84,7 @@ python -m event_sonification_workbench.cli mot17-fixture \
 
 The command verifies the original source and metadata hashes, selects only the declared physical
 lines, preserves source order, writes LF-terminated annotation rows, and verifies the generated
-fixture hash. It fails if the local dataset differs from the manifest.
+fixture hash. The generated file must match the committed dataset-derived fixture.
 
 The real-data test is run separately:
 
@@ -92,5 +95,5 @@ python -m pytest -m integration
 ## Limitations
 
 The selection is compact and deterministic but not statistically representative. Images are not
-included or required. Normal CI verifies parser mechanics with synthetic data; it does not replace
-the private integration run.
+included or required. Normal CI verifies parser mechanics with fixed data; the full local integration
+run remains necessary to test all 30,003 source rows.

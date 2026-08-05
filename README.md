@@ -32,6 +32,13 @@ events, with zero invalid rows and zero warnings.
 Milestone 2 remains open because redistribution permission for copied MOT17 annotation rows is
 unresolved. Issue #3 therefore remains open. Milestone 3 still requires pull-request CI and review;
 Stage 1 structured output work is not complete.
+Milestone 1 established provisional common schema version `0.1.0` and deterministic validation.
+Milestone 2 is complete. The MOT17 parser, fixed dataset-derived fixture, synthetic golden fixture,
+private fixture generator and real-data integration test are implemented. A full check of
+`MOT17-02-DPM` produced 30,003 valid events and zero invalid events from the inspected dataset copy.
+
+The next milestone is the KITTI Tracking extension. Stage 1 remains incomplete until the KITTI
+adapter, cross-dataset schema review and structured event and provenance outputs are complete.
 
 ## Repository structure
 
@@ -105,11 +112,12 @@ geometry and `metadata.is_dont_care = true`. The private integration test reads
 
 ## MOT17 fixture decision
 
-No local terms file or explicit redistribution grant was found. Copied MOT17 rows are therefore not
-committed. `tests/fixtures/mot17/manifest.json` records the selected sequence, physical source lines,
-source hashes, selection rule and expected generated hash.
+A fixed 12-row extract from `MOT17-02-DPM` is committed under
+`tests/fixtures/mot17/dataset-derived/`. The official MOTChallenge website states that datasets
+provided on the site are published under Creative Commons Attribution-NonCommercial-ShareAlike 3.0.
+The fixture notice records attribution, licence terms, selected source lines and hashes.
 
-Generate the private fixture under the ignored output directory:
+The manifest-driven command can reproduce the same fixture from a configured local dataset:
 
 ```bash
 python -m event_sonification_workbench.cli mot17-fixture \
@@ -117,7 +125,7 @@ python -m event_sonification_workbench.cli mot17-fixture \
   --output .local-fixtures/mot17
 ```
 
-Normal CI uses a 12-row structurally equivalent synthetic fixture with independently calculated
+Normal CI also uses a 12-row structurally equivalent synthetic fixture with independently calculated
 expected events and deliberately malformed rows.
 
 ## KITTI fixture decision
@@ -139,12 +147,15 @@ python -m ruff check .
 ```
 
 Run the real-data integration tests with `MOT17_ROOT` and/or `KITTI_TRACKING_ROOT` configured:
+The CI workflow runs both commands for pull requests and pushes to `main`.
+
+Run the real-data integration selection with `MOT17_ROOT` configured:
 
 ```bash
 python -m pytest -m integration
 ```
 
-An integration skip means that private data was unavailable. It is not evidence of a pass.
+An integration skip means that local data was unavailable. It is not evidence of a pass.
 
 ## Reproducibility controls
 
@@ -155,7 +166,7 @@ An integration skip means that private data was unavailable. It is not evidence 
 - manifest-driven source-line selection;
 - schema, semantic, provenance and determinism tests;
 - LF-normalised hashed fixtures; and
-- explicit evidence boundaries between synthetic CI and private integration data.
+- explicit evidence boundaries between fixed CI data and local full-dataset integration data.
 
 ## Documentation
 
@@ -166,6 +177,7 @@ An integration skip means that private data was unavailable. It is not evidence 
 - `docs/decisions/0008-kitti-tracking-mapping-and-schema-v0.2.0.md`: KITTI and schema decision.
 - `docs/development/milestone-2-mot17-vertical-slice.md`: development and validation evidence.
 - `docs/development/milestone-3-kitti-extension.md`: audit, fixture and integration evidence.
+- `docs/development/milestone-2-fixture-licence-resolution.md`: fixture licence decision.
 - `tests/fixtures/mot17/README.md`: fixture selection and reproduction evidence.
 - `tests/fixtures/kitti/README.md`: KITTI fixture provenance, licence and reproduction evidence.
 
