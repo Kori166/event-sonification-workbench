@@ -75,6 +75,11 @@ Schema validation checks field presence, types, ranges and undeclared top-level 
 
 Exact correspondence with native annotation rows must be tested in the relevant parser or fixture tests because the row formats differ between datasets.
 
+Complete adapter outputs are checked by the collection validator before sonification. It reuses all
+single-event rules, detects duplicate event identifiers, returns coded error/warning diagnostics and
+can write a canonical JSON report with deterministic counts and SHA-256. It does not modify or
+reorder events. The full policy and API are documented in `event-validation.md`.
+
 ## Parser contract for later milestones
 
 Each dataset parser is required to:
@@ -102,3 +107,6 @@ dataset provenance rather than as a calibrated probability.
 
 Before version 1.0.0, the remaining open decisions are the canonical multi-event collection/file
 format and evidence from the Stage 1 output quality gate.
+
+Issue #4 collection validation did not reveal a schema defect. Uniqueness, cross-field arithmetic
+and report severity remain semantic collection rules, so common schema version `0.2.0` is unchanged.

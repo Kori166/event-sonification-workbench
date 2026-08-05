@@ -48,14 +48,28 @@
 - [x] Schema reviewed against both adapters; version `0.2.0` relaxes only native confidence range.
 - [x] Unit, malformed-row, mapping, time, geometry, quality, determinism and fixture-integrity tests pass locally.
 - [x] Full private sequence `0000` integration passes with 1,089 valid rows, 0 errors and 0 warnings.
-- [ ] Pull-request CI passes and Issue #5 acceptance evidence is reviewed.
+- [x] Milestone merged through pull request #15.
+
+### Milestone 4: normalised event collection validation
+
+- [x] Existing schema and single-event validation inspected and reused.
+- [x] Every supplied event is checked against common schema version `0.2.0`.
+- [x] Duplicate IDs, invalid timestamps, boxes, areas and normalised geometry are diagnosed.
+- [x] Diagnostics contain stable codes, severity, event index and available provenance context.
+- [x] Error and warning severity remains distinct; warning-only collections remain valid.
+- [x] Deterministic report counts, ordering, canonical JSON and SHA-256 are implemented.
+- [x] Validation does not modify, remove or reorder supplied events.
+- [x] Valid complete MOT17 and KITTI fixture collections are covered by tests.
+- [x] Missing-field, wrong-type, duplicate, timestamp, box and multi-error fixtures are covered.
+- [x] Schema `0.2.0` remains unchanged because collection validation found no schema defect.
+- [ ] Pull-request CI passes and Issue #4 acceptance evidence is reviewed.
 
 ### Remaining Stage 1 work
 
 - [x] KITTI Tracking fixture documented and committed under the official dataset licence.
 - [x] KITTI Tracking parser implemented and tested.
 - [x] Common schema reviewed against both real dataset adapters.
-- [x] Normalised event validation extended for KITTI-specific requirements.
+- [x] Single-event and collection-level normalised event validation implemented for both adapters.
 - [ ] Event and provenance outputs written in structured formats.
 - [x] Dataset-specific assumptions documented.
 - [ ] All Stage 1 automated tests pass in CI.

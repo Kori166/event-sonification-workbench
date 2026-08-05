@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 
 import pytest
-from jsonschema import Draft202012Validator
 
 from event_sonification_workbench.adapters.kitti_fixture import (
     load_fixture_manifest,
@@ -16,7 +15,10 @@ from event_sonification_workbench.adapters.kitti_tracking import (
     resolve_kitti_tracking_root,
     resolve_training_annotation,
 )
-from event_sonification_workbench.event_validation import load_json_object, validate_event
+from event_sonification_workbench.event_validation import (
+    load_json_object,
+    validate_event_collection,
+)
 from event_sonification_workbench.provenance import sha256_file
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -77,21 +79,15 @@ def test_real_kitti_sequence_fixture_provenance_and_validation() -> None:
     )
 
     schema = load_json_object(SCHEMA_PATH)
-    validator = Draft202012Validator(schema)
-    source_hash_cache: dict[Path, str] = {}
-    reports = [
-        validate_event(
-            event,
-            schema,
-            source_root=kitti_root,
-            schema_validator=validator,
-            source_hash_cache=source_hash_cache,
-        )
-        for event in result.events
-    ]
-    assert len(reports) == 1089
-    assert all(report.valid for report in reports)
-    assert sum(len(report.warnings) for report in reports) == 0
+    collection_report = validate_event_collection(
+        result.events,
+        schema,
+        source_root=kitti_root,
+    )
+    assert collection_report.valid
+    assert collection_report.total_event_count == collection_report.valid_event_count == 1089
+    assert collection_report.invalid_event_count == collection_report.error_count == 0
+    assert collection_report.warning_count == 0
     assert all(event["source_file"] == manifest["source_annotation_path"] for event in result.events)
     assert all(
         event["source_file_sha256"] == manifest["source_annotation_sha256"]

@@ -332,3 +332,54 @@ be added where a short entry would omit important implementation evidence.
 - Commit and push only Milestone 3 changes; preserve unrelated interface work.
 - Open a draft pull request and wait for CI before treating the milestone as merge-ready.
 - Do not merge until CI, acceptance, provenance and privacy gates all pass.
+
+---
+
+## 2026-08-05 â€” Issue #4 normalised event collection validation
+
+**Work completed**
+
+- Started from the latest `origin/main`, which includes the merged MOT17 and KITTI adapters.
+- Refactored validation internals so single-event and collection checks share schema, semantic,
+  provenance and canonical-hash logic.
+- Added coded error/warning diagnostics with zero-based event indexes and available event/source
+  context.
+- Added duplicate-ID detection, finite-number protection and collection summary counts.
+- Added canonical JSON report writing and exact-byte SHA-256 calculation without runtime state.
+- Reused the complete 12-event MOT17 and KITTI fixtures and added declarative synthetic invalid
+  collection cases.
+- Documented the validation API, codes, deterministic ordering, warning policy and schema decision.
+
+**Decisions made**
+
+- The first event-ID occurrence remains the reference; each later occurrence is invalidated.
+- Warning-only events and collections remain valid; out-of-image positive geometry stays preserved.
+- Diagnostics follow supplied event order, fixed within-event policy and stable machine codes.
+- Common schema `0.2.0` remains unchanged because uniqueness and cross-field arithmetic are
+  collection-semantic constraints rather than schema defects.
+- Report format and validator versions begin independently at `0.1.0`.
+
+**Problems or risks**
+
+- The requested branch transition initially stopped because unrelated local README and web
+  interface changes would have been overwritten. The two tracked edits were temporarily shelved,
+  restored after branching and verified; untracked web files were untouched.
+- The standalone `ruff` executable was not on this PowerShell PATH. The installed module entry point
+  was used instead and returned the same Ruff check.
+- The complete pytest invocation skipped both private-data integration tests, so this Issue #4 run
+  records fixture-collection evidence rather than new full-dataset integration evidence.
+
+**Validation evidence**
+
+- Targeted event and collection validation: 27 passed.
+- Ruff: `python -m ruff check .` passed.
+- Non-integration suite: 98 passed, 2 deselected.
+- Complete available suite: 98 passed, 2 private integrations skipped.
+- Repeated validation produced identical report objects, canonical JSON bytes and SHA-256 hashes.
+- Tests confirm that validation does not modify, remove or reorder supplied event collections.
+
+**Next actions**
+
+- Audit the staged scope for local paths, ignored configuration, datasets and media.
+- Open a draft pull request that closes Issue #4 and wait for CI before merge.
+- Keep Issue #6 event-package output and all sonification/audio work out of this change.

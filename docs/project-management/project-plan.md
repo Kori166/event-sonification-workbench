@@ -31,11 +31,9 @@ supervision records and decision records.
 | Milestone | Work | Status |
 |---|---|---|
 | 1. Schema and synthetic fixture | Define a provisional common schema and validate one manually constructed event | Complete, 29 July 2026 |
-| 2. MOT17 vertical slice | Create a fixed MOT17 fixture and convert it through the first dataset parser | In progress; parser and private integration pass, fixture redistribution unresolved |
-| 3. KITTI extension | Add a fixed KITTI Tracking fixture and parser without changing the downstream interface unnecessarily | Implemented locally; PR CI/review pending |
 | 2. MOT17 vertical slice | Create a fixed MOT17 fixture and convert it through the first dataset parser | Complete, 4 August 2026 |
-| 3. KITTI extension | Add a fixed KITTI Tracking fixture and parser without changing the downstream interface unnecessarily | Planned |
-| 4. Stage 1 quality gate | Validate both adapters, write structured outputs and complete repeat-run checks | Planned |
+| 3. KITTI extension | Add a fixed KITTI Tracking fixture and parser without changing the downstream interface unnecessarily | Complete, merged through PR #15 on 5 August 2026 |
+| 4. Stage 1 quality gate | Validate both adapters, write structured outputs and complete repeat-run checks | In progress; Issue #4 implemented locally, PR CI/review pending |
 
 ## Milestone 2 Quality Gate
 
@@ -67,8 +65,24 @@ Milestone 3 is ready for merge only when:
 - normal and complete available suites pass locally; and
 - pull-request CI passes with no private paths, media or full dataset files committed.
 
-The implementation, fixture, private integration and local adapter acceptance criteria pass. PR CI
-and review remain pending.
+The implementation, fixture and recorded private integration evidence were merged through pull
+request #15. Issue #4 does not revise the adapter implementation.
+
+## Issue #4 Collection Validation Quality Gate
+
+Issue #4 is ready for merge only when:
+
+- complete MOT17 and KITTI collections reuse the schema `0.2.0` single-event checks;
+- missing fields, wrong types, duplicate IDs, invalid timestamps and invalid geometry are diagnosed;
+- errors and warnings remain explicit and machine-readable;
+- report counts and diagnostic order are deterministic;
+- canonical report bytes and hashes repeat across identical runs;
+- validation leaves supplied event content and order unchanged;
+- valid and invalid fixtures and both adapters pass automated tests; and
+- pull-request CI passes without committing private paths, datasets or media.
+
+The implementation and local fixture acceptance criteria pass. Pull-request CI and review remain
+pending; Issue #6 structured event-package output remains outside this change.
 
 ## Stage 1 Work Order
 
@@ -84,8 +98,8 @@ and review remain pending.
 - Issue #1: Define the common event schema. **Complete, 29 July 2026.**
 - Issue #2: Implement the MOT17 annotation parser. **Complete, 4 August 2026.**
 - Issue #3: Create a fixed MOT17 test fixture. **Complete, 4 August 2026.**
-- Issue #4: Validate normalised event records. **Open; common validation supports the current vertical slice.**
-- Issue #5: Implement the KITTI Tracking annotation parser. **Implemented locally; PR CI/review pending.**
+- Issue #4: Validate normalised event records. **Implemented locally; PR CI/review pending.**
+- Issue #5: Implement the KITTI Tracking annotation parser. **Complete, merged through PR #15 on 5 August 2026.**
 - Issue #6: Write normalised event and provenance outputs. **Open.**
 
 ## Stage 1 Completion Criteria

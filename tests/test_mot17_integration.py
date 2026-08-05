@@ -15,7 +15,10 @@ from event_sonification_workbench.adapters.mot17_fixture import (
     load_fixture_manifest,
     select_source_lines,
 )
-from event_sonification_workbench.event_validation import load_json_object, validate_event
+from event_sonification_workbench.event_validation import (
+    load_json_object,
+    validate_event_collection,
+)
 from event_sonification_workbench.provenance import sha256_file
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -75,11 +78,15 @@ def test_real_mot17_fixture_generation_parsing_validation_and_provenance() -> No
     }
     assert list(selected) == manifest["selected_source_line_numbers"]
     schema = load_json_object(SCHEMA_PATH)
-    reports = [
-        validate_event(selected[row], schema, source_root=mot17_root.parent)
-        for row in manifest["selected_source_line_numbers"]
-    ]
-    assert all(report.valid for report in reports)
+    collection_report = validate_event_collection(
+        result.events,
+        schema,
+        source_root=mot17_root.parent,
+    )
+    assert collection_report.valid
+    assert collection_report.total_event_count == collection_report.valid_event_count == 30003
+    assert collection_report.invalid_event_count == collection_report.error_count == 0
+    assert collection_report.warning_count == len(result.warnings)
     assert all(selected[row]["source_file"] == manifest["source_annotation_path"] for row in selected)
     assert all(
         selected[row]["source_file_sha256"] == manifest["source_annotation_sha256"]
