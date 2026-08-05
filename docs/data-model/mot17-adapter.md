@@ -93,7 +93,7 @@ is therefore `null`. The conversion note records this decision on every event.
 `configs/class-mappings/mot17.v0.1.0.json` records the 12 class identifiers and labels supported by
 the authoritative source. Native labels are normalised to provisional common values without
 semantic collapse. Unknown identifiers produce a row-specific error. No implicit `other` mapping
-is applied. The mapping must be reviewed during the KITTI Tracking milestone.
+is applied. The KITTI review did not require a change to this mapping.
 
 ## 11. Visibility handling
 
@@ -148,8 +148,9 @@ therefore commits a selection manifest and synthetic equivalent only. The real f
 under `.local-fixtures/` and requires the private dataset. The 12 selected rows are not statistically
 representative. Full event-package writing remains outside this milestone.
 
-## 18. Consequences for KITTI Tracking
+## 18. Consequences of the KITTI review
 
-Schema version `0.1.0` supports the inspected MOT17 values without modification. This result does
-not establish KITTI compatibility. The next adapter must review class harmonisation, truncation,
-occlusion, confidence treatment and dataset-specific metadata before the schema can be stabilised.
+Current MOT17 events declare schema version `0.2.0`. Their field values are otherwise unchanged:
+the evaluation mark remains metadata and confidence remains `null`. KITTI required only a relaxed
+common confidence range for optional unnormalised scores; it did not require a new MOT17 field,
+class mapping or quality conversion.

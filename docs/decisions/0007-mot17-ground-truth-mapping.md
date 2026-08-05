@@ -2,8 +2,8 @@
 
 ## Status
 
-Accepted provisionally for parser version `0.1.0` on 4 August 2026. The class mapping and common
-schema remain subject to KITTI Tracking review.
+Accepted for parser version `0.1.0` on 4 August 2026. Decision 0008 completed the KITTI review:
+MOT17 now declares common schema `0.2.0`, with no change to its mapped values.
 
 ## Context
 
@@ -51,5 +51,5 @@ without asserting a redistribution right that was not supplied.
 - The local integration test requires `MOT17_ROOT` and does not run in normal CI.
 - Issue #3 remains open because no dataset-derived annotation rows can be committed under the
   current licence evidence.
-- Decision 0006 remains provisional and is not superseded.
-- KITTI Tracking may require a later mapping or schema decision.
+- Decision 0008 supersedes Decision 0006 for current schema output.
+- The KITTI review did not require a MOT17 field or class-mapping change.

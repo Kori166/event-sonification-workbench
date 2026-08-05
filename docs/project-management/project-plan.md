@@ -32,7 +32,7 @@ supervision records and decision records.
 |---|---|---|
 | 1. Schema and synthetic fixture | Define a provisional common schema and validate one manually constructed event | Complete, 29 July 2026 |
 | 2. MOT17 vertical slice | Create a fixed MOT17 fixture and convert it through the first dataset parser | In progress; parser and private integration pass, fixture redistribution unresolved |
-| 3. KITTI extension | Add a fixed KITTI Tracking fixture and parser without changing the downstream interface unnecessarily | Planned |
+| 3. KITTI extension | Add a fixed KITTI Tracking fixture and parser without changing the downstream interface unnecessarily | Implemented locally; PR CI/review pending |
 | 4. Stage 1 quality gate | Validate both adapters, write structured outputs and complete repeat-run checks | Planned |
 
 ## Milestone 2 Quality Gate
@@ -52,6 +52,26 @@ The parser, private generator, synthetic expected events and real-sequence run n
 milestone remains incomplete because Issue #3 must remain open while redistribution permission is
 unresolved.
 
+## Milestone 3 Quality Gate
+
+Milestone 3 is ready for merge only when:
+
+- the actual private KITTI layout and official annotation definitions are recorded;
+- the attributed fixture records source rows, deterministic selection, source/fixture hashes and
+  licence terms;
+- all 17 required fields and optional score are converted explicitly;
+- frames, tracks, classes, 2D geometry, truncation, occlusion, confidence and provenance are
+  preserved;
+- `DontCare` treatment is explicit and tested;
+- malformed rows produce coded structured diagnostics;
+- schema versioning is reviewed against both adapters;
+- the complete selected private sequence passes integration validation;
+- normal and complete available suites pass locally; and
+- pull-request CI passes with no private paths, media or full dataset files committed.
+
+The implementation, fixture, private integration and local adapter acceptance criteria pass. PR CI
+and review remain pending.
+
 ## Stage 1 Work Order
 
 1. Define the common event schema.
@@ -67,7 +87,7 @@ unresolved.
 - Issue #2: Implement the MOT17 annotation parser. **Complete, 4 August 2026.**
 - Issue #3: Create a fixed MOT17 test fixture. **Open; redistribution permission unresolved.**
 - Issue #4: Validate normalised event records. **Open; common validation supports the current vertical slice.**
-- Issue #5: Implement the KITTI Tracking annotation parser. **Open.**
+- Issue #5: Implement the KITTI Tracking annotation parser. **Implemented locally; PR CI/review pending.**
 - Issue #6: Write normalised event and provenance outputs. **Open.**
 
 ## Stage 1 Completion Criteria

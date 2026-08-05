@@ -2,7 +2,8 @@
 
 ## Status
 
-Accepted for Stage 1 Milestone 1. The decision must be reviewed before schema version `1.0.0` is declared stable.
+Superseded for current adapter output by Decision 0008 and schema version `0.2.0`. Version `0.1.0`
+remains a historical Stage 1 Milestone 1 contract.
 
 ## Context
 
@@ -40,3 +41,10 @@ The provisional version is retained because one synthetic event is not sufficien
 - The schema must be reviewed against real MOT17 and KITTI Tracking rows before version `1.0.0` is declared stable.
 - The synthetic fixture may support claims about the schema contract and calculations only. It does not demonstrate that either dataset parser is correct.
 - Sonification filtering and cue settings will remain outside the common event schema.
+
+## KITTI review outcome
+
+Real KITTI Tracking evidence confirmed that the structure supports both adapters. The optional
+KITTI result score is not constrained to `[0,1]`, so the 0.1.0 confidence range could not preserve
+all legal values. Decision 0008 introduces schema 0.2.0 with only that validation constraint
+relaxed. The schema remains pre-1.0 pending Stage 1 output and quality-gate work.

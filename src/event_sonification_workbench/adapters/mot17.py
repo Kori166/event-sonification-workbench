@@ -16,7 +16,7 @@ from ..provenance import sha256_file
 
 PARSER_NAME = "mot17_gt"
 PARSER_VERSION = "0.1.0"
-SCHEMA_VERSION = "0.1.0"
+SCHEMA_VERSION = "0.2.0"
 PREFERRED_SEQUENCE = "MOT17-02-DPM"
 
 

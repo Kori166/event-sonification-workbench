@@ -59,7 +59,7 @@ out-of-frame warnings under parser version `0.1.0`.
 - Parser: `mot17_gt` version `0.1.0`.
 - Fixture generator: version `0.1.0`.
 - Class mapping: `mot17.v0.1.0.json`.
-- Common schema: `0.1.0`.
+- Common schema: `0.2.0` (same event shape; KITTI review relaxed the confidence range).
 
 ## Manual transformation example
 

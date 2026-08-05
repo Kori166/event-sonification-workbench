@@ -4,10 +4,12 @@
 
 The common event schema defines the contract between Stage 1 dataset ingestion and every downstream stage. The MOT17 and KITTI Tracking parsers will convert native annotation rows into this representation. Sonification, output writing and technical evaluation will consume the common representation rather than dataset-specific columns.
 
-The current schema is provisional version `0.1.0`. It supports the inspected MOT17 sequence but
-must still be reviewed against KITTI Tracking before version `1.0.0` is declared stable.
+The current schema is provisional version `0.2.0`. It has been exercised against inspected MOT17
+and KITTI Tracking sequences. Version `1.0.0` remains deferred until Stage 1 structured outputs and
+the quality gate are complete.
 
-Machine-readable schema: `configs/schemas/event.schema.v0.1.0.json`.
+Machine-readable schema: `configs/schemas/event.schema.v0.2.0.json`. Version `0.1.0` remains in the
+repository as the historical Milestone 1 contract.
 
 ## Design boundary
 
@@ -21,6 +23,7 @@ One event record represents one valid normalised annotation observation. Sonific
   preserve native coordinate origins when the conversion notes state that decision.
 - Source and common object classes are stored separately.
 - Unavailable source values are represented as `null`; replacement values are not invented.
+- Confidence is a native dataset score, not necessarily a probability or a value in `[0,1]`.
 - Absolute local paths are not stored in event records.
 - `event_id` is constructed deterministically from dataset, sequence, frame, track and source-row components.
 - Derived geometry is stored explicitly and checked against the source values.
@@ -48,7 +51,7 @@ One event record represents one valid normalised annotation observation. Sonific
 | `centre_x_normalised`, `centre_y_normalised` | number | Centre divided by image dimension | Provide dataset-independent spatial mapping inputs. |
 | `bbox_area` | number | `width` multiplied by `height` | Provides apparent scale in square pixels. |
 | `bbox_area_normalised` | number | Area divided by image area | Provides dataset-independent apparent scale. |
-| `confidence` | number or null | Native annotation | Preserves source confidence where available. |
+| `confidence` | number or null | Native annotation | Preserves a source score without assuming a cross-dataset scale. |
 | `visibility` | number or null | Native annotation | Preserves source visibility where available. |
 | `source_file` | string | Ingestion configuration | Provides a stable relative source reference. |
 | `source_file_sha256` | string | SHA-256 of source bytes | Detects source changes. |
@@ -85,14 +88,17 @@ Each dataset parser is required to:
 
 This contract allows dataset adapters to be added without introducing dataset-specific logic into the sonification stage, provided that the schema remains compatible.
 
-## Open decisions before version 1.0.0
+## Cross-dataset review and version decision
 
-Implementation evidence is still required to resolve:
+MOT17 evidence did not require a schema change. KITTI confirmed that the same flat shape supports
+shared timing, identity, class, 2D geometry and provenance. Its categorical truncation/occlusion,
+observation angle and 3D values remain explicit metadata because they have no clean MOT17
+equivalent. `DontCare` records are retained as `dont_care` events rather than silently discarded.
 
-- the final common class vocabulary and treatment of KITTI `DontCare` records;
-- the representation of KITTI truncation and occlusion fields;
-- whether dataset-specific quality attributes require additional shared fields; and
-- the canonical collection ordering and event-file format for multi-event outputs.
+One 0.1.0 constraint was incompatible: KITTI's optional result score can use an arbitrary ranking
+range, while common confidence was limited to `[0,1]`. Version 0.2.0 keeps the structure unchanged
+and relaxes only that range. Both adapters emit 0.2.0. Consumers must interpret confidence using
+dataset provenance rather than as a calibrated probability.
 
-The MOT17 evidence did not require a schema revision. The remaining questions must be resolved
-through the KITTI parser work rather than unsupported assumptions.
+Before version 1.0.0, the remaining open decisions are the canonical multi-event collection/file
+format and evidence from the Stage 1 output quality gate.

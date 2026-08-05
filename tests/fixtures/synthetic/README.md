@@ -2,9 +2,12 @@
 
 ## Purpose
 
-This fixture demonstrates that one manually constructed annotation can be represented by the provisional common event schema and validated deterministically before either dataset parser is implemented.
+This fixture demonstrates that one manually constructed annotation can be represented by the
+common event shape and validated deterministically. It now declares schema `0.2.0`; the fixture
+values are unchanged from the historical `0.1.0` contract.
 
-The fixture is synthetic and contains no copied MOT17 or KITTI Tracking content. It does not satisfy the separate requirement for a fixed MOT17 fixture.
+The fixture is synthetic and contains no copied MOT17 or KITTI Tracking content. It is not evidence
+of either dataset parser; each adapter has separate fixture and private-integration coverage.
 
 ## Files
 

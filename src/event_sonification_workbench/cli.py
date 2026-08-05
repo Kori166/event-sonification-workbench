@@ -20,7 +20,7 @@ from .adapters.mot17 import (
 from .adapters.mot17_fixture import generate_private_fixture
 from .event_validation import load_json_object, validate_event
 
-DEFAULT_SCHEMA = Path("configs/schemas/event.schema.v0.1.0.json")
+DEFAULT_SCHEMA = Path("configs/schemas/event.schema.v0.2.0.json")
 DEFAULT_MOT17_MAPPING = Path("configs/class-mappings/mot17.v0.1.0.json")
 
 
