@@ -64,7 +64,7 @@
 - [x] Schema `0.2.0` remains unchanged because collection validation found no schema defect.
 - [x] Pull-request CI passed and Issue #4 merged through pull request #16.
 
-### Milestone 4: deterministic event and provenance outputs
+### Milestone 5: deterministic event and provenance outputs
 
 - [x] Existing adapters, schema, collection validation and canonical hashing are reused.
 - [x] Packages contain `events.json`, `events.csv`, `run_metadata.json` and `provenance_log.json`.
@@ -78,18 +78,24 @@
 - [x] Repeated MOT17 and KITTI fixture runs produce identical bytes, run IDs and hashes.
 - [x] `mot17-package` and `kitti-package` CLI commands parse, validate and write packages.
 - [x] Common schema `0.2.0` remains unchanged because no event-record defect was found.
-- [ ] Pull-request CI passes and Issue #6 acceptance evidence is reviewed.
+- [x] Pull-request CI passed and Issue #6 merged through pull request #17.
 
-### Remaining Stage 1 work
+### Milestone 6: Stage 1 close-out
 
 - [x] KITTI Tracking fixture documented and committed under the official dataset licence.
 - [x] KITTI Tracking parser implemented and tested.
 - [x] Common schema reviewed against both real dataset adapters.
 - [x] Single-event and collection-level normalised event validation implemented for both adapters.
-- [x] Event and provenance outputs implemented locally in deterministic structured formats.
+- [x] Event and provenance outputs merged in deterministic structured formats.
 - [x] Dataset-specific assumptions documented.
-- [ ] All Stage 1 automated tests pass in CI.
-- [ ] Progress log and risk register reviewed at Stage 1 completion.
+- [x] Real `MOT17-02-DPM` package contains 30,003 valid schema `0.2.0` events.
+- [x] Real KITTI Tracking `0000` package contains 1,089 valid schema `0.2.0` events.
+- [x] Both packages contain JSON, CSV, run metadata and provenance with source/configuration hashes.
+- [x] Separate repeated runs have identical run IDs, event order, bytes and SHA-256 values.
+- [x] Ruff, 121 non-integration tests, both private integrations and all 123 tests pass locally.
+- [x] Stage 1 implementation CI passed through pull request #17; close-out PR CI remains a merge gate.
+- [x] Assumptions and limitations are documented in the Stage 1 close-out record.
+- [x] Progress log and risk register reviewed at Stage 1 completion.
 
-Stage 1 is complete only when the completion criteria in `project-plan.md` are satisfied. Completion
-of the MOT17 milestone does not complete Stage 1.
+Stage 1 completion criteria are satisfied as of 5 August 2026. Stage 2 is the next active stage, but
+no sonification, cue scheduling or audio rendering is implemented by this checklist.

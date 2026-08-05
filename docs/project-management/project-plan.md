@@ -14,8 +14,8 @@ normalised events, deterministic audio cues and traceable technical outputs.
 | Stage | Main work | Evidence of completion | Status |
 |---|---|---|---|
 | 0. Project setup | Establish the repository structure, environment, documentation and project tracking | Working package scaffold, CI test, README and project records | Complete, 28 July 2026 |
-| 1. Data ingestion and normalisation | Parse MOT17 and KITTI Tracking annotations into a common event schema | Parsers, schema, validation outputs, provenance records and tests | In progress, started 28 July 2026 |
-| 2. Sonification | Map normalised events into scheduled audio cues | Mapping presets, cue schedules, audio files and logs | Planned |
+| 1. Data ingestion and normalisation | Parse MOT17 and KITTI Tracking annotations into a common event schema | Parsers, schema, validation outputs, provenance records and tests | Complete, 5 August 2026 |
+| 2. Sonification | Map normalised events into scheduled audio cues | Mapping presets, cue schedules, audio files and logs | Next active stage; implementation not started |
 | 3. Technical evaluation | Measure coverage, alignment, traceability, cue density, overlap and reproducibility | Evaluation reports, comparison results and repeat-run checks | Planned |
 | 4. Artefact assembly and release | Validate, document and package the complete workbench | Reproducible release, final documentation and tagged version | Planned |
 | 5. Reporting and viva preparation | Complete the dissertation and prepare the artefact demonstration | Final report, demonstration plan and viva notes | Planned |
@@ -33,7 +33,7 @@ supervision records and decision records.
 | 1. Schema and synthetic fixture | Define a provisional common schema and validate one manually constructed event | Complete, 29 July 2026 |
 | 2. MOT17 vertical slice | Create a fixed MOT17 fixture and convert it through the first dataset parser | Complete, 4 August 2026 |
 | 3. KITTI extension | Add a fixed KITTI Tracking fixture and parser without changing the downstream interface unnecessarily | Complete, merged through PR #15 on 5 August 2026 |
-| 4. Stage 1 quality gate | Validate both adapters, write structured outputs and complete repeat-run checks | In progress; Issue #4 merged, Issue #6 implemented locally with PR CI/review pending |
+| 4. Stage 1 quality gate | Validate both adapters, write structured outputs and complete repeat-run checks | Complete, 5 August 2026; real packages and repeat runs verified |
 
 ## Milestone 2 Quality Gate
 
@@ -99,8 +99,9 @@ Issue #6 is ready for merge only when:
 - generated fixture/full-dataset run directories remain outside Git; and
 - local tests and pull-request CI pass.
 
-The implementation and local fixture acceptance criteria pass. Pull-request CI and review remain
-pending, so Stage 1 remains in progress.
+The implementation, acceptance evidence and CI merged through pull request #17. The Stage 1
+close-out then generated and repeated real MOT17 and KITTI packages without a deterministic
+difference.
 
 ## Stage 1 Work Order
 
@@ -118,17 +119,31 @@ pending, so Stage 1 remains in progress.
 - Issue #3: Create a fixed MOT17 test fixture. **Complete, 4 August 2026.**
 - Issue #4: Validate normalised event records. **Complete, merged through PR #16 on 5 August 2026.**
 - Issue #5: Implement the KITTI Tracking annotation parser. **Complete, merged through PR #15 on 5 August 2026.**
-- Issue #6: Write normalised event and provenance outputs. **Implemented locally; PR CI/review pending.**
+- Issue #6: Write normalised event and provenance outputs. **Complete, merged through PR #17 on 5 August 2026.**
 
 ## Stage 1 Completion Criteria
 
-Stage 1 will be complete only when:
+Stage 1 is complete because:
 
-- both selected dataset formats can be converted into the shared schema;
-- fixed fixtures and automated parser tests pass in CI;
-- invalid records are reported through structured validation results;
-- output records preserve source dataset, sequence, file and conversion information; and
-- the implementation and its assumptions are documented.
+- both selected real dataset formats convert into current common schema `0.2.0`;
+- both real collections pass validation and write deterministic JSON/CSV packages;
+- run metadata and provenance preserve source, parser, schema, mapping and output hashes;
+- separate repeat runs have identical IDs, event ordering, bytes and hashes;
+- invalid records remain covered by structured validation tests;
+- Ruff, both private integrations and the complete 123-test suite pass locally;
+- Stage 1 implementation pull requests passed CI; and
+- assumptions, warnings, limitations and evidence are documented in
+  `docs/development/stage-1-closeout.md`.
+
+Completion was recorded on 5 August 2026. The generated full-data packages remain local and ignored
+by Git.
+
+## Stage 2 Next Active Work
+
+Stage 2 is now the next active project stage. Its planned work is tracked in
+`docs/project-management/stage-2-checklist.md`: versioned presets, deterministic event-to-cue
+mapping, schedules, suppression policy, traceability logs, deterministic audio rendering and tests.
+This Stage 1 close-out does not implement or claim any sonification functionality.
 
 ## Key Project Milestones
 

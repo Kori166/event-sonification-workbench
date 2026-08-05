@@ -4,9 +4,10 @@
 
 The common event schema defines the contract between Stage 1 dataset ingestion and every downstream stage. The MOT17 and KITTI Tracking parsers will convert native annotation rows into this representation. Sonification, output writing and technical evaluation will consume the common representation rather than dataset-specific columns.
 
-The current schema is provisional version `0.2.0`. It has been exercised against inspected MOT17
-and KITTI Tracking sequences. Version `1.0.0` remains deferred until Stage 1 structured outputs and
-the quality gate are complete.
+The current schema is version `0.2.0`. It passed the Stage 1 close-out against real MOT17
+`MOT17-02-DPM` and KITTI Tracking `0000` packages plus both private integration tests. Version
+`1.0.0` remains deferred until downstream sonification and evaluation provide evidence for a stable
+public contract; Stage 1 completion alone does not require a cosmetic version change.
 
 Machine-readable schema: `configs/schemas/event.schema.v0.2.0.json`. Version `0.1.0` remains in the
 repository as the historical Milestone 1 contract.
@@ -106,8 +107,8 @@ and relaxes only that range. Both adapters emit 0.2.0. Consumers must interpret 
 dataset provenance rather than as a calibrated probability.
 
 Decision 0010 defines the deterministic multi-event JSON/CSV package, run metadata and provenance
-log without adding fields to individual events. Before version 1.0.0, the remaining work is evidence
-from the complete Stage 1 output quality gate.
+log without adding fields to individual events. The Stage 1 output quality gate passed on 5 August
+2026 with byte-identical repeat packages for both selected real sequences.
 
 Issue #4 collection validation did not reveal a schema defect. Uniqueness, cross-field arithmetic
 and report severity remain semantic collection rules, so common schema version `0.2.0` is unchanged.
