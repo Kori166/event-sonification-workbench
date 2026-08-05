@@ -19,6 +19,11 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def sha256_bytes(value: bytes) -> str:
+    """Return the SHA-256 digest of an in-memory byte sequence."""
+    return hashlib.sha256(value).hexdigest()
+
+
 def _normalise_json_value(value: Any) -> Any:
     if isinstance(value, float):
         if not math.isfinite(value):
@@ -46,4 +51,4 @@ def canonical_json_bytes(value: Any) -> bytes:
 
 def sha256_json(value: Any) -> str:
     """Return the SHA-256 digest of a canonical JSON representation."""
-    return hashlib.sha256(canonical_json_bytes(value)).hexdigest()
+    return sha256_bytes(canonical_json_bytes(value))

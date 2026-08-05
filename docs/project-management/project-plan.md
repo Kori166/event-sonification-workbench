@@ -33,7 +33,7 @@ supervision records and decision records.
 | 1. Schema and synthetic fixture | Define a provisional common schema and validate one manually constructed event | Complete, 29 July 2026 |
 | 2. MOT17 vertical slice | Create a fixed MOT17 fixture and convert it through the first dataset parser | Complete, 4 August 2026 |
 | 3. KITTI extension | Add a fixed KITTI Tracking fixture and parser without changing the downstream interface unnecessarily | Complete, merged through PR #15 on 5 August 2026 |
-| 4. Stage 1 quality gate | Validate both adapters, write structured outputs and complete repeat-run checks | In progress; Issue #4 implemented locally, PR CI/review pending |
+| 4. Stage 1 quality gate | Validate both adapters, write structured outputs and complete repeat-run checks | In progress; Issue #4 merged, Issue #6 implemented locally with PR CI/review pending |
 
 ## Milestone 2 Quality Gate
 
@@ -81,8 +81,26 @@ Issue #4 is ready for merge only when:
 - valid and invalid fixtures and both adapters pass automated tests; and
 - pull-request CI passes without committing private paths, datasets or media.
 
+The implementation and acceptance criteria merged through pull request #16. Issue #6 consumes the
+validation report without duplicating its policy.
+
+## Issue #6 Structured Output Quality Gate
+
+Issue #6 is ready for merge only when:
+
+- validated MOT17 and KITTI events write to deterministic JSON and CSV;
+- all common fields survive JSON output and nested values have a stable CSV encoding;
+- event ordering follows dataset, sequence, frame, track ID, source row and event ID;
+- metadata records source, parser, mapping, schema, validation and output hashes;
+- provenance contains only logical input/configuration paths plus assumptions and decision records;
+- repeated runs produce identical IDs, bytes and hashes without wall-clock content;
+- unsafe paths, malformed inputs and invalid validation reports are rejected;
+- adapter-to-package CLI commands remain inside Stage 1 scope;
+- generated fixture/full-dataset run directories remain outside Git; and
+- local tests and pull-request CI pass.
+
 The implementation and local fixture acceptance criteria pass. Pull-request CI and review remain
-pending; Issue #6 structured event-package output remains outside this change.
+pending, so Stage 1 remains in progress.
 
 ## Stage 1 Work Order
 
@@ -98,9 +116,9 @@ pending; Issue #6 structured event-package output remains outside this change.
 - Issue #1: Define the common event schema. **Complete, 29 July 2026.**
 - Issue #2: Implement the MOT17 annotation parser. **Complete, 4 August 2026.**
 - Issue #3: Create a fixed MOT17 test fixture. **Complete, 4 August 2026.**
-- Issue #4: Validate normalised event records. **Implemented locally; PR CI/review pending.**
+- Issue #4: Validate normalised event records. **Complete, merged through PR #16 on 5 August 2026.**
 - Issue #5: Implement the KITTI Tracking annotation parser. **Complete, merged through PR #15 on 5 August 2026.**
-- Issue #6: Write normalised event and provenance outputs. **Open.**
+- Issue #6: Write normalised event and provenance outputs. **Implemented locally; PR CI/review pending.**
 
 ## Stage 1 Completion Criteria
 

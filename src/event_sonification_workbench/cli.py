@@ -5,12 +5,33 @@ from __future__ import annotations
 import argparse
 import json
 from collections.abc import Sequence
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 from jsonschema import Draft202012Validator
 
+from .adapters.kitti_tracking import (
+    PARSER_NAME as KITTI_PARSER_NAME,
+)
+from .adapters.kitti_tracking import (
+    PARSER_VERSION as KITTI_PARSER_VERSION,
+)
+from .adapters.kitti_tracking import (
+    PREFERRED_SEQUENCE as KITTI_PREFERRED_SEQUENCE,
+)
+from .adapters.kitti_tracking import (
+    KITTIParseError,
+    resolve_kitti_tracking_root,
+)
+from .adapters.kitti_tracking import (
+    parse_sequence as parse_kitti_sequence,
+)
 from .adapters.mot17 import (
-    PARSER_VERSION,
+    PARSER_NAME as MOT17_PARSER_NAME,
+)
+from .adapters.mot17 import (
+    PARSER_VERSION as MOT17_PARSER_VERSION,
+)
+from .adapters.mot17 import (
     PREFERRED_SEQUENCE,
     MOT17ParseError,
     parse_sequence,
@@ -18,10 +39,20 @@ from .adapters.mot17 import (
     resolve_training_sequence,
 )
 from .adapters.mot17_fixture import generate_private_fixture
-from .event_validation import load_json_object, validate_event
+from .event_validation import load_json_object, validate_event, validate_event_collection
+from .output_package import (
+    ConfigurationReference,
+    EventPackageResult,
+    FileReference,
+    OutputPackageError,
+    write_event_package,
+)
+from .provenance import sha256_file
 
 DEFAULT_SCHEMA = Path("configs/schemas/event.schema.v0.2.0.json")
 DEFAULT_MOT17_MAPPING = Path("configs/class-mappings/mot17.v0.1.0.json")
+DEFAULT_KITTI_MAPPING = Path("configs/class-mappings/kitti_tracking.v0.1.0.json")
+DEFAULT_OUTPUT_DIRECTORY = Path("outputs")
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -45,6 +76,34 @@ def _build_parser() -> argparse.ArgumentParser:
     fixture.add_argument("--mot17-root", type=Path)
     fixture.add_argument("--manifest", type=Path, required=True)
     fixture.add_argument("--output", type=Path, required=True)
+
+    mot17_package = subparsers.add_parser(
+        "mot17-package",
+        help="Parse, validate and write one deterministic MOT17 event package.",
+    )
+    mot17_package.add_argument("--mot17-root", type=Path)
+    mot17_package.add_argument("--sequence", default=PREFERRED_SEQUENCE)
+    mot17_package.add_argument("--schema", type=Path, default=DEFAULT_SCHEMA)
+    mot17_package.add_argument("--class-mapping", type=Path, default=DEFAULT_MOT17_MAPPING)
+    mot17_package.add_argument(
+        "--output-directory",
+        type=Path,
+        default=DEFAULT_OUTPUT_DIRECTORY,
+    )
+
+    kitti_package = subparsers.add_parser(
+        "kitti-package",
+        help="Parse, validate and write one deterministic KITTI Tracking event package.",
+    )
+    kitti_package.add_argument("--kitti-root", type=Path)
+    kitti_package.add_argument("--sequence", default=KITTI_PREFERRED_SEQUENCE)
+    kitti_package.add_argument("--schema", type=Path, default=DEFAULT_SCHEMA)
+    kitti_package.add_argument("--class-mapping", type=Path, default=DEFAULT_KITTI_MAPPING)
+    kitti_package.add_argument(
+        "--output-directory",
+        type=Path,
+        default=DEFAULT_OUTPUT_DIRECTORY,
+    )
     return parser
 
 
@@ -79,7 +138,7 @@ def _run_mot17_check(args: argparse.Namespace) -> int:
 
     summary = {
         "command": "mot17-check",
-        "parser_version": PARSER_VERSION,
+        "parser_version": MOT17_PARSER_VERSION,
         "dataset": "MOT17",
         "split": "train",
         "sequence": args.sequence,
@@ -107,6 +166,180 @@ def _run_mot17_check(args: argparse.Namespace) -> int:
     }
     print(json.dumps(summary, indent=2, sort_keys=True))
     return 0 if not result.errors and not invalid_event_reports else 1
+
+
+def _logical_configuration_path(path: Path) -> str:
+    resolved = path.resolve()
+    try:
+        relative = resolved.relative_to(Path.cwd().resolve())
+    except ValueError as exc:
+        raise OutputPackageError(
+            "Configuration files used for package output must be inside the current working tree."
+        ) from exc
+    return relative.as_posix()
+
+
+def _source_reference(events: Sequence[dict[str, object]]) -> FileReference:
+    if not events:
+        raise OutputPackageError("Cannot write a package for an empty parser result.")
+    references = {
+        (event["source_file"], event["source_file_sha256"])
+        for event in events
+    }
+    if len(references) != 1:
+        raise OutputPackageError("A sequence package must reference exactly one source file.")
+    logical_path, sha256 = references.pop()
+    if not isinstance(logical_path, str) or not isinstance(sha256, str):
+        raise OutputPackageError("Parser source-file provenance is malformed.")
+    return FileReference(logical_path=logical_path, sha256=sha256)
+
+
+def _conversion_assumptions(events: Sequence[dict[str, object]]) -> tuple[str, ...]:
+    assumptions: set[str] = set()
+    for event in events:
+        notes = event.get("conversion_notes")
+        if not isinstance(notes, list) or any(not isinstance(note, str) for note in notes):
+            raise OutputPackageError("Parser conversion_notes are malformed.")
+        assumptions.update(notes)
+    return tuple(sorted(assumptions))
+
+
+def _configuration_reference(
+    *,
+    role: str,
+    path: Path,
+    version: str | None,
+) -> ConfigurationReference:
+    return ConfigurationReference(
+        role=role,
+        logical_path=_logical_configuration_path(path),
+        sha256=sha256_file(path),
+        version=version,
+    )
+
+
+def _print_package_summary(command: str, result: EventPackageResult) -> None:
+    summary = result.to_summary_dict()
+    print(json.dumps({"command": command, **summary}, indent=2, sort_keys=True))
+
+
+def _run_mot17_package(args: argparse.Namespace) -> int:
+    mot17_root = resolve_mot17_root(args.mot17_root)
+    sequence_directory = resolve_training_sequence(mot17_root, sequence=args.sequence)
+    result = parse_sequence(
+        sequence_directory,
+        class_mapping_path=args.class_mapping,
+        mot17_root=mot17_root,
+    )
+    if result.errors:
+        raise MOT17ParseError(
+            f"Refusing to write outputs because the parser returned {len(result.errors)} errors."
+        )
+
+    schema_definition = load_json_object(args.schema)
+    validation = validate_event_collection(
+        result.events,
+        schema_definition,
+        source_root=mot17_root.parent,
+    )
+    source_file = _source_reference(result.events)
+    first = result.events[0]
+    source_path = PurePosixPath(source_file.logical_path)
+    sequence_metadata_path = (source_path.parent.parent / "seqinfo.ini").as_posix()
+    sequence_metadata_sha256 = first["metadata"]["sequence_metadata_sha256"]
+    if not isinstance(sequence_metadata_sha256, str):
+        raise OutputPackageError("MOT17 sequence metadata hash is malformed.")
+
+    package = write_event_package(
+        result.events,
+        dataset="mot17",
+        sequence=first["sequence"],
+        parser_name=MOT17_PARSER_NAME,
+        parser_version=MOT17_PARSER_VERSION,
+        schema_version=first["schema_version"],
+        source_file=source_file,
+        class_mapping_version=first["class_mapping_version"],
+        class_mapping=_configuration_reference(
+            role="class_mapping",
+            path=args.class_mapping,
+            version=first["class_mapping_version"],
+        ),
+        schema=_configuration_reference(
+            role="schema",
+            path=args.schema,
+            version=first["schema_version"],
+        ),
+        output_directory=args.output_directory,
+        validation_report=validation,
+        additional_configurations=(
+            ConfigurationReference(
+                role="sequence_metadata",
+                logical_path=sequence_metadata_path,
+                sha256=sequence_metadata_sha256,
+            ),
+        ),
+        conversion_assumptions=_conversion_assumptions(result.events),
+        decision_records=(
+            "docs/decisions/0007-mot17-ground-truth-mapping.md",
+            "docs/decisions/0009-collection-validation-policy.md",
+            "docs/decisions/0010-deterministic-output-package.md",
+        ),
+    )
+    _print_package_summary("mot17-package", package)
+    return 0
+
+
+def _run_kitti_package(args: argparse.Namespace) -> int:
+    kitti_root = resolve_kitti_tracking_root(args.kitti_root)
+    result = parse_kitti_sequence(
+        kitti_root,
+        sequence=args.sequence,
+        class_mapping_path=args.class_mapping,
+    )
+    if result.errors:
+        raise KITTIParseError(
+            f"Refusing to write outputs because the parser returned {len(result.errors)} errors.",
+            code="output",
+        )
+
+    schema_definition = load_json_object(args.schema)
+    validation = validate_event_collection(
+        result.events,
+        schema_definition,
+        source_root=kitti_root,
+    )
+    source_file = _source_reference(result.events)
+    first = result.events[0]
+    package = write_event_package(
+        result.events,
+        dataset="kitti_tracking",
+        sequence=first["sequence"],
+        parser_name=KITTI_PARSER_NAME,
+        parser_version=KITTI_PARSER_VERSION,
+        schema_version=first["schema_version"],
+        source_file=source_file,
+        class_mapping_version=first["class_mapping_version"],
+        class_mapping=_configuration_reference(
+            role="class_mapping",
+            path=args.class_mapping,
+            version=first["class_mapping_version"],
+        ),
+        schema=_configuration_reference(
+            role="schema",
+            path=args.schema,
+            version=first["schema_version"],
+        ),
+        output_directory=args.output_directory,
+        validation_report=validation,
+        conversion_assumptions=_conversion_assumptions(result.events),
+        decision_records=(
+            "docs/decisions/0008-kitti-tracking-mapping-and-schema-v0.2.0.md",
+            "docs/decisions/0009-collection-validation-policy.md",
+            "docs/decisions/0010-deterministic-output-package.md",
+        ),
+    )
+    _print_package_summary("kitti-package", package)
+    return 0
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -139,7 +372,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                 )
             )
             return 0
-    except (MOT17ParseError, OSError, TypeError, ValueError) as exc:
+        if args.command == "mot17-package":
+            return _run_mot17_package(args)
+        if args.command == "kitti-package":
+            return _run_kitti_package(args)
+    except (KITTIParseError, MOT17ParseError, OutputPackageError, OSError, TypeError, ValueError) as exc:
         parser.error(str(exc))
 
     parser.error(f"Unknown command: {args.command}")

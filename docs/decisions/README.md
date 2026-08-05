@@ -17,3 +17,4 @@ must be amended or superseded explicitly rather than silently rewritten.
 - [0007: MOT17 ground-truth mapping](0007-mot17-ground-truth-mapping.md)
 - [0008: KITTI Tracking mapping and common schema v0.2.0](0008-kitti-tracking-mapping-and-schema-v0.2.0.md)
 - [0009: Collection validation and deterministic report policy](0009-collection-validation-policy.md)
+- [0010: Deterministic event and provenance output package](0010-deterministic-output-package.md)
