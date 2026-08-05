@@ -19,26 +19,17 @@ map events to configurable cues, preserve provenance and support technical evalu
 
 Stage 0 is complete. Stage 1 is in progress.
 
-Milestone 1 established common schema version `0.1.0` and deterministic validation. Milestone 3's
-cross-dataset review introduced schema `0.2.0`, retaining the same event shape while allowing native
-unnormalised confidence scores. Both current adapters emit `0.2.0`.
+Milestone 1 established common schema version `0.1.0`. The cross-dataset review in Milestone 3
+introduced schema `0.2.0`, retaining the event shape while allowing native unnormalised confidence
+scores. Both the completed MOT17 and KITTI Tracking adapters emit `0.2.0`.
 
-The Milestone 2 MOT17 parser, private fixture generator, synthetic golden fixture and real-data
-integration test are implemented. The Milestone 3 KITTI Tracking parser, attributed 12-row fixture,
-malformed-row fixture and private integration test are implemented locally. A full check of KITTI
-training sequence `0000` produced 1,089 valid events, including 378 explicitly retained `DontCare`
-events, with zero invalid rows and zero warnings.
+Issue #4 extends the existing single-event checks to complete event collections. It reports stable,
+structured schema, semantic, duplicate-ID and warning diagnostics without modifying event records.
+Reports contain deterministic counts and ordered diagnostics and can be written as canonical JSON
+with a repeatable SHA-256 hash.
 
-Milestone 2 remains open because redistribution permission for copied MOT17 annotation rows is
-unresolved. Issue #3 therefore remains open. Milestone 3 still requires pull-request CI and review;
-Stage 1 structured output work is not complete.
-Milestone 1 established provisional common schema version `0.1.0` and deterministic validation.
-Milestone 2 is complete. The MOT17 parser, fixed dataset-derived fixture, synthetic golden fixture,
-private fixture generator and real-data integration test are implemented. A full check of
-`MOT17-02-DPM` produced 30,003 valid events and zero invalid events from the inspected dataset copy.
-
-The next milestone is the KITTI Tracking extension. Stage 1 remains incomplete until the KITTI
-adapter, cross-dataset schema review and structured event and provenance outputs are complete.
+Stage 1 remains incomplete until collection validation passes pull-request CI and the separately
+scoped structured event and provenance output work in Issue #6 is complete.
 
 ## Repository structure
 
@@ -139,23 +130,27 @@ included. Synthetic malformed rows are marked separately as project-authored dat
 
 ## Validation
 
-Run normal tests without the private dataset:
+Single events and complete MOT17 or KITTI Tracking event collections can be checked against common
+schema `0.2.0`. Collection validation preserves input order, treats errors as invalidating, retains
+warnings as permitted findings and can write a canonical `validation_report.json`. See
+`docs/data-model/event-validation.md` for the API, diagnostic codes and ordering policy.
+
+Run lint and normal tests without requiring the private datasets:
 
 ```bash
-python -m pytest -m "not integration"
 python -m ruff check .
+python -m pytest -m "not integration"
 ```
 
-Run the real-data integration tests with `MOT17_ROOT` and/or `KITTI_TRACKING_ROOT` configured:
-The CI workflow runs both commands for pull requests and pushes to `main`.
-
-Run the real-data integration selection with `MOT17_ROOT` configured:
+Run the complete available suite, including integrations when their roots are configured:
 
 ```bash
-python -m pytest -m integration
+python -m pytest
 ```
 
-An integration skip means that local data was unavailable. It is not evidence of a pass.
+The integration tests use `MOT17_ROOT` and `KITTI_TRACKING_ROOT` independently and skip clearly when
+their private datasets are unavailable. A skip is not evidence of a private-data pass. The CI
+workflow runs the non-integration tests and lint checks for pull requests and pushes to `main`.
 
 ## Reproducibility controls
 
@@ -171,10 +166,12 @@ An integration skip means that local data was unavailable. It is not evidence of
 ## Documentation
 
 - `docs/data-model/common-event-schema.md`: provisional common schema contract.
+- `docs/data-model/event-validation.md`: single-event and collection validation contract.
 - `docs/data-model/mot17-adapter.md`: MOT17 format and conversion rules.
 - `docs/data-model/kitti-tracking-adapter.md`: KITTI definitions, conversion and `DontCare` policy.
 - `docs/decisions/0007-mot17-ground-truth-mapping.md`: mapping decision.
 - `docs/decisions/0008-kitti-tracking-mapping-and-schema-v0.2.0.md`: KITTI and schema decision.
+- `docs/decisions/0009-collection-validation-policy.md`: diagnostic and report policy.
 - `docs/development/milestone-2-mot17-vertical-slice.md`: development and validation evidence.
 - `docs/development/milestone-3-kitti-extension.md`: audit, fixture and integration evidence.
 - `docs/development/milestone-2-fixture-licence-resolution.md`: fixture licence decision.

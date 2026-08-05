@@ -1,0 +1,59 @@
+{
+  "fixture_version": "0.1.0",
+  "valid_collections": {
+    "mot17": {
+      "source_fixture": "tests/fixtures/mot17/synthetic/MOT17/train/MOT17-SYNTHETIC-01/gt/gt.txt",
+      "event_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    },
+    "kitti_tracking": {
+      "source_fixture": "tests/fixtures/kitti/training/label_02/0000.txt",
+      "event_indexes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    }
+  },
+  "invalid_collections": {
+    "missing_required_field": {
+      "base_dataset": "mot17",
+      "event_indexes": [0],
+      "operations": [
+        {"operation": "remove", "event_index": 0, "field": "timestamp"}
+      ]
+    },
+    "incorrect_field_type": {
+      "base_dataset": "mot17",
+      "event_indexes": [0],
+      "operations": [
+        {"operation": "set", "event_index": 0, "field": "frame", "value": "zero"}
+      ]
+    },
+    "duplicate_event_id": {
+      "base_dataset": "mot17",
+      "event_indexes": [0],
+      "operations": [
+        {"operation": "append_duplicate", "event_index": 0}
+      ]
+    },
+    "invalid_timestamp": {
+      "base_dataset": "mot17",
+      "event_indexes": [1],
+      "operations": [
+        {"operation": "set", "event_index": 0, "field": "timestamp", "value": -0.04}
+      ]
+    },
+    "invalid_bounding_box": {
+      "base_dataset": "mot17",
+      "event_indexes": [0],
+      "operations": [
+        {"operation": "set", "event_index": 0, "field": "bbox_width", "value": 0}
+      ]
+    },
+    "multiple_errors": {
+      "base_dataset": "mot17",
+      "event_indexes": [0, 1, 2],
+      "operations": [
+        {"operation": "remove", "event_index": 0, "field": "timestamp"},
+        {"operation": "set", "event_index": 1, "field": "bbox_width", "value": 0},
+        {"operation": "append_duplicate", "event_index": 2}
+      ]
+    }
+  }
+}
