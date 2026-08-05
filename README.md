@@ -23,13 +23,12 @@ Milestone 1 established common schema version `0.1.0`. The cross-dataset review 
 introduced schema `0.2.0`, retaining the event shape while allowing native unnormalised confidence
 scores. Both the completed MOT17 and KITTI Tracking adapters emit `0.2.0`.
 
-Issue #4 extends the existing single-event checks to complete event collections. It reports stable,
-structured schema, semantic, duplicate-ID and warning diagnostics without modifying event records.
-Reports contain deterministic counts and ordered diagnostics and can be written as canonical JSON
-with a repeatable SHA-256 hash.
+Issue #4 collection validation is complete and merged through pull request #16. Issue #6 adds the
+deterministic Stage 1 hand-off: schema `0.2.0` events can be written to canonical JSON, fixed-column
+CSV, run metadata and a provenance log beneath a content-derived run ID.
 
-Stage 1 remains incomplete until collection validation passes pull-request CI and the separately
-scoped structured event and provenance output work in Issue #6 is complete.
+Stage 1 remains in progress while the Issue #6 pull request awaits CI and review. No sonification,
+audio generation or evaluation is part of the structured-output milestone.
 
 ## Repository structure
 
@@ -152,6 +151,38 @@ The integration tests use `MOT17_ROOT` and `KITTI_TRACKING_ROOT` independently a
 their private datasets are unavailable. A skip is not evidence of a private-data pass. The CI
 workflow runs the non-integration tests and lint checks for pull requests and pushes to `main`.
 
+## Structured event outputs
+
+Validated sequence events can be written to an ignored deterministic package:
+
+```text
+outputs/<run-id>/
+|-- events.json
+|-- events.csv
+|-- run_metadata.json
+`-- provenance_log.json
+```
+
+The event files use the documented dataset, sequence, frame, track ID, source-row and event-ID
+ordering. Package content contains logical source/configuration references and hashes, never private
+dataset roots or output-directory paths. It contains no changing wall-clock timestamp.
+
+Run either adapter-to-package command with its private root configured:
+
+```bash
+python -m event_sonification_workbench.cli mot17-package \
+  --sequence MOT17-02-DPM \
+  --output-directory outputs
+
+python -m event_sonification_workbench.cli kitti-package \
+  --sequence 0000 \
+  --output-directory outputs
+```
+
+Both commands parse, collection-validate and then write. They refuse parser errors or invalid
+collections. Generated packages remain ignored and must not be committed. The exact format, CSV
+columns, hash scopes and overwrite policy are documented in `docs/data-model/output-package.md`.
+
 ## Reproducibility controls
 
 - schema, parser and class-mapping versions;
@@ -159,6 +190,8 @@ workflow runs the non-integration tests and lint checks for pull requests and pu
 - dataset-relative source paths and source-row references;
 - source, sequence-metadata, mapping and fixture hashes;
 - manifest-driven source-line selection;
+- content-derived output run IDs, canonical package JSON and LF-stable CSV;
+- file-level output hashes and path-free run provenance;
 - schema, semantic, provenance and determinism tests;
 - LF-normalised hashed fixtures; and
 - explicit evidence boundaries between fixed CI data and local full-dataset integration data.
@@ -167,16 +200,19 @@ workflow runs the non-integration tests and lint checks for pull requests and pu
 
 - `docs/data-model/common-event-schema.md`: provisional common schema contract.
 - `docs/data-model/event-validation.md`: single-event and collection validation contract.
+- `docs/data-model/output-package.md`: JSON, CSV, metadata and provenance output contract.
 - `docs/data-model/mot17-adapter.md`: MOT17 format and conversion rules.
 - `docs/data-model/kitti-tracking-adapter.md`: KITTI definitions, conversion and `DontCare` policy.
 - `docs/decisions/0007-mot17-ground-truth-mapping.md`: mapping decision.
 - `docs/decisions/0008-kitti-tracking-mapping-and-schema-v0.2.0.md`: KITTI and schema decision.
 - `docs/decisions/0009-collection-validation-policy.md`: diagnostic and report policy.
+- `docs/decisions/0010-deterministic-output-package.md`: deterministic package format decision.
 - `docs/development/milestone-2-mot17-vertical-slice.md`: development and validation evidence.
 - `docs/development/milestone-3-kitti-extension.md`: audit, fixture and integration evidence.
 - `docs/development/milestone-2-fixture-licence-resolution.md`: fixture licence decision.
 - `tests/fixtures/mot17/README.md`: fixture selection and reproduction evidence.
 - `tests/fixtures/kitti/README.md`: KITTI fixture provenance, licence and reproduction evidence.
+- `outputs/README.md`: generated-output storage boundary.
 
 ## Author
 

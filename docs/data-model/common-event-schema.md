@@ -105,8 +105,11 @@ range, while common confidence was limited to `[0,1]`. Version 0.2.0 keeps the s
 and relaxes only that range. Both adapters emit 0.2.0. Consumers must interpret confidence using
 dataset provenance rather than as a calibrated probability.
 
-Before version 1.0.0, the remaining open decisions are the canonical multi-event collection/file
-format and evidence from the Stage 1 output quality gate.
+Decision 0010 defines the deterministic multi-event JSON/CSV package, run metadata and provenance
+log without adding fields to individual events. Before version 1.0.0, the remaining work is evidence
+from the complete Stage 1 output quality gate.
 
 Issue #4 collection validation did not reveal a schema defect. Uniqueness, cross-field arithmetic
 and report severity remain semantic collection rules, so common schema version `0.2.0` is unchanged.
+Issue #6 likewise keeps file layout, ordering and run provenance outside the event record; schema
+version `0.2.0` remains unchanged.

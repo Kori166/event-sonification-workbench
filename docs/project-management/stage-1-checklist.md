@@ -62,7 +62,23 @@
 - [x] Valid complete MOT17 and KITTI fixture collections are covered by tests.
 - [x] Missing-field, wrong-type, duplicate, timestamp, box and multi-error fixtures are covered.
 - [x] Schema `0.2.0` remains unchanged because collection validation found no schema defect.
-- [ ] Pull-request CI passes and Issue #4 acceptance evidence is reviewed.
+- [x] Pull-request CI passed and Issue #4 merged through pull request #16.
+
+### Milestone 4: deterministic event and provenance outputs
+
+- [x] Existing adapters, schema, collection validation and canonical hashing are reused.
+- [x] Packages contain `events.json`, `events.csv`, `run_metadata.json` and `provenance_log.json`.
+- [x] Run IDs contain no time or randomness and are derived from deterministic content.
+- [x] Events sort by dataset, sequence, frame, lexical track ID, source row and event ID.
+- [x] JSON preserves every common event field through canonical UTF-8 serialisation.
+- [x] CSV uses the schema field order, LF endings and canonical nested JSON cells.
+- [x] Run metadata records dataset, sequence, source, parser, mapping, schema and output hashes.
+- [x] Provenance records logical inputs, configuration hashes, assumptions and decisions.
+- [x] Absolute local paths and unsafe output directories are rejected.
+- [x] Repeated MOT17 and KITTI fixture runs produce identical bytes, run IDs and hashes.
+- [x] `mot17-package` and `kitti-package` CLI commands parse, validate and write packages.
+- [x] Common schema `0.2.0` remains unchanged because no event-record defect was found.
+- [ ] Pull-request CI passes and Issue #6 acceptance evidence is reviewed.
 
 ### Remaining Stage 1 work
 
@@ -70,7 +86,7 @@
 - [x] KITTI Tracking parser implemented and tested.
 - [x] Common schema reviewed against both real dataset adapters.
 - [x] Single-event and collection-level normalised event validation implemented for both adapters.
-- [ ] Event and provenance outputs written in structured formats.
+- [x] Event and provenance outputs implemented locally in deterministic structured formats.
 - [x] Dataset-specific assumptions documented.
 - [ ] All Stage 1 automated tests pass in CI.
 - [ ] Progress log and risk register reviewed at Stage 1 completion.

@@ -383,3 +383,57 @@ be added where a short entry would omit important implementation evidence.
 - Audit the staged scope for local paths, ignored configuration, datasets and media.
 - Open a draft pull request that closes Issue #4 and wait for CI before merge.
 - Keep Issue #6 event-package output and all sonification/audio work out of this change.
+
+---
+
+## 2026-08-05 — Issue #6 deterministic event and provenance outputs
+
+**Work completed**
+
+- Started from the latest `origin/main`, including the merged Issue #4 collection validator.
+- Reused the common canonical JSON, hashing, parser and validation components to add one output
+  writer rather than a parallel pipeline.
+- Added canonical `events.json`, fixed-column LF-delimited `events.csv`, `run_metadata.json` and
+  `provenance_log.json` under a content-derived run ID.
+- Added deterministic cross-adapter ordering, logical-only source/configuration references,
+  output hashes, validation summaries, conversion assumptions and decision-record references.
+- Added MOT17 and KITTI package CLI commands that parse, validate and write only valid collections.
+- Covered both complete committed fixtures, nested CSV values, field preservation, ordering,
+  repeated-run byte identity, metadata, provenance, hashes and unsafe input/output rejection.
+- Documented output format version `0.1.0`; common event schema `0.2.0` remains unchanged.
+
+**Decisions made**
+
+- The run ID is derived from deterministic input identities and event-output hashes; wall-clock
+  time, machine paths and randomness are excluded.
+- Events use the required `(dataset, sequence, frame, track_id, source_row, event_id)` ordering;
+  string track IDs retain common-schema lexical semantics for both adapters.
+- Nested CSV values use the shared canonical JSON representation.
+- `run_metadata.json` cannot embed its own hash without recursion, so its exact-byte hash is
+  returned by the writer while metadata records the scope explicitly.
+- Existing deterministic run directories may contain only the four expected regular files.
+
+**Problems and actions**
+
+- The repository virtual environment initially had Ruff and pytest but lacked the declared
+  `jsonschema` runtime dependency, so the first non-integration run stopped during collection with
+  nine `ModuleNotFoundError` reports. Installing the repository's declared `.[dev]` dependencies
+  into that ignored environment repaired it; no dependency files required changes.
+- Both complete-suite integration tests skipped clearly because private dataset roots were not
+  available to that test process. No private-data results or full-dataset output claims were made.
+- Unrelated local web-interface and launcher changes remain outside this Issue #6 scope.
+
+**Validation evidence**
+
+- Output-package coverage: 23 tests passed as part of each final suite run.
+- Ruff: `ruff check .` passed.
+- Non-integration suite after environment repair: 121 passed, 2 deselected.
+- Complete available suite: 121 passed, 2 private-data integrations skipped.
+- Reversing supplied fixture events and writing to separate roots produced identical run IDs,
+  bytes and SHA-256 values for all four package files.
+
+**Next actions**
+
+- Stage only Issue #6 files and README hunks; exclude local interface files and ignored data.
+- Open a draft pull request that closes Issue #6 and wait for CI before merge.
+- Keep Stage 1 in progress until the Issue #6 CI and review gates pass.
