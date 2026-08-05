@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:event-sonification-workbench:schema:event:0.2.0",
+  "title": "Common annotated-video event",
+  "description": "Stage 1 common event record reviewed against MOT17 and KITTI Tracking. Version 0.2.0 permits native unnormalised confidence scores.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "dataset",
+    "sequence",
+    "frame",
+    "timestamp",
+    "frame_rate",
+    "track_id",
+    "object_class",
+    "source_object_class",
+    "image_width",
+    "image_height",
+    "bbox_x",
+    "bbox_y",
+    "bbox_width",
+    "bbox_height",
+    "centre_x",
+    "centre_y",
+    "centre_x_normalised",
+    "centre_y_normalised",
+    "bbox_area",
+    "bbox_area_normalised",
+    "confidence",
+    "visibility",
+    "source_file",
+    "source_file_sha256",
+    "source_row",
+    "parser",
+    "parser_version",
+    "class_mapping_version",
+    "conversion_notes",
+    "metadata"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "0.2.0"
+    },
+    "event_id": {
+      "type": "string",
+      "pattern": "^evt:[a-z0-9_-]+:[a-z0-9_-]+:f[0-9]{6}:t[a-z0-9_-]+:r[0-9]{6}$"
+    },
+    "dataset": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-z0-9_-]+$"
+    },
+    "sequence": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-z0-9_-]+$"
+    },
+    "frame": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "timestamp": {
+      "type": "number",
+      "minimum": 0
+    },
+    "frame_rate": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "track_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "object_class": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-z0-9_-]+$"
+    },
+    "source_object_class": {
+      "type": "string",
+      "minLength": 1
+    },
+    "image_width": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "image_height": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "bbox_x": {
+      "type": "number"
+    },
+    "bbox_y": {
+      "type": "number"
+    },
+    "bbox_width": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "bbox_height": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "centre_x": {
+      "type": "number"
+    },
+    "centre_y": {
+      "type": "number"
+    },
+    "centre_x_normalised": {
+      "type": "number"
+    },
+    "centre_y_normalised": {
+      "type": "number"
+    },
+    "bbox_area": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "bbox_area_normalised": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "confidence": {
+      "description": "Native source confidence or ranking score. The scale is dataset-specific.",
+      "type": ["number", "null"]
+    },
+    "visibility": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "source_file": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_file_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "source_row": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "parser": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-z0-9_-]+$"
+    },
+    "parser_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$"
+    },
+    "class_mapping_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$"
+    },
+    "conversion_notes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

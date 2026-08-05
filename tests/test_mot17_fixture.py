@@ -225,7 +225,7 @@ def test_mot17_check_command_reports_deterministic_summary(
             "--class-mapping",
             str(MAPPING_PATH),
             "--schema",
-            str(ROOT / "configs" / "schemas" / "event.schema.v0.1.0.json"),
+            str(ROOT / "configs" / "schemas" / "event.schema.v0.2.0.json"),
         ]
     )
     output = json.loads(capsys.readouterr().out)

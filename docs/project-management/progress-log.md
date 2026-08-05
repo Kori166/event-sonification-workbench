@@ -269,3 +269,66 @@ be added where a short entry would omit important implementation evidence.
 - Publish and review the MOT17 parser changes.
 - Resolve the fixture redistribution or acceptance-criterion question recorded in Issue #3.
 - Begin Milestone 3 only after Milestone 2 can be marked complete.
+
+---
+
+## 2026-08-05 — Stage 1 Milestone 3 KITTI Tracking extension
+
+**Work completed**
+
+- Audited the configured KITTI Tracking root before implementation and discovered the actual
+  `training/label_02` layout, sequences `0000`–`0020`, 17-field rows and missing local terms files.
+- Reviewed the official KITTI tracking format, evaluation implementation, sensor rate, copyright,
+  attribution and licence sources.
+- Selected 12 deterministic rows from training sequence `0000` and recorded original source lines,
+  field order, method, source/fixture hashes, metadata, attribution and CC BY-NC-SA 3.0 terms.
+- Added separately identified synthetic malformed rows.
+- Implemented explicit 17/18-field KITTI parsing, coded structured diagnostics, class mapping,
+  common-event conversion, source provenance and sequence-image metadata inspection.
+- Preserved `DontCare` as explicit events and retained truncation, occlusion, alpha, 3D geometry,
+  rotation and optional scores.
+- Added schema `0.2.0`, retaining the event shape and relaxing only the native confidence range.
+- Updated the common schema, adapter, decisions, milestone evidence, project plan, checklist, risks,
+  fixture documentation and README.
+
+**Decisions made**
+
+- KITTI source frames remain zero-based common frames; timestamps use the official 10 Hz rate.
+- Right/bottom coordinates become width/height through subtraction and are treated as continuous
+  edges that may equal image width/height.
+- `DontCare` rows are not silently filtered; later processing must record any exclusion.
+- Occlusion is not converted to a fabricated MOT17-style visibility ratio.
+- Optional KITTI scores are preserved without clipping or probability semantics.
+- Schema 0.1.0 remains historical; both adapters now emit 0.2.0.
+
+**Problems and actions**
+
+- The process environment did not initially inherit the ignored local root configuration. The
+  value was exported only into private integration commands, and no absolute path was committed.
+- PowerShell did not provide `Path.GetRelativePath`; audit reporting used a root-relative fallback.
+- An initial integration assertion exposed nine boundary alerts. All ended exactly at image width
+  or height, so the check was aligned with continuous right/bottom edge geometry and the common
+  validator. The final run had zero warnings; truly outside geometry still warns.
+- GitHub CLI remained unavailable. Implementation and local evidence were completed; publication
+  uses the connected capability if available or remains explicitly blocked.
+
+**Validation evidence**
+
+- Ruff: `ruff check .` passed.
+- Non-integration suite: 76 passed, 2 deselected.
+- Dedicated KITTI integration: 1 passed.
+- All private integrations: 2 passed, 76 deselected.
+- Complete available Python suite with both private roots: 78 passed, zero failures or skips.
+- KITTI sequence `0000`: 1,089 physical/valid rows, 378 `DontCare`, 0 confidence rows, 0 errors,
+  0 final warnings and 1,089 schema/provenance-valid events.
+- Fixture: 12 rows; source SHA-256
+  `97f772a27181dfc7ef51b3e64b86bd42e682753b6855fdc58d259ecbed501fd4`; fixture SHA-256
+  `fe67e4e689ff4431464bf4ee040e79454bb2e9f0e9dd0331a594b9e6a3aab1b7`.
+- Repeated fixture conversion produced identical event order, IDs, canonical JSON and hashes.
+
+**Remaining work**
+
+- Audit the final staged scope for private paths, media and undocumented dataset-derived files.
+- Commit and push only Milestone 3 changes; preserve unrelated interface work.
+- Open a draft pull request and wait for CI before treating the milestone as merge-ready.
+- Do not merge until CI, acceptance, provenance and privacy gates all pass.

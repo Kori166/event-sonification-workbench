@@ -21,7 +21,7 @@ from event_sonification_workbench.provenance import sha256_file
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = ROOT / "tests" / "fixtures" / "mot17" / "manifest.json"
 MAPPING_PATH = ROOT / "configs" / "class-mappings" / "mot17.v0.1.0.json"
-SCHEMA_PATH = ROOT / "configs" / "schemas" / "event.schema.v0.1.0.json"
+SCHEMA_PATH = ROOT / "configs" / "schemas" / "event.schema.v0.2.0.json"
 
 
 def _integration_root() -> Path:

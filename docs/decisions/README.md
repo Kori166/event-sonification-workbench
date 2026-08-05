@@ -15,3 +15,4 @@ must be amended or superseded explicitly rather than silently rewritten.
 - [0005: Project management recording](0005-project-management-recording.md)
 - [0006: Provisional common event schema v0.1.0](0006-common-event-schema-v0.1.0.md)
 - [0007: MOT17 ground-truth mapping](0007-mot17-ground-truth-mapping.md)
+- [0008: KITTI Tracking mapping and common schema v0.2.0](0008-kitti-tracking-mapping-and-schema-v0.2.0.md)

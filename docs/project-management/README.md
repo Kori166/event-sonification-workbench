@@ -7,6 +7,7 @@ This directory contains the working evidence used to plan, track and review the 
 - `progress-log.md`: dated record of work, decisions, problems, actions and next steps.
 - `../development/milestone-2-mot17-vertical-slice.md`: detailed implementation, diagnostic and
   validation evidence for the MOT17 vertical slice.
+- `../development/milestone-3-kitti-extension.md`: KITTI audit, fixture, parser and integration evidence.
 - `risk-register.md`: identified risks, mitigations and review status.
 - `supervision-log.md`: verified supervision feedback and resulting actions.
 

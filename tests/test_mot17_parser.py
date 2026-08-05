@@ -25,7 +25,7 @@ MOT17_ROOT = FIXTURE_ROOT / "MOT17"
 SEQUENCE_DIR = MOT17_ROOT / "train" / "MOT17-SYNTHETIC-01"
 GT_PATH = SEQUENCE_DIR / "gt" / "gt.txt"
 MAPPING_PATH = ROOT / "configs" / "class-mappings" / "mot17.v0.1.0.json"
-SCHEMA_PATH = ROOT / "configs" / "schemas" / "event.schema.v0.1.0.json"
+SCHEMA_PATH = ROOT / "configs" / "schemas" / "event.schema.v0.2.0.json"
 SOURCE_FILE = "MOT17/train/MOT17-SYNTHETIC-01/gt/gt.txt"
 
 

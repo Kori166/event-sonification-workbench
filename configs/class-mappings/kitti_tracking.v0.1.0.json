@@ -1,0 +1,26 @@
+{
+  "version": "0.1.0",
+  "dataset": "kitti_tracking",
+  "authoritative_source": "KITTI tracking devkit format and official TrackEval KITTI adapter, https://github.com/JonathonLuiten/TrackEval/blob/master/docs/KITTI-format.txt",
+  "unsupported_class_behaviour": "error",
+  "dont_care_behaviour": "preserve_event",
+  "description": "KITTI Tracking native-to-common class mapping. Native labels are preserved separately and mapped without evaluation-time filtering.",
+  "classes": {
+    "Car": {"common_class": "car"},
+    "Van": {"common_class": "van"},
+    "Truck": {"common_class": "truck"},
+    "Pedestrian": {"common_class": "pedestrian"},
+    "Person": {"common_class": "person_sitting"},
+    "Person_sitting": {"common_class": "person_sitting"},
+    "Cyclist": {"common_class": "cyclist"},
+    "Tram": {"common_class": "tram"},
+    "Misc": {"common_class": "misc"},
+    "DontCare": {"common_class": "dont_care"}
+  },
+  "notes": [
+    "The devkit documents eight object classes plus DontCare.",
+    "The inspected tracking labels use Person where the devkit prose uses Person_sitting; official TrackEval identifies Person as the sitting-person distractor class.",
+    "DontCare is retained as an event and is not silently filtered.",
+    "Unknown native labels are rejected rather than mapped to an implicit other class."
+  ]
+}

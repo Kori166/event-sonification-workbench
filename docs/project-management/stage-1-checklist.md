@@ -9,7 +9,7 @@
 - [x] Significant schema decisions recorded in Decision 0006.
 - [x] One synthetic source annotation and manually constructed expected event committed.
 - [x] Structural, arithmetic, deterministic-ID and provenance validation tests pass locally.
-- [ ] Schema reviewed against real MOT17 and KITTI Tracking rows before version `1.0.0`.
+- [x] Schema reviewed against real MOT17 and KITTI Tracking rows; version `0.2.0` decision recorded.
 
 ### Milestone 2: MOT17 vertical slice
 
@@ -34,14 +34,30 @@
 - [x] Twelve-row dataset-derived fixture committed with its licence notice.
 - [x] Issues #2 and #3 closed with acceptance-criterion evidence.
 
+### Milestone 3: KITTI Tracking extension
+
+- [x] Local KITTI root inspected before implementation; actual layout and 21 annotation files recorded.
+- [x] Official frame, track, class, truncation, occlusion, angle, 2D/3D geometry, score and `DontCare` definitions reviewed.
+- [x] Twelve-row deterministic KITTI fixture committed with attribution and CC BY-NC-SA 3.0 notice.
+- [x] Source line numbers, selection method, source hash and fixture hash recorded and tested.
+- [x] Synthetic malformed rows committed separately from dataset-derived rows.
+- [x] Seventeen required fields and optional score parsed through explicit type conversion.
+- [x] Frames, tracks, classes, 2D geometry, truncation, occlusion, score and provenance preserved.
+- [x] `DontCare` retained as a documented and tested event rather than silently discarded.
+- [x] Invalid field counts, numbers, boxes, frames, tracks, classes, truncation and occlusion produce coded diagnostics.
+- [x] Schema reviewed against both adapters; version `0.2.0` relaxes only native confidence range.
+- [x] Unit, malformed-row, mapping, time, geometry, quality, determinism and fixture-integrity tests pass locally.
+- [x] Full private sequence `0000` integration passes with 1,089 valid rows, 0 errors and 0 warnings.
+- [ ] Pull-request CI passes and Issue #5 acceptance evidence is reviewed.
+
 ### Remaining Stage 1 work
 
-- [ ] KITTI Tracking fixture documented and committed where permitted.
-- [ ] KITTI Tracking parser implemented and tested.
-- [ ] Common schema reviewed against both real dataset adapters.
-- [ ] Normalised event validation extended for remaining dataset-specific requirements.
+- [x] KITTI Tracking fixture documented and committed under the official dataset licence.
+- [x] KITTI Tracking parser implemented and tested.
+- [x] Common schema reviewed against both real dataset adapters.
+- [x] Normalised event validation extended for KITTI-specific requirements.
 - [ ] Event and provenance outputs written in structured formats.
-- [ ] Dataset-specific assumptions documented.
+- [x] Dataset-specific assumptions documented.
 - [ ] All Stage 1 automated tests pass in CI.
 - [ ] Progress log and risk register reviewed at Stage 1 completion.
 

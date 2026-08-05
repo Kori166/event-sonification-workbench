@@ -6,7 +6,7 @@ from jsonschema import Draft202012Validator
 from event_sonification_workbench.event_validation import load_json_object, validate_event
 
 ROOT = Path(__file__).resolve().parents[1]
-SCHEMA_PATH = ROOT / "configs" / "schemas" / "event.schema.v0.1.0.json"
+SCHEMA_PATH = ROOT / "configs" / "schemas" / "event.schema.v0.2.0.json"
 EVENT_PATH = ROOT / "tests" / "fixtures" / "synthetic" / "expected_event.json"
 
 
@@ -52,3 +52,14 @@ def test_incorrect_derived_geometry_is_rejected_semantically() -> None:
     assert report.valid is False
     assert report.checks["schema"] is True
     assert report.checks["centre"] is False
+
+
+def test_native_confidence_score_is_not_assumed_to_be_normalised() -> None:
+    schema = load_json_object(SCHEMA_PATH)
+    event = load_json_object(EVENT_PATH)
+    event["confidence"] = 2.75
+
+    report = validate_event(event, schema, repository_root=ROOT)
+
+    assert report.valid is True
+    assert report.schema_errors == []
