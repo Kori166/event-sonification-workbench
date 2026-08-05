@@ -14,14 +14,16 @@
 | R10 | A MOT17 evaluation mark is incorrectly treated as detector confidence | Medium | High | Store common confidence as `null`, retain the source mark in metadata and test the rule explicitly. | Reduced by Decision 0007 and tests |
 | R11 | Synthetic format tests are reported as evidence of real dataset compatibility | Low | High | Keep the evidence boundary explicit and require separate private integration runs. | Reduced; both private integrations passed and real package results are recorded separately |
 | R12 | A KITTI ranking score is clipped or misreported as a normalised probability | Low | High | Preserve the native value, relax the common range in schema `0.2.0`, document scale semantics and test values outside `[0,1]`. | Reduced by Decision 0008 and automated tests |
-| R13 | Stage 2 preset, cue or renderer changes break deterministic sonification | Medium | High | Version presets, canonicalise cue/suppression logs, hash audio outputs and require repeated-run tests. | Reduced for cue scheduling by preset/output versions and byte-repeat tests; renderer/audio remains open |
+| R13 | Stage 2 preset, cue or renderer changes break deterministic sonification | Low | High | Version presets and renderers, canonicalise logs, hash audio outputs and require repeated-run tests. | Reduced by versioned cue/audio packages, explicit sample/PCM policies and fixture byte-repeat tests; monitor broader-platform evidence |
+| R14 | Floating-point oscillator or mixing implementations differ at a PCM quantisation boundary on another runtime/platform | Medium | Medium | Pin renderer/policy versions, record tested environments and hashes, avoid unsupported cross-platform claims, and add cross-platform evidence before making one. | Open; repeatability established only in the locally tested environment and CI pending |
 
 ## Review
 
-Last reviewed: 5 August 2026, during Stage 2 Milestone 1 cue-scheduling implementation.
+Last reviewed: 5 August 2026, during Stage 2 Milestone 2 audio-rendering implementation.
 
 R9 remains an explicit redistribution limitation. R4 remains open until Stage 3 metrics exist. R13
-is reduced for deterministic preset-to-schedule output but remains open for audio rendering.
+is reduced by the complete configured schedule-to-audio path. R14 records the deliberately bounded
+cross-platform evidence claim.
 
 The register must be reviewed when a risk changes, a mitigation is applied, an issue changes the
 agreed scope or a new project stage begins.

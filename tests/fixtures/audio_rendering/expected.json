@@ -1,0 +1,24 @@
+{
+  "calculation_method": "Manual decimal half-up time conversion and documented baseline renderer formulas; no renderer code generated these expected values.",
+  "sample_rate_hz": 44100,
+  "channel_count": 2,
+  "sample_width_bytes": 2,
+  "start_samples": [44, 441, 1323],
+  "duration_samples": [882, 662, 441],
+  "end_samples_exclusive": [926, 1103, 1764],
+  "total_frame_count": 1764,
+  "initial_silent_frame_count": 44,
+  "attack_samples": 221,
+  "release_samples": 441,
+  "selected_pcm_frames": {
+    "45": [37, 37],
+    "1324": [0, 96]
+  },
+  "pan_expectations": [
+    "centred cue has equal left and right channel gain",
+    "left-panned cue has zero right-channel gain",
+    "right-panned cue has zero left-channel gain"
+  ],
+  "normalisation_expected": false,
+  "applied_global_gain": 1.0
+}

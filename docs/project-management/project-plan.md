@@ -15,7 +15,7 @@ normalised events, deterministic audio cues and traceable technical outputs.
 |---|---|---|---|
 | 0. Project setup | Establish the repository structure, environment, documentation and project tracking | Working package scaffold, CI test, README and project records | Complete, 28 July 2026 |
 | 1. Data ingestion and normalisation | Parse MOT17 and KITTI Tracking annotations into a common event schema | Parsers, schema, validation outputs, provenance records and tests | Complete, 5 August 2026 |
-| 2. Sonification | Map normalised events into scheduled audio cues | Mapping presets, cue schedules, audio files and logs | Active from 5 August 2026; deterministic scheduling implemented locally, audio not started |
+| 2. Sonification | Map normalised events into scheduled audio cues | Mapping presets, cue schedules, audio files and logs | Active from 5 August 2026; cue scheduling merged, deterministic WAV rendering implemented locally |
 | 3. Technical evaluation | Measure coverage, alignment, traceability, cue density, overlap and reproducibility | Evaluation reports, comparison results and repeat-run checks | Planned |
 | 4. Artefact assembly and release | Validate, document and package the complete workbench | Reproducible release, final documentation and tagged version | Planned |
 | 5. Reporting and viva preparation | Complete the dissertation and prepare the artefact demonstration | Final report, demonstration plan and viva notes | Planned |
@@ -142,8 +142,8 @@ by Git.
 
 Stage 2 is active and tracked in `docs/project-management/stage-2-checklist.md`. Milestone 1 under
 Issue #19 implements the versioned preset, deterministic event-to-cue mapping, cue schedules,
-suppression policy and traceability logs. It leaves deterministic audio rendering for later Stage 2
-work and technical evaluation for Stage 3.
+suppression policy and traceability logs. Milestone 2 under Issue #21 consumes that package through
+a versioned deterministic stereo PCM WAV renderer. Technical evaluation remains Stage 3 work.
 
 ### Stage 2 Milestone 1 quality gate
 
@@ -158,6 +158,22 @@ Milestone 1 is ready for merge only when:
 - invalid packages, presets, validation status and unsafe paths are rejected;
 - normal and complete available tests and pull-request CI pass; and
 - no audio, evaluation claims, generated packages or private paths enter the change.
+
+Milestone 1 passed CI and merged through pull request #20 on 5 August 2026.
+
+### Stage 2 Milestone 2 quality gate
+
+Milestone 2 is ready for merge only when:
+
+- renderer configuration and every time, envelope, pan, mixing, gain and PCM policy are versioned;
+- cue-package files, hashes, run identity, counts, order, cue parameters and preset identity pass a
+  strict pre-render gate;
+- WAV/log/metadata outputs have deterministic content IDs, bytes and hashes;
+- cue/source-event/sample traceability and an explicit empty-schedule result are preserved;
+- manual expected samples and an end-to-end committed-fixture chain pass independently;
+- complete committed MOT17 and KITTI cue schedules reach the renderer contract;
+- normal and complete tests and pull-request CI pass; and
+- no generated audio, private data/path or Stage 3/perceptual claim enters the change.
 
 ## Key Project Milestones
 
