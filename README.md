@@ -17,18 +17,23 @@ map events to configurable cues, preserve provenance and support technical evalu
 
 ## Status
 
-Stage 0 is complete. Stage 1 is in progress.
+Stage 0 and Stage 1 are complete. Stage 1 closed on 5 August 2026 after real-data package and
+repeat-run verification for MOT17 and KITTI Tracking. Stage 2 sonification is the next active stage;
+its implementation has not started.
 
 Milestone 1 established common schema version `0.1.0`. The cross-dataset review in Milestone 3
 introduced schema `0.2.0`, retaining the event shape while allowing native unnormalised confidence
 scores. Both the completed MOT17 and KITTI Tracking adapters emit `0.2.0`.
 
-Issue #4 collection validation is complete and merged through pull request #16. Issue #6 adds the
-deterministic Stage 1 hand-off: schema `0.2.0` events can be written to canonical JSON, fixed-column
-CSV, run metadata and a provenance log beneath a content-derived run ID.
+Issues #4, #5 and #6 are closed. Their implementations merged through pull requests #16, #15 and
+#17 respectively. Common schema `0.2.0` is current, and validated events can be written to canonical
+JSON, fixed-column CSV, run metadata and a provenance log beneath a content-derived run ID.
 
-Stage 1 remains in progress while the Issue #6 pull request awaits CI and review. No sonification,
-audio generation or evaluation is part of the structured-output milestone.
+The close-out converted real sequence `MOT17-02-DPM` into 30,003 valid events and KITTI Tracking
+sequence `0000` into 1,089 valid events. Separate repeat runs produced identical run IDs, event
+ordering, package bytes and SHA-256 values. MOT17 retained 988 permitted out-of-image geometry
+warnings; KITTI produced no warnings. Full evidence is recorded in
+`docs/development/stage-1-closeout.md`.
 
 ## Repository structure
 
@@ -198,7 +203,7 @@ columns, hash scopes and overwrite policy are documented in `docs/data-model/out
 
 ## Documentation
 
-- `docs/data-model/common-event-schema.md`: provisional common schema contract.
+- `docs/data-model/common-event-schema.md`: current common schema `0.2.0` contract.
 - `docs/data-model/event-validation.md`: single-event and collection validation contract.
 - `docs/data-model/output-package.md`: JSON, CSV, metadata and provenance output contract.
 - `docs/data-model/mot17-adapter.md`: MOT17 format and conversion rules.
@@ -210,6 +215,8 @@ columns, hash scopes and overwrite policy are documented in `docs/data-model/out
 - `docs/development/milestone-2-mot17-vertical-slice.md`: development and validation evidence.
 - `docs/development/milestone-3-kitti-extension.md`: audit, fixture and integration evidence.
 - `docs/development/milestone-2-fixture-licence-resolution.md`: fixture licence decision.
+- `docs/development/stage-1-closeout.md`: real-data package, repeat-run and quality-gate evidence.
+- `docs/project-management/stage-2-checklist.md`: next-stage planning; no sonification is complete.
 - `tests/fixtures/mot17/README.md`: fixture selection and reproduction evidence.
 - `tests/fixtures/kitti/README.md`: KITTI fixture provenance, licence and reproduction evidence.
 - `outputs/README.md`: generated-output storage boundary.

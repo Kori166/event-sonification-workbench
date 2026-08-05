@@ -432,8 +432,64 @@ be added where a short entry would omit important implementation evidence.
 - Reversing supplied fixture events and writing to separate roots produced identical run IDs,
   bytes and SHA-256 values for all four package files.
 
+**Outcome recorded at close-out**
+
+- Issue #6 was isolated from interface work, passed CI and merged through pull request #17.
+- The following close-out entry supersedes the earlier pending Stage 1 status.
+
+---
+
+## 2026-08-05 - Stage 1 close-out
+
+**Work completed**
+
+- Confirmed Issues #4, #5 and #6 are closed and pull requests #16, #15 and #17 are merged.
+- Confirmed common event schema `0.2.0` remains current.
+- Generated ignored real-data packages for `MOT17-02-DPM` and KITTI Tracking `0000`.
+- Verified exact four-file membership, validation, physical/output hashes, sorted events and absence
+  of the private root strings in package content.
+- Repeated both package commands in a separate ignored location and compared all four files byte by
+  byte before moving the comparison artefacts out of the workspace.
+- Reviewed Stage 1 criteria, project status and risks; prepared a planning-only Stage 2 checklist.
+
+**Real package evidence**
+
+- MOT17: run `run-mot17-mot17-02-dpm-03074d7ff016652e`; 30,003 valid events; 0 errors;
+  988 permitted `bbox_outside_image` warnings; schema `0.2.0`; parser `0.1.0`.
+- MOT17 hashes: source `2e3ecb488da8886d3200d402b2b08890c6d2879923839444e9b74fa43a551440`;
+  JSON `880232f6ea0696a8c74600f51fe46e8221ff8ee40536dbef4570921a8779b96e`; CSV
+  `2b4b5e3dac8e70661719b555fc6578a088e8b3aa18758f99447d3137dd43f3ee`; metadata
+  `e247260608d4aaac72f2b5d3e3a602ebe29d7b8e8d2dedd10a2320b6456c7bee`; provenance
+  `6b44534de1c9ffb9f1f4b7f2d033fa954e08c4dab219e68d8333ef649f55ae5f`.
+- KITTI: run `run-kitti_tracking-0000-94a4cdc57ff00109`; 1,089 valid events; 0 errors;
+  0 warnings; schema `0.2.0`; parser `0.1.0`.
+- KITTI hashes: source `97f772a27181dfc7ef51b3e64b86bd42e682753b6855fdc58d259ecbed501fd4`;
+  JSON `542389e4a783380191fdc228b83c37309fa4d483d58913978881ee3cfb6f57a2`; CSV
+  `5068c491c8feace0ba39b91f9398e7b96b6310174c5d63b28a1792c4d8fb0db5`; metadata
+  `89cefd74709226303257f6c315368b75b8bb52e84c4c473c03f0f5bf9a37a47b`; provenance
+  `916703854628b24b0503a56f5bb754204691fe6aa517169fadb3dd5bc2968325`.
+
+**Reproducibility and validation evidence**
+
+- Both repeats produced the same run ID, deterministic event ordering, identical metadata and
+  byte-identical JSON, CSV, metadata and provenance files with the same hashes.
+- `python -m ruff check .`: passed.
+- `python -m pytest -m "not integration"`: 121 passed, 2 deselected.
+- `python -m pytest -m integration`: 2 passed, 121 deselected; neither integration skipped.
+- `python -m pytest`: 123 passed.
+
+**Problems and limitations**
+
+- The desktop process did not inherit the roots, so only the two allowed variables were loaded into
+  command processes from the ignored local environment file without printing their values.
+- Local `main` had separate unpublished history; the branch was based directly on fetched
+  `origin/main` without changing that history.
+- MOT17 retains 988 permitted out-of-image source boxes. Selected-sequence evidence does not claim
+  every sequence was converted, and generated full-data packages remain local and ignored.
+- Sonification, audio rendering and evaluation remain unimplemented.
+
 **Next actions**
 
-- Stage only Issue #6 files and README hunks; exclude local interface files and ignored data.
-- Open a draft pull request that closes Issue #6 and wait for CI before merge.
-- Keep Stage 1 in progress until the Issue #6 CI and review gates pass.
+- Publish the documentation-only close-out pull request and require its CI to pass before merge.
+- Begin Stage 2 from versioned preset and deterministic cue-mapping design; do not treat the new
+  checklist as completed implementation.
