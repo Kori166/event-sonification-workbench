@@ -545,3 +545,50 @@ be added where a short entry would omit important implementation evidence.
 - Audit and stage only Issue #19 implementation and documentation files.
 - Open pull request `Stage 2: add deterministic cue scheduling` and require CI before merge.
 - Keep audio rendering and technical evaluation outside this milestone.
+
+---
+
+## 2026-08-05 - Stage 2 Milestone 2 deterministic WAV rendering
+
+**Work completed**
+
+- Confirmed Milestone 1 merged through PR #20 and created assigned Issue #21.
+- Added renderer schema/configuration `0.1.0` with coded validation diagnostics.
+- Added strict cue-package integrity, identity, count, ordering, parameter and preset verification.
+- Implemented Decimal half-up sample placement, fixed-phase sine synthesis, linear envelopes/pan,
+  ordered overlap summation, conditional peak gain and explicit PCM16 conversion.
+- Added minimal deterministic WAV, canonical render log and renderer metadata beneath a
+  content-derived audio run ID, including a zero-frame empty-schedule policy.
+- Added a manual three-cue fixture/oracle, committed-fixture end-to-end chain and complete committed
+  MOT17/KITTI compatibility tests without committing generated audio.
+- Documented the renderer/WAV contract, Decision 0012, project status and evidence boundary.
+
+**Decisions made**
+
+- Cue end samples are exclusive and all second-to-sample conversions use Decimal half-up.
+- Baseline pan is linear balance; class modifier is retained only for traceability in policy 0.1.0.
+- Global target-peak gain applies only when needed; PCM quantisation follows mixing and gain.
+- Empty valid schedules produce a zero-frame WAV rather than failing.
+- Cross-platform byte identity is not claimed beyond environments actually tested.
+
+**Problems and risks**
+
+- GitHub CLI remained unavailable, so the connected GitHub capability created Issue #21.
+- Complete pytest skipped two private-data integrations; skips are not treated as evidence of pass.
+- Floating-point/libm differences near quantisation boundaries remain a monitored portability risk.
+
+**Validation evidence**
+
+- `python -m ruff check .`: passed.
+- `python -m pytest -m "not integration"`: 178 passed, 2 deselected.
+- `python -m pytest`: 178 passed, 2 private-data integration tests skipped clearly.
+- 34 audio-renderer tests passed within the final suites.
+- Repeated separate fixture outputs had identical run IDs, WAV/JSON bytes and SHA-256 hashes.
+- Actual manual fixture WAV SHA-256:
+  `041aa0be80f18ddc770cf0fee1cd4c426509972cc4d386eee72b7b2397081beb`.
+
+**Next actions**
+
+- Audit and stage only Issue #21 changes, preserving unrelated interface work.
+- Open draft pull request `Stage 2: add deterministic WAV rendering`, closing Issue #21.
+- Require CI and acceptance evidence before merge; leave Stage 3 evaluation out of this branch.

@@ -1,0 +1,36 @@
+{
+  "renderer_schema_version": "0.1.0",
+  "renderer_name": "baseline_sine_pcm16",
+  "renderer_version": "0.1.0",
+  "rendering_policy_version": "0.1.0",
+  "supported_cue_package_version": "0.1.0",
+  "sample_rate_hz": 44100,
+  "channel_count": 2,
+  "pcm_sample_format": "signed_16_bit_little_endian",
+  "waveform": "sine",
+  "phase_policy": "reset_zero_each_cue",
+  "envelope": {
+    "method": "linear",
+    "attack_seconds": 0.005,
+    "release_seconds": 0.01
+  },
+  "stereo_pan_method": "linear_balance",
+  "class_modifier_method": "trace_only_not_applied",
+  "overlap_mixing_policy": "ordered_sum",
+  "master_gain": 1.0,
+  "normalisation": {
+    "policy": "peak_limit_if_exceeded",
+    "target_peak": 0.95
+  },
+  "trailing_silence": {
+    "policy": "fixed_duration",
+    "duration_seconds": 0.0,
+    "empty_schedule_policy": "zero_frames"
+  },
+  "time_to_sample_rounding_policy": "decimal_round_half_up",
+  "sample_quantisation_policy": "signed_full_scale_half_away_from_zero_clamp_int16",
+  "cue_processing_order": [
+    "start_sample",
+    "cue_id"
+  ]
+}

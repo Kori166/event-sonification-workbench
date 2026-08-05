@@ -48,7 +48,12 @@ from .output_package import (
     write_event_package,
 )
 from .provenance import sha256_file
+from .sonification.audio_renderer import AudioRenderError, render_audio_package
 from .sonification.preset import PresetValidationError, load_sonification_preset
+from .sonification.renderer_config import (
+    RendererConfigurationError,
+    load_renderer_configuration,
+)
 from .sonification.scheduler import CueScheduleError, schedule_event_package
 
 DEFAULT_SCHEMA = Path("configs/schemas/event.schema.v0.2.0.json")
@@ -57,6 +62,8 @@ DEFAULT_KITTI_MAPPING = Path("configs/class-mappings/kitti_tracking.v0.1.0.json"
 DEFAULT_OUTPUT_DIRECTORY = Path("outputs")
 DEFAULT_SONIFICATION_PRESET = Path("configs/sonification/presets/baseline-v0.1.0.json")
 DEFAULT_SONIFICATION_PRESET_SCHEMA = Path("configs/sonification/schemas/preset.schema.v0.1.0.json")
+DEFAULT_RENDERER_CONFIG = Path("configs/sonification/renderers/baseline-v0.1.0.json")
+DEFAULT_RENDERER_SCHEMA = Path("configs/sonification/renderers/renderer.schema.v0.1.0.json")
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -124,6 +131,15 @@ def _build_parser() -> argparse.ArgumentParser:
         type=Path,
         default=DEFAULT_OUTPUT_DIRECTORY,
     )
+
+    render_audio = subparsers.add_parser(
+        "render-audio",
+        help="Verify a cue package and write deterministic stereo PCM WAV audio.",
+    )
+    render_audio.add_argument("--cue-package", type=Path, required=True)
+    render_audio.add_argument("--renderer-config", type=Path, default=DEFAULT_RENDERER_CONFIG)
+    render_audio.add_argument("--renderer-schema", type=Path, default=DEFAULT_RENDERER_SCHEMA)
+    render_audio.add_argument("--output-directory", type=Path, default=DEFAULT_OUTPUT_DIRECTORY)
     return parser
 
 
@@ -384,6 +400,27 @@ def _run_schedule_cues(args: argparse.Namespace) -> int:
     return 0
 
 
+def _run_render_audio(args: argparse.Namespace) -> int:
+    renderer = load_renderer_configuration(
+        args.renderer_config,
+        schema_path=args.renderer_schema,
+        logical_path=_logical_configuration_path(args.renderer_config),
+    )
+    package = render_audio_package(
+        args.cue_package,
+        renderer=renderer,
+        output_directory=args.output_directory,
+    )
+    print(
+        json.dumps(
+            {"command": "render-audio", **package.to_summary_dict()},
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """Run the workbench command-line interface."""
     parser = _build_parser()
@@ -420,10 +457,13 @@ def main(argv: Sequence[str] | None = None) -> int:
             return _run_kitti_package(args)
         if args.command == "schedule-cues":
             return _run_schedule_cues(args)
-    except PresetValidationError as exc:
+        if args.command == "render-audio":
+            return _run_render_audio(args)
+    except (PresetValidationError, RendererConfigurationError) as exc:
         parser.error(json.dumps(exc.to_dict(), sort_keys=True))
     except (
         CueScheduleError,
+        AudioRenderError,
         KITTIParseError,
         MOT17ParseError,
         OutputPackageError,

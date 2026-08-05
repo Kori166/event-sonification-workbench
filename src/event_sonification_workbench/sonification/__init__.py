@@ -1,11 +1,30 @@
-"""Deterministic event-to-cue scheduling without audio rendering."""
+"""Deterministic event-to-cue scheduling and configured PCM audio rendering."""
 
+from .audio_renderer import (
+    AudioPackageResult,
+    AudioRenderError,
+    CuePackageIdentity,
+    LoadedCuePackage,
+    load_cue_package,
+    quantise_pcm16,
+    render_audio_package,
+    render_cues,
+    seconds_to_samples,
+    write_audio_package,
+)
 from .preset import (
     PresetDiagnostic,
     PresetValidationError,
     SonificationPreset,
     load_sonification_preset,
     validate_preset_document,
+)
+from .renderer_config import (
+    RendererConfiguration,
+    RendererConfigurationError,
+    RendererDiagnostic,
+    load_renderer_configuration,
+    validate_renderer_document,
 )
 from .scheduler import (
     CueMappingResult,
@@ -20,18 +39,33 @@ from .scheduler import (
 )
 
 __all__ = [
+    "AudioPackageResult",
+    "AudioRenderError",
     "CueMappingResult",
+    "CuePackageIdentity",
     "CuePackageResult",
     "CueScheduleError",
     "EventPackageIdentity",
+    "LoadedCuePackage",
     "LoadedEventPackage",
     "PresetDiagnostic",
     "PresetValidationError",
+    "RendererConfiguration",
+    "RendererConfigurationError",
+    "RendererDiagnostic",
     "SonificationPreset",
+    "load_cue_package",
     "load_event_package",
+    "load_renderer_configuration",
     "load_sonification_preset",
     "map_validated_events",
+    "quantise_pcm16",
+    "render_audio_package",
+    "render_cues",
     "schedule_event_package",
+    "seconds_to_samples",
     "validate_preset_document",
+    "validate_renderer_document",
+    "write_audio_package",
     "write_cue_package",
 ]

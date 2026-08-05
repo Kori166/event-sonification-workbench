@@ -18,8 +18,8 @@ map events to configurable cues, preserve provenance and support technical evalu
 ## Status
 
 Stage 0 and Stage 1 are complete. Stage 1 closed on 5 August 2026 after real-data package and
-repeat-run verification for MOT17 and KITTI Tracking. Stage 2 is active: its first milestone adds a
-versioned baseline preset and deterministic cue scheduling, but does not render audio.
+repeat-run verification for MOT17 and KITTI Tracking. Stage 2 is active: Milestone 1 provides the
+versioned cue schedule and Milestone 2 adds configured deterministic stereo PCM WAV rendering.
 
 Milestone 1 established common schema version `0.1.0`. The cross-dataset review in Milestone 3
 introduced schema `0.2.0`, retaining the event shape while allowing native unnormalised confidence
@@ -218,8 +218,28 @@ outputs/<cue-run-id>/
 
 Outputs preserve source event/file/row and preset identity, use canonical JSON and LF-stable CSV,
 and repeat byte-for-byte for identical input and configuration. The baseline values are configurable
-technical choices, not perceptual or accessibility findings. No WAV or other audio is generated.
+technical choices, not perceptual or accessibility findings.
 See `docs/data-model/sonification-preset.md` and `docs/data-model/cue-schedule.md`.
+
+## Deterministic WAV rendering
+
+Stage 2 Milestone 2 verifies a cue package before rendering it through renderer configuration
+`0.1.0`. In PowerShell:
+
+```powershell
+python -m event_sonification_workbench.cli render-audio `
+  --cue-package outputs/<cue-run-id> `
+  --renderer-config configs/sonification/renderers/baseline-v0.1.0.json `
+  --output-directory outputs
+```
+
+The ignored content-derived audio run contains `sonification.wav`, `render_log.json` and
+`renderer_metadata.json`. The baseline is stereo, 44,100 Hz, signed 16-bit little-endian PCM with
+fixed-phase sine cues, linear attack/release and pan, ordered overlap summation and conditional
+peak limiting. Time placement uses decimal round-half-up; quantisation occurs after mixing and any
+global gain. Identical fixture runs produce identical bytes and hashes in the tested environment.
+This is reproducibility evidence for technical behaviour, not evidence of perceptual quality,
+accessibility, usefulness or safety. See `docs/data-model/audio-rendering.md`.
 
 ## Reproducibility controls
 
@@ -231,6 +251,8 @@ See `docs/data-model/sonification-preset.md` and `docs/data-model/cue-schedule.m
 - content-derived output run IDs, canonical package JSON and LF-stable CSV;
 - versioned preset validation, deterministic cue IDs and complete cue-or-suppression accounting;
 - canonical cue/suppression logs and content-derived schedule run IDs;
+- versioned renderer configuration, verified cue inputs and content-derived audio run IDs;
+- explicit sample placement, envelope, panning, mixing, normalisation and PCM quantisation rules;
 - file-level output hashes and path-free run provenance;
 - schema, semantic, provenance and determinism tests;
 - LF-normalised hashed fixtures; and
@@ -243,6 +265,7 @@ See `docs/data-model/sonification-preset.md` and `docs/data-model/cue-schedule.m
 - `docs/data-model/output-package.md`: JSON, CSV, metadata and provenance output contract.
 - `docs/data-model/sonification-preset.md`: preset schema, baseline formulas and suppression policy.
 - `docs/data-model/cue-schedule.md`: schedule input gate, records, files, IDs and hash contract.
+- `docs/data-model/audio-rendering.md`: renderer input gate, synthesis, WAV and provenance contract.
 - `docs/data-model/mot17-adapter.md`: MOT17 format and conversion rules.
 - `docs/data-model/kitti-tracking-adapter.md`: KITTI definitions, conversion and `DontCare` policy.
 - `docs/decisions/0007-mot17-ground-truth-mapping.md`: mapping decision.
@@ -250,11 +273,12 @@ See `docs/data-model/sonification-preset.md` and `docs/data-model/cue-schedule.m
 - `docs/decisions/0009-collection-validation-policy.md`: diagnostic and report policy.
 - `docs/decisions/0010-deterministic-output-package.md`: deterministic package format decision.
 - `docs/decisions/0011-versioned-preset-and-cue-schedule.md`: Stage 2 scheduling decision.
+- `docs/decisions/0012-deterministic-wav-rendering.md`: renderer, mixing and PCM policy decision.
 - `docs/development/milestone-2-mot17-vertical-slice.md`: development and validation evidence.
 - `docs/development/milestone-3-kitti-extension.md`: audit, fixture and integration evidence.
 - `docs/development/milestone-2-fixture-licence-resolution.md`: fixture licence decision.
 - `docs/development/stage-1-closeout.md`: real-data package, repeat-run and quality-gate evidence.
-- `docs/project-management/stage-2-checklist.md`: active Stage 2 scope and remaining audio work.
+- `docs/project-management/stage-2-checklist.md`: active Stage 2 implementation gates.
 - `tests/fixtures/mot17/README.md`: fixture selection and reproduction evidence.
 - `tests/fixtures/kitti/README.md`: KITTI fixture provenance, licence and reproduction evidence.
 - `outputs/README.md`: generated-output storage boundary.

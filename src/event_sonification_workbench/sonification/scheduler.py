@@ -521,7 +521,8 @@ def _serialise_csv_value(value: Any) -> str:
     return str(value)
 
 
-def _cue_csv_bytes(cues: Sequence[Mapping[str, Any]]) -> bytes:
+def cue_csv_bytes(cues: Sequence[Mapping[str, Any]]) -> bytes:
+    """Serialise cues using the one documented deterministic CSV representation."""
     stream = io.StringIO(newline="")
     writer = csv.writer(stream, lineterminator="\n", quoting=csv.QUOTE_MINIMAL)
     writer.writerow(CUE_CSV_COLUMNS)
@@ -616,7 +617,7 @@ def write_cue_package(
         "entries": list(mapping.suppressions),
     }
     schedule_bytes = canonical_json_bytes(cue_schedule)
-    csv_bytes = _cue_csv_bytes(mapping.cues)
+    csv_bytes = cue_csv_bytes(mapping.cues)
     cue_log_bytes = canonical_json_bytes(cue_log)
     suppression_bytes = canonical_json_bytes(suppression_log)
     deterministic_hashes = {

@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:event-sonification-workbench:schema:audio-renderer:0.1.0",
+  "title": "Versioned deterministic WAV renderer configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "renderer_schema_version",
+    "renderer_name",
+    "renderer_version",
+    "rendering_policy_version",
+    "supported_cue_package_version",
+    "sample_rate_hz",
+    "channel_count",
+    "pcm_sample_format",
+    "waveform",
+    "phase_policy",
+    "envelope",
+    "stereo_pan_method",
+    "class_modifier_method",
+    "overlap_mixing_policy",
+    "master_gain",
+    "normalisation",
+    "trailing_silence",
+    "time_to_sample_rounding_policy",
+    "sample_quantisation_policy",
+    "cue_processing_order"
+  ],
+  "properties": {
+    "renderer_schema_version": {"const": "0.1.0"},
+    "renderer_name": {
+      "type": "string",
+      "pattern": "^[a-z0-9_-]+$",
+      "minLength": 1
+    },
+    "renderer_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][0-9A-Za-z.-]+)?$"
+    },
+    "rendering_policy_version": {"const": "0.1.0"},
+    "supported_cue_package_version": {"const": "0.1.0"},
+    "sample_rate_hz": {
+      "type": "integer",
+      "minimum": 8000,
+      "maximum": 192000
+    },
+    "channel_count": {"const": 2},
+    "pcm_sample_format": {"const": "signed_16_bit_little_endian"},
+    "waveform": {"const": "sine"},
+    "phase_policy": {"const": "reset_zero_each_cue"},
+    "envelope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["method", "attack_seconds", "release_seconds"],
+      "properties": {
+        "method": {"const": "linear"},
+        "attack_seconds": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10
+        },
+        "release_seconds": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10
+        }
+      }
+    },
+    "stereo_pan_method": {"const": "linear_balance"},
+    "class_modifier_method": {"const": "trace_only_not_applied"},
+    "overlap_mixing_policy": {"const": "ordered_sum"},
+    "master_gain": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "maximum": 1
+    },
+    "normalisation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policy", "target_peak"],
+      "properties": {
+        "policy": {"const": "peak_limit_if_exceeded"},
+        "target_peak": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "trailing_silence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policy", "duration_seconds", "empty_schedule_policy"],
+      "properties": {
+        "policy": {"const": "fixed_duration"},
+        "duration_seconds": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 60
+        },
+        "empty_schedule_policy": {"const": "zero_frames"}
+      }
+    },
+    "time_to_sample_rounding_policy": {"const": "decimal_round_half_up"},
+    "sample_quantisation_policy": {
+      "const": "signed_full_scale_half_away_from_zero_clamp_int16"
+    },
+    "cue_processing_order": {"const": ["start_sample", "cue_id"]}
+  }
+}

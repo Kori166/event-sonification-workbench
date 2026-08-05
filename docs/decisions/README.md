@@ -19,3 +19,4 @@ must be amended or superseded explicitly rather than silently rewritten.
 - [0009: Collection validation and deterministic report policy](0009-collection-validation-policy.md)
 - [0010: Deterministic event and provenance output package](0010-deterministic-output-package.md)
 - [0011: Versioned preset and deterministic cue-schedule contract](0011-versioned-preset-and-cue-schedule.md)
+- [0012: Deterministic WAV rendering policy](0012-deterministic-wav-rendering.md)
