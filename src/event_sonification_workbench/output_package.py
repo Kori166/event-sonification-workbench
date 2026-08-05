@@ -309,7 +309,8 @@ def _serialise_csv_value(value: Any) -> str:
         raise OutputPackageError(f"CSV value is not JSON-compatible: {exc}") from exc
 
 
-def _events_csv_bytes(events: Sequence[Mapping[str, Any]]) -> bytes:
+def events_csv_bytes(events: Sequence[Mapping[str, Any]]) -> bytes:
+    """Return the fixed-column deterministic event CSV representation."""
     stream = io.StringIO(newline="")
     writer = csv.writer(stream, lineterminator="\n", quoting=csv.QUOTE_MINIMAL)
     writer.writerow(EVENT_CSV_COLUMNS)
@@ -436,9 +437,9 @@ def write_event_package(
         "events": list(ordered_events),
     }
     events_json_bytes = canonical_json_bytes(events_document)
-    events_csv_bytes = _events_csv_bytes(ordered_events)
+    events_csv_bytes_value = events_csv_bytes(ordered_events)
     events_json_sha256 = sha256_bytes(events_json_bytes)
-    events_csv_sha256 = sha256_bytes(events_csv_bytes)
+    events_csv_sha256 = sha256_bytes(events_csv_bytes_value)
     configuration_values = [configuration.to_dict() for configuration in configurations]
 
     run_identity = {
@@ -515,7 +516,7 @@ def write_event_package(
     package_directory = _prepare_output_directory(output_directory, run_id=run_id)
     payloads = {
         EVENTS_JSON_FILENAME: events_json_bytes,
-        EVENTS_CSV_FILENAME: events_csv_bytes,
+        EVENTS_CSV_FILENAME: events_csv_bytes_value,
         RUN_METADATA_FILENAME: run_metadata_bytes,
         PROVENANCE_LOG_FILENAME: provenance_log_bytes,
     }

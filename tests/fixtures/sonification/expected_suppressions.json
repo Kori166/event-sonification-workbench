@@ -1,0 +1,50 @@
+{
+  "fixture_version": "0.1.0",
+  "suppressions": [
+    {
+      "source_event_id": "evt:synthetic:cue_fixture:f000002:t3:r000004",
+      "dataset": "synthetic",
+      "sequence": "cue_fixture",
+      "frame": 2,
+      "track_id": "3",
+      "object_class": "distractor",
+      "preset_name": "baseline",
+      "preset_version": "0.1.0",
+      "preset_sha256": "27f9b4e031e12fe9e73e72275aa7359b5255e2f997a35fb2432372dcbd843289",
+      "source_file": "tests/fixtures/sonification/source_events.csv",
+      "source_row": 4,
+      "suppression_code": "class_excluded",
+      "reason": "The event class is in the preset exclusion list."
+    },
+    {
+      "source_event_id": "evt:synthetic:cue_fixture:f000003:t4:r000005",
+      "dataset": "synthetic",
+      "sequence": "cue_fixture",
+      "frame": 3,
+      "track_id": "4",
+      "object_class": "pedestrian",
+      "preset_name": "baseline",
+      "preset_version": "0.1.0",
+      "preset_sha256": "27f9b4e031e12fe9e73e72275aa7359b5255e2f997a35fb2432372dcbd843289",
+      "source_file": "tests/fixtures/sonification/source_events.csv",
+      "source_row": 5,
+      "suppression_code": "confidence_below_minimum",
+      "reason": "Available confidence is below the preset minimum."
+    },
+    {
+      "source_event_id": "evt:synthetic:cue_fixture:f000004:t-1:r000006",
+      "dataset": "synthetic",
+      "sequence": "cue_fixture",
+      "frame": 4,
+      "track_id": "-1",
+      "object_class": "dont_care",
+      "preset_name": "baseline",
+      "preset_version": "0.1.0",
+      "preset_sha256": "27f9b4e031e12fe9e73e72275aa7359b5255e2f997a35fb2432372dcbd843289",
+      "source_file": "tests/fixtures/sonification/source_events.csv",
+      "source_row": 6,
+      "suppression_code": "dont_care_excluded",
+      "reason": "DontCare events are excluded by this preset."
+    }
+  ]
+}

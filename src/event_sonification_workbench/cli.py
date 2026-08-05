@@ -48,11 +48,15 @@ from .output_package import (
     write_event_package,
 )
 from .provenance import sha256_file
+from .sonification.preset import PresetValidationError, load_sonification_preset
+from .sonification.scheduler import CueScheduleError, schedule_event_package
 
 DEFAULT_SCHEMA = Path("configs/schemas/event.schema.v0.2.0.json")
 DEFAULT_MOT17_MAPPING = Path("configs/class-mappings/mot17.v0.1.0.json")
 DEFAULT_KITTI_MAPPING = Path("configs/class-mappings/kitti_tracking.v0.1.0.json")
 DEFAULT_OUTPUT_DIRECTORY = Path("outputs")
+DEFAULT_SONIFICATION_PRESET = Path("configs/sonification/presets/baseline-v0.1.0.json")
+DEFAULT_SONIFICATION_PRESET_SCHEMA = Path("configs/sonification/schemas/preset.schema.v0.1.0.json")
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -100,6 +104,22 @@ def _build_parser() -> argparse.ArgumentParser:
     kitti_package.add_argument("--schema", type=Path, default=DEFAULT_SCHEMA)
     kitti_package.add_argument("--class-mapping", type=Path, default=DEFAULT_KITTI_MAPPING)
     kitti_package.add_argument(
+        "--output-directory",
+        type=Path,
+        default=DEFAULT_OUTPUT_DIRECTORY,
+    )
+
+    schedule_cues = subparsers.add_parser(
+        "schedule-cues",
+        help="Validate an event package and write a deterministic cue schedule without audio.",
+    )
+    schedule_cues.add_argument("--event-package", type=Path, required=True)
+    schedule_cues.add_argument("--preset", type=Path, default=DEFAULT_SONIFICATION_PRESET)
+    schedule_cues.add_argument(
+        "--preset-schema", type=Path, default=DEFAULT_SONIFICATION_PRESET_SCHEMA
+    )
+    schedule_cues.add_argument("--schema", type=Path, default=DEFAULT_SCHEMA)
+    schedule_cues.add_argument(
         "--output-directory",
         type=Path,
         default=DEFAULT_OUTPUT_DIRECTORY,
@@ -342,6 +362,28 @@ def _run_kitti_package(args: argparse.Namespace) -> int:
     return 0
 
 
+def _run_schedule_cues(args: argparse.Namespace) -> int:
+    preset = load_sonification_preset(
+        args.preset,
+        schema_path=args.preset_schema,
+        logical_path=_logical_configuration_path(args.preset),
+    )
+    package = schedule_event_package(
+        args.event_package,
+        preset=preset,
+        schema_path=args.schema,
+        output_directory=args.output_directory,
+    )
+    print(
+        json.dumps(
+            {"command": "schedule-cues", **package.to_summary_dict()},
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """Run the workbench command-line interface."""
     parser = _build_parser()
@@ -376,7 +418,19 @@ def main(argv: Sequence[str] | None = None) -> int:
             return _run_mot17_package(args)
         if args.command == "kitti-package":
             return _run_kitti_package(args)
-    except (KITTIParseError, MOT17ParseError, OutputPackageError, OSError, TypeError, ValueError) as exc:
+        if args.command == "schedule-cues":
+            return _run_schedule_cues(args)
+    except PresetValidationError as exc:
+        parser.error(json.dumps(exc.to_dict(), sort_keys=True))
+    except (
+        CueScheduleError,
+        KITTIParseError,
+        MOT17ParseError,
+        OutputPackageError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as exc:
         parser.error(str(exc))
 
     parser.error(f"Unknown command: {args.command}")

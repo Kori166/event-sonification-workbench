@@ -18,8 +18,8 @@ map events to configurable cues, preserve provenance and support technical evalu
 ## Status
 
 Stage 0 and Stage 1 are complete. Stage 1 closed on 5 August 2026 after real-data package and
-repeat-run verification for MOT17 and KITTI Tracking. Stage 2 sonification is the next active stage;
-its implementation has not started.
+repeat-run verification for MOT17 and KITTI Tracking. Stage 2 is active: its first milestone adds a
+versioned baseline preset and deterministic cue scheduling, but does not render audio.
 
 Milestone 1 established common schema version `0.1.0`. The cross-dataset review in Milestone 3
 introduced schema `0.2.0`, retaining the event shape while allowing native unnormalised confidence
@@ -188,6 +188,39 @@ Both commands parse, collection-validate and then write. They refuse parser erro
 collections. Generated packages remain ignored and must not be committed. The exact format, CSV
 columns, hash scopes and overwrite policy are documented in `docs/data-model/output-package.md`.
 
+## Deterministic cue scheduling
+
+Stage 2 Milestone 1 maps a valid schema `0.2.0` event package through the versioned baseline preset:
+
+```bash
+python -m event_sonification_workbench.cli schedule-cues \
+  --event-package outputs/<stage-1-run-id> \
+  --preset configs/sonification/presets/baseline-v0.1.0.json \
+  --output-directory outputs
+```
+
+The command independently checks package integrity, recorded validation status, schema/semantic
+validity and deterministic event order. It refuses incompatible presets, malformed packages and
+unsafe paths. Each accepted event becomes exactly one cue or one explicit suppression. The
+baseline records class exclusions, low available confidence, frame-stride policy and `DontCare`
+treatment rather than silently dropping events.
+
+The ignored content-derived run directory contains:
+
+```text
+outputs/<cue-run-id>/
+|-- cue_schedule.json
+|-- cue_schedule.csv
+|-- cue_log.json
+|-- suppression_log.json
+`-- sonification_metadata.json
+```
+
+Outputs preserve source event/file/row and preset identity, use canonical JSON and LF-stable CSV,
+and repeat byte-for-byte for identical input and configuration. The baseline values are configurable
+technical choices, not perceptual or accessibility findings. No WAV or other audio is generated.
+See `docs/data-model/sonification-preset.md` and `docs/data-model/cue-schedule.md`.
+
 ## Reproducibility controls
 
 - schema, parser and class-mapping versions;
@@ -196,6 +229,8 @@ columns, hash scopes and overwrite policy are documented in `docs/data-model/out
 - source, sequence-metadata, mapping and fixture hashes;
 - manifest-driven source-line selection;
 - content-derived output run IDs, canonical package JSON and LF-stable CSV;
+- versioned preset validation, deterministic cue IDs and complete cue-or-suppression accounting;
+- canonical cue/suppression logs and content-derived schedule run IDs;
 - file-level output hashes and path-free run provenance;
 - schema, semantic, provenance and determinism tests;
 - LF-normalised hashed fixtures; and
@@ -206,17 +241,20 @@ columns, hash scopes and overwrite policy are documented in `docs/data-model/out
 - `docs/data-model/common-event-schema.md`: current common schema `0.2.0` contract.
 - `docs/data-model/event-validation.md`: single-event and collection validation contract.
 - `docs/data-model/output-package.md`: JSON, CSV, metadata and provenance output contract.
+- `docs/data-model/sonification-preset.md`: preset schema, baseline formulas and suppression policy.
+- `docs/data-model/cue-schedule.md`: schedule input gate, records, files, IDs and hash contract.
 - `docs/data-model/mot17-adapter.md`: MOT17 format and conversion rules.
 - `docs/data-model/kitti-tracking-adapter.md`: KITTI definitions, conversion and `DontCare` policy.
 - `docs/decisions/0007-mot17-ground-truth-mapping.md`: mapping decision.
 - `docs/decisions/0008-kitti-tracking-mapping-and-schema-v0.2.0.md`: KITTI and schema decision.
 - `docs/decisions/0009-collection-validation-policy.md`: diagnostic and report policy.
 - `docs/decisions/0010-deterministic-output-package.md`: deterministic package format decision.
+- `docs/decisions/0011-versioned-preset-and-cue-schedule.md`: Stage 2 scheduling decision.
 - `docs/development/milestone-2-mot17-vertical-slice.md`: development and validation evidence.
 - `docs/development/milestone-3-kitti-extension.md`: audit, fixture and integration evidence.
 - `docs/development/milestone-2-fixture-licence-resolution.md`: fixture licence decision.
 - `docs/development/stage-1-closeout.md`: real-data package, repeat-run and quality-gate evidence.
-- `docs/project-management/stage-2-checklist.md`: next-stage planning; no sonification is complete.
+- `docs/project-management/stage-2-checklist.md`: active Stage 2 scope and remaining audio work.
 - `tests/fixtures/mot17/README.md`: fixture selection and reproduction evidence.
 - `tests/fixtures/kitti/README.md`: KITTI fixture provenance, licence and reproduction evidence.
 - `outputs/README.md`: generated-output storage boundary.

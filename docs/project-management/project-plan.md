@@ -15,7 +15,7 @@ normalised events, deterministic audio cues and traceable technical outputs.
 |---|---|---|---|
 | 0. Project setup | Establish the repository structure, environment, documentation and project tracking | Working package scaffold, CI test, README and project records | Complete, 28 July 2026 |
 | 1. Data ingestion and normalisation | Parse MOT17 and KITTI Tracking annotations into a common event schema | Parsers, schema, validation outputs, provenance records and tests | Complete, 5 August 2026 |
-| 2. Sonification | Map normalised events into scheduled audio cues | Mapping presets, cue schedules, audio files and logs | Next active stage; implementation not started |
+| 2. Sonification | Map normalised events into scheduled audio cues | Mapping presets, cue schedules, audio files and logs | Active from 5 August 2026; deterministic scheduling implemented locally, audio not started |
 | 3. Technical evaluation | Measure coverage, alignment, traceability, cue density, overlap and reproducibility | Evaluation reports, comparison results and repeat-run checks | Planned |
 | 4. Artefact assembly and release | Validate, document and package the complete workbench | Reproducible release, final documentation and tagged version | Planned |
 | 5. Reporting and viva preparation | Complete the dissertation and prepare the artefact demonstration | Final report, demonstration plan and viva notes | Planned |
@@ -138,12 +138,26 @@ Stage 1 is complete because:
 Completion was recorded on 5 August 2026. The generated full-data packages remain local and ignored
 by Git.
 
-## Stage 2 Next Active Work
+## Stage 2 Active Work
 
-Stage 2 is now the next active project stage. Its planned work is tracked in
-`docs/project-management/stage-2-checklist.md`: versioned presets, deterministic event-to-cue
-mapping, schedules, suppression policy, traceability logs, deterministic audio rendering and tests.
-This Stage 1 close-out does not implement or claim any sonification functionality.
+Stage 2 is active and tracked in `docs/project-management/stage-2-checklist.md`. Milestone 1 under
+Issue #19 implements the versioned preset, deterministic event-to-cue mapping, cue schedules,
+suppression policy and traceability logs. It leaves deterministic audio rendering for later Stage 2
+work and technical evaluation for Stage 3.
+
+### Stage 2 Milestone 1 quality gate
+
+Milestone 1 is ready for merge only when:
+
+- preset schema `0.1.0` and baseline preset `0.1.0` validate with coded errors;
+- mapping formulas and configurable constants are documented without perceptual claims;
+- every valid schema `0.2.0` event produces one cue or one recorded suppression;
+- cue/suppression provenance reaches source event, file, row and exact preset hash;
+- schedules, logs, metadata, ordering, IDs, bytes and hashes repeat deterministically;
+- both MOT17 and KITTI committed collections pass the common mapper;
+- invalid packages, presets, validation status and unsafe paths are rejected;
+- normal and complete available tests and pull-request CI pass; and
+- no audio, evaluation claims, generated packages or private paths enter the change.
 
 ## Key Project Milestones
 
