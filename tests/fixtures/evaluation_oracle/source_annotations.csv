@@ -1,0 +1,6 @@
+event_id,timestamp,decision
+evt:synthetic:evaluation_oracle:f000000:t1:r000001,0.0,represented
+evt:synthetic:evaluation_oracle:f000010:t2:r000002,1.0,represented
+evt:synthetic:evaluation_oracle:f000015:t3:r000003,1.5,suppressed
+evt:synthetic:evaluation_oracle:f000020:t4:r000004,2.0,represented
+evt:synthetic:evaluation_oracle:f000022:t5:r000005,2.25,represented

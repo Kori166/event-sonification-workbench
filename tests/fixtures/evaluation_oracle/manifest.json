@@ -1,0 +1,19 @@
+{
+  "fixture_version": "0.1.0",
+  "files": {
+    "faults.json": {
+      "sha256": "0d68046e12d84abf59bd5b648b64b00727a7aa8d664c1016d70d26ed8d4b664f"
+    },
+    "input.json": {
+      "sha256": "88ebb5844d81474885062fe6d98d40ca2d29396b62dd6f5faad90f7a9c1acc21"
+    },
+    "oracle-calculation.md": {
+      "sha256": "7d94adb291b30317d29401b44f5413f82ef4d03e3e37009c31f81b8bc7a8e23c"
+    },
+    "source_annotations.csv": {
+      "sha256": "d923541748ae03bab1e2bad768ae80b790bfec16d10faae6a7fdea1ef3a0eb97"
+    }
+  },
+  "origin": "Manually authored synthetic technical-evaluation oracle; no dataset rows used.",
+  "review_rule": "Update a listed hash only after independently reviewing the changed fixture and hand calculation."
+}
