@@ -1250,8 +1250,14 @@ def _svg_header(width: int, height: int, title: str, description: str) -> list[s
     ]
 
 
+def _chart_source_label(source: ReportSource) -> str:
+    if source.sequence_label.lower().startswith(source.dataset_label.lower()):
+        return source.sequence_label
+    return f"{source.dataset_label} {source.sequence_label}"
+
+
 def _figure_1_svg(values: _PresentationValues, sources: Mapping[str, ReportSource]) -> bytes:
-    width, height = 960, 330
+    width, height = 960, 360
     chart_x, chart_width = 235, 650
     lines = _svg_header(
         width,
@@ -1262,8 +1268,8 @@ def _figure_1_svg(values: _PresentationValues, sources: Mapping[str, ReportSourc
     lines.append('<text x="480" y="28" text-anchor="middle" font-size="18" font-weight="bold">Event outcome proportions</text>')
     for tick in range(0, 101, 25):
         x = chart_x + chart_width * tick / 100
-        lines.append(f'<line x1="{x:.2f}" y1="55" x2="{x:.2f}" y2="212" stroke="#d6d6d6" stroke-width="1"/>')
-        lines.append(f'<text x="{x:.2f}" y="230" text-anchor="middle" font-size="11">{tick}%</text>')
+        lines.append(f'<line x1="{x:.2f}" y1="55" x2="{x:.2f}" y2="220" stroke="#d6d6d6" stroke-width="1"/>')
+        lines.append(f'<text x="{x:.2f}" y="262" text-anchor="middle" font-size="11">{tick}%</text>')
     colours = {
         "represented": "#2f5597",
         "suppressed": "#a5a5a5",
@@ -1280,7 +1286,7 @@ def _figure_1_svg(values: _PresentationValues, sources: Mapping[str, ReportSourc
         y = 82 + row * 92
         lines.append(
             f'<text x="{chart_x - 15}" y="{y + 22}" text-anchor="end" font-size="13" font-weight="bold">'
-            f'{escape(sources[dataset].dataset_label)} {escape(sources[dataset].sequence_label)}</text>'
+            f'{escape(_chart_source_label(sources[dataset]))}</text>'
         )
         x = float(chart_x)
         count_parts = []
@@ -1308,7 +1314,7 @@ def _figure_1_svg(values: _PresentationValues, sources: Mapping[str, ReportSourc
         lines.append(
             f'<text x="{chart_x}" y="{y + 57}" font-size="10">{escape("; ".join(count_parts))}</text>'
         )
-    legend_y = 273
+    legend_y = 305
     legend_x = 105
     for index, outcome in enumerate(("represented", "suppressed", "missed_eligible", "excluded")):
         x = legend_x + index * 210
@@ -1344,7 +1350,7 @@ def _comparison_svg(
         bar_width = chart_width * raw / axis_max
         lines.append(
             f'<text x="{chart_x - 15}" y="{y + 25}" text-anchor="end" font-size="13" font-weight="bold">'
-            f'{escape(sources[dataset].dataset_label)} {escape(sources[dataset].sequence_label)}</text>'
+            f'{escape(_chart_source_label(sources[dataset]))}</text>'
         )
         lines.append(
             f'<rect x="{chart_x}" y="{y}" width="{bar_width:.2f}" height="42" fill="#2f5597"/>'
