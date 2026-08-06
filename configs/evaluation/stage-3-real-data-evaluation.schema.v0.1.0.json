@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:event-sonification-workbench:schema:stage-3-real-data-evaluation:0.1.0",
+  "title": "Stage 3 real-data evaluation experiment manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "manifest_version",
+    "experiment_id",
+    "repository_base_commit",
+    "evaluation_contract",
+    "evaluation_report_schema",
+    "event_schema",
+    "preset",
+    "renderer",
+    "datasets",
+    "stage2_chain_repeat_count",
+    "evaluation_repeat_count",
+    "output_root_template",
+    "environment_manifest_requirements",
+    "private_data_boundary",
+    "ordering",
+    "hashing"
+  ],
+  "properties": {
+    "manifest_version": {"const": "0.1.0"},
+    "experiment_id": {"const": "stage-3-real-data-technical-evaluation-v0.1.0"},
+    "repository_base_commit": {"$ref": "#/$defs/gitCommit"},
+    "evaluation_contract": {"$ref": "#/$defs/versionedConfigurationWithSchema"},
+    "evaluation_report_schema": {"$ref": "#/$defs/versionedConfiguration"},
+    "event_schema": {"$ref": "#/$defs/versionedConfiguration"},
+    "preset": {"$ref": "#/$defs/versionedConfigurationWithSchema"},
+    "renderer": {"$ref": "#/$defs/versionedConfigurationWithSchema"},
+    "datasets": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {"$ref": "#/$defs/dataset"}
+    },
+    "stage2_chain_repeat_count": {"const": 2},
+    "evaluation_repeat_count": {"const": 3},
+    "output_root_template": {
+      "type": "string",
+      "const": ".local-fixtures/stage-3-real-data-evaluation/{dataset}/{run}"
+    },
+    "environment_manifest_requirements": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "private_data_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dataset_root_environment_variables", "committed", "excluded"],
+      "properties": {
+        "dataset_root_environment_variables": {
+          "type": "array",
+          "const": ["KITTI_TRACKING_ROOT", "MOT17_ROOT"]
+        },
+        "committed": {"type": "array", "items": {"type": "string"}},
+        "excluded": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+      }
+    },
+    "ordering": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["events", "cues", "suppressions", "render_entries", "reports"],
+      "properties": {
+        "events": {"$ref": "#/$defs/stringArray"},
+        "cues": {"$ref": "#/$defs/stringArray"},
+        "suppressions": {"$ref": "#/$defs/stringArray"},
+        "render_entries": {"$ref": "#/$defs/stringArray"},
+        "reports": {"$ref": "#/$defs/stringArray"}
+      }
+    },
+    "hashing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "synthetic_reviewed_text_scope",
+        "generated_text_scope",
+        "binary_scope"
+      ],
+      "properties": {
+        "algorithm": {"const": "sha256"},
+        "synthetic_reviewed_text_scope": {"type": "string", "minLength": 1},
+        "generated_text_scope": {"type": "string", "minLength": 1},
+        "binary_scope": {"type": "string", "minLength": 1}
+      }
+    }
+  },
+  "$defs": {
+    "hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "gitCommit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "logicalPath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*\\\\)(?![A-Za-z]:)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+    },
+    "stringArray": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "versionedConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "version", "sha256"],
+      "properties": {
+        "path": {"$ref": "#/$defs/logicalPath"},
+        "version": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/hash"}
+      }
+    },
+    "versionedConfigurationWithSchema": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "version", "sha256", "schema_path", "schema_sha256"],
+      "properties": {
+        "path": {"$ref": "#/$defs/logicalPath"},
+        "version": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/hash"},
+        "schema_path": {"$ref": "#/$defs/logicalPath"},
+        "schema_sha256": {"$ref": "#/$defs/hash"}
+      }
+    },
+    "package": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["run_id", "package_sha256", "files"],
+      "properties": {
+        "run_id": {"type": "string", "minLength": 1},
+        "package_sha256": {"$ref": "#/$defs/hash"},
+        "files": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {"$ref": "#/$defs/hash"}
+        }
+      }
+    },
+    "dataset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dataset",
+        "display_name",
+        "sequence",
+        "logical_source_annotation",
+        "source_annotation_sha256",
+        "source_configuration_hashes",
+        "expected_accounting",
+        "packages"
+      ],
+      "properties": {
+        "dataset": {"enum": ["kitti_tracking", "mot17"]},
+        "display_name": {"type": "string", "minLength": 1},
+        "sequence": {"type": "string", "minLength": 1},
+        "logical_source_annotation": {"$ref": "#/$defs/logicalPath"},
+        "source_annotation_sha256": {"$ref": "#/$defs/hash"},
+        "source_configuration_hashes": {
+          "type": "object",
+          "additionalProperties": {"$ref": "#/$defs/hash"}
+        },
+        "expected_accounting": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "valid_events",
+            "invalid_events",
+            "validation_errors",
+            "validation_warnings",
+            "generated_cues",
+            "suppressions",
+            "suppression_code",
+            "rendered_cues",
+            "eligible_events_without_cues",
+            "unlinked_cues"
+          ],
+          "properties": {
+            "valid_events": {"type": "integer", "minimum": 0},
+            "invalid_events": {"type": "integer", "minimum": 0},
+            "validation_errors": {"type": "integer", "minimum": 0},
+            "validation_warnings": {"type": "integer", "minimum": 0},
+            "generated_cues": {"type": "integer", "minimum": 0},
+            "suppressions": {"type": "integer", "minimum": 0},
+            "suppression_code": {"type": "string", "minLength": 1},
+            "rendered_cues": {"type": "integer", "minimum": 0},
+            "eligible_events_without_cues": {"type": "integer", "minimum": 0},
+            "unlinked_cues": {"type": "integer", "minimum": 0}
+          }
+        },
+        "packages": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["event", "cue", "audio"],
+          "properties": {
+            "event": {"$ref": "#/$defs/package"},
+            "cue": {"$ref": "#/$defs/package"},
+            "audio": {"$ref": "#/$defs/package"}
+          }
+        }
+      }
+    }
+  }
+}
