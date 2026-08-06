@@ -65,6 +65,12 @@ from .technical_evaluation import (
     validate_evaluation_report,
     write_evaluation_report,
 )
+from .technical_evaluation_input import (
+    TechnicalEvaluationInputError,
+    assemble_technical_evaluation_input,
+    load_experiment_manifest,
+    write_prepared_evaluation_input,
+)
 
 DEFAULT_SCHEMA = Path("configs/schemas/event.schema.v0.2.0.json")
 DEFAULT_MOT17_MAPPING = Path("configs/class-mappings/mot17.v0.1.0.json")
@@ -80,6 +86,12 @@ DEFAULT_EVALUATION_CONTRACT_SCHEMA = Path(
 )
 DEFAULT_EVALUATION_REPORT_SCHEMA = Path(
     "configs/evaluation/technical-evaluation-report.schema.v0.1.0.json"
+)
+DEFAULT_REAL_EVALUATION_MANIFEST = Path(
+    "configs/evaluation/stage-3-real-data-evaluation-v0.1.0.json"
+)
+DEFAULT_REAL_EVALUATION_MANIFEST_SCHEMA = Path(
+    "configs/evaluation/stage-3-real-data-evaluation.schema.v0.1.0.json"
 )
 
 
@@ -164,6 +176,26 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     compare_packages.add_argument("--left-package", type=Path, required=True)
     compare_packages.add_argument("--right-package", type=Path, required=True)
+
+    prepare_evaluation = subparsers.add_parser(
+        "prepare-technical-evaluation",
+        help="Verify Stage 1/2 packages and assemble one deterministic evaluation input.",
+    )
+    prepare_evaluation.add_argument("--event-package", type=Path, required=True)
+    prepare_evaluation.add_argument("--cue-package", type=Path, required=True)
+    prepare_evaluation.add_argument("--audio-package", type=Path, required=True)
+    prepare_evaluation.add_argument("--repeat-event-package", type=Path)
+    prepare_evaluation.add_argument("--repeat-cue-package", type=Path)
+    prepare_evaluation.add_argument("--repeat-audio-package", type=Path)
+    prepare_evaluation.add_argument(
+        "--experiment-manifest", type=Path, default=DEFAULT_REAL_EVALUATION_MANIFEST
+    )
+    prepare_evaluation.add_argument(
+        "--experiment-schema", type=Path, default=DEFAULT_REAL_EVALUATION_MANIFEST_SCHEMA
+    )
+    prepare_evaluation.add_argument("--event-schema", type=Path, default=DEFAULT_SCHEMA)
+    prepare_evaluation.add_argument("--output", type=Path, required=True)
+    prepare_evaluation.add_argument("--input-manifest-output", type=Path)
 
     evaluate_technical = subparsers.add_parser(
         "evaluate-technical",
@@ -486,6 +518,37 @@ def _run_evaluate_technical(args: argparse.Namespace) -> int:
     return 0 if report.document["valid"] else 1
 
 
+def _run_prepare_technical_evaluation(args: argparse.Namespace) -> int:
+    experiment = load_experiment_manifest(
+        args.experiment_manifest,
+        schema_path=args.experiment_schema,
+        repository_root=Path.cwd(),
+    )
+    prepared = assemble_technical_evaluation_input(
+        args.event_package,
+        args.cue_package,
+        args.audio_package,
+        experiment_manifest=experiment,
+        event_schema_path=args.event_schema,
+        repeat_event_package=args.repeat_event_package,
+        repeat_cue_package=args.repeat_cue_package,
+        repeat_audio_package=args.repeat_audio_package,
+    )
+    result = write_prepared_evaluation_input(
+        prepared,
+        input_path=args.output,
+        manifest_path=args.input_manifest_output,
+    )
+    print(
+        json.dumps(
+            {"command": "prepare-technical-evaluation", **result.to_summary_dict()},
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """Run the workbench command-line interface."""
     parser = _build_parser()
@@ -526,6 +589,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             return _run_render_audio(args)
         if args.command == "compare-packages":
             return _run_compare_packages(args)
+        if args.command == "prepare-technical-evaluation":
+            return _run_prepare_technical_evaluation(args)
         if args.command == "evaluate-technical":
             return _run_evaluate_technical(args)
     except (PresetValidationError, RendererConfigurationError) as exc:
@@ -538,6 +603,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         OutputPackageError,
         PackageComparisonError,
         TechnicalEvaluationError,
+        TechnicalEvaluationInputError,
         OSError,
         TypeError,
         ValueError,
