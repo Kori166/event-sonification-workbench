@@ -49,6 +49,11 @@ from .output_package import (
 )
 from .package_comparison import PackageComparisonError, compare_package_directories
 from .provenance import sha256_file
+from .reporting_evidence import (
+    ReportingEvidenceError,
+    generate_report_evidence,
+    resolve_generator_commit,
+)
 from .sonification.audio_renderer import AudioRenderError, render_audio_package
 from .sonification.preset import PresetValidationError, load_sonification_preset
 from .sonification.renderer_config import (
@@ -93,6 +98,13 @@ DEFAULT_REAL_EVALUATION_MANIFEST = Path(
 DEFAULT_REAL_EVALUATION_MANIFEST_SCHEMA = Path(
     "configs/evaluation/stage-3-real-data-evaluation.schema.v0.1.0.json"
 )
+DEFAULT_MOT17_EVALUATION_REPORT = Path(
+    "docs/evaluation/evidence/mot17/mot17_technical_evaluation_report.json"
+)
+DEFAULT_KITTI_EVALUATION_REPORT = Path(
+    "docs/evaluation/evidence/kitti/kitti_technical_evaluation_report.json"
+)
+DEFAULT_REPORTING_OUTPUT_DIRECTORY = Path("docs/evaluation/reporting")
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -211,6 +223,32 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     evaluate_technical.add_argument(
         "--output", type=Path, default=DEFAULT_OUTPUT_DIRECTORY / DEFAULT_REPORT_FILENAME
+    )
+
+    report_evidence = subparsers.add_parser(
+        "generate-stage3-report-evidence",
+        help="Verify canonical Stage 3 reports and write deterministic audited presentation files.",
+    )
+    report_evidence.add_argument(
+        "--mot17-report", type=Path, default=DEFAULT_MOT17_EVALUATION_REPORT
+    )
+    report_evidence.add_argument(
+        "--kitti-report", type=Path, default=DEFAULT_KITTI_EVALUATION_REPORT
+    )
+    report_evidence.add_argument(
+        "--report-schema", type=Path, default=DEFAULT_EVALUATION_REPORT_SCHEMA
+    )
+    report_evidence.add_argument(
+        "--output", type=Path, default=DEFAULT_REPORTING_OUTPUT_DIRECTORY
+    )
+    report_evidence.add_argument(
+        "--generator-commit",
+        help="Committed generator identity; defaults to the commit that last changed the generator.",
+    )
+    report_evidence.add_argument(
+        "--replace-generated",
+        action="store_true",
+        help="Replace only the generator-owned reporting files already present in the output tree.",
     )
     return parser
 
@@ -549,6 +587,26 @@ def _run_prepare_technical_evaluation(args: argparse.Namespace) -> int:
     return 0
 
 
+def _run_generate_report_evidence(args: argparse.Namespace) -> int:
+    generator_commit = args.generator_commit or resolve_generator_commit(Path.cwd())
+    result = generate_report_evidence(
+        mot17_report=args.mot17_report,
+        kitti_report=args.kitti_report,
+        output_directory=args.output,
+        report_schema_path=args.report_schema,
+        generator_commit=generator_commit,
+        replace_generated=args.replace_generated,
+    )
+    print(
+        json.dumps(
+            {"command": "generate-stage3-report-evidence", **result.to_summary_dict()},
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return 0
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """Run the workbench command-line interface."""
     parser = _build_parser()
@@ -593,6 +651,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             return _run_prepare_technical_evaluation(args)
         if args.command == "evaluate-technical":
             return _run_evaluate_technical(args)
+        if args.command == "generate-stage3-report-evidence":
+            return _run_generate_report_evidence(args)
     except (PresetValidationError, RendererConfigurationError) as exc:
         parser.error(json.dumps(exc.to_dict(), sort_keys=True))
     except (
@@ -602,6 +662,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         MOT17ParseError,
         OutputPackageError,
         PackageComparisonError,
+        ReportingEvidenceError,
         TechnicalEvaluationError,
         TechnicalEvaluationInputError,
         OSError,
