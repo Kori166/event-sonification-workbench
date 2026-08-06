@@ -345,6 +345,12 @@ def test_all_four_reproducibility_levels_remain_distinct(
     assert reproducibility["byte"]["equal"] is True
     assert reproducibility["audio"]["equal"] is True
     assert reproducibility["configuration"]["equal"] is True
+    assert [item["name"] for item in reproducibility["configuration"]["comparisons"]] == [
+        "evaluation_contract",
+        "event_schema",
+        "preset",
+        "renderer",
+    ]
     assert reproducibility["claim_scope"] == "tested_environment_only"
 
 
@@ -368,7 +374,7 @@ def test_report_order_and_bytes_repeat_exactly(contract, oracle_input: dict[str,
     assert first.to_dict() == second.to_dict()
     assert first.canonical_bytes == second.canonical_bytes
     assert first.sha256 == second.sha256
-    assert first.sha256 == "22a898698aef7e6c3cff39b2333cd13dd8fe0243d9fc580392cdec5c623a17ce"
+    assert first.sha256 == "b5bcf1fc39987dfd7b61475e67d075312bd060f6dfb8adf2fa3f8300badaf908"
     without_hash = first.to_dict()
     expected_payload = without_hash.pop("output_hash")["sha256"]
     assert sha256_json(without_hash) == expected_payload

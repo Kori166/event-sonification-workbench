@@ -256,6 +256,20 @@
   "reproducibility": {
     "configuration_comparisons": [
       {
+        "expected_sha256": "68513164a731d977988acc34f7013cc3000c78d5e6aa345b2f7bcbe3e346de3e",
+        "expected_version": "0.1.0",
+        "name": "evaluation_contract",
+        "observed_sha256": "68513164a731d977988acc34f7013cc3000c78d5e6aa345b2f7bcbe3e346de3e",
+        "observed_version": "0.1.0"
+      },
+      {
+        "expected_sha256": "a78a6d9a97c9257741678dcbb9422153026507f64f8010a6366122ce72397680",
+        "expected_version": "0.2.0",
+        "name": "event_schema",
+        "observed_sha256": "a78a6d9a97c9257741678dcbb9422153026507f64f8010a6366122ce72397680",
+        "observed_version": "0.2.0"
+      },
+      {
         "expected_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
         "expected_version": "0.1.0",
         "name": "preset",

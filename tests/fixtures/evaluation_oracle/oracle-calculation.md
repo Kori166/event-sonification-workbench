@@ -91,5 +91,5 @@ null duration-based rates plus the `zero_duration_timeline` warning.
 
 After reviewing the assembled report against every calculation above, the frozen evaluation run ID
 is `evaluation-synthetic-evaluation_oracle-e1ee06d3a671ee1b`. Its non-recursive canonical payload
-hash is `f96d51fd13d3f36c0c515606f6271c47aee9524d0237e9518d6d13d17e3d9c30`; the final canonical
-report-byte SHA-256 is `22a898698aef7e6c3cff39b2333cd13dd8fe0243d9fc580392cdec5c623a17ce`.
+hash is `302b97643f1f39b4adee63c9e78bc053640b8d6c4d56f818ad1e6896bb82cb21`; the final canonical
+report-byte SHA-256 is `b5bcf1fc39987dfd7b61475e67d075312bd060f6dfb8adf2fa3f8300badaf908`.
