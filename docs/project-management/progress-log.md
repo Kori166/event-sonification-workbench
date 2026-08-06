@@ -785,3 +785,75 @@ be added where a short entry would omit important implementation evidence.
 - Next: Stage 3 Milestone 3: convert the verified technical-evaluation evidence into audited
   report-ready tables, figures and bounded RQ3 findings, with every presented value linked to its
   canonical source report.
+
+---
+
+## 2026-08-06 - Stage 3 Milestone 3 audited reporting and close-out
+
+**Work completed**
+
+- Began from `origin/main` merge commit `5fcab3ad8465f960e1a217063deb8fa82314fa93` in a new clean
+  worktree and branch, leaving the dirty original checkout and both preserved stashes untouched.
+- Recalculated the two canonical report hashes, validated both documents against the frozen report
+  schema and confirmed report/run/contract/experiment/environment identities plus summary and repeat-
+  comparison agreement before generating presentation material.
+- Defined the display-format and interpretation policy in Decision 0015 and the reporting README.
+- Added a deterministic CLI generator that verifies source/configuration hashes, resolves structural
+  JSON Pointers, preserves canonical raw values, generates CSV/Markdown/SVG derivatives and rejects
+  private paths or an unauditable presentation.
+- Generated three principal tables, a complete timing supplement, three source-data CSV files,
+  three SVG figures, table/figure captions, a presentation-value manifest, bounded RQ3 method and
+  findings, a claim-to-evidence matrix, a replacement note and automated/hash audits.
+- Added 21 focused tests for source hashes/schema, pointer failures, direct/derived values,
+  formatting/nulls, table/figure/claim completeness, SVG determinism, source preservation, private-
+  path detection, repeat bytes and the CLI.
+- Rendered and visually inspected all SVGs, independently recalculated every principal presentation
+  row/data point and reconciled the Stage 3 checklist, plan, README, risk register and close-out.
+
+**Evidence and audit results**
+
+- Canonical MOT17 report SHA-256:
+  `d847e805d0b2d7ccd50cd315bbcecfc0ad525f40e7c4c2013938f955d20f13e5`.
+- Canonical KITTI report SHA-256:
+  `b5589590a8c645bd7b5654d0318bf90fdb412f987719c26c2374bf3e487f9ff2`.
+- Reporting manifest SHA-256:
+  `5de4e72aa9dc014aa714a206879a3f5674abf1b1400c0f0fc5198761e0a73c66`.
+- Terminal generated-file hash-manifest SHA-256:
+  `ee7c773fc14274f69f69a74878795c297e0a3d928fdc1c705221f3cd72b3942d`.
+- Automated audit: pass; 134 values, 104 direct, 30 derived, 136 table cells, 20 figure
+  data points, 12 claims, zero mismatch/missing/formatting/private-path findings.
+- Independent audit: pass; all 68 table rows, 20 figure data points, 12 claims, seven captions and
+  23 terminal file hashes checked with zero remaining mismatch.
+- Two separate empty-directory CLI builds: exit 0, identical 24-file sets and byte-identical content.
+
+**Quality evidence**
+
+- `python -m ruff check .`: exit 0.
+- `python -m pytest tests/test_technical_evaluation.py -q`: 26 passed.
+- `python -m pytest -m "not integration"`: 252 passed, 3 deselected.
+- Final `python -m pytest -m integration` with all private roots: 3 passed, 252 deselected; no skip.
+- Final `python -m pytest` with all private roots: 255 passed; no skip or deselection.
+
+**Problems and decisions**
+
+- Initial Figure 1 visual inspection found an overlapping count/axis label and a redundant MOT17
+  label. The SVG layout was fixed before evidence was accepted.
+- Independent arithmetic found one binary-float last-digit difference for KITTI normalised overlap
+  burden. Canonical raw scalars are now preserved while declared formula results are checked with a
+  bounded representation tolerance.
+- Early manual-audit scripts contained one Markdown-row indexing error and one whitespace-sensitive
+  phrase check; corrected audit-side checks passed and did not alter evidence.
+- An integration invocation without configured roots skipped three tests, and a two-root invocation
+  passed two while skipping the retained-chain test. Neither was reported as pass evidence; final
+  configured runs used all three roots and had no skips.
+- Contract `0.1.0`, canonical reports, dataset logic, preset and renderer were not changed or rerun.
+
+**Boundary and next action**
+
+- Stage 3 technical evaluation is complete within the selected case-study and recorded-environment
+  scope. RQ3 is supported by audited technical evidence, not participant or perceptual evidence.
+- No accessibility, usability, navigation, mobility, safety or cross-environment byte-identity result
+  is claimed. The overall project is not yet submission-ready.
+- Next: Stage 4 Milestone 1 - assemble a versioned artefact release candidate and verify
+  installation, configuration, evidence availability and end-to-end execution from a clean
+  environment.

@@ -8,8 +8,8 @@ below were corrected and the complete reporting package was regenerated.
 This audit was performed independently of the reporting generator. Read-only audit calculations
 loaded the canonical JSON records directly, used separately written pointer/formula logic and checked
 the presentation files. The reporting module was not imported. SVGs were also rendered in a local
-headless browser and inspected visually; the temporary raster previews were deleted from the task
-scope and are not repository evidence.
+headless browser and inspected visually; the temporary raster previews remained outside the
+repository and are not evidence in this branch.
 
 ## Source integrity
 

@@ -20,12 +20,13 @@ events to configurable cues, preserves provenance and supports technical evaluat
 Stages 0, 1 and 2 are complete. Stage 1 closed on 5 August 2026 after real-data event-package
 verification. Stage 2 closed on 6 August 2026 after the complete native-annotation to event to cue
 to deterministic stereo PCM WAV chain repeated exactly for real MOT17 and KITTI Tracking data.
-Stage 3 is active. Milestone 1 froze technical-evaluation contract `0.1.0` and verified its metrics
-against a manually calculated synthetic oracle. Milestone 2 has now applied that unchanged contract
-to the verified MOT17-02-DPM and KITTI Tracking 0000 evidence chains. Three isolated evaluator runs
-per dataset produced semantically and byte-identical reports. RQ3 is now supported by real technical
-case-study evidence, bounded by these sequences, the baseline preset/renderer and the recorded
-environment; it is not perceptual or participant evidence.
+Stage 3 closed on 6 August 2026. Milestone 1 froze technical-evaluation contract `0.1.0` and
+verified it against a manually calculated synthetic oracle; Milestone 2 applied the unchanged
+contract to verified MOT17-02-DPM and KITTI Tracking 0000 evidence chains; Milestone 3 generated and
+independently audited report-ready tables, deterministic SVG figures and bounded RQ3 findings. RQ3
+is supported by technical case-study evidence for those sequences, the baseline preset/renderer and
+the recorded environment. It is not perceptual or participant evidence. Stage 4 artefact assembly
+and release verification is the next active stage; no release candidate has yet been claimed.
 
 Milestone 1 established common schema version `0.1.0`. The cross-dataset review in Milestone 3
 introduced schema `0.2.0`, retaining the event shape while allowing native unnormalised confidence
@@ -319,6 +320,23 @@ summary for every numerator, denominator, timing statistic, overlap value, hash 
 No perceptual, participant, accessibility, usability, navigation or safety conclusion follows from
 these technical metrics. Cross-environment byte identity remains untested.
 
+The audited reporting derivative can be rebuilt entirely from the committed canonical reports:
+
+```powershell
+python -m event_sonification_workbench.cli generate-stage3-report-evidence `
+  --mot17-report docs/evaluation/evidence/mot17/mot17_technical_evaluation_report.json `
+  --kitti-report docs/evaluation/evidence/kitti/kitti_technical_evaluation_report.json `
+  --output docs/evaluation/reporting `
+  --replace-generated
+```
+
+The generator verifies both source hashes and the frozen schema, resolves structural JSON Pointers,
+preserves exact canonical raw scalars, applies documented display formatting and audits every table,
+figure and claim reference. The committed package contains 134 manifested values, 136 table cells,
+20 figure data points and 12 principal claims with zero automated or manual mismatches. Two isolated
+fresh builds produced all 24 generator-owned files byte-identically. Exact hashes and the bounded
+RQ3 answer are in `docs/evaluation/reporting/` and `docs/development/stage-3-closeout.md`.
+
 ## Reproducibility controls
 
 - schema, parser and class-mapping versions;
@@ -337,6 +355,8 @@ these technical metrics. Cross-environment byte identity remains untested.
 - a versioned real-data experiment/environment manifest and verified package-to-evaluator adapter;
 - three-run semantic and canonical-byte comparison reports for real MOT17 and KITTI case studies;
 - deterministic dataset summaries and selected record-level traceability audits;
+- structural presentation-value provenance, deterministic report-ready tables/SVG figures and
+  automated plus independent presentation audits;
 - schema, semantic, provenance and determinism tests;
 - LF-normalised hashed fixtures; and
 - explicit evidence boundaries between fixed CI data and local full-dataset integration data.
@@ -358,6 +378,8 @@ these technical metrics. Cross-environment byte identity remains untested.
 - `docs/evaluation/stage-3-real-data-traceability-audit.md`: deterministic source-to-WAV and
   source-to-suppression selections.
 - `docs/evaluation/stage-3-cross-dataset-technical-summary.md`: bounded descriptive comparison.
+- `docs/evaluation/reporting/`: deterministic report-ready tables, SVG figures, value manifest,
+  claim matrix, bounded RQ3 findings and automated/manual audits.
 - `docs/data-model/mot17-adapter.md`: MOT17 format and conversion rules.
 - `docs/data-model/kitti-tracking-adapter.md`: KITTI definitions, conversion and `DontCare` policy.
 - `docs/decisions/0007-mot17-ground-truth-mapping.md`: mapping decision.
@@ -369,6 +391,8 @@ these technical metrics. Cross-environment byte identity remains untested.
 - `docs/decisions/0013-technical-evaluation-contract.md`: Stage 3 metric and interpretation policy.
 - `docs/decisions/0014-real-data-evaluation-evidence.md`: real package reuse, evidence storage and
   supplemental traceability boundary.
+- `docs/decisions/0015-audited-reporting-evidence.md`: deterministic presentation, formatting and
+  claim-audit policy.
 - `docs/development/milestone-2-mot17-vertical-slice.md`: development and validation evidence.
 - `docs/development/milestone-3-kitti-extension.md`: audit, fixture and integration evidence.
 - `docs/development/milestone-2-fixture-licence-resolution.md`: fixture licence decision.
@@ -378,10 +402,12 @@ these technical metrics. Cross-environment byte identity remains untested.
 - `docs/development/stage-3-milestone-1.md`: synthetic-oracle results, quality evidence and limits.
 - `docs/development/stage-3-milestone-2-closeout.md`: real-data reports, repeats, quality evidence
   and RQ3 boundary.
+- `docs/development/stage-3-closeout.md`: all Stage 3 identities, report-ready hashes, audit and
+  quality evidence, bounded RQ3 answer and Stage 4 handover.
 - `docs/project-management/stage-2-checklist.md`: completed Stage 2 implementation and close-out
   gates.
-- `docs/project-management/stage-3-checklist.md`: completed method and real-data gates, with
-  report-ready audit work next.
+- `docs/project-management/stage-3-checklist.md`: completed contract, real-data and report-ready
+  audit gates.
 - `tests/fixtures/mot17/README.md`: fixture selection and reproduction evidence.
 - `tests/fixtures/kitti/README.md`: KITTI fixture provenance, licence and reproduction evidence.
 - `outputs/README.md`: generated-output storage boundary.

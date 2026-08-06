@@ -16,8 +16,8 @@ normalised events, deterministic audio cues and traceable technical outputs.
 | 0. Project setup | Establish the repository structure, environment, documentation and project tracking | Working package scaffold, CI test, README and project records | Complete, 28 July 2026 |
 | 1. Data ingestion and normalisation | Parse MOT17 and KITTI Tracking annotations into a common event schema | Parsers, schema, validation outputs, provenance records and tests | Complete, 5 August 2026 |
 | 2. Sonification | Map normalised events into scheduled audio cues | Mapping presets, cue schedules, audio files and logs | Complete, 6 August 2026; real MOT17/KITTI chains reproduced exactly |
-| 3. Technical evaluation | Measure coverage, alignment, traceability, cue density, overlap and reproducibility | Evaluation reports, comparison results and repeat-run checks | Active; Milestones 1 and 2 complete 6 August 2026, audited report-ready Milestone 3 next |
-| 4. Artefact assembly and release | Validate, document and package the complete workbench | Reproducible release, final documentation and tagged version | Planned |
+| 3. Technical evaluation | Measure coverage, alignment, traceability, cue density, overlap and reproducibility | Evaluation reports, comparison results, audited reporting derivatives and repeat-run checks | Complete, 6 August 2026 |
+| 4. Artefact assembly and release | Validate, document and package the complete workbench | Reproducible release, final documentation and tagged version | Active; Milestone 1 next |
 | 5. Reporting and viva preparation | Complete the dissertation and prepare the artefact demonstration | Final report, demonstration plan and viva notes | Planned |
 
 ## Working Method
@@ -181,7 +181,7 @@ Tracking `0000`. All 4 event, 5 cue and 3 audio package files repeated byte-for-
 datasets; all available tests passed. Exact counts, hashes, audio properties and limitations are in
 `docs/development/stage-2-closeout.md`.
 
-## Stage 3 Active Work
+## Stage 3 Complete Work
 
 Stage 3 begins from verified Stage 1 event packages and Stage 2 cue, suppression, WAV, render-log
 and metadata packages. Milestone 1 completed contract `0.1.0`, a minimum evaluator and a manually
@@ -199,9 +199,11 @@ end-to-end error, uses half-open overlap intervals, null zero-denominator values
 audio/configuration repeat levels. The synthetic golden report repeats exactly. Milestone 2 applied
 the unchanged contract to MOT17-02-DPM and KITTI Tracking 0000: every valid event received a
 recognised outcome, every eligible event was represented, record links resolved, and three reports
-per dataset were semantically and byte-identical in the recorded environment. RQ3 is now supported
-by these bounded real technical case studies; no perceptual, participant, accessibility or safety
-conclusion follows.
+per dataset were semantically and byte-identical in the recorded environment. Milestone 3 then
+generated report-ready tables and SVG figures from the canonical reports, linked 134 presentation
+values by structural path and completed automated and independent audits with zero remaining
+mismatches. RQ3 is supported by these bounded real technical case studies; no perceptual,
+participant, accessibility, usability, navigation, mobility or safety conclusion follows.
 
 ## Stage 3 Milestones
 
@@ -209,11 +211,18 @@ conclusion follows.
 |---|---|---|
 | 1. Evaluation contract and oracle | Freeze metric semantics, implement the minimum evaluator and verify every measure against a manual synthetic oracle | Complete, 6 August 2026 |
 | 2. Real-data technical evaluation | Apply unchanged contract `0.1.0` to selected verified MOT17 and KITTI Tracking evidence packages and write deterministic dataset reports | Complete, 6 August 2026 |
-| 3. Audited report-ready evidence | Link verified values to canonical reports, audit tables/figures and state bounded RQ3 findings | Next |
+| 3. Audited report-ready evidence | Link verified values to canonical reports, audit tables/figures and state bounded RQ3 findings | Complete, 6 August 2026 |
 
-The exact next milestone is **Stage 3 Milestone 3: convert the verified technical-evaluation
-evidence into audited report-ready tables, figures and bounded RQ3 findings, with every presented
-value linked to its canonical source report.**
+## Stage 4 Active Work
+
+Stage 4 begins only after the Stage 3 reporting-evidence pull request is merged. It will assemble a
+versioned release candidate and verify installation, configuration, committed evidence availability
+and end-to-end execution from a clean environment. It must not claim submission readiness until the
+release and reporting gates are satisfied.
+
+The exact next milestone is **Stage 4 Milestone 1: assemble a versioned artefact release candidate
+and verify installation, configuration, evidence availability and end-to-end execution from a clean
+environment.**
 
 ## Key Project Milestones
 
@@ -223,7 +232,7 @@ value linked to its canonical source report.**
 | MOT17 pipeline working | Validated MOT17 events produced from a fixed sample |
 | KITTI pipeline working | Validated KITTI Tracking events produced from a fixed sample |
 | Sonification working | Deterministic cues, WAV output and traceability logs |
-| Evaluation complete | Technical metrics and preset comparisons |
+| Evaluation complete | Audited technical case-study metrics and bounded RQ3 evidence |
 | Artefact frozen | Tagged, documented and reproducible release |
 | Submission ready | Final report and tested viva demonstration |
 

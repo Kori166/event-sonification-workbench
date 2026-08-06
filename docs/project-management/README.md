@@ -17,6 +17,11 @@ This directory contains the working evidence used to plan, track and review the 
   validation evidence for deterministic WAV rendering.
 - `../development/stage-2-closeout.md`: real MOT17/KITTI event-to-cue-to-WAV repeat-run evidence,
   exact hashes, quality results, limitations and Stage 3 handover.
+- `stage-3-checklist.md`: completed contract, real-data and report-ready evaluation gates.
+- `../evaluation/reporting/`: report-ready tables/figures, presentation-value manifest, claim matrix
+  and automated/manual audit records.
+- `../development/stage-3-closeout.md`: Stage 3 identities, reporting hashes, quality evidence,
+  bounded RQ3 answer, limitations and Stage 4 handover.
 - `risk-register.md`: identified risks, mitigations and review status.
 - `supervision-log.md`: verified supervision feedback and resulting actions.
 
