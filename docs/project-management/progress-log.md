@@ -650,3 +650,70 @@ be added where a short entry would omit important implementation evidence.
 - Preserve the distinction between intentional suppressions, eligible events without cues and
   unlinked cues in every evaluation report.
 - Do not claim participant, perceptual, accessibility or safety outcomes from technical measures.
+
+---
+
+## 2026-08-06 - Stage 3 Milestone 1 close-out
+
+**Work completed**
+
+- Confirmed the Stage 2 close-out merged through PR #23 and began from clean merged `main` state.
+- Added schema-validated technical-evaluation contract/report format `0.1.0` and Decision 0013.
+- Implemented deterministic event accounting/coverage, three timing domains, resolved-link
+  traceability, density, half-open overlap and four-level reproducibility reports.
+- Added a canonical CLI report writer with content-derived evaluation identity and explicit input/
+  output hash scopes.
+- Authored a five-event, five-cue, one-suppression 10 Hz oracle and calculated every expected rate,
+  sample, interval, percentile, density and overlap value before freezing the golden report.
+- Added named miss, orphan, conflicting-outcome, unknown-suppression, broken-provenance,
+  one-sample-displacement, empty, zero-duration and malformed tests.
+- Updated the README, project plan, Stage 3 checklist, risk register and milestone close-out without
+  adding real-data or perceptual findings.
+
+**Decisions made**
+
+- Intentional suppressions are outside eligible-coverage misses; a valid event with no explicit
+  outcome is eligible and missed.
+- Multiple cues may represent one event, but cue plus suppression is a conflicting outcome.
+- Rates always include numerator/denominator and use null for zero denominators.
+- Timing uses source, schedule and rendered sample references separately with renderer half-up
+  rounding; p95 is nearest rank.
+- Rendered zero-based duration and integer half-open intervals are preferred for density/overlap.
+- Semantic, byte, audio and configuration repeat evidence remain separate and environment-bounded.
+
+**Actual synthetic evidence**
+
+- Oracle coverage: eligible `4/4`, source representation `4/5`, suppression `1/5`, accounting
+  `5/5`, missed `0/4`.
+- Peak concurrency 2; overlap and excess concurrency 1.2 seconds; both normalised values 0.4.
+- Evaluation run ID: `evaluation-synthetic-evaluation_oracle-e1ee06d3a671ee1b`.
+- Canonical report SHA-256:
+  `b5bcf1fc39987dfd7b61475e67d075312bd060f6dfb8adf2fa3f8300badaf908`.
+
+**Quality evidence**
+
+- `python -m ruff check .`: passed.
+- Focused evaluation suite: 25 passed.
+- `python -m pytest -m "not integration"`: 209 passed, 2 deselected.
+- `python -m pytest -m integration`: 2 skipped because private root variables were unavailable;
+  skips are not pass evidence.
+- `python -m pytest`: 209 passed, 2 skipped for those unavailable roots.
+- Current-Ruff format check passed for all three changed Python files. No static type checker is
+  configured or installed; whole-repository format checking exposes older out-of-scope drift.
+
+**Problems and limitations**
+
+- The original checkout contained unrelated interface files. They were preserved separately and
+  a clean worktree prevented them entering this branch.
+- The milestone CLI consumes prepared validated record-chain input; verified real-package input
+  preparation belongs to Milestone 2.
+- No MOT17/KITTI technical evaluation was run. RQ3 remains incomplete.
+- No cross-environment, perceptual, participant, accessibility, usability, navigation or safety
+  result is claimed.
+
+**Next actions**
+
+- Run Stage 3 Milestone 2 against selected verified real MOT17 and KITTI Tracking evidence packages
+  using unchanged contract `0.1.0`.
+- Produce repeated deterministic dataset-level reports and investigate every diagnostic before
+  interpretation.

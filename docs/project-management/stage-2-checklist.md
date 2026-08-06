@@ -4,7 +4,8 @@
 
 Status: complete, 6 August 2026. Milestone 1 merged through PR #20. Milestone 2 merged through
 PR #22 after successful CI and closed Issue #21. Full real-data repeat-run evidence is recorded in
-`docs/development/stage-2-closeout.md`. Technical evaluation has not started; Stage 3 is next.
+`docs/development/stage-2-closeout.md`. Stage 3 Milestone 1 has since frozen and synthetically
+verified the evaluation method; real-data evaluation in Stage 3 Milestone 2 is next.
 
 - [x] Define a documented, versioned sonification-preset format.
 - [x] Implement deterministic mapping from validated schema `0.2.0` events to cue records.

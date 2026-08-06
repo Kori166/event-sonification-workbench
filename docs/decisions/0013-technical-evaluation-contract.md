@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted for Stage 3 Milestone 1 on 6 August 2026, subject to the milestone quality gate.
+Accepted and verified against the manually calculated Stage 3 Milestone 1 oracle on 6 August 2026.
 
 ## Context
 
