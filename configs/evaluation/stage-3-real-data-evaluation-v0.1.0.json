@@ -37,6 +37,7 @@
     {
       "dataset": "kitti_tracking",
       "display_name": "KITTI Tracking",
+      "native_sequence": "0000",
       "sequence": "0000",
       "logical_source_annotation": "training/label_02/0000.txt",
       "source_annotation_sha256": "97f772a27181dfc7ef51b3e64b86bd42e682753b6855fdc58d259ecbed501fd4",
@@ -91,7 +92,8 @@
     {
       "dataset": "mot17",
       "display_name": "MOT17",
-      "sequence": "MOT17-02-DPM",
+      "native_sequence": "MOT17-02-DPM",
+      "sequence": "mot17-02-dpm",
       "logical_source_annotation": "MOT17/train/MOT17-02-DPM/gt/gt.txt",
       "source_annotation_sha256": "2e3ecb488da8886d3200d402b2b08890c6d2879923839444e9b74fa43a551440",
       "source_configuration_hashes": {
