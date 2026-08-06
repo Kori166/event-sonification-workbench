@@ -1,0 +1,76 @@
+{
+  "environment_manifest_version": "0.1.0",
+  "environment_id": "stage-3-real-data-windows-cpython314-v0.1.0",
+  "purpose": "Path-free software and execution-environment identity for the Stage 3 Milestone 2 real-data technical evaluation.",
+  "repository": {
+    "base_commit": "c1b3d6764c5b376462768d49e9721879a4dc0c73",
+    "evaluation_code_commit": "8ef57aac936709546250c74deccc3e9b40a00a4c",
+    "project_version": "0.1.0",
+    "working_tree_clean": true
+  },
+  "platform": {
+    "operating_system": "Windows",
+    "operating_system_release": "11",
+    "architecture": "AMD64",
+    "timezone": "GMT Summer Time",
+    "locale": "English_United Kingdom.1252",
+    "preferred_encoding": "cp1252"
+  },
+  "runtime": {
+    "python_implementation": "CPython",
+    "python_version": "3.14.3",
+    "pytest_version": "9.1.1",
+    "ruff_version": "0.16.1",
+    "jsonschema_version": "4.26.0",
+    "import_resolution": "repository src directory supplied through PYTHONPATH"
+  },
+  "dependency_identity": {
+    "lock_file_available": false,
+    "fallback_manifest": "pyproject.toml",
+    "fallback_manifest_sha256": "2ce9ae213ebd97c6bff8ccd0ce8d78c77f685910bc1933c03496e6b8da1f7649"
+  },
+  "evaluation_identity": {
+    "experiment_manifest": {
+      "path": "configs/evaluation/stage-3-real-data-evaluation-v0.1.0.json",
+      "sha256": "320e0054c670fe5fd4c422aff52d5f9cada49853073e0d5bed9fcbabf1bc2733"
+    },
+    "experiment_manifest_schema": {
+      "path": "configs/evaluation/stage-3-real-data-evaluation.schema.v0.1.0.json",
+      "sha256": "f00d4cef4bd741db31d85dfbb00ba8acbc71ff8ef0e6d78aa502613e0da0cf8f"
+    },
+    "contract": {
+      "path": "configs/evaluation/technical-evaluation-contract.v0.1.0.json",
+      "sha256": "68513164a731d977988acc34f7013cc3000c78d5e6aa345b2f7bcbe3e346de3e"
+    },
+    "contract_schema": {
+      "path": "configs/evaluation/technical-evaluation-contract.schema.v0.1.0.json",
+      "sha256": "05dcb1c0fb92f4ca577b755985056e0551aaadb99355bfefb783181378a3e85b"
+    },
+    "report_schema": {
+      "path": "configs/evaluation/technical-evaluation-report.schema.v0.1.0.json",
+      "sha256": "bc6be639a9f1939e5797572a405f8cc5b426691da0407d33c3347368cede1b6f"
+    },
+    "evaluator_module": {
+      "path": "src/event_sonification_workbench/technical_evaluation.py",
+      "sha256": "4f2d442bfbe5b8a063f009103c48e530fcbd9d5a3b66d04e47e7583af3fe338b"
+    },
+    "input_assembler_module": {
+      "path": "src/event_sonification_workbench/technical_evaluation_input.py",
+      "sha256": "87fd3e1240845728f0bdc7d4cc6e0ff324e76ebf5f98d08173d2ca7f5191eee2"
+    }
+  },
+  "private_input_boundary": {
+    "required_environment_names": [
+      "KITTI_TRACKING_ROOT",
+      "MOT17_ROOT",
+      "STAGE2_EVIDENCE_ROOT"
+    ],
+    "values_recorded": false,
+    "absolute_paths_recorded": false,
+    "raw_dataset_content_recorded": false
+  },
+  "known_environment_limitations": [
+    "No dependency lock file is present, so pyproject.toml is the strongest committed dependency declaration.",
+    "The evaluation was executed on one Windows and CPython environment; cross-platform byte equivalence is outside this milestone."
+  ]
+}
