@@ -1,5 +1,9 @@
 # Milestone 2: MOT17 Vertical Slice
 
+Subsequent status: complete on 4 August 2026 after the fixture-licence resolution, merge and CI.
+Statements below that describe Issue #3 as open record the earlier implementation point; see
+`docs/development/milestone-2-fixture-licence-resolution.md` for the resolution.
+
 ## 1. Context
 
 This milestone reconstructs the MOT17 parser component in the rebuilt repository. Evidence from the

@@ -2,9 +2,9 @@
 
 ## Sonification
 
-Status: active. Milestone 1 merged through PR #20. Milestone 2 deterministic audio rendering is
-implemented locally on 5 August 2026 under Issue #21; pull-request review and CI remain merge gates.
-Technical evaluation has not started.
+Status: complete, 6 August 2026. Milestone 1 merged through PR #20. Milestone 2 merged through
+PR #22 after successful CI and closed Issue #21. Full real-data repeat-run evidence is recorded in
+`docs/development/stage-2-closeout.md`. Technical evaluation has not started; Stage 3 is next.
 
 - [x] Define a documented, versioned sonification-preset format.
 - [x] Implement deterministic mapping from validated schema `0.2.0` events to cue records.
@@ -47,7 +47,26 @@ Technical evaluation has not started.
 - [x] Manual fixture expectations, repeated bytes and complete committed MOT17/KITTI schedules are
   covered without committing generated audio.
 - [x] A committed-fixture end-to-end test traces annotation hash through event, cue and WAV hash.
-- [ ] Pull-request CI passes and Issue #21 closes through merge.
+- [x] Pull-request CI passes and Issue #21 closes through merge.
 
-Stage 2 remains active pending the Milestone 2 merge gate and any later agreed Stage 2 close-out.
-Technical evaluation remains Stage 3 work.
+## Stage 2 close-out gate
+
+- [x] Real `MOT17-02-DPM` runs convert 30,003 valid events into 26,960 cues and 3,043 coded
+  suppressions, then render all 26,960 cues.
+- [x] Real KITTI Tracking `0000` runs convert 1,089 valid events into 711 cues and 378 coded
+  `DontCare` suppressions, then render all 711 cues.
+- [x] Every event is represented by exactly one cue or suppression; there are no eligible events
+  without cues and no unlinked cues.
+- [x] Event, cue, suppression and render records retain source-event, source-file and source-row
+  traceability with matching source/configuration/output hashes.
+- [x] Two independent full chains per dataset reproduce the same run IDs, ordering, exact bytes and
+  SHA-256 values for all 4 event, 5 cue and 3 audio files.
+- [x] Ruff, 184 non-integration tests, both private integrations, 55 focused Stage 2 tests and
+  all 186 available tests pass locally with no skips in the complete run.
+- [x] Generated full-data packages remain ignored and scans find no private root, username or
+  OneDrive marker in generated content.
+- [x] Assumptions, problems, limitations, exact hashes and the bounded environment claim are
+  recorded in the Stage 2 close-out.
+
+Stage 2 completion criteria are satisfied as of 6 August 2026. Stage 3 technical evaluation is the
+next active work. No Stage 3 metric or perceptual result is claimed here.

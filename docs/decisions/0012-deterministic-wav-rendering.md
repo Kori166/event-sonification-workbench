@@ -2,8 +2,8 @@
 
 ## Status
 
-Accepted locally for Stage 2 Milestone 2 on 5 August 2026. Pull-request CI and review remain merge
-gates.
+Accepted for Stage 2 Milestone 2 on 5 August 2026 and merged through PR #22 after successful CI.
+Real MOT17 and KITTI Tracking repeat-run evidence closed Stage 2 on 6 August 2026.
 
 ## Context
 
@@ -45,3 +45,5 @@ separate from the cue preset avoids redesigning or silently changing Milestone 1
   broader platform equivalence requires separate evidence.
 - The baseline is a technical reference, not evidence of accessibility or perceptual quality.
 - Stage 3 metrics and participant evaluation remain outside this milestone.
+- Close-out evidence establishes byte identity on Windows 10.0.26200, AMD64 and Python 3.14.3;
+  it does not broaden the cross-platform claim.

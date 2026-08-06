@@ -120,7 +120,7 @@ whole-repository command results are recorded in the progress log after completi
 
 ## Acceptance assessment
 
-Issue #5's parser criteria are implemented locally: conversion is explicit; required source values
+Issue #5's parser criteria were implemented locally: conversion is explicit; required source values
 and confidence are preserved; assumptions and `DontCare` are documented; failures are clear and
-structured; and automated parser/integration tests pass. The milestone remains pending pull-request
-CI and review rather than being represented as merged work.
+structured; and automated parser/integration tests pass. PR #15 subsequently passed CI and merged
+on 5 August 2026, closing the milestone.

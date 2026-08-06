@@ -592,3 +592,61 @@ be added where a short entry would omit important implementation evidence.
 - Audit and stage only Issue #21 changes, preserving unrelated interface work.
 - Open draft pull request `Stage 2: add deterministic WAV rendering`, closing Issue #21.
 - Require CI and acceptance evidence before merge; leave Stage 3 evaluation out of this branch.
+
+---
+
+## 2026-08-06 - Stage 2 close-out
+
+**Work completed**
+
+- Confirmed PR #22 merged at `488e4eb70c8faf7527b327926b3b2ebc4e1af957`, its CI workflow
+  concluded successfully and Issue #21 closed.
+- Ran two independent full native-annotation to event-package to cue-package to audio-package chains
+  for real MOT17 `MOT17-02-DPM` and KITTI Tracking `0000` data.
+- Added a reusable exact package-comparison command because the repository had no existing utility;
+  it reports stable path-free byte/hash results and exits nonzero for mismatches.
+- Independently verified package loaders, declared and calculated hashes, event order, unique IDs,
+  cue/suppression accounting, cue and render logs, source file/row links and WAV headers/PCM peaks.
+- Recorded exact run IDs, all 24 output-file hashes, configuration hashes, counts, audio properties,
+  environment, problems and limitations in `docs/development/stage-2-closeout.md`.
+- Marked Stage 2 complete and Stage 3 technical evaluation as the next active stage without adding
+  metrics, thresholds or evaluation claims.
+
+**Actual real-data evidence**
+
+- MOT17: 30,003 valid events, 0 errors, 988 warnings, 26,960 cues, 3,043 coded suppressions
+  and 26,960 rendered cues. WAV: 885,822 stereo frames at 44,100 Hz; peak limiting applied.
+- KITTI Tracking: 1,089 valid events, 0 errors/warnings, 711 cues, 378 coded `DontCare`
+  suppressions and 711 rendered cues. WAV: 680,022 stereo frames at 44,100 Hz; no limiting needed.
+- For both datasets, independent runs reproduced the same event/cue/audio run IDs and exact bytes
+  and hashes for all four event files, five cue files and three audio files.
+- Both datasets had zero eligible events without cues, zero unlinked cues and zero source-location
+  or render-link mismatches.
+- Generated content contained no configured private root, username or OneDrive marker and remained
+  beneath an ignored `.local-fixtures/` tree.
+
+**Quality evidence**
+
+- `python -m ruff check .`: passed.
+- `python -m pytest -m "not integration"`: 184 passed, 2 deselected.
+- `python -m pytest -m integration`: 2 passed, 184 deselected; neither private test skipped.
+- Cue-scheduling/renderer/comparison focused tests: 55 passed.
+- `python -m pytest`: 186 passed with no skips.
+
+**Problems and limitations**
+
+- The first evidence-audit command used two incorrect configuration-schema paths; it was corrected
+  and rerun, after which every configuration hash matched. No package defect was found.
+- Full MOT17 runs were slower than fixture tests but completed twice without reusing output trees.
+- Byte identity is established for Windows `10.0.26200`, AMD64 and Python `3.14.3`, not for an
+  untested platform/runtime.
+- Baseline mapping/rendering remains a technical reference. Perceptual quality, accessibility,
+  participant evidence and technical metric results remain untested.
+
+**Next actions**
+
+- Begin Stage 3 by defining formulas, units, denominators and controlled fixtures for coverage,
+  alignment, density/overlap, traceability and reproducibility metrics.
+- Preserve the distinction between intentional suppressions, eligible events without cues and
+  unlinked cues in every evaluation report.
+- Do not claim participant, perceptual, accessibility or safety outcomes from technical measures.

@@ -93,9 +93,11 @@
 - [x] Both packages contain JSON, CSV, run metadata and provenance with source/configuration hashes.
 - [x] Separate repeated runs have identical run IDs, event order, bytes and SHA-256 values.
 - [x] Ruff, 121 non-integration tests, both private integrations and all 123 tests pass locally.
-- [x] Stage 1 implementation CI passed through pull request #17; close-out PR CI remains a merge gate.
+- [x] Stage 1 implementation CI passed through pull request #17 and close-out CI passed through
+  pull request #18.
 - [x] Assumptions and limitations are documented in the Stage 1 close-out record.
 - [x] Progress log and risk register reviewed at Stage 1 completion.
 
-Stage 1 completion criteria are satisfied as of 5 August 2026. Stage 2 is the next active stage, but
-no sonification, cue scheduling or audio rendering is implemented by this checklist.
+Stage 1 completion criteria are satisfied as of 5 August 2026. At that close-out, Stage 2 was the
+next active stage and no sonification implementation was claimed by this checklist. Stage 2 was
+subsequently completed on 6 August 2026; see `docs/development/stage-2-closeout.md`.

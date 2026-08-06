@@ -15,8 +15,8 @@ normalised events, deterministic audio cues and traceable technical outputs.
 |---|---|---|---|
 | 0. Project setup | Establish the repository structure, environment, documentation and project tracking | Working package scaffold, CI test, README and project records | Complete, 28 July 2026 |
 | 1. Data ingestion and normalisation | Parse MOT17 and KITTI Tracking annotations into a common event schema | Parsers, schema, validation outputs, provenance records and tests | Complete, 5 August 2026 |
-| 2. Sonification | Map normalised events into scheduled audio cues | Mapping presets, cue schedules, audio files and logs | Active from 5 August 2026; cue scheduling merged, deterministic WAV rendering implemented locally |
-| 3. Technical evaluation | Measure coverage, alignment, traceability, cue density, overlap and reproducibility | Evaluation reports, comparison results and repeat-run checks | Planned |
+| 2. Sonification | Map normalised events into scheduled audio cues | Mapping presets, cue schedules, audio files and logs | Complete, 6 August 2026; real MOT17/KITTI chains reproduced exactly |
+| 3. Technical evaluation | Measure coverage, alignment, traceability, cue density, overlap and reproducibility | Evaluation reports, comparison results and repeat-run checks | Active from 6 August 2026; planning and metric definitions next |
 | 4. Artefact assembly and release | Validate, document and package the complete workbench | Reproducible release, final documentation and tagged version | Planned |
 | 5. Reporting and viva preparation | Complete the dissertation and prepare the artefact demonstration | Final report, demonstration plan and viva notes | Planned |
 
@@ -138,12 +138,12 @@ Stage 1 is complete because:
 Completion was recorded on 5 August 2026. The generated full-data packages remain local and ignored
 by Git.
 
-## Stage 2 Active Work
+## Stage 2 Complete
 
-Stage 2 is active and tracked in `docs/project-management/stage-2-checklist.md`. Milestone 1 under
-Issue #19 implements the versioned preset, deterministic event-to-cue mapping, cue schedules,
-suppression policy and traceability logs. Milestone 2 under Issue #21 consumes that package through
-a versioned deterministic stereo PCM WAV renderer. Technical evaluation remains Stage 3 work.
+Stage 2 is complete and tracked in `docs/project-management/stage-2-checklist.md`. Milestone 1 under
+Issue #19 implemented the versioned preset, deterministic event-to-cue mapping, cue schedules,
+suppression policy and traceability logs. Milestone 2 under Issue #21 added the versioned
+deterministic stereo PCM WAV renderer and merged through PR #22 after successful CI.
 
 ### Stage 2 Milestone 1 quality gate
 
@@ -163,7 +163,7 @@ Milestone 1 passed CI and merged through pull request #20 on 5 August 2026.
 
 ### Stage 2 Milestone 2 quality gate
 
-Milestone 2 is ready for merge only when:
+Milestone 2 required:
 
 - renderer configuration and every time, envelope, pan, mixing, gain and PCM policy are versioned;
 - cue-package files, hashes, run identity, counts, order, cue parameters and preset identity pass a
@@ -174,6 +174,28 @@ Milestone 2 is ready for merge only when:
 - complete committed MOT17 and KITTI cue schedules reach the renderer contract;
 - normal and complete tests and pull-request CI pass; and
 - no generated audio, private data/path or Stage 3/perceptual claim enters the change.
+
+These criteria passed CI and merged through pull request #22 on 5 August 2026. The 6 August
+close-out then ran the native-to-event-to-cue-to-WAV chain twice for real `MOT17-02-DPM` and KITTI
+Tracking `0000`. All 4 event, 5 cue and 3 audio package files repeated byte-for-byte for both
+datasets; all available tests passed. Exact counts, hashes, audio properties and limitations are in
+`docs/development/stage-2-closeout.md`.
+
+## Stage 3 Active Work
+
+Stage 3 begins from verified Stage 1 event packages and Stage 2 cue, suppression, WAV, render-log
+and metadata packages. Its first work is to define controlled technical metrics and fixtures for:
+
+- coverage and complete event accounting;
+- temporal alignment;
+- cue density and overlap;
+- traceability completeness; and
+- repeat-run reproducibility.
+
+The evaluation design must distinguish coded intentional suppressions from eligible events without
+cues and from cues without a resolvable source event. Exact formulas, denominators, units and
+controlled fixtures must be agreed before results are calculated. No perceptual, participant,
+accessibility or safety conclusion follows from Stage 2 reproducibility evidence.
 
 ## Key Project Milestones
 

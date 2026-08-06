@@ -146,4 +146,5 @@ integration was skipped.
 | Assumptions and limitations are documented | Adapter docs, decisions, risks and this record | Satisfied |
 
 All Stage 1 completion criteria are satisfied. Stage 2 is the next active stage and remains
-unimplemented at this close-out point.
+unimplemented at this close-out point. Stage 2 was subsequently completed on 6 August 2026; see
+`docs/development/stage-2-closeout.md`.
