@@ -1,0 +1,14 @@
+table_id,metric,unit_or_denominator,mot17_raw_value,mot17_displayed_value,mot17_manifest_id,kitti_raw_value,kitti_displayed_value,kitti_manifest_id
+table-2,Scheduling maximum error,samples,0.0,0,mot17.timing.scheduling.maximum_samples,0.0,0,kitti.timing.scheduling.maximum_samples
+table-2,Scheduling maximum error,seconds,3.33333335e-07,3.33333335e-07,mot17.timing.scheduling.maximum_seconds,0.0,0,kitti.timing.scheduling.maximum_seconds
+table-2,Render-placement maximum error,samples,0.0,0,mot17.timing.render_placement.maximum_samples,0.0,0,kitti.timing.render_placement.maximum_samples
+table-2,Render-placement maximum error,seconds,3.3333333333333335e-07,3.33333333e-07,mot17.timing.render_placement.maximum_seconds,0.0,0,kitti.timing.render_placement.maximum_seconds
+table-2,End-to-end maximum error,samples,0.0,0,mot17.timing.end_to_end.maximum_samples,0.0,0,kitti.timing.end_to_end.maximum_samples
+table-2,End-to-end maximum error,seconds,1.66666666667e-15,1.66666667e-15,mot17.timing.end_to_end.maximum_seconds,0.0,0,kitti.timing.end_to_end.maximum_seconds
+table-2,Fully traceable cue rate,resolved cues / cues,1.0,"26,960 / 26,960 (100.00%)",mot17.traceability.fully_traceable_cues.rate,1.0,711 / 711 (100.00%),kitti.traceability.fully_traceable_cues.rate
+table-2,Traceable suppression rate,resolved suppressions / suppressions,1.0,"3,043 / 3,043 (100.00%)",mot17.traceability.traceable_suppressions.rate,1.0,378 / 378 (100.00%),kitti.traceability.traceable_suppressions.rate
+table-2,Broken-link count,links,0,0,mot17.traceability.broken_link_count,0,0,kitti.traceability.broken_link_count
+table-2,Semantic evaluator-report repeat equality,three isolated reports,true,Yes,mot17.reproducibility.semantic_report_equality,true,Yes,kitti.reproducibility.semantic_report_equality
+table-2,Canonical evaluator-report byte equality,three isolated reports,true,Yes,mot17.reproducibility.canonical_report_byte_equality,true,Yes,kitti.reproducibility.canonical_report_byte_equality
+table-2,Retained Stage 2 audio byte equality,repeat chain,true,Yes,mot17.reproducibility.audio_byte_equality,true,Yes,kitti.reproducibility.audio_byte_equality
+table-2,Tested environment boundary,scope,"""same recorded Stage 3 execution environment""",same recorded Stage 3 execution environment,mot17.reproducibility.environment_scope,"""same recorded Stage 3 execution environment""",same recorded Stage 3 execution environment,kitti.reproducibility.environment_scope

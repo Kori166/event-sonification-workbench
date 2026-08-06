@@ -2,9 +2,9 @@
 
 ## Technical evaluation
 
-Status: active. Milestones 1 and 2 completed on 6 August 2026. The frozen method has been verified
-synthetically and applied to one verified real sequence from each dataset. RQ3 is supported by
-bounded real technical evidence; Milestone 3 report-ready auditing is next.
+Status: complete, 6 August 2026. The frozen method was verified synthetically, applied unchanged to
+one verified real sequence from each dataset and converted into independently audited report-ready
+evidence. RQ3 is supported within the stated technical case-study boundary.
 
 ## Milestone 1: contract and synthetic oracle
 
@@ -45,19 +45,30 @@ bounded real technical evidence; Milestone 3 report-ready auditing is next.
 
 ## Milestone 3: audited report-ready evidence
 
-- [ ] Link every presented table and figure value to its canonical source report and hash.
-- [ ] Audit report-ready tables and figures against the committed JSON/CSV evidence.
-- [ ] Convert the verified measures into bounded RQ3 findings without changing the frozen contract.
-- [ ] Preserve explicit case-study, environment and non-perceptual interpretation limits.
+- [x] Link every presented table and figure value to its canonical source report and hash.
+- [x] Generate three principal tables, a complete timing supplement and three deterministic SVG
+  figures with fixed source-data CSV files.
+- [x] Record every displayed value using structural JSON Pointers, raw/display values, formulas,
+  formatting rules and interpretation boundaries.
+- [x] Audit all 134 values, 136 table cells, 20 figure data points and 12 claims automatically with
+  zero mismatch, missing-source, formatting or private-path findings.
+- [x] Recalculate all principal rows and plots independently, inspect the SVG renderings and record
+  zero remaining manual-audit mismatches.
+- [x] Produce two isolated fresh reporting builds with all 24 generated files byte-identical.
+- [x] Convert the verified measures into bounded RQ3 findings without changing the frozen contract.
+- [x] Preserve explicit case-study, environment and non-perceptual interpretation limits.
+- [x] Pass Ruff, the 26-case oracle, 252 non-integration tests, all three private integrations and
+  the complete 255-test suite without a skip in the final configured runs.
 
 ## Evidence boundary
 
 Milestone 1 proves that the implemented method matches a manually calculated synthetic case.
-Milestone 2 adds technical case-study values for MOT17-02-DPM and KITTI sequence 0000 and supports
-RQ3 within the selected sequences, preset, renderer and recorded environment. Neither milestone
-validates perceived quality, accessibility, usability, navigation, safety or cross-platform byte
-identity.
+Milestone 2 adds technical case-study values for MOT17-02-DPM and KITTI sequence 0000. Milestone 3
+makes those values report-ready without recalculation and audits every presented value against the
+canonical reports. Together they support RQ3 within the selected sequences, preset, renderer and
+recorded environment. Stage 3 does not validate perceived quality, accessibility, usability,
+navigation, mobility, safety or cross-platform byte identity.
 
-The exact next milestone is **Stage 3 Milestone 3: convert the verified technical-evaluation
-evidence into audited report-ready tables, figures and bounded RQ3 findings, with every presented
-value linked to its canonical source report.**
+The exact next milestone is **Stage 4 Milestone 1: assemble a versioned artefact release candidate
+and verify installation, configuration, evidence availability and end-to-end execution from a clean
+environment.**
