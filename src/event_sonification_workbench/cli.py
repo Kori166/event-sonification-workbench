@@ -56,6 +56,15 @@ from .sonification.renderer_config import (
     load_renderer_configuration,
 )
 from .sonification.scheduler import CueScheduleError, schedule_event_package
+from .technical_evaluation import (
+    DEFAULT_REPORT_FILENAME,
+    TechnicalEvaluationError,
+    evaluate_technical_input,
+    load_evaluation_contract,
+    load_evaluation_input,
+    validate_evaluation_report,
+    write_evaluation_report,
+)
 
 DEFAULT_SCHEMA = Path("configs/schemas/event.schema.v0.2.0.json")
 DEFAULT_MOT17_MAPPING = Path("configs/class-mappings/mot17.v0.1.0.json")
@@ -65,6 +74,15 @@ DEFAULT_SONIFICATION_PRESET = Path("configs/sonification/presets/baseline-v0.1.0
 DEFAULT_SONIFICATION_PRESET_SCHEMA = Path("configs/sonification/schemas/preset.schema.v0.1.0.json")
 DEFAULT_RENDERER_CONFIG = Path("configs/sonification/renderers/baseline-v0.1.0.json")
 DEFAULT_RENDERER_SCHEMA = Path("configs/sonification/renderers/renderer.schema.v0.1.0.json")
+DEFAULT_EVALUATION_CONTRACT = Path(
+    "configs/evaluation/technical-evaluation-contract.v0.1.0.json"
+)
+DEFAULT_EVALUATION_CONTRACT_SCHEMA = Path(
+    "configs/evaluation/technical-evaluation-contract.schema.v0.1.0.json"
+)
+DEFAULT_EVALUATION_REPORT_SCHEMA = Path(
+    "configs/evaluation/technical-evaluation-report.schema.v0.1.0.json"
+)
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -148,6 +166,22 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     compare_packages.add_argument("--left-package", type=Path, required=True)
     compare_packages.add_argument("--right-package", type=Path, required=True)
+
+    evaluate_technical = subparsers.add_parser(
+        "evaluate-technical",
+        help="Evaluate a prepared event/cue/suppression/render chain under contract 0.1.0.",
+    )
+    evaluate_technical.add_argument("--input", type=Path, required=True)
+    evaluate_technical.add_argument("--contract", type=Path, default=DEFAULT_EVALUATION_CONTRACT)
+    evaluate_technical.add_argument(
+        "--contract-schema", type=Path, default=DEFAULT_EVALUATION_CONTRACT_SCHEMA
+    )
+    evaluate_technical.add_argument(
+        "--report-schema", type=Path, default=DEFAULT_EVALUATION_REPORT_SCHEMA
+    )
+    evaluate_technical.add_argument(
+        "--output", type=Path, default=DEFAULT_OUTPUT_DIRECTORY / DEFAULT_REPORT_FILENAME
+    )
     return parser
 
 
@@ -435,6 +469,28 @@ def _run_compare_packages(args: argparse.Namespace) -> int:
     return 0 if report.identical else 1
 
 
+def _run_evaluate_technical(args: argparse.Namespace) -> int:
+    contract = load_evaluation_contract(args.contract, schema_path=args.contract_schema)
+    report = evaluate_technical_input(load_evaluation_input(args.input), contract=contract)
+    validate_evaluation_report(report, schema_path=args.report_schema)
+    result = write_evaluation_report(report, args.output)
+    print(
+        json.dumps(
+            {
+                "command": "evaluate-technical",
+                "evaluation_run_id": result.evaluation_run_id,
+                "report_sha256": result.sha256,
+                "valid": report.document["valid"],
+                "error_count": report.document["diagnostic_counts"]["error_count"],
+                "warning_count": report.document["diagnostic_counts"]["warning_count"],
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
+    return 0 if report.document["valid"] else 1
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """Run the workbench command-line interface."""
     parser = _build_parser()
@@ -475,6 +531,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             return _run_render_audio(args)
         if args.command == "compare-packages":
             return _run_compare_packages(args)
+        if args.command == "evaluate-technical":
+            return _run_evaluate_technical(args)
     except (PresetValidationError, RendererConfigurationError) as exc:
         parser.error(json.dumps(exc.to_dict(), sort_keys=True))
     except (
@@ -484,6 +542,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         MOT17ParseError,
         OutputPackageError,
         PackageComparisonError,
+        TechnicalEvaluationError,
         OSError,
         TypeError,
         ValueError,
