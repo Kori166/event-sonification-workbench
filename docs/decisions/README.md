@@ -21,3 +21,5 @@ must be amended or superseded explicitly rather than silently rewritten.
 - [0011: Versioned preset and deterministic cue-schedule contract](0011-versioned-preset-and-cue-schedule.md)
 - [0012: Deterministic WAV rendering policy](0012-deterministic-wav-rendering.md)
 - [0013: Versioned technical-evaluation contract](0013-technical-evaluation-contract.md)
+- [0014: Real-data technical-evaluation evidence boundary](0014-real-data-evaluation-evidence.md)
+- [0015: Audited report-ready evaluation evidence](0015-audited-reporting-evidence.md)
