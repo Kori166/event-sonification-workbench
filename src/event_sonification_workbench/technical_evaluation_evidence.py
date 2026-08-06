@@ -281,6 +281,7 @@ def build_dataset_summary(
         "timeline": deepcopy(report["timeline"]),
         "event_accounting": accounting,
         "diagnostic_counts": deepcopy(report["diagnostic_counts"]),
+        "diagnostics": deepcopy(report["diagnostics"]),
         "diagnostic_code_counts": _supplemental_diagnostic_counts(report),
         "metrics": deepcopy(report["metrics"]),
         "supplemental_traceability": deepcopy(supplemental_links),

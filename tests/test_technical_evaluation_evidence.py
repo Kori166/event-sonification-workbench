@@ -139,6 +139,7 @@ def test_summary_csv_agrees_with_json_and_preserves_null(tmp_path: Path) -> None
             "cue_to_wav": {"numerator": 5, "denominator": 5, "value": 1.0},
         },
     )
+    assert summary["diagnostics"] == report["diagnostics"]
     rows = list(csv.DictReader(io.StringIO(summary_csv_bytes(summary).decode("utf-8"))))
     coverage = next(
         row
