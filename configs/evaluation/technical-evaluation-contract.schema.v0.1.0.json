@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:event-sonification-workbench:schema:technical-evaluation-contract:0.1.0",
+  "title": "Technical evaluation contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "report_version",
+    "supported_versions",
+    "event_accounting",
+    "timing",
+    "timeline",
+    "density",
+    "overlap",
+    "rates",
+    "percentiles",
+    "ordering",
+    "reproducibility"
+  ],
+  "properties": {
+    "contract_version": {"const": "0.1.0"},
+    "report_version": {"const": "0.1.0"},
+    "supported_versions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["event_schema", "cue_package", "renderer_metadata"],
+      "properties": {
+        "event_schema": {"const": "0.2.0"},
+        "cue_package": {"const": "0.1.0"},
+        "renderer_metadata": {"const": "0.1.0"}
+      }
+    },
+    "event_accounting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary_outcomes", "multiple_cues_per_event", "cue_and_suppression"],
+      "properties": {
+        "primary_outcomes": {
+          "const": ["represented", "suppressed", "missed", "excluded"]
+        },
+        "multiple_cues_per_event": {"const": "permitted_as_one_represented_outcome"},
+        "cue_and_suppression": {"const": "error"}
+      }
+    },
+    "timing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sample_rounding", "rendered_end", "seconds_error", "samples_error"],
+      "properties": {
+        "sample_rounding": {"const": "decimal_round_half_up"},
+        "rendered_end": {"const": "exclusive"},
+        "seconds_error": {"const": "absolute_difference"},
+        "samples_error": {"const": "absolute_difference_after_sample_rounding"}
+      }
+    },
+    "timeline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "preference", "scheduled_fallback"],
+      "properties": {
+        "start": {"const": "zero"},
+        "preference": {"const": "rendered_total_frame_count_divided_by_sample_rate"},
+        "scheduled_fallback": {"const": "maximum_half_open_cue_end"}
+      }
+    },
+    "density": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["window_seconds", "window_interval", "candidate_starts"],
+      "properties": {
+        "window_seconds": {"const": 1},
+        "window_interval": {"const": "half_open"},
+        "candidate_starts": {"const": "cue_start_times"}
+      }
+    },
+    "overlap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["interval", "boundary_policy", "preferred_domain"],
+      "properties": {
+        "interval": {"const": "half_open"},
+        "boundary_policy": {"const": "group_boundaries_end_before_start"},
+        "preferred_domain": {"const": "rendered_integer_samples"}
+      }
+    },
+    "rates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["zero_denominator", "include_counts"],
+      "properties": {
+        "zero_denominator": {"const": "null"},
+        "include_counts": {"const": true}
+      }
+    },
+    "percentiles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["p95", "median"],
+      "properties": {
+        "p95": {"const": "nearest_rank_ceil_p_times_n"},
+        "median": {"const": "midpoint_of_two_central_values_for_even_n"}
+      }
+    },
+    "ordering": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["diagnostics", "broken_link_reasons", "reproducibility_files"],
+      "properties": {
+        "diagnostics": {"const": "severity_code_event_id_cue_id_record_index"},
+        "broken_link_reasons": {"const": "code"},
+        "reproducibility_files": {"const": "level_filename"}
+      }
+    },
+    "reproducibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["levels", "untested_value", "claim_scope"],
+      "properties": {
+        "levels": {
+          "const": ["semantic", "byte", "audio", "configuration"]
+        },
+        "untested_value": {"const": null},
+        "claim_scope": {"const": "tested_environment_only"}
+      }
+    }
+  }
+}

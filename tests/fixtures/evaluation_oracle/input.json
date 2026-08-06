@@ -1,0 +1,309 @@
+{
+  "fixture_version": "0.1.0",
+  "identity": {
+    "audio_package_sha256": "9999999999999999999999999999999999999999999999999999999999999999",
+    "audio_run_id": "audio-synthetic-evaluation_oracle-manual",
+    "cue_package_format_version": "0.1.0",
+    "cue_package_run_id": "cue-synthetic-evaluation_oracle-manual",
+    "cue_package_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+    "cue_schedule_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+    "dataset": "synthetic",
+    "event_package_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+    "event_schema_version": "0.2.0",
+    "mapper_name": "deterministic_event_to_cue_mapper",
+    "mapper_version": "0.1.0",
+    "preset_name": "oracle",
+    "preset_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+    "preset_version": "0.1.0",
+    "render_log_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+    "renderer_configuration_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+    "renderer_configuration_version": "0.1.0",
+    "renderer_metadata_version": "0.1.0",
+    "renderer_name": "deterministic_pcm16_renderer",
+    "sample_rate_hz": 10,
+    "sequence": "evaluation_oracle",
+    "source_annotation_files": [
+      {
+        "logical_path": "tests/fixtures/evaluation_oracle/source_annotations.csv",
+        "sha256": "d923541748ae03bab1e2bad768ae80b790bfec16d10faae6a7fdea1ef3a0eb97"
+      }
+    ],
+    "suppression_log_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+    "total_frame_count": 30,
+    "wav_sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+  },
+  "events": [
+    {
+      "dataset": "synthetic",
+      "event_id": "evt:synthetic:evaluation_oracle:f000000:t1:r000001",
+      "schema_version": "0.2.0",
+      "sequence": "evaluation_oracle",
+      "source_file": "tests/fixtures/evaluation_oracle/source_annotations.csv",
+      "source_file_sha256": "d923541748ae03bab1e2bad768ae80b790bfec16d10faae6a7fdea1ef3a0eb97",
+      "source_row": 1,
+      "timestamp": 0.0
+    },
+    {
+      "dataset": "synthetic",
+      "event_id": "evt:synthetic:evaluation_oracle:f000010:t2:r000002",
+      "schema_version": "0.2.0",
+      "sequence": "evaluation_oracle",
+      "source_file": "tests/fixtures/evaluation_oracle/source_annotations.csv",
+      "source_file_sha256": "d923541748ae03bab1e2bad768ae80b790bfec16d10faae6a7fdea1ef3a0eb97",
+      "source_row": 2,
+      "timestamp": 1.0
+    },
+    {
+      "dataset": "synthetic",
+      "event_id": "evt:synthetic:evaluation_oracle:f000015:t3:r000003",
+      "schema_version": "0.2.0",
+      "sequence": "evaluation_oracle",
+      "source_file": "tests/fixtures/evaluation_oracle/source_annotations.csv",
+      "source_file_sha256": "d923541748ae03bab1e2bad768ae80b790bfec16d10faae6a7fdea1ef3a0eb97",
+      "source_row": 3,
+      "timestamp": 1.5
+    },
+    {
+      "dataset": "synthetic",
+      "event_id": "evt:synthetic:evaluation_oracle:f000020:t4:r000004",
+      "schema_version": "0.2.0",
+      "sequence": "evaluation_oracle",
+      "source_file": "tests/fixtures/evaluation_oracle/source_annotations.csv",
+      "source_file_sha256": "d923541748ae03bab1e2bad768ae80b790bfec16d10faae6a7fdea1ef3a0eb97",
+      "source_row": 4,
+      "timestamp": 2.0
+    },
+    {
+      "dataset": "synthetic",
+      "event_id": "evt:synthetic:evaluation_oracle:f000022:t5:r000005",
+      "schema_version": "0.2.0",
+      "sequence": "evaluation_oracle",
+      "source_file": "tests/fixtures/evaluation_oracle/source_annotations.csv",
+      "source_file_sha256": "d923541748ae03bab1e2bad768ae80b790bfec16d10faae6a7fdea1ef3a0eb97",
+      "source_row": 5,
+      "timestamp": 2.25
+    }
+  ],
+  "cues": [
+    {
+      "cue_id": "cue-oracle-1",
+      "dataset": "synthetic",
+      "duration_seconds": 1.0,
+      "preset_name": "oracle",
+      "preset_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+      "preset_version": "0.1.0",
+      "sequence": "evaluation_oracle",
+      "source_event_id": "evt:synthetic:evaluation_oracle:f000000:t1:r000001",
+      "source_file": "tests/fixtures/evaluation_oracle/source_annotations.csv",
+      "source_row": 1,
+      "start_time_seconds": 0.0
+    },
+    {
+      "cue_id": "cue-oracle-2",
+      "dataset": "synthetic",
+      "duration_seconds": 1.0,
+      "preset_name": "oracle",
+      "preset_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+      "preset_version": "0.1.0",
+      "sequence": "evaluation_oracle",
+      "source_event_id": "evt:synthetic:evaluation_oracle:f000000:t1:r000001",
+      "source_file": "tests/fixtures/evaluation_oracle/source_annotations.csv",
+      "source_row": 1,
+      "start_time_seconds": 0.5
+    },
+    {
+      "cue_id": "cue-oracle-3",
+      "dataset": "synthetic",
+      "duration_seconds": 1.0,
+      "preset_name": "oracle",
+      "preset_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+      "preset_version": "0.1.0",
+      "sequence": "evaluation_oracle",
+      "source_event_id": "evt:synthetic:evaluation_oracle:f000010:t2:r000002",
+      "source_file": "tests/fixtures/evaluation_oracle/source_annotations.csv",
+      "source_row": 2,
+      "start_time_seconds": 1.0
+    },
+    {
+      "cue_id": "cue-oracle-4",
+      "dataset": "synthetic",
+      "duration_seconds": 0.5,
+      "preset_name": "oracle",
+      "preset_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+      "preset_version": "0.1.0",
+      "sequence": "evaluation_oracle",
+      "source_event_id": "evt:synthetic:evaluation_oracle:f000020:t4:r000004",
+      "source_file": "tests/fixtures/evaluation_oracle/source_annotations.csv",
+      "source_row": 4,
+      "start_time_seconds": 2.0
+    },
+    {
+      "cue_id": "cue-oracle-5",
+      "dataset": "synthetic",
+      "duration_seconds": 0.5,
+      "preset_name": "oracle",
+      "preset_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+      "preset_version": "0.1.0",
+      "sequence": "evaluation_oracle",
+      "source_event_id": "evt:synthetic:evaluation_oracle:f000022:t5:r000005",
+      "source_file": "tests/fixtures/evaluation_oracle/source_annotations.csv",
+      "source_row": 5,
+      "start_time_seconds": 2.25
+    }
+  ],
+  "suppressions": [
+    {
+      "dataset": "synthetic",
+      "preset_name": "oracle",
+      "preset_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+      "preset_version": "0.1.0",
+      "reason": "The oracle deliberately excludes this event.",
+      "sequence": "evaluation_oracle",
+      "source_event_id": "evt:synthetic:evaluation_oracle:f000015:t3:r000003",
+      "source_file": "tests/fixtures/evaluation_oracle/source_annotations.csv",
+      "source_row": 3,
+      "suppression_code": "oracle_excluded"
+    }
+  ],
+  "exclusions": [],
+  "render_entries": [
+    {
+      "cue_id": "cue-oracle-1",
+      "cue_package": {
+        "package_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+        "run_id": "cue-synthetic-evaluation_oracle-manual"
+      },
+      "duration_samples": 10,
+      "end_sample_exclusive": 10,
+      "renderer": {
+        "configuration_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+        "name": "deterministic_pcm16_renderer",
+        "version": "0.1.0"
+      },
+      "source_event_id": "evt:synthetic:evaluation_oracle:f000000:t1:r000001",
+      "start_sample": 0,
+      "start_time_seconds": 0.0
+    },
+    {
+      "cue_id": "cue-oracle-2",
+      "cue_package": {
+        "package_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+        "run_id": "cue-synthetic-evaluation_oracle-manual"
+      },
+      "duration_samples": 10,
+      "end_sample_exclusive": 15,
+      "renderer": {
+        "configuration_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+        "name": "deterministic_pcm16_renderer",
+        "version": "0.1.0"
+      },
+      "source_event_id": "evt:synthetic:evaluation_oracle:f000000:t1:r000001",
+      "start_sample": 5,
+      "start_time_seconds": 0.5
+    },
+    {
+      "cue_id": "cue-oracle-3",
+      "cue_package": {
+        "package_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+        "run_id": "cue-synthetic-evaluation_oracle-manual"
+      },
+      "duration_samples": 10,
+      "end_sample_exclusive": 20,
+      "renderer": {
+        "configuration_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+        "name": "deterministic_pcm16_renderer",
+        "version": "0.1.0"
+      },
+      "source_event_id": "evt:synthetic:evaluation_oracle:f000010:t2:r000002",
+      "start_sample": 10,
+      "start_time_seconds": 1.0
+    },
+    {
+      "cue_id": "cue-oracle-4",
+      "cue_package": {
+        "package_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+        "run_id": "cue-synthetic-evaluation_oracle-manual"
+      },
+      "duration_samples": 5,
+      "end_sample_exclusive": 25,
+      "renderer": {
+        "configuration_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+        "name": "deterministic_pcm16_renderer",
+        "version": "0.1.0"
+      },
+      "source_event_id": "evt:synthetic:evaluation_oracle:f000020:t4:r000004",
+      "start_sample": 20,
+      "start_time_seconds": 2.0
+    },
+    {
+      "cue_id": "cue-oracle-5",
+      "cue_package": {
+        "package_sha256": "8888888888888888888888888888888888888888888888888888888888888888",
+        "run_id": "cue-synthetic-evaluation_oracle-manual"
+      },
+      "duration_samples": 5,
+      "end_sample_exclusive": 28,
+      "renderer": {
+        "configuration_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+        "name": "deterministic_pcm16_renderer",
+        "version": "0.1.0"
+      },
+      "source_event_id": "evt:synthetic:evaluation_oracle:f000022:t5:r000005",
+      "start_sample": 23,
+      "start_time_seconds": 2.25
+    }
+  ],
+  "reproducibility": {
+    "configuration_comparisons": [
+      {
+        "expected_sha256": "68513164a731d977988acc34f7013cc3000c78d5e6aa345b2f7bcbe3e346de3e",
+        "expected_version": "0.1.0",
+        "name": "evaluation_contract",
+        "observed_sha256": "68513164a731d977988acc34f7013cc3000c78d5e6aa345b2f7bcbe3e346de3e",
+        "observed_version": "0.1.0"
+      },
+      {
+        "expected_sha256": "a78a6d9a97c9257741678dcbb9422153026507f64f8010a6366122ce72397680",
+        "expected_version": "0.2.0",
+        "name": "event_schema",
+        "observed_sha256": "a78a6d9a97c9257741678dcbb9422153026507f64f8010a6366122ce72397680",
+        "observed_version": "0.2.0"
+      },
+      {
+        "expected_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+        "expected_version": "0.1.0",
+        "name": "preset",
+        "observed_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+        "observed_version": "0.1.0"
+      },
+      {
+        "expected_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+        "expected_version": "0.1.0",
+        "name": "renderer",
+        "observed_sha256": "7777777777777777777777777777777777777777777777777777777777777777",
+        "observed_version": "0.1.0"
+      }
+    ],
+    "environment_scope": "same synthetic test process",
+    "file_comparisons": [
+      {
+        "byte_identical": true,
+        "expected_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+        "filename": "events.json",
+        "level": "byte",
+        "mismatch": null,
+        "observed_sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      {
+        "byte_identical": true,
+        "expected_sha256": "6666666666666666666666666666666666666666666666666666666666666666",
+        "filename": "sonification.wav",
+        "level": "audio",
+        "mismatch": null,
+        "observed_sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+      }
+    ],
+    "semantic_metrics_equal": true,
+    "semantic_records_equal": true
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "fixture_version": "0.1.0",
+  "cases": [
+    {
+      "name": "eligible_missed_event",
+      "operation": "remove_cue_and_render",
+      "cue_id": "cue-oracle-5",
+      "expected_diagnostic": "eligible_event_missed"
+    },
+    {
+      "name": "orphan_cue",
+      "operation": "replace_cue_source_event_id",
+      "cue_id": "cue-oracle-4",
+      "value": "evt:synthetic:evaluation_oracle:f999999:torphan:r999999",
+      "expected_diagnostic": "cue_event_unknown"
+    },
+    {
+      "name": "broken_annotation_link",
+      "operation": "replace_cue_source_row",
+      "cue_id": "cue-oracle-3",
+      "value": 999,
+      "expected_diagnostic": "cue_source_annotation_mismatch"
+    },
+    {
+      "name": "one_sample_render_displacement",
+      "operation": "shift_render_interval",
+      "cue_id": "cue-oracle-3",
+      "samples": 1,
+      "expected_render_error_samples": 1
+    },
+    {
+      "name": "duplicate_primary_outcome",
+      "operation": "copy_suppression_to_event",
+      "source_event_id": "evt:synthetic:evaluation_oracle:f000010:t2:r000002",
+      "expected_diagnostic": "event_outcome_conflict"
+    },
+    {
+      "name": "unknown_suppression_reference",
+      "operation": "replace_suppression_source_event_id",
+      "value": "evt:synthetic:evaluation_oracle:f999999:tunknown:r999999",
+      "expected_diagnostic": "suppression_event_unknown"
+    }
+  ],
+  "malformed_records": [
+    {
+      "collection": "cues",
+      "field": "duration_seconds",
+      "value": "one second",
+      "expected_error": "evaluation_record_invalid"
+    },
+    {
+      "collection": "render_entries",
+      "field": "end_sample_exclusive",
+      "value": -1,
+      "expected_error": "evaluation_record_invalid"
+    }
+  ]
+}

@@ -20,7 +20,9 @@ events to configurable cues, preserves provenance and supports technical evaluat
 Stages 0, 1 and 2 are complete. Stage 1 closed on 5 August 2026 after real-data event-package
 verification. Stage 2 closed on 6 August 2026 after the complete native-annotation to event to cue
 to deterministic stereo PCM WAV chain repeated exactly for real MOT17 and KITTI Tracking data.
-Stage 3 technical evaluation is the next active stage; no evaluation result is claimed yet.
+Stage 3 is active. Milestone 1 froze technical-evaluation contract `0.1.0` and verified its metrics
+against a manually calculated synthetic oracle. Full MOT17/KITTI technical evaluation has not run,
+RQ3 is not yet fully answered and no real-dataset evaluation result is claimed.
 
 Milestone 1 established common schema version `0.1.0`. The cross-dataset review in Milestone 3
 introduced schema `0.2.0`, retaining the event shape while allowing native unnormalised confidence
@@ -259,6 +261,33 @@ python -m event_sonification_workbench.cli compare-packages `
 The path-free deterministic report covers every expected package file, exact byte equality and
 independent SHA-256 values. Any mismatch is named and returns a nonzero status.
 
+## Technical evaluation contract
+
+Stage 3 Milestone 1 defines event coverage/accounting, three timing-error domains, resolved-link
+traceability, cue density, half-open interval overlap burden and four separate reproducibility
+levels in contract `0.1.0`. Every rate retains its numerator and denominator; zero denominators are
+`null`. Suppressed events remain distinct from eligible misses, and traceability requires records
+and hashes to agree rather than merely containing plausible identifiers.
+
+The minimum evaluator accepts a prepared, validated event/cue/suppression/render record chain:
+
+```powershell
+python -m event_sonification_workbench.cli evaluate-technical `
+  --input tests/fixtures/evaluation_oracle/input.json `
+  --output outputs/technical_evaluation_report.json
+```
+
+It writes canonical JSON with a content-derived evaluation run ID, deterministic diagnostics,
+input versions/hashes, timeline, metric counts and output hash scope. The committed fixture is
+synthetic: its five events, five cues, one suppression and 10 Hz render timeline are independently
+calculated in `tests/fixtures/evaluation_oracle/oracle-calculation.md`. Fault cases cover eligible
+misses, orphans, contradictory outcomes, broken provenance and timing displacement.
+
+This validates the method only. Stage 3 Milestone 2 must prepare selected verified real event/cue/
+audio package chains and apply the frozen contract without changing formulas in response to the
+results. No perceptual, participant, accessibility, usability, navigation or safety conclusion
+follows from these technical metrics. Cross-environment byte identity remains untested.
+
 ## Reproducibility controls
 
 - schema, parser and class-mapping versions;
@@ -272,6 +301,8 @@ independent SHA-256 values. Any mismatch is named and returns a nonzero status.
 - versioned renderer configuration, verified cue inputs and content-derived audio run IDs;
 - explicit sample placement, envelope, panning, mixing, normalisation and PCM quantisation rules;
 - file-level output hashes and path-free run provenance;
+- versioned evaluation policy/report schemas with explicit rate denominators and null rules;
+- a manually calculated synthetic evaluation oracle and deterministic canonical report hash;
 - schema, semantic, provenance and determinism tests;
 - LF-normalised hashed fixtures; and
 - explicit evidence boundaries between fixed CI data and local full-dataset integration data.
@@ -284,6 +315,8 @@ independent SHA-256 values. Any mismatch is named and returns a nonzero status.
 - `docs/data-model/sonification-preset.md`: preset schema, baseline formulas and suppression policy.
 - `docs/data-model/cue-schedule.md`: schedule input gate, records, files, IDs and hash contract.
 - `docs/data-model/audio-rendering.md`: renderer input gate, synthesis, WAV and provenance contract.
+- `docs/evaluation/technical-evaluation-contract-v0.1.0.md`: frozen metric definitions, inputs,
+  boundaries, failure policy and deterministic report contract.
 - `docs/data-model/mot17-adapter.md`: MOT17 format and conversion rules.
 - `docs/data-model/kitti-tracking-adapter.md`: KITTI definitions, conversion and `DontCare` policy.
 - `docs/decisions/0007-mot17-ground-truth-mapping.md`: mapping decision.
@@ -292,14 +325,17 @@ independent SHA-256 values. Any mismatch is named and returns a nonzero status.
 - `docs/decisions/0010-deterministic-output-package.md`: deterministic package format decision.
 - `docs/decisions/0011-versioned-preset-and-cue-schedule.md`: Stage 2 scheduling decision.
 - `docs/decisions/0012-deterministic-wav-rendering.md`: renderer, mixing and PCM policy decision.
+- `docs/decisions/0013-technical-evaluation-contract.md`: Stage 3 metric and interpretation policy.
 - `docs/development/milestone-2-mot17-vertical-slice.md`: development and validation evidence.
 - `docs/development/milestone-3-kitti-extension.md`: audit, fixture and integration evidence.
 - `docs/development/milestone-2-fixture-licence-resolution.md`: fixture licence decision.
 - `docs/development/stage-1-closeout.md`: real-data package, repeat-run and quality-gate evidence.
 - `docs/development/stage-2-closeout.md`: real event-to-cue-to-WAV hashes, repeat evidence and
   Stage 3 handover.
+- `docs/development/stage-3-milestone-1.md`: synthetic-oracle results, quality evidence and limits.
 - `docs/project-management/stage-2-checklist.md`: completed Stage 2 implementation and close-out
   gates.
+- `docs/project-management/stage-3-checklist.md`: completed method gate and pending real-data work.
 - `tests/fixtures/mot17/README.md`: fixture selection and reproduction evidence.
 - `tests/fixtures/kitti/README.md`: KITTI fixture provenance, licence and reproduction evidence.
 - `outputs/README.md`: generated-output storage boundary.

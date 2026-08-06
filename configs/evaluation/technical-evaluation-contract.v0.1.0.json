@@ -1,0 +1,63 @@
+{
+  "contract_version": "0.1.0",
+  "density": {
+    "candidate_starts": "cue_start_times",
+    "window_interval": "half_open",
+    "window_seconds": 1
+  },
+  "event_accounting": {
+    "cue_and_suppression": "error",
+    "multiple_cues_per_event": "permitted_as_one_represented_outcome",
+    "primary_outcomes": [
+      "represented",
+      "suppressed",
+      "missed",
+      "excluded"
+    ]
+  },
+  "ordering": {
+    "broken_link_reasons": "code",
+    "diagnostics": "severity_code_event_id_cue_id_record_index",
+    "reproducibility_files": "level_filename"
+  },
+  "overlap": {
+    "boundary_policy": "group_boundaries_end_before_start",
+    "interval": "half_open",
+    "preferred_domain": "rendered_integer_samples"
+  },
+  "percentiles": {
+    "median": "midpoint_of_two_central_values_for_even_n",
+    "p95": "nearest_rank_ceil_p_times_n"
+  },
+  "rates": {
+    "include_counts": true,
+    "zero_denominator": "null"
+  },
+  "report_version": "0.1.0",
+  "reproducibility": {
+    "claim_scope": "tested_environment_only",
+    "levels": [
+      "semantic",
+      "byte",
+      "audio",
+      "configuration"
+    ],
+    "untested_value": null
+  },
+  "supported_versions": {
+    "cue_package": "0.1.0",
+    "event_schema": "0.2.0",
+    "renderer_metadata": "0.1.0"
+  },
+  "timeline": {
+    "preference": "rendered_total_frame_count_divided_by_sample_rate",
+    "scheduled_fallback": "maximum_half_open_cue_end",
+    "start": "zero"
+  },
+  "timing": {
+    "rendered_end": "exclusive",
+    "sample_rounding": "decimal_round_half_up",
+    "samples_error": "absolute_difference_after_sample_rounding",
+    "seconds_error": "absolute_difference"
+  }
+}
