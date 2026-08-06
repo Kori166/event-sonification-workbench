@@ -17,6 +17,7 @@
       "sha256": "d923541748ae03bab1e2bad768ae80b790bfec16d10faae6a7fdea1ef3a0eb97"
     }
   },
+  "hash_scope": "SHA-256 of UTF-8 text after universal newlines are normalised to LF.",
   "origin": "Manually authored synthetic technical-evaluation oracle; no dataset rows used.",
   "review_rule": "Update a listed hash only after independently reviewing the changed fixture and hand calculation."
 }
