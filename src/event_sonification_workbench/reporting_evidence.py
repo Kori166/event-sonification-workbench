@@ -421,6 +421,7 @@ class _PresentationValues:
         denominator_pointer: str | None = None,
         derivation_formula: str | None = None,
         derive: Callable[[Any, Any, Any], Any] | None = None,
+        raw_from_pointer: bool = True,
         interpretation_boundary: str = "Technical case-study value; not a perceptual measure.",
     ) -> str:
         if value_id in self.entries:
@@ -440,7 +441,11 @@ class _PresentationValues:
             if denominator_pointer is not None
             else None
         )
-        raw_value = derive(pointer_value, numerator, denominator) if derive else pointer_value
+        raw_value = (
+            pointer_value
+            if derive is None or raw_from_pointer
+            else derive(pointer_value, numerator, denominator)
+        )
         displayed = _format_value(formatting_rule, raw_value, numerator, denominator)
         source_inputs = []
         for role, input_pointer in (
@@ -638,6 +643,7 @@ def _build_values(sources: Mapping[str, ReportSource]) -> _PresentationValues:
             value_kind="derived",
             derivation_formula="len(broken_links)",
             derive=_length,
+            raw_from_pointer=False,
         )
         values.add(
             f"{dataset}.reproducibility.semantic_report_equality",
@@ -819,6 +825,7 @@ def _build_values(sources: Mapping[str, ReportSource]) -> _PresentationValues:
                 value_kind="derived",
                 derivation_formula="outcome_count / valid_event_count",
                 derive=_divide,
+                raw_from_pointer=False,
                 interpretation_boundary=(
                     "Configured event outcome; represented proportion is not perceptual quality."
                 ),

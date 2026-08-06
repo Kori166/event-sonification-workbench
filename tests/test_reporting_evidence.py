@@ -123,6 +123,11 @@ def test_manifest_direct_and_derived_values_resolve(reporting_build) -> None:
     assert derived["denominator"] == 30003
     assert derived["raw_value"] == 26960 / 30003
     assert derived["displayed_value"] == "26,960 / 30,003 (89.86%)"
+    kitti_overlap = entries["kitti.overlap.normalised_burden"]
+    canonical_kitti = _load(KITTI_REPORT)
+    assert kitti_overlap["raw_value"] == canonical_kitti["metrics"]["overlap_burden"][
+        "normalised_overlap_burden"
+    ]["value"]
     assert result.presentation_value_count == len(entries)
     assert result.direct_value_count + result.derived_value_count == len(entries)
 
