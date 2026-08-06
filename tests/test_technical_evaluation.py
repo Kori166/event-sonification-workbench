@@ -39,6 +39,11 @@ def _report(document: dict[str, object], contract) -> dict[str, object]:
     return evaluate_technical_input(document, contract=contract).to_dict()
 
 
+def _lf_normalised_text_sha256(path: Path) -> str:
+    """Hash UTF-8 fixture text after universal-newline conversion to LF."""
+    return hashlib.sha256(path.read_text(encoding="utf-8").encode("utf-8")).hexdigest()
+
+
 def _case(name: str) -> dict[str, object]:
     faults = json.loads((FIXTURE / "faults.json").read_text(encoding="utf-8"))
     return next(item for item in faults["cases"] if item["name"] == name)
@@ -430,8 +435,17 @@ def test_fixture_manifest_hashes_every_reviewed_oracle_file() -> None:
         "source_annotations.csv",
     }
     for filename, reference in manifest["files"].items():
-        actual = hashlib.sha256((FIXTURE / filename).read_bytes()).hexdigest()
+        actual = _lf_normalised_text_sha256(FIXTURE / filename)
         assert actual == reference["sha256"]
+
+
+def test_fixture_hash_is_stable_across_checkout_line_endings(tmp_path: Path) -> None:
+    lf_file = tmp_path / "lf.txt"
+    crlf_file = tmp_path / "crlf.txt"
+    lf_file.write_bytes(b"reviewed fixture\nsecond line\n")
+    crlf_file.write_bytes(b"reviewed fixture\r\nsecond line\r\n")
+
+    assert _lf_normalised_text_sha256(lf_file) == _lf_normalised_text_sha256(crlf_file)
 
 
 def test_writer_and_cli_create_canonical_identical_reports(
