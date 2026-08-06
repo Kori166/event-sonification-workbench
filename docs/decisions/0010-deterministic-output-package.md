@@ -2,8 +2,7 @@
 
 ## Status
 
-Accepted locally for Stage 1 Issue #6 on 5 August 2026. Pull-request CI and review remain required
-before merge.
+Accepted for Stage 1 Issue #6 on 5 August 2026 and merged through PR #17 after successful CI.
 
 ## Context
 

@@ -49,7 +49,7 @@ without asserting a redistribution right that was not supplied.
 - Filtering by evaluation mark, class or visibility must occur after ingestion and be recorded.
 - Normalised centres or areas may reflect boxes extending beyond image bounds.
 - The local integration test requires `MOT17_ROOT` and does not run in normal CI.
-- Issue #3 remains open because no dataset-derived annotation rows can be committed under the
-  current licence evidence.
+- Issue #3 was subsequently resolved by the licence evidence and synthetic-equivalent fixture
+  approach recorded in `docs/development/milestone-2-fixture-licence-resolution.md`.
 - Decision 0008 supersedes Decision 0006 for current schema output.
 - The KITTI review did not require a MOT17 field or class-mapping change.

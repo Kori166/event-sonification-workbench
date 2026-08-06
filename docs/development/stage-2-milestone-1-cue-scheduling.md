@@ -86,8 +86,8 @@ Commands were run from the repository root on 5 August 2026:
 - Focused preset and cue-scheduling coverage: 23 tests passed as part of the final suite.
 
 Skipped private integrations are not reported as passes. MOT17 and KITTI compatibility for this
-milestone is established by their complete committed fixtures. Pull-request CI remains a merge
-gate.
+milestone was initially established by their complete committed fixtures. PR #20 subsequently
+passed CI and merged; private full-data evidence was added separately at Stage 2 close-out.
 
 ## Limitations and next work
 
@@ -95,7 +95,8 @@ gate.
 - Dataset-native confidence values are not assumed to share a probability scale.
 - Class modifier is preserved for a later renderer but has no audio semantics in this milestone.
 - Generated full-data schedules remain local and ignored.
-- Deterministic audio rendering, renderer/audio hashes and Stage 3 metrics remain unimplemented.
+- At this milestone point, deterministic audio rendering and Stage 3 metrics were unimplemented.
+  Rendering was subsequently delivered by Milestone 2; Stage 3 metrics remain future work.
 
-The Stage 2 milestone is ready for review when the branch privacy audit, pull request and CI gate
-are complete. Stage 2 as a whole is not complete.
+This milestone merged through PR #20 on 5 August 2026. See
+`docs/development/stage-2-closeout.md` for the later full Stage 2 completion evidence.

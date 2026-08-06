@@ -71,7 +71,7 @@ Commands were run from the repository root on 5 August 2026:
 Skipped private integrations are not reported as passes. This milestone requires committed-fixture
 MOT17/KITTI compatibility, not new private full-dataset audio output.
 
-## Problems, limitations and merge gate
+## Problems, limitations and subsequent status
 
 - GitHub CLI was unavailable; the connected GitHub capability created and assigned Issue #21.
 - Unrelated README, web, launcher and ignore-file work remained present locally and must stay out of
@@ -80,4 +80,8 @@ MOT17/KITTI compatibility, not new private full-dataset audio output.
   no broader cross-platform identity claim is made before additional evidence exists.
 - Synthesis settings are technical choices. Perceptual quality, accessibility, usefulness, safety,
   participant evaluation and Stage 3 metrics are untested and outside scope.
-- Generated full-data audio remains ignored. Pull-request CI and review remain merge gates.
+- Generated full-data audio remains ignored.
+
+PR #22 passed CI and merged on 5 August 2026, closing Issue #21. The later Stage 2 close-out ran the
+full real MOT17 and KITTI Tracking chains twice and recorded exact output hashes, traceability,
+audio properties and the bounded environment claim in `docs/development/stage-2-closeout.md`.

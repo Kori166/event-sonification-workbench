@@ -1,7 +1,7 @@
 # Event Sonification Workbench
 
 A reproducible workbench for converting annotated video datasets into deterministic, traceable
-events and later audio cues.
+events, cue schedules and PCM audio.
 
 ## Project
 
@@ -12,14 +12,15 @@ This repository contains the rebuilt artefact for the MSc Data Science dissertat
 The workbench is research infrastructure. It is not a validated accessibility, navigation, usability
 or assistive system.
 
-The bounded dataset scope is MOT17 and KITTI Tracking. The artefact will normalise annotations,
-map events to configurable cues, preserve provenance and support technical evaluation.
+The bounded dataset scope is MOT17 and KITTI Tracking. The artefact normalises annotations, maps
+events to configurable cues, preserves provenance and supports technical evaluation.
 
 ## Status
 
-Stage 0 and Stage 1 are complete. Stage 1 closed on 5 August 2026 after real-data package and
-repeat-run verification for MOT17 and KITTI Tracking. Stage 2 is active: Milestone 1 provides the
-versioned cue schedule and Milestone 2 adds configured deterministic stereo PCM WAV rendering.
+Stages 0, 1 and 2 are complete. Stage 1 closed on 5 August 2026 after real-data event-package
+verification. Stage 2 closed on 6 August 2026 after the complete native-annotation to event to cue
+to deterministic stereo PCM WAV chain repeated exactly for real MOT17 and KITTI Tracking data.
+Stage 3 technical evaluation is the next active stage; no evaluation result is claimed yet.
 
 Milestone 1 established common schema version `0.1.0`. The cross-dataset review in Milestone 3
 introduced schema `0.2.0`, retaining the event shape while allowing native unnormalised confidence
@@ -34,6 +35,12 @@ sequence `0000` into 1,089 valid events. Separate repeat runs produced identical
 ordering, package bytes and SHA-256 values. MOT17 retained 988 permitted out-of-image geometry
 warnings; KITTI produced no warnings. Full evidence is recorded in
 `docs/development/stage-1-closeout.md`.
+
+Stage 2 converted those same collections into 26,960 MOT17 cues plus 3,043 explicit suppressions,
+and 711 KITTI cues plus 378 explicit `DontCare` suppressions. Every scheduled cue rendered, every
+source event was accounted for, and independent full runs reproduced all 4 event files, 5 cue files
+and 3 audio files byte-for-byte and by SHA-256. The complete environment, hashes, WAV properties,
+test results and limitations are recorded in `docs/development/stage-2-closeout.md`.
 
 ## Repository structure
 
@@ -241,6 +248,17 @@ global gain. Identical fixture runs produce identical bytes and hashes in the te
 This is reproducibility evidence for technical behaviour, not evidence of perceptual quality,
 accessibility, usefulness or safety. See `docs/data-model/audio-rendering.md`.
 
+Independent packages of the same type can be compared exactly:
+
+```powershell
+python -m event_sonification_workbench.cli compare-packages `
+  --left-package <first-package> `
+  --right-package <second-package>
+```
+
+The path-free deterministic report covers every expected package file, exact byte equality and
+independent SHA-256 values. Any mismatch is named and returns a nonzero status.
+
 ## Reproducibility controls
 
 - schema, parser and class-mapping versions;
@@ -278,7 +296,10 @@ accessibility, usefulness or safety. See `docs/data-model/audio-rendering.md`.
 - `docs/development/milestone-3-kitti-extension.md`: audit, fixture and integration evidence.
 - `docs/development/milestone-2-fixture-licence-resolution.md`: fixture licence decision.
 - `docs/development/stage-1-closeout.md`: real-data package, repeat-run and quality-gate evidence.
-- `docs/project-management/stage-2-checklist.md`: active Stage 2 implementation gates.
+- `docs/development/stage-2-closeout.md`: real event-to-cue-to-WAV hashes, repeat evidence and
+  Stage 3 handover.
+- `docs/project-management/stage-2-checklist.md`: completed Stage 2 implementation and close-out
+  gates.
 - `tests/fixtures/mot17/README.md`: fixture selection and reproduction evidence.
 - `tests/fixtures/kitti/README.md`: KITTI fixture provenance, licence and reproduction evidence.
 - `outputs/README.md`: generated-output storage boundary.

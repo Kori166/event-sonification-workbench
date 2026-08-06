@@ -2,8 +2,7 @@
 
 ## Status
 
-Accepted locally for Stage 1 Milestone 3 on 5 August 2026. Pull-request CI and review remain
-required before the milestone is merged.
+Accepted for Stage 1 Milestone 3 on 5 August 2026 and merged through PR #15 after successful CI.
 
 ## Context
 

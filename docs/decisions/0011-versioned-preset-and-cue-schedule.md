@@ -2,8 +2,8 @@
 
 ## Status
 
-Accepted locally for Stage 2 Milestone 1 on 5 August 2026. Pull-request CI and review remain merge
-gates.
+Accepted for Stage 2 Milestone 1 on 5 August 2026 and merged through PR #20. The full real-data
+contract was reverified at Stage 2 close-out on 6 August 2026.
 
 ## Context
 
@@ -51,7 +51,7 @@ parallel definitions and keeps both MOT17 and KITTI Tracking on the same downstr
   an available native number only, while null confidence is permitted.
 - Changing a preset file changes preset hashes, cue IDs and the cue-run ID; published preset files
   therefore require immutable versioning discipline.
-- Cue and suppression outputs are deterministic plans, not sound. Stage 2 audio rendering remains
-  incomplete and requires its own versioned configuration and evidence.
+- Cue and suppression outputs remain deterministic plans rather than audio. The separate versioned
+  renderer contract was subsequently accepted in Decision 0012 and merged through PR #22.
 - The mapper's source-file verification opt-out is limited to already verified Stage 1 packages;
   parser and ordinary collection validation retain source verification by default.
