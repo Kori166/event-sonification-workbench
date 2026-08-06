@@ -2,8 +2,9 @@
 
 ## Technical evaluation
 
-Status: active. Milestone 1 method and synthetic-oracle gate completed on 6 August 2026. Milestone 2
-real-data evaluation is next. RQ3 is not yet fully answered.
+Status: active. Milestones 1 and 2 completed on 6 August 2026. The frozen method has been verified
+synthetically and applied to one verified real sequence from each dataset. RQ3 is supported by
+bounded real technical evidence; Milestone 3 report-ready auditing is next.
 
 ## Milestone 1: contract and synthetic oracle
 
@@ -29,21 +30,34 @@ real-data evaluation is next. RQ3 is not yet fully answered.
 
 ## Milestone 2: selected real-data reports
 
-- [ ] Prepare evaluation inputs from verified Stage 1/2 MOT17 and KITTI Tracking packages without
+- [x] Prepare evaluation inputs from verified Stage 1/2 MOT17 and KITTI Tracking packages without
   changing contract formulas.
-- [ ] Verify all event, cue, suppression, render, WAV and configuration hashes before calculation.
-- [ ] Run contract `0.1.0` for selected MOT17 and KITTI evidence chains.
-- [ ] Write canonical dataset-level reports and repeat each run independently.
-- [ ] Compare semantic records, exact report bytes, audio bytes and configuration identities.
-- [ ] Record actual coverage, timing, traceability, density, overlap and diagnostic values.
-- [ ] Investigate every miss, orphan, broken link, warning or repeat mismatch before interpretation.
-- [ ] Run configured quality gates and available private integrations with no skipped test reported
+- [x] Verify all event, cue, suppression, render, WAV and configuration hashes before calculation.
+- [x] Run contract `0.1.0` for selected MOT17 and KITTI evidence chains.
+- [x] Write canonical dataset-level reports and repeat each run independently.
+- [x] Compare semantic records, exact report bytes, audio bytes and configuration identities.
+- [x] Record actual coverage, timing, traceability, density, overlap and diagnostic values.
+- [x] Investigate every miss, orphan, broken link, warning or repeat mismatch before interpretation.
+- [x] Run configured quality gates and available private integrations with no skipped test reported
   as a pass.
-- [ ] Document environment-bounded findings and limitations without perceptual or participant
+- [x] Document environment-bounded findings and limitations without perceptual or participant
   claims.
+
+## Milestone 3: audited report-ready evidence
+
+- [ ] Link every presented table and figure value to its canonical source report and hash.
+- [ ] Audit report-ready tables and figures against the committed JSON/CSV evidence.
+- [ ] Convert the verified measures into bounded RQ3 findings without changing the frozen contract.
+- [ ] Preserve explicit case-study, environment and non-perceptual interpretation limits.
 
 ## Evidence boundary
 
-Milestone 1 proves that the implemented method matches a manually calculated synthetic case. It
-does not establish real MOT17/KITTI metric values, answer RQ3 fully, validate perceived quality or
-show cross-platform byte identity.
+Milestone 1 proves that the implemented method matches a manually calculated synthetic case.
+Milestone 2 adds technical case-study values for MOT17-02-DPM and KITTI sequence 0000 and supports
+RQ3 within the selected sequences, preset, renderer and recorded environment. Neither milestone
+validates perceived quality, accessibility, usability, navigation, safety or cross-platform byte
+identity.
+
+The exact next milestone is **Stage 3 Milestone 3: convert the verified technical-evaluation
+evidence into audited report-ready tables, figures and bounded RQ3 findings, with every presented
+value linked to its canonical source report.**

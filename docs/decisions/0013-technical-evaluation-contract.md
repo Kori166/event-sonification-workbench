@@ -3,6 +3,8 @@
 ## Status
 
 Accepted and verified against the manually calculated Stage 3 Milestone 1 oracle on 6 August 2026.
+Applied unchanged to the selected real MOT17-02-DPM and KITTI Tracking 0000 evidence chains during
+Milestone 2 on the same date.
 
 ## Context
 
@@ -38,3 +40,10 @@ vulnerable to result-driven redefinition.
 - Stage 3 Milestone 2 may apply this frozen method to selected real packages but must not change
   formulas to improve results without a new contract version and decision review.
 - These technical measures do not support perceptual, participant, accessibility or safety claims.
+
+## Real-data application record
+
+Milestone 2 did not change this decision, contract, report schema, denominator, threshold or
+boundary rule in response to observed values. Each selected dataset produced three semantically and
+byte-identical reports in the recorded environment. Supplemental mapping-rule, schedule and WAV
+link audits are kept outside contract `0.1.0` and governed by Decision 0014.

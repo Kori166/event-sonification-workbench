@@ -717,3 +717,71 @@ be added where a short entry would omit important implementation evidence.
   using unchanged contract `0.1.0`.
 - Produce repeated deterministic dataset-level reports and investigate every diagnostic before
   interpretation.
+
+---
+
+## 2026-08-06 - Stage 3 Milestone 2 real-data technical evaluation
+
+**Work completed**
+
+- Started from clean `main` commit `c1b3d676`, preserving the unrelated dirty checkout and both
+  stashes in place.
+- Wrote the evaluation protocol before metric calculation and added a schema-validated experiment
+  manifest plus path-free environment manifest.
+- Verified both retained Stage 2 event/cue/audio chains for MOT17-02-DPM and KITTI 0000 against
+  exact file membership, canonical serialisation, all documented hashes, identities, ordering,
+  accounting and cross-stage links; no chain was regenerated.
+- Added a strict package-to-evaluator assembler, content-derived input/hash manifest, focused CI
+  fixtures and a private cross-stage integration test.
+- Ran frozen contract `0.1.0` three times per dataset in isolated directories and generated
+  canonical reports, JSON/CSV/Markdown summaries, three-run comparisons and deterministic
+  record-level audits.
+- Committed a bounded cross-dataset technical summary, Decision 0014, excluded-evidence inventory
+  and Milestone 2 close-out without committing private/full-data inputs or WAVs.
+
+**Actual real-data evidence**
+
+- MOT17: 30,003 valid events; 26,960 represented; 3,043 intentionally suppressed; 0 missed or
+  excluded; report ID `evaluation-mot17-mot17-02-dpm-2636a438409d649e`; report SHA-256
+  `d847e805d0b2d7ccd50cd315bbcecfc0ad525f40e7c4c2013938f955d20f13e5`.
+- KITTI: 1,089 valid events; 711 represented; 378 intentionally suppressed `DontCare` events; 0
+  missed or excluded; report ID `evaluation-kitti_tracking-0000-d997cdc8f6467c1d`; report SHA-256
+  `b5589590a8c645bd7b5654d0318bf90fdb412f987719c26c2374bf3e487f9ff2`.
+- Both eligible-event coverage and accounting completeness rates were 1.0; all contract
+  traceability rates and supplemental resolved mapping/schedule/WAV checks were 1.0; no broken link
+  or evaluation diagnostic was recorded.
+- MOT17/KITTI cue density was 1342.1838698971126/46.10894941634241 cues per second; peak
+  concurrency was 203/24; normalised overlap burden was 160.0620643876535/4.533073929961089.
+- All six reports were semantically and byte-identical within their dataset. Comparison-report
+  hashes are `a21990ef56e1e82516babf248c7ac782384ba39cb88b896a25fc30da2a8b38b7`
+  and `42205454e27c1df71669e1d2b75c1928d2986232e46ed4e48fb08c4d9940dd79`.
+
+**Quality evidence**
+
+- `python -m ruff check .`: exit 0.
+- `python -m pytest tests/test_technical_evaluation.py -q`: 26 passed.
+- `python -m pytest -m "not integration"`: 231 passed, 3 deselected.
+- `python -m pytest -m integration`: 3 passed, 231 deselected; no private test skipped.
+- `python -m pytest`: 234 passed with no skip or deselection.
+
+**Problems and decisions**
+
+- A four-minute tool timeout yielded no integration result; the unchanged test and final matrices
+  completed under longer bounds.
+- One unsafe `..` output argument was correctly rejected and produced no accepted report. Resolved
+  regular paths were then used.
+- Native/common MOT17 sequence identity was clarified before accepted assembly. A superseded KITTI
+  pre-correction input remains ignored and inventoried.
+- KITTI's emitted summary filename link and lossless diagnostic-array retention were corrected;
+  affected real summaries were rebuilt twice with identical bytes.
+- No contract defect was found, and no definition, denominator, threshold or schema was tuned after
+  observing results.
+
+**Evidence boundary and next action**
+
+- RQ3 is now supported by real technical case-study evidence for the selected sequences, baseline
+  preset/renderer and recorded environment. No perceptual, participant, accessibility, usability,
+  navigation, mobility, safety or cross-environment byte-identity result is claimed.
+- Next: Stage 3 Milestone 3: convert the verified technical-evaluation evidence into audited
+  report-ready tables, figures and bounded RQ3 findings, with every presented value linked to its
+  canonical source report.

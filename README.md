@@ -21,8 +21,11 @@ Stages 0, 1 and 2 are complete. Stage 1 closed on 5 August 2026 after real-data 
 verification. Stage 2 closed on 6 August 2026 after the complete native-annotation to event to cue
 to deterministic stereo PCM WAV chain repeated exactly for real MOT17 and KITTI Tracking data.
 Stage 3 is active. Milestone 1 froze technical-evaluation contract `0.1.0` and verified its metrics
-against a manually calculated synthetic oracle. Full MOT17/KITTI technical evaluation has not run,
-RQ3 is not yet fully answered and no real-dataset evaluation result is claimed.
+against a manually calculated synthetic oracle. Milestone 2 has now applied that unchanged contract
+to the verified MOT17-02-DPM and KITTI Tracking 0000 evidence chains. Three isolated evaluator runs
+per dataset produced semantically and byte-identical reports. RQ3 is now supported by real technical
+case-study evidence, bounded by these sequences, the baseline preset/renderer and the recorded
+environment; it is not perceptual or participant evidence.
 
 Milestone 1 established common schema version `0.1.0`. The cross-dataset review in Milestone 3
 introduced schema `0.2.0`, retaining the event shape while allowing native unnormalised confidence
@@ -283,10 +286,38 @@ synthetic: its five events, five cues, one suppression and 10 Hz render timeline
 calculated in `tests/fixtures/evaluation_oracle/oracle-calculation.md`. Fault cases cover eligible
 misses, orphans, contradictory outcomes, broken provenance and timing displacement.
 
-This validates the method only. Stage 3 Milestone 2 must prepare selected verified real event/cue/
-audio package chains and apply the frozen contract without changing formulas in response to the
-results. No perceptual, participant, accessibility, usability, navigation or safety conclusion
-follows from these technical metrics. Cross-environment byte identity remains untested.
+Milestone 2 adds a strict adapter that joins already verified event, cue and audio package contracts
+without recalculating Stage 1 or Stage 2 records:
+
+```powershell
+python -m event_sonification_workbench.cli prepare-technical-evaluation `
+  --event-package <event-package> `
+  --cue-package <cue-package> `
+  --audio-package <audio-package> `
+  --repeat-event-package <repeat-event-package> `
+  --repeat-cue-package <repeat-cue-package> `
+  --repeat-audio-package <repeat-audio-package> `
+  --output <technical-evaluation-input.json>
+```
+
+The assembler checks exact package membership, canonical serialisation, documented hashes, content
+identities, ordering, source references and cross-stage links, then writes a content-derived input
+identity and hash manifest. Full inputs remain ignored because they contain generated full-sequence
+records.
+
+Under the unchanged contract, MOT17 accounts for 30,003 events as 26,960 represented and 3,043
+intentionally suppressed, while KITTI accounts for 1,089 events as 711 represented and 378
+intentionally suppressed `DontCare` events. Both have zero eligible misses, zero broken links and
+complete eligible-event coverage. The rendered timelines contain 1,342.1838698971126 and
+46.10894941634241 cues/second respectively; these are descriptive technical values, not listener-
+quality judgements. Canonical report SHA-256 values are
+`d847e805d0b2d7ccd50cd315bbcecfc0ad525f40e7c4c2013938f955d20f13e5` and
+`b5589590a8c645bd7b5654d0318bf90fdb412f987719c26c2374bf3e487f9ff2`.
+
+See `docs/evaluation/evidence/`, the record-level traceability audit and the bounded cross-dataset
+summary for every numerator, denominator, timing statistic, overlap value, hash and repeat result.
+No perceptual, participant, accessibility, usability, navigation or safety conclusion follows from
+these technical metrics. Cross-environment byte identity remains untested.
 
 ## Reproducibility controls
 
@@ -303,6 +334,9 @@ follows from these technical metrics. Cross-environment byte identity remains un
 - file-level output hashes and path-free run provenance;
 - versioned evaluation policy/report schemas with explicit rate denominators and null rules;
 - a manually calculated synthetic evaluation oracle and deterministic canonical report hash;
+- a versioned real-data experiment/environment manifest and verified package-to-evaluator adapter;
+- three-run semantic and canonical-byte comparison reports for real MOT17 and KITTI case studies;
+- deterministic dataset summaries and selected record-level traceability audits;
 - schema, semantic, provenance and determinism tests;
 - LF-normalised hashed fixtures; and
 - explicit evidence boundaries between fixed CI data and local full-dataset integration data.
@@ -317,6 +351,13 @@ follows from these technical metrics. Cross-environment byte identity remains un
 - `docs/data-model/audio-rendering.md`: renderer input gate, synthesis, WAV and provenance contract.
 - `docs/evaluation/technical-evaluation-contract-v0.1.0.md`: frozen metric definitions, inputs,
   boundaries, failure policy and deterministic report contract.
+- `docs/evaluation/stage-3-real-data-evaluation-protocol.md`: pre-result real-data scope, integrity
+  gates, repeat policy and prohibited interpretations.
+- `docs/evaluation/evidence/`: canonical reports, machine-readable/CSV summaries, comparison
+  reports, input manifests and selected-record audits.
+- `docs/evaluation/stage-3-real-data-traceability-audit.md`: deterministic source-to-WAV and
+  source-to-suppression selections.
+- `docs/evaluation/stage-3-cross-dataset-technical-summary.md`: bounded descriptive comparison.
 - `docs/data-model/mot17-adapter.md`: MOT17 format and conversion rules.
 - `docs/data-model/kitti-tracking-adapter.md`: KITTI definitions, conversion and `DontCare` policy.
 - `docs/decisions/0007-mot17-ground-truth-mapping.md`: mapping decision.
@@ -326,6 +367,8 @@ follows from these technical metrics. Cross-environment byte identity remains un
 - `docs/decisions/0011-versioned-preset-and-cue-schedule.md`: Stage 2 scheduling decision.
 - `docs/decisions/0012-deterministic-wav-rendering.md`: renderer, mixing and PCM policy decision.
 - `docs/decisions/0013-technical-evaluation-contract.md`: Stage 3 metric and interpretation policy.
+- `docs/decisions/0014-real-data-evaluation-evidence.md`: real package reuse, evidence storage and
+  supplemental traceability boundary.
 - `docs/development/milestone-2-mot17-vertical-slice.md`: development and validation evidence.
 - `docs/development/milestone-3-kitti-extension.md`: audit, fixture and integration evidence.
 - `docs/development/milestone-2-fixture-licence-resolution.md`: fixture licence decision.
@@ -333,9 +376,12 @@ follows from these technical metrics. Cross-environment byte identity remains un
 - `docs/development/stage-2-closeout.md`: real event-to-cue-to-WAV hashes, repeat evidence and
   Stage 3 handover.
 - `docs/development/stage-3-milestone-1.md`: synthetic-oracle results, quality evidence and limits.
+- `docs/development/stage-3-milestone-2-closeout.md`: real-data reports, repeats, quality evidence
+  and RQ3 boundary.
 - `docs/project-management/stage-2-checklist.md`: completed Stage 2 implementation and close-out
   gates.
-- `docs/project-management/stage-3-checklist.md`: completed method gate and pending real-data work.
+- `docs/project-management/stage-3-checklist.md`: completed method and real-data gates, with
+  report-ready audit work next.
 - `tests/fixtures/mot17/README.md`: fixture selection and reproduction evidence.
 - `tests/fixtures/kitti/README.md`: KITTI fixture provenance, licence and reproduction evidence.
 - `outputs/README.md`: generated-output storage boundary.

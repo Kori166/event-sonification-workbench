@@ -1,0 +1,198 @@
+{
+  "manifest_version": "0.1.0",
+  "experiment_id": "stage-3-real-data-technical-evaluation-v0.1.0",
+  "repository_base_commit": "c1b3d6764c5b376462768d49e9721879a4dc0c73",
+  "evaluation_contract": {
+    "path": "configs/evaluation/technical-evaluation-contract.v0.1.0.json",
+    "version": "0.1.0",
+    "sha256": "68513164a731d977988acc34f7013cc3000c78d5e6aa345b2f7bcbe3e346de3e",
+    "schema_path": "configs/evaluation/technical-evaluation-contract.schema.v0.1.0.json",
+    "schema_sha256": "05dcb1c0fb92f4ca577b755985056e0551aaadb99355bfefb783181378a3e85b"
+  },
+  "evaluation_report_schema": {
+    "path": "configs/evaluation/technical-evaluation-report.schema.v0.1.0.json",
+    "version": "0.1.0",
+    "sha256": "bc6be639a9f1939e5797572a405f8cc5b426691da0407d33c3347368cede1b6f"
+  },
+  "event_schema": {
+    "path": "configs/schemas/event.schema.v0.2.0.json",
+    "version": "0.2.0",
+    "sha256": "a78a6d9a97c9257741678dcbb9422153026507f64f8010a6366122ce72397680"
+  },
+  "preset": {
+    "path": "configs/sonification/presets/baseline-v0.1.0.json",
+    "version": "0.1.0",
+    "sha256": "27f9b4e031e12fe9e73e72275aa7359b5255e2f997a35fb2432372dcbd843289",
+    "schema_path": "configs/sonification/schemas/preset.schema.v0.1.0.json",
+    "schema_sha256": "a906f873f2c5237d5e27977656a19af74986a73ce7b73f9fb9feb38413fe4a58"
+  },
+  "renderer": {
+    "path": "configs/sonification/renderers/baseline-v0.1.0.json",
+    "version": "0.1.0",
+    "sha256": "1c741306f67633543f9f16de557173662005c8c21c4a911fb4bcf8bbde18770b",
+    "schema_path": "configs/sonification/renderers/renderer.schema.v0.1.0.json",
+    "schema_sha256": "420fd001904be08b81f33c9c078de9ccce7fb5b4ae93cd07d5bd97dc27d8aea8"
+  },
+  "datasets": [
+    {
+      "dataset": "kitti_tracking",
+      "display_name": "KITTI Tracking",
+      "native_sequence": "0000",
+      "sequence": "0000",
+      "logical_source_annotation": "training/label_02/0000.txt",
+      "source_annotation_sha256": "97f772a27181dfc7ef51b3e64b86bd42e682753b6855fdc58d259ecbed501fd4",
+      "source_configuration_hashes": {
+        "class_mapping": "49ff366b6768ab3803dd0dd125c7ad2092a0eff298400485dd6b311c612c1b14"
+      },
+      "expected_accounting": {
+        "valid_events": 1089,
+        "invalid_events": 0,
+        "validation_errors": 0,
+        "validation_warnings": 0,
+        "generated_cues": 711,
+        "suppressions": 378,
+        "suppression_code": "dont_care_excluded",
+        "rendered_cues": 711,
+        "eligible_events_without_cues": 0,
+        "unlinked_cues": 0
+      },
+      "packages": {
+        "event": {
+          "run_id": "run-kitti_tracking-0000-94a4cdc57ff00109",
+          "package_sha256": "1295e2fa2c4586308fdd0f4b75a36bd9a9b08a2218569a539a7b60a0f6dd15e2",
+          "files": {
+            "events.csv": "5068c491c8feace0ba39b91f9398e7b96b6310174c5d63b28a1792c4d8fb0db5",
+            "events.json": "542389e4a783380191fdc228b83c37309fa4d483d58913978881ee3cfb6f57a2",
+            "provenance_log.json": "916703854628b24b0503a56f5bb754204691fe6aa517169fadb3dd5bc2968325",
+            "run_metadata.json": "89cefd74709226303257f6c315368b75b8bb52e84c4c473c03f0f5bf9a37a47b"
+          }
+        },
+        "cue": {
+          "run_id": "cue-kitti_tracking-0000-cb42b67e49714a36",
+          "package_sha256": "49b5a778c3cefa694cc8d93fbc643bf088c5fbbe69b30aa201af43a76ec32ec0",
+          "files": {
+            "cue_log.json": "2acb5e711d4359fd675e21f732b46a15e1344c475836dbf05632e309a37bd503",
+            "cue_schedule.csv": "b7e941de4c234951edb95fbf6c2335bb1cdc20b82569c6e97249a25b38ac7147",
+            "cue_schedule.json": "96200af25ae04c67294b29a320d86f82b87927a4e23eeb24633a60b8e5b94d19",
+            "sonification_metadata.json": "d966fb544422d4cf637210c4a0fe0fea6dcd5008107f1794665b8fece4574093",
+            "suppression_log.json": "3787ae6f34fb4003c52ba9827d4342670e48e7b27f77023cadaba88fdeb592cc"
+          }
+        },
+        "audio": {
+          "run_id": "audio-kitti_tracking-0000-9472ddb1a4a87617",
+          "package_sha256": "1bd13cd2e0272ca2b3f5365881e0e8dbddc88cff1c4c2675272b3f963ddb99b0",
+          "files": {
+            "render_log.json": "cfe4fd3a24eedcbc90a45d08a44b900d3e64cc2fa9a26f20081adc1a78a9ee06",
+            "renderer_metadata.json": "56d6f53ca2fc93e97887cf2c46fc144e10ec81b5ba7e4a9f8f539b9eb1eb704a",
+            "sonification.wav": "9fe11798dfaca388f10af21c346d49efa3507c1879ae2fff50e2a7d6d7d5e6ce"
+          }
+        }
+      }
+    },
+    {
+      "dataset": "mot17",
+      "display_name": "MOT17",
+      "native_sequence": "MOT17-02-DPM",
+      "sequence": "mot17-02-dpm",
+      "logical_source_annotation": "MOT17/train/MOT17-02-DPM/gt/gt.txt",
+      "source_annotation_sha256": "2e3ecb488da8886d3200d402b2b08890c6d2879923839444e9b74fa43a551440",
+      "source_configuration_hashes": {
+        "class_mapping": "1bd22ee6b313396a16589ae10356e7de569546872ef4a4687a9610cbbb29aeac",
+        "sequence_metadata": "5c9a86813ed1e4bf640b11785e9dc51f443712d721f9cc5e334b7e0f21606ad6"
+      },
+      "expected_accounting": {
+        "valid_events": 30003,
+        "invalid_events": 0,
+        "validation_errors": 0,
+        "validation_warnings": 988,
+        "generated_cues": 26960,
+        "suppressions": 3043,
+        "suppression_code": "class_excluded",
+        "rendered_cues": 26960,
+        "eligible_events_without_cues": 0,
+        "unlinked_cues": 0
+      },
+      "packages": {
+        "event": {
+          "run_id": "run-mot17-mot17-02-dpm-03074d7ff016652e",
+          "package_sha256": "1e0ed932f3708be9e35e592361c8c937a583ee2b42b6abd61df8db8e5974bee9",
+          "files": {
+            "events.csv": "2b4b5e3dac8e70661719b555fc6578a088e8b3aa18758f99447d3137dd43f3ee",
+            "events.json": "880232f6ea0696a8c74600f51fe46e8221ff8ee40536dbef4570921a8779b96e",
+            "provenance_log.json": "6b44534de1c9ffb9f1f4b7f2d033fa954e08c4dab219e68d8333ef649f55ae5f",
+            "run_metadata.json": "e247260608d4aaac72f2b5d3e3a602ebe29d7b8e8d2dedd10a2320b6456c7bee"
+          }
+        },
+        "cue": {
+          "run_id": "cue-mot17-mot17-02-dpm-97bdca8f548747c7",
+          "package_sha256": "6000edf1a4f10dbdb00e85941ea08f3f7ce4257212b40aac47751dbb6318f0c9",
+          "files": {
+            "cue_log.json": "806bffa4cb9cff9ff9d6816b6a17395d82748979daa2cee55d9f668b543b0c23",
+            "cue_schedule.csv": "bf61b4b35696f00cad3cc885e97105c498d16d1d65db1c75ad7bbff2ec7cc0fa",
+            "cue_schedule.json": "01591926b4c0b33f7760c081483fd1434b431ca419780a9fee6eb2530ec185a4",
+            "sonification_metadata.json": "f5a1f66153ea0b61aa25367b78ed1e7fa03499eae2a5e2425e2dec5751fc23ba",
+            "suppression_log.json": "f589c1730f3aa3f3eaf90d60ffeb3f3618faa81679049b6e3a2019089e81dace"
+          }
+        },
+        "audio": {
+          "run_id": "audio-mot17-mot17-02-dpm-e55d5dc901d5572c",
+          "package_sha256": "d3812fceea51fc04c575f1a3bdd23f61ec58b3cc46005d30cc078a315e8f0949",
+          "files": {
+            "render_log.json": "d7f1b7b27e44e4d3fe89d52d40a51e02673595527a1a8840edde8b94b382d181",
+            "renderer_metadata.json": "18dcdf9fd482a3ca41c27aa63432ca276bf3fb4f7458f579a5c3010af67a8691",
+            "sonification.wav": "0d25af2972ac614790c50d8a86291e0642bb1f69caa751a6ab6189d335ed1ca3"
+          }
+        }
+      }
+    }
+  ],
+  "stage2_chain_repeat_count": 2,
+  "evaluation_repeat_count": 3,
+  "output_root_template": ".local-fixtures/stage-3-real-data-evaluation/{dataset}/{run}",
+  "environment_manifest_requirements": [
+    "architecture",
+    "dependency specification or lock identity",
+    "evaluation configuration versions",
+    "git working-tree status",
+    "locale",
+    "operating system and version",
+    "project version",
+    "Python implementation and version",
+    "repository commit",
+    "root environment-variable names without values",
+    "Ruff version",
+    "pytest version",
+    "timezone"
+  ],
+  "private_data_boundary": {
+    "dataset_root_environment_variables": ["KITTI_TRACKING_ROOT", "MOT17_ROOT"],
+    "committed": [
+      "path-free hashes and identities",
+      "canonical evaluation reports",
+      "metric summaries",
+      "reproducibility comparisons",
+      "selected traceability identifiers"
+    ],
+    "excluded": [
+      "absolute dataset and package paths",
+      "environment-variable values",
+      "full event and cue packages",
+      "raw annotations",
+      "usernames",
+      "WAV files"
+    ]
+  },
+  "ordering": {
+    "events": ["dataset", "sequence", "frame", "track_id", "source_row", "event_id"],
+    "cues": ["dataset", "sequence", "frame", "track_id", "source_row", "source_event_id"],
+    "suppressions": ["dataset", "sequence", "frame", "track_id", "source_row", "source_event_id"],
+    "render_entries": ["start_sample", "cue_id", "source_event_id"],
+    "reports": ["dataset", "sequence", "evaluation_run_id"]
+  },
+  "hashing": {
+    "algorithm": "sha256",
+    "synthetic_reviewed_text_scope": "Only the Milestone 1 oracle manifest normalises universal text newlines to LF before hashing.",
+    "generated_text_scope": "Generated JSON, CSV, metadata and reports use their existing canonical or exact-byte package contracts.",
+    "binary_scope": "Generated WAV and every other binary file are hashed as exact bytes without text normalisation."
+  }
+}

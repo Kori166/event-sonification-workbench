@@ -4,8 +4,8 @@
 
 Status: complete, 6 August 2026. Milestone 1 merged through PR #20. Milestone 2 merged through
 PR #22 after successful CI and closed Issue #21. Full real-data repeat-run evidence is recorded in
-`docs/development/stage-2-closeout.md`. Stage 3 Milestone 1 has since frozen and synthetically
-verified the evaluation method; real-data evaluation in Stage 3 Milestone 2 is next.
+`docs/development/stage-2-closeout.md`. Stage 3 Milestone 1 subsequently froze and synthetically
+verified the evaluation method, and Milestone 2 applied it to the selected real evidence chains.
 
 - [x] Define a documented, versioned sonification-preset format.
 - [x] Implement deterministic mapping from validated schema `0.2.0` events to cue records.
@@ -69,5 +69,6 @@ verified the evaluation method; real-data evaluation in Stage 3 Milestone 2 is n
 - [x] Assumptions, problems, limitations, exact hashes and the bounded environment claim are
   recorded in the Stage 2 close-out.
 
-Stage 2 completion criteria are satisfied as of 6 August 2026. Stage 3 technical evaluation is the
-next active work. No Stage 3 metric or perceptual result is claimed here.
+Stage 2 completion criteria are satisfied as of 6 August 2026. Stage 3 Milestones 1 and 2 have since
+completed their synthetic and selected real technical-evaluation gates. This Stage 2 checklist does
+not itself claim a Stage 3 metric or any perceptual result.
