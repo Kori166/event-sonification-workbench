@@ -47,6 +47,7 @@ from .output_package import (
     OutputPackageError,
     write_event_package,
 )
+from .package_comparison import PackageComparisonError, compare_package_directories
 from .provenance import sha256_file
 from .sonification.audio_renderer import AudioRenderError, render_audio_package
 from .sonification.preset import PresetValidationError, load_sonification_preset
@@ -140,6 +141,13 @@ def _build_parser() -> argparse.ArgumentParser:
     render_audio.add_argument("--renderer-config", type=Path, default=DEFAULT_RENDERER_CONFIG)
     render_audio.add_argument("--renderer-schema", type=Path, default=DEFAULT_RENDERER_SCHEMA)
     render_audio.add_argument("--output-directory", type=Path, default=DEFAULT_OUTPUT_DIRECTORY)
+
+    compare_packages = subparsers.add_parser(
+        "compare-packages",
+        help="Compare two event, cue or audio packages using exact bytes and SHA-256.",
+    )
+    compare_packages.add_argument("--left-package", type=Path, required=True)
+    compare_packages.add_argument("--right-package", type=Path, required=True)
     return parser
 
 
@@ -421,6 +429,12 @@ def _run_render_audio(args: argparse.Namespace) -> int:
     return 0
 
 
+def _run_compare_packages(args: argparse.Namespace) -> int:
+    report = compare_package_directories(args.left_package, args.right_package)
+    print(json.dumps({"command": "compare-packages", **report.to_dict()}, indent=2, sort_keys=True))
+    return 0 if report.identical else 1
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """Run the workbench command-line interface."""
     parser = _build_parser()
@@ -459,6 +473,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             return _run_schedule_cues(args)
         if args.command == "render-audio":
             return _run_render_audio(args)
+        if args.command == "compare-packages":
+            return _run_compare_packages(args)
     except (PresetValidationError, RendererConfigurationError) as exc:
         parser.error(json.dumps(exc.to_dict(), sort_keys=True))
     except (
@@ -467,6 +483,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         KITTIParseError,
         MOT17ParseError,
         OutputPackageError,
+        PackageComparisonError,
         OSError,
         TypeError,
         ValueError,
