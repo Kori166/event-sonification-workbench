@@ -227,7 +227,9 @@ def _validated_identity(value: Any, contract: EvaluationContract) -> dict[str, A
         "cue_package_run_id",
         "audio_run_id",
     )
-    identity = {field: _require_string(source.get(field), f"identity.{field}") for field in string_fields}
+    identity = {
+        field: _require_string(source.get(field), f"identity.{field}") for field in string_fields
+    }
     hash_fields = (
         "event_package_sha256",
         "preset_sha256",
@@ -250,7 +252,9 @@ def _validated_identity(value: Any, contract: EvaluationContract) -> dict[str, A
     identity["total_frame_count"] = _require_integer(
         source.get("total_frame_count"), "identity.total_frame_count"
     )
-    source_files = _require_list(source.get("source_annotation_files"), "identity.source_annotation_files")
+    source_files = _require_list(
+        source.get("source_annotation_files"), "identity.source_annotation_files"
+    )
     validated_files: list[dict[str, str]] = []
     for index, item in enumerate(source_files):
         record = _require_mapping(item, f"identity.source_annotation_files[{index}]")
@@ -295,9 +299,7 @@ def _validated_events(values: Any, identity: Mapping[str, Any]) -> tuple[dict[st
             "dataset": _require_string(item.get("dataset"), f"events[{index}].dataset"),
             "sequence": _require_string(item.get("sequence"), f"events[{index}].sequence"),
             "timestamp": _require_number(item.get("timestamp"), f"events[{index}].timestamp"),
-            "source_file": _require_string(
-                item.get("source_file"), f"events[{index}].source_file"
-            ),
+            "source_file": _require_string(item.get("source_file"), f"events[{index}].source_file"),
             "source_file_sha256": _require_hash(
                 item.get("source_file_sha256"), f"events[{index}].source_file_sha256"
             ),
@@ -370,9 +372,7 @@ def _validated_suppressions(values: Any) -> tuple[dict[str, Any], ...]:
                 "source_event_id": _require_string(
                     item.get("source_event_id"), f"suppressions[{index}].source_event_id"
                 ),
-                "dataset": _require_string(
-                    item.get("dataset"), f"suppressions[{index}].dataset"
-                ),
+                "dataset": _require_string(item.get("dataset"), f"suppressions[{index}].dataset"),
                 "sequence": _require_string(
                     item.get("sequence"), f"suppressions[{index}].sequence"
                 ),
@@ -428,9 +428,7 @@ def _validated_render_entries(values: Any) -> tuple[dict[str, Any], ...]:
         cue_package = _require_mapping(
             item.get("cue_package"), f"render_entries[{index}].cue_package"
         )
-        start = _require_integer(
-            item.get("start_sample"), f"render_entries[{index}].start_sample"
-        )
+        start = _require_integer(item.get("start_sample"), f"render_entries[{index}].start_sample")
         duration = _require_integer(
             item.get("duration_samples"),
             f"render_entries[{index}].duration_samples",
@@ -449,9 +447,7 @@ def _validated_render_entries(values: Any) -> tuple[dict[str, Any], ...]:
             )
         records.append(
             {
-                "cue_id": _require_string(
-                    item.get("cue_id"), f"render_entries[{index}].cue_id"
-                ),
+                "cue_id": _require_string(item.get("cue_id"), f"render_entries[{index}].cue_id"),
                 "source_event_id": _require_string(
                     item.get("source_event_id"), f"render_entries[{index}].source_event_id"
                 ),
@@ -549,9 +545,7 @@ def _summary(values: Sequence[int | float | Decimal]) -> dict[str, Any]:
     ordered = sorted(_decimal(value) for value in values)
     count = len(ordered)
     median = (
-        ordered[count // 2]
-        if count % 2
-        else (ordered[count // 2 - 1] + ordered[count // 2]) / 2
+        ordered[count // 2] if count % 2 else (ordered[count // 2 - 1] + ordered[count // 2]) / 2
     )
     p95 = ordered[math.ceil(0.95 * count) - 1]
     return {
@@ -651,9 +645,7 @@ def _reproducibility(
             "reproducibility.configuration_comparisons",
         )
     ):
-        item = _require_mapping(
-            value_item, f"reproducibility.configuration_comparisons[{index}]"
-        )
+        item = _require_mapping(value_item, f"reproducibility.configuration_comparisons[{index}]")
         entry = {
             "name": _require_string(
                 item.get("name"), f"reproducibility.configuration_comparisons[{index}].name"
@@ -834,7 +826,9 @@ def evaluate_technical_input(
         event_cues = cues_by_event.get(event_id, [])
         event_suppressions = suppression_groups.get(event_id, [])
         event_exclusions = exclusion_groups.get(event_id, [])
-        category_count = sum(bool(values) for values in (event_cues, event_suppressions, event_exclusions))
+        category_count = sum(
+            bool(values) for values in (event_cues, event_suppressions, event_exclusions)
+        )
         if len(event_suppressions) > 1:
             diagnostics.append(
                 _diagnostic(
@@ -961,7 +955,12 @@ def evaluate_technical_input(
         event = event_by_id.get(cue["source_event_id"])
         event_link = event is not None
         if not event_link:
-            broken("cue_event_unknown", cue, "Cue references an unknown source event.", "source_event_id")
+            broken(
+                "cue_event_unknown",
+                cue,
+                "Cue references an unknown source event.",
+                "source_event_id",
+            )
         elif cue["dataset"] != event["dataset"] or cue["sequence"] != event["sequence"]:
             event_link = False
             broken(
@@ -994,8 +993,7 @@ def evaluate_technical_input(
                 "source_file",
             )
         registered = bool(
-            event_link
-            and (event["source_file"], event["source_file_sha256"]) in registered_sources
+            event_link and (event["source_file"], event["source_file_sha256"]) in registered_sources
         )
         if event_link and not registered:
             broken(
@@ -1013,14 +1011,26 @@ def evaluate_technical_input(
             and cue["preset_sha256"] == identity["preset_sha256"]
         )
         if not preset_link:
-            broken("cue_preset_mismatch", cue, "Cue preset identity differs from package evidence.", "preset_sha256")
+            broken(
+                "cue_preset_mismatch",
+                cue,
+                "Cue preset identity differs from package evidence.",
+                "preset_sha256",
+            )
         render = render_by_cue.get(cue["cue_id"])
         render_link = render is not None
         if not render_link:
-            broken("render_entry_missing", cue, "Cue has no rendered sample record.", "render_entries")
+            broken(
+                "render_entry_missing", cue, "Cue has no rendered sample record.", "render_entries"
+            )
         elif render["source_event_id"] != cue["source_event_id"]:
             render_link = False
-            broken("render_event_mismatch", cue, "Render entry source event differs from its cue.", "render_entries.source_event_id")
+            broken(
+                "render_event_mismatch",
+                cue,
+                "Render entry source event differs from its cue.",
+                "render_entries.source_event_id",
+            )
         render_identity = bool(
             render_link
             and render["renderer"]
@@ -1036,7 +1046,12 @@ def evaluate_technical_input(
             }
         )
         if render_link and not render_identity:
-            broken("render_identity_mismatch", cue, "Render configuration or cue-package identity differs.", "render_entries.renderer")
+            broken(
+                "render_identity_mismatch",
+                cue,
+                "Render configuration or cue-package identity differs.",
+                "render_entries.renderer",
+            )
         if render_link:
             cue_render_count += 1
             actual_seconds = Decimal(render["start_sample"]) / Decimal(sample_rate)
@@ -1051,8 +1066,7 @@ def evaluate_technical_input(
                 end_seconds.append(abs(actual_seconds - _decimal(event["timestamp"])))
                 end_samples.append(
                     abs(
-                        render["start_sample"]
-                        - seconds_to_samples(event["timestamp"], sample_rate)
+                        render["start_sample"] - seconds_to_samples(event["timestamp"], sample_rate)
                     )
                 )
         wav_link = identity["wav_sha256"] is not None
@@ -1069,7 +1083,14 @@ def evaluate_technical_input(
                     field="identity.wav_sha256",
                 )
             )
-        if event_link and annotation_link and preset_link and render_link and render_identity and wav_link:
+        if (
+            event_link
+            and annotation_link
+            and preset_link
+            and render_link
+            and render_identity
+            and wav_link
+        ):
             cue_full_count += 1
 
     traceable_suppressions = 0
@@ -1113,10 +1134,7 @@ def evaluate_technical_input(
         )
     starts = sorted(_decimal(cue["start_time_seconds"]) for cue in cues)
     max_window = max(
-        (
-            sum(start <= candidate < start + Decimal(1) for candidate in starts)
-            for start in starts
-        ),
+        (sum(start <= candidate < start + Decimal(1) for candidate in starts) for start in starts),
         default=0,
     )
 
@@ -1182,7 +1200,9 @@ def evaluate_technical_input(
         "sequence": identity["sequence"],
         "input_hashes": input_hashes,
     }
-    run_id = f"evaluation-{identity['dataset']}-{identity['sequence']}-{sha256_json(run_identity)[:16]}"
+    run_id = (
+        f"evaluation-{identity['dataset']}-{identity['sequence']}-{sha256_json(run_identity)[:16]}"
+    )
     core = {
         "report_version": EVALUATION_REPORT_VERSION,
         "evaluation_run_id": run_id,
@@ -1249,12 +1269,9 @@ def evaluate_technical_input(
                 "cue_to_source_annotation": _rate(cue_annotation_count, len(cues)),
                 "cue_to_rendered_sample": _rate(cue_render_count, len(cues)),
                 "fully_traceable_cue": _rate(cue_full_count, len(cues)),
-                "traceable_suppression_record": _rate(
-                    traceable_suppressions, len(suppressions)
-                ),
+                "traceable_suppression_record": _rate(traceable_suppressions, len(suppressions)),
                 "broken_links": [
-                    {"code": code, "count": count}
-                    for code, count in sorted(broken_links.items())
+                    {"code": code, "count": count} for code, count in sorted(broken_links.items())
                 ],
             },
             "cue_density": {
@@ -1311,7 +1328,9 @@ def write_evaluation_report(report: EvaluationReport, path: Path) -> EvaluationR
     """Write canonical report bytes to one safe regular JSON file."""
     target = Path(path)
     if ".." in target.parts or target.is_symlink() or (target.exists() and not target.is_file()):
-        _fail("evaluation_output_path_unsafe", "Report path must be a regular path without traversal.")
+        _fail(
+            "evaluation_output_path_unsafe", "Report path must be a regular path without traversal."
+        )
     if target.suffix.lower() != ".json":
         _fail("evaluation_output_path_invalid", "Evaluation report must use a .json filename.")
     parent = target.parent

@@ -74,9 +74,7 @@ DEFAULT_SONIFICATION_PRESET = Path("configs/sonification/presets/baseline-v0.1.0
 DEFAULT_SONIFICATION_PRESET_SCHEMA = Path("configs/sonification/schemas/preset.schema.v0.1.0.json")
 DEFAULT_RENDERER_CONFIG = Path("configs/sonification/renderers/baseline-v0.1.0.json")
 DEFAULT_RENDERER_SCHEMA = Path("configs/sonification/renderers/renderer.schema.v0.1.0.json")
-DEFAULT_EVALUATION_CONTRACT = Path(
-    "configs/evaluation/technical-evaluation-contract.v0.1.0.json"
-)
+DEFAULT_EVALUATION_CONTRACT = Path("configs/evaluation/technical-evaluation-contract.v0.1.0.json")
 DEFAULT_EVALUATION_CONTRACT_SCHEMA = Path(
     "configs/evaluation/technical-evaluation-contract.schema.v0.1.0.json"
 )
@@ -260,10 +258,7 @@ def _logical_configuration_path(path: Path) -> str:
 def _source_reference(events: Sequence[dict[str, object]]) -> FileReference:
     if not events:
         raise OutputPackageError("Cannot write a package for an empty parser result.")
-    references = {
-        (event["source_file"], event["source_file_sha256"])
-        for event in events
-    }
+    references = {(event["source_file"], event["source_file_sha256"]) for event in events}
     if len(references) != 1:
         raise OutputPackageError("A sequence package must reference exactly one source file.")
     logical_path, sha256 = references.pop()

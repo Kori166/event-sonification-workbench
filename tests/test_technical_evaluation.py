@@ -22,9 +22,7 @@ CONTRACT = ROOT / "configs" / "evaluation" / "technical-evaluation-contract.v0.1
 CONTRACT_SCHEMA = (
     ROOT / "configs" / "evaluation" / "technical-evaluation-contract.schema.v0.1.0.json"
 )
-REPORT_SCHEMA = (
-    ROOT / "configs" / "evaluation" / "technical-evaluation-report.schema.v0.1.0.json"
-)
+REPORT_SCHEMA = ROOT / "configs" / "evaluation" / "technical-evaluation-report.schema.v0.1.0.json"
 
 
 @pytest.fixture
@@ -169,7 +167,9 @@ def test_orphan_cue_is_reported_as_error(contract, oracle_input: dict[str, objec
 
     assert "cue_event_unknown" in _codes(report)
     assert not report["valid"]
-    broken = {item["code"]: item["count"] for item in report["metrics"]["traceability"]["broken_links"]}
+    broken = {
+        item["code"]: item["count"] for item in report["metrics"]["traceability"]["broken_links"]
+    }
     assert broken["cue_event_unknown"] == 1
 
 
@@ -196,9 +196,7 @@ def test_zero_denominators_are_null_for_empty_input(
 
     assert report["valid"]
     assert report["diagnostics"] == []
-    assert all(
-        rate["value"] is None for rate in report["metrics"]["event_coverage"].values()
-    )
+    assert all(rate["value"] is None for rate in report["metrics"]["event_coverage"].values())
     assert report["metrics"]["traceability"]["fully_traceable_cue"]["value"] is None
     assert report["metrics"]["cue_density"]["cues_per_second"] is None
     assert report["metrics"]["overlap_burden"]["overlap_proportion"]["value"] is None
@@ -444,7 +442,11 @@ def test_writer_and_cli_create_canonical_identical_reports(
     second = write_evaluation_report(report, second_path)
 
     assert first.sha256 == second.sha256 == report.sha256
-    assert first_path.read_bytes() == second_path.read_bytes() == canonical_json_bytes(report.to_dict())
+    assert (
+        first_path.read_bytes()
+        == second_path.read_bytes()
+        == canonical_json_bytes(report.to_dict())
+    )
     cli_path = tmp_path / "cli.json"
     exit_code = main(
         [
