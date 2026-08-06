@@ -88,3 +88,8 @@ The supplied repeat evidence makes semantic, byte, audio and configuration resul
 synthetic same-process test only and is not cross-environment evidence. Empty input has zero counts,
 null rates/statistics, zero peak concurrency and no warning. A non-empty zero-duration timeline has
 null duration-based rates plus the `zero_duration_timeline` warning.
+
+After reviewing the assembled report against every calculation above, the frozen evaluation run ID
+is `evaluation-synthetic-evaluation_oracle-e1ee06d3a671ee1b`. Its non-recursive canonical payload
+hash is `f96d51fd13d3f36c0c515606f6271c47aee9524d0237e9518d6d13d17e3d9c30`; the final canonical
+report-byte SHA-256 is `22a898698aef7e6c3cff39b2333cd13dd8fe0243d9fc580392cdec5c623a17ce`.
