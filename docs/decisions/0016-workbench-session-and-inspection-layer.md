@@ -8,6 +8,12 @@ Implementation clarification added on 7 August 2026 after PR #28 merged: runtime
 use separate event, cue and audio roots. This does not change Workbench Session Contract `0.1.0` or
 the deterministic identity boundary.
 
+Implementation history: PR #30 applied this clarification but was merged before the private retained-
+chain acceptance gate was run. PR #31 reverted PR #30 in full. The correction was then reapplied on
+a fresh branch under reopened Issue #29 so that clean CI and private retained-chain acceptance could
+both be evidenced before the final merge. This history changes neither the decision nor the frozen
+session contract.
+
 ## Context
 
 Stages 1 to 3 already define and verify deterministic event packages, cue and suppression packages,
