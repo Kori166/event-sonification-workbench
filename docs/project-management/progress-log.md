@@ -857,3 +857,62 @@ be added where a short entry would omit important implementation evidence.
 - Next: Stage 4 Milestone 1 - assemble a versioned artefact release candidate and verify
   installation, configuration, evidence availability and end-to-end execution from a clean
   environment.
+
+---
+
+## 2026-08-07 - Stage 4 Milestone 1 Phase 1 headless inspection contract
+
+**Work completed**
+
+- Began Stage 4 from merged Stage 3 `main` and kept browser/UI implementation out of Phase 1.
+- Added Workbench Session Contract `0.1.0`, field-level documentation, Decision 0016, the Stage 4
+  checklist and a headless `workbench.session` validator.
+- Added deterministic session identity, cross-stage package/hash checks, optional Stage 3 report
+  verification, runtime-only media binding and path-free machine-readable diagnostics.
+- Added an explicit `workbench` package interface and six focused tests covering valid loading,
+  cross-package mismatch, declared hash tampering, unavailable evaluation and runtime-path privacy.
+- Opened PR #28 and used pull-request CI as the clean-checkout quality gate.
+- Reconciled the project plan, project-management index, risk register and Stage 4 development record
+  with the new inspection-layer scope and evidence boundary.
+
+**Decisions made**
+
+- The browser will consume already validated sessions and remain read-only with respect to Stage 1-3
+  evidence.
+- Runtime roots and media paths are excluded from `session_id`; content and configuration identities
+  determine the deterministic session identity.
+- The Stage 4 interface is artefact inspection/demonstration infrastructure, not participant or
+  perceptual evidence and not an extension of the research questions.
+- The existing verified-chain logic is reused rather than duplicated; its current private API use is
+  recorded for review before the final release candidate.
+
+**Problems and actions**
+
+- PR #28 CI run 71 failed only at Ruff with three `TRY004` findings in `workbench/session.py`.
+- The affected invalid-type branches were corrected to raise `TypeError`, with matching exception
+  handling. No Stage 1-3 contract or research logic changed.
+- CI run 72 then passed. The first failed run did not execute pytest and is not used as test-pass
+  evidence.
+
+**Validation evidence**
+
+- PR #28 CI run 72 environment: Ubuntu 24.04, Python 3.11.15.
+- `ruff check .`: passed with no findings.
+- `python -m pytest -m "not integration"`: 258 passed, 3 deselected.
+- `tests/test_workbench_session.py`: 6 passed within the successful non-integration suite.
+- Editable installation of `.[dev]` succeeded, including the new `workbench` package.
+
+**Remaining work**
+
+- CI cannot access the ignored retained Stage 1/2 package chains or private dataset media, so it
+  cannot satisfy the final Phase 1 real-chain acceptance action.
+- Validate one retained MOT17-02-DPM or KITTI Tracking 0000 package chain with its actual local media
+  from a clean checkout, repeat the validation and confirm the same `session_id`.
+- Confirm that diagnostics and exported session data remain free of absolute local paths, usernames
+  and machine-specific state.
+
+**Next actions**
+
+- Keep browser/UI implementation blocked until the retained real-chain Phase 1 acceptance action is
+  recorded as passed.
+- After that gate, merge PR #28 and begin Phase 2 with one synchronised inspection vertical slice.
