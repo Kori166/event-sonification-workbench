@@ -9,9 +9,9 @@ A post-merge review identified a bounded runtime-binding mismatch.
 Issue #29 and PR #30 implemented the correction and PR #30 passed clean CI. PR #30 was then merged
 before the private retained-chain acceptance gate was run. PR #31 reverted PR #30 in full, returning
 `main` to the post-PR-#28 implementation. Issue #29 was reopened and PR #32 now reapplies the same
-bounded runtime correction from that reverted state. Browser and UI implementation remain blocked
-until PR #32 passes clean CI and one retained real MOT17 or KITTI session validates locally with its
-actual dataset media.
+bounded runtime correction from that reverted state. PR #32 passes the repository CI gate. Browser
+and UI implementation remain blocked until one retained real MOT17 or KITTI session validates
+locally with its actual dataset media.
 
 ## Purpose
 
@@ -118,17 +118,28 @@ reverted by PR #31. That sequence did not invalidate the implementation or its C
 
 ## Final corrective PR #32
 
-PR #32 is intentionally opened as a draft from the post-PR-#31 `main`. It reapplies the PR #30
-runtime-root implementation and tests, then reconciles the decision/checklist history. It must not be
-merged until:
+PR #32 was opened as a draft from the post-PR-#31 `main`. It reapplies the PR #30 runtime-root
+implementation and tests, then reconciles the decision, checklist, development and risk history.
 
-1. its final head passes `ruff check .` and the complete non-integration suite in GitHub Actions;
-2. `python -m pytest tests/test_workbench_session_integration.py -m integration -q` passes locally
+PR #32 CI run 94 passed on Ubuntu 24.04 / Python 3.11.15:
+
+- editable installation of `.[dev]`: passed;
+- `ruff check .`: passed with no findings;
+- `python -m pytest -m "not integration"`: 261 passed, 4 deselected;
+- all 9 non-integration workbench-session tests passed.
+
+The four deselected integration tests include the Stage 4 private retained-chain check. Hosted CI has
+no access to the ignored Stage 2 package evidence or private dataset media, so this is expected and is
+not treated as private acceptance evidence.
+
+PR #32 must not be merged until:
+
+1. `python -m pytest tests/test_workbench_session_integration.py -m integration -q` passes locally
    with `STAGE2_EVIDENCE_ROOT` and at least one of `MOT17_ROOT` or `KITTI_TRACKING_ROOT` configured;
-3. at least one retained real session validates twice with the same deterministic `session_id`;
-4. event, cue and audio components report `verified`, media reports `available`, and diagnostics are
+2. at least one retained real session validates twice with the same deterministic `session_id`;
+3. event, cue and audio components report `verified`, media reports `available`, and diagnostics are
    empty; and
-5. the returned result and final corrective diff remain free of private absolute paths, usernames,
+4. the returned result and final corrective diff remain free of private absolute paths, usernames,
    datasets, WAV files and other excluded full-data derivatives.
 
 ## Decision boundary
@@ -142,5 +153,5 @@ The current validator still reuses the established verified-chain implementation
 logic. Exposing a public wrapper remains a possible release-hardening change if Stage 4 continues to
 depend on that private function.
 
-Only after the PR #32 and private retained-chain gates are recorded as passed should Phase 1 be
-marked complete and Phase 2 begin.
+Only after the private retained-chain gate is recorded as passed should Phase 1 be marked complete,
+PR #32 leave draft state and Phase 2 begin.
