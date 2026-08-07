@@ -1,0 +1,212 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:event-sonification-workbench:schema:workbench-session:0.1.0",
+  "title": "Workbench session",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "session_version",
+    "session_id",
+    "dataset",
+    "sequence",
+    "event_package",
+    "cue_package",
+    "audio_package",
+    "evaluation",
+    "configuration",
+    "media"
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^(?:run|cue|audio)-[a-z0-9_-]+-[0-9a-f]{16}$"
+    },
+    "logical_path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)(?![A-Za-z]:).+$"
+    }
+  },
+  "properties": {
+    "session_version": {
+      "const": "0.1.0"
+    },
+    "session_id": {
+      "type": "string",
+      "pattern": "^session-(?:mot17|kitti_tracking)-[a-z0-9][a-z0-9_-]*-[0-9a-f]{16}$"
+    },
+    "dataset": {
+      "enum": ["mot17", "kitti_tracking"]
+    },
+    "sequence": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[a-z0-9][a-z0-9_-]*$"
+    },
+    "event_package": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_id",
+        "package_sha256",
+        "format_version",
+        "schema_version",
+        "events_sha256",
+        "events_csv_sha256",
+        "run_metadata_sha256",
+        "provenance_log_sha256"
+      ],
+      "properties": {
+        "run_id": {"$ref": "#/$defs/run_id"},
+        "package_sha256": {"$ref": "#/$defs/sha256"},
+        "format_version": {"const": "0.1.0"},
+        "schema_version": {"const": "0.2.0"},
+        "events_sha256": {"$ref": "#/$defs/sha256"},
+        "events_csv_sha256": {"$ref": "#/$defs/sha256"},
+        "run_metadata_sha256": {"$ref": "#/$defs/sha256"},
+        "provenance_log_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "cue_package": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_id",
+        "package_sha256",
+        "format_version",
+        "input_event_run_id",
+        "input_event_package_sha256",
+        "cue_schedule_sha256",
+        "cue_schedule_csv_sha256",
+        "cue_log_sha256",
+        "suppression_log_sha256",
+        "sonification_metadata_sha256"
+      ],
+      "properties": {
+        "run_id": {"$ref": "#/$defs/run_id"},
+        "package_sha256": {"$ref": "#/$defs/sha256"},
+        "format_version": {"const": "0.1.0"},
+        "input_event_run_id": {"$ref": "#/$defs/run_id"},
+        "input_event_package_sha256": {"$ref": "#/$defs/sha256"},
+        "cue_schedule_sha256": {"$ref": "#/$defs/sha256"},
+        "cue_schedule_csv_sha256": {"$ref": "#/$defs/sha256"},
+        "cue_log_sha256": {"$ref": "#/$defs/sha256"},
+        "suppression_log_sha256": {"$ref": "#/$defs/sha256"},
+        "sonification_metadata_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "audio_package": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_id",
+        "package_sha256",
+        "renderer_version",
+        "input_cue_run_id",
+        "input_cue_package_sha256",
+        "cue_schedule_sha256",
+        "wav_sha256",
+        "render_log_sha256",
+        "renderer_metadata_sha256"
+      ],
+      "properties": {
+        "run_id": {"$ref": "#/$defs/run_id"},
+        "package_sha256": {"$ref": "#/$defs/sha256"},
+        "renderer_version": {"const": "0.1.0"},
+        "input_cue_run_id": {"$ref": "#/$defs/run_id"},
+        "input_cue_package_sha256": {"$ref": "#/$defs/sha256"},
+        "cue_schedule_sha256": {"$ref": "#/$defs/sha256"},
+        "wav_sha256": {"$ref": "#/$defs/sha256"},
+        "render_log_sha256": {"$ref": "#/$defs/sha256"},
+        "renderer_metadata_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "evaluation": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["available"],
+          "properties": {
+            "available": {"const": false}
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "available",
+            "evaluation_run_id",
+            "contract_version",
+            "report_logical_path",
+            "report_sha256",
+            "event_run_id",
+            "cue_run_id",
+            "audio_run_id",
+            "event_package_sha256",
+            "cue_package_sha256",
+            "audio_package_sha256",
+            "cue_schedule_sha256",
+            "suppression_log_sha256",
+            "render_log_sha256",
+            "wav_sha256"
+          ],
+          "properties": {
+            "available": {"const": true},
+            "evaluation_run_id": {
+              "type": "string",
+              "pattern": "^evaluation-[a-z0-9_-]+-[0-9a-f]{16}$"
+            },
+            "contract_version": {"const": "0.1.0"},
+            "report_logical_path": {"$ref": "#/$defs/logical_path"},
+            "report_sha256": {"$ref": "#/$defs/sha256"},
+            "event_run_id": {"$ref": "#/$defs/run_id"},
+            "cue_run_id": {"$ref": "#/$defs/run_id"},
+            "audio_run_id": {"$ref": "#/$defs/run_id"},
+            "event_package_sha256": {"$ref": "#/$defs/sha256"},
+            "cue_package_sha256": {"$ref": "#/$defs/sha256"},
+            "audio_package_sha256": {"$ref": "#/$defs/sha256"},
+            "cue_schedule_sha256": {"$ref": "#/$defs/sha256"},
+            "suppression_log_sha256": {"$ref": "#/$defs/sha256"},
+            "render_log_sha256": {"$ref": "#/$defs/sha256"},
+            "wav_sha256": {"$ref": "#/$defs/sha256"}
+          }
+        }
+      ]
+    },
+    "configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "preset_name",
+        "preset_version",
+        "preset_sha256",
+        "renderer_version",
+        "renderer_sha256"
+      ],
+      "properties": {
+        "preset_name": {"type": "string", "minLength": 1},
+        "preset_version": {"const": "0.1.0"},
+        "preset_sha256": {"$ref": "#/$defs/sha256"},
+        "renderer_version": {"const": "0.1.0"},
+        "renderer_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "media": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["binding", "root_environment", "relative_path"],
+      "properties": {
+        "binding": {"const": "runtime"},
+        "root_environment": {
+          "enum": ["MOT17_ROOT", "KITTI_TRACKING_ROOT"]
+        },
+        "relative_path": {"$ref": "#/$defs/logical_path"}
+      }
+    }
+  }
+}
