@@ -49,11 +49,6 @@ _EXPECTED_MEDIA_ROOT = {
     "mot17": "MOT17_ROOT",
     "kitti_tracking": "KITTI_TRACKING_ROOT",
 }
-_PACKAGE_RUNTIME_ROOTS = {
-    "event_package": "EVENT_PACKAGE_ROOT",
-    "cue_package": "CUE_PACKAGE_ROOT",
-    "audio_package": "AUDIO_PACKAGE_ROOT",
-}
 
 
 def _repository_root() -> Path:
@@ -224,54 +219,6 @@ def _safe_logical_child(root: Path, logical_path: str) -> Path | None:
     except ValueError:
         return None
     return candidate
-
-
-def _resolve_package_directories(
-    session_data: Mapping[str, Any],
-    runtime_roots: Mapping[str, Any],
-) -> tuple[dict[str, Path], list[dict[str, str]]]:
-    """Resolve package directories without adding runtime locations to session identity."""
-    directories: dict[str, Path] = {}
-    diagnostics: list[dict[str, str]] = []
-    output_root = _safe_runtime_root(runtime_roots, "OUTPUT_ROOT")
-    output_root_reported = False
-
-    for component, root_name in _PACKAGE_RUNTIME_ROOTS.items():
-        if root_name in runtime_roots:
-            root = _safe_runtime_root(runtime_roots, root_name)
-            if root is None:
-                diagnostics.append(
-                    _diagnostic(f"{component}_runtime_root_unavailable", component)
-                )
-                continue
-        else:
-            root = output_root
-            if root is None:
-                if not output_root_reported:
-                    diagnostics.append(
-                        _diagnostic("output_runtime_root_unavailable", "package_chain")
-                    )
-                    output_root_reported = True
-                continue
-
-        run_id = session_data[component]["run_id"]
-        candidate = root / run_id
-        if candidate.is_symlink() or not candidate.is_dir():
-            diagnostics.append(
-                _diagnostic(f"{component}_directory_unavailable", component)
-            )
-            continue
-        resolved = candidate.resolve()
-        try:
-            resolved.relative_to(root)
-        except ValueError:
-            diagnostics.append(
-                _diagnostic(f"{component}_directory_unavailable", component)
-            )
-            continue
-        directories[component] = resolved
-
-    return directories, diagnostics
 
 
 def _chain_error_diagnostic(
@@ -495,12 +442,9 @@ def validate_workbench_session(
     if session_data["session_id"] != generated_id:
         diagnostics.append(_diagnostic("session_id_mismatch", "session", field="session_id"))
 
-    package_directories, package_root_diagnostics = _resolve_package_directories(
-        session_data,
-        runtime_roots,
-    )
-    diagnostics.extend(package_root_diagnostics)
-    if package_root_diagnostics:
+    output_root = _safe_runtime_root(runtime_roots, "OUTPUT_ROOT")
+    if output_root is None:
+        diagnostics.append(_diagnostic("output_runtime_root_unavailable", "package_chain"))
         return {
             "valid": False,
             "session_id": generated_id,
@@ -508,11 +452,14 @@ def validate_workbench_session(
             "diagnostics": diagnostics,
         }
 
+    event_directory = output_root / session_data["event_package"]["run_id"]
+    cue_directory = output_root / session_data["cue_package"]["run_id"]
+    audio_directory = output_root / session_data["audio_package"]["run_id"]
     try:
         chain = _load_verified_chain(
-            package_directories["event_package"],
-            package_directories["cue_package"],
-            package_directories["audio_package"],
+            event_directory,
+            cue_directory,
+            audio_directory,
             event_schema_path=_repository_root() / EVENT_SCHEMA_RELATIVE_PATH,
         )
     except (CueScheduleError, AudioRenderError, TechnicalEvaluationInputError) as exc:
