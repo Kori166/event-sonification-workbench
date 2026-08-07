@@ -2,32 +2,36 @@
 
 ## Status
 
-Stage 4 is active. Milestone 1 Phase 1 freezes the workbench inspection contract and establishes the
-headless validation layer before browser implementation begins.
+Stage 4 is active. Milestone 1 Phase 1 has frozen the workbench inspection contract and established
+the headless validation layer before browser implementation begins. PR #28 CI passed after one
+Ruff-only correction; retained real-chain validation from a clean local checkout remains the final
+Phase 1 acceptance action before the browser vertical slice is treated as unblocked.
 
 ## Milestone 1: versioned artefact release candidate
 
 ### Phase 1: workbench contract and headless validation
 
-- [ ] Freeze Workbench Session Contract `0.1.0` under a strict JSON Schema.
-- [ ] Record the inspection-layer architecture and evidence boundary in Decision 0016.
-- [ ] Document deterministic session fields separately from runtime environmental bindings.
-- [ ] Generate `session_id` deterministically from canonical identity fields only.
-- [ ] Reuse existing Stage 1 to 3 package loaders and evidence-chain verification rather than
+- [x] Freeze Workbench Session Contract `0.1.0` under a strict JSON Schema.
+- [x] Record the inspection-layer architecture and evidence boundary in Decision 0016.
+- [x] Document deterministic session fields separately from runtime environmental bindings.
+- [x] Generate `session_id` deterministically from canonical identity fields only.
+- [x] Reuse existing Stage 1 to 3 package loaders and evidence-chain verification rather than
       implementing weaker Stage 4 validation rules.
-- [ ] Reject mismatched Stage 1 event and Stage 2 cue-package identities.
-- [ ] Reject mismatched Stage 2 cue and audio-package identities.
-- [ ] Reject declared file hashes that differ from verified package files.
-- [ ] Validate an available Stage 3 report against its schema, identity and recorded input hashes.
-- [ ] Permit `evaluation.available = false` without calculating substitute metrics.
-- [ ] Resolve MOT17 media only beneath `MOT17_ROOT` and KITTI Tracking media only beneath
+- [x] Reject mismatched Stage 1 event and Stage 2 cue-package identities.
+- [x] Reject mismatched Stage 2 cue and audio-package identities.
+- [x] Reject declared file hashes that differ from verified package files.
+- [x] Validate an available Stage 3 report against its schema, identity and recorded input hashes.
+- [x] Permit `evaluation.available = false` without calculating substitute metrics.
+- [x] Resolve MOT17 media only beneath `MOT17_ROOT` and KITTI Tracking media only beneath
       `KITTI_TRACKING_ROOT`.
-- [ ] Keep `OUTPUT_ROOT`, dataset roots, usernames and machine-specific paths outside `session_id`.
-- [ ] Return stable path-free diagnostic codes for rejected sessions.
-- [ ] Add automated tests for valid loading, package mismatches, hash tampering, absent evaluation
+- [x] Keep `OUTPUT_ROOT`, dataset roots, usernames and machine-specific paths outside `session_id`.
+- [x] Return stable path-free diagnostic codes for rejected sessions.
+- [x] Add automated tests for valid loading, package mismatches, hash tampering, absent evaluation
       evidence and privacy/path isolation.
-- [ ] Pass `python -m ruff check .`.
-- [ ] Pass the non-integration test suite without regressions.
+- [x] Pass `python -m ruff check .` in pull-request CI.
+- [x] Pass the non-integration test suite without regressions in pull-request CI.
+- [ ] Validate one retained real MOT17 or KITTI package chain and its actual dataset media from a
+      clean local checkout using the frozen session contract.
 
 ### Phase 1 acceptance gate
 
@@ -35,6 +39,11 @@ Phase 1 is complete only when a clean checkout can validate one compatible retai
 reject deliberately inconsistent or tampered session definitions, resolve local dataset media
 without exposing its absolute path, reproduce the same session ID from identical evidence, and pass
 the existing automated quality gates. Browser or UI code is not part of this phase.
+
+PR #28 CI run 72 passed on Ubuntu 24.04 / Python 3.11.15 with Ruff clean and 258 non-integration
+tests passed, 3 integration tests deselected. The six Stage 4 session tests passed within that suite.
+This CI evidence covers committed fixtures and clean installation; it does not replace the retained
+private-chain/media acceptance action above.
 
 ### Phase 2: synchronised inspection vertical slice
 
