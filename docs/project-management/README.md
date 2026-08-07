@@ -22,6 +22,11 @@ This directory contains the working evidence used to plan, track and review the 
   and automated/manual audit records.
 - `../development/stage-3-closeout.md`: Stage 3 identities, reporting hashes, quality evidence,
   bounded RQ3 answer, limitations and Stage 4 handover.
+- `stage-4-checklist.md`: active workbench contract, synchronised inspection and release gates.
+- `../data-model/workbench-session.md`: Workbench Session Contract `0.1.0`, deterministic identity
+  fields and runtime binding boundary.
+- `../development/stage-4-milestone-1-phase-1.md`: Phase 1 implementation, validation design,
+  quality gate and Phase 2 handover.
 - `risk-register.md`: identified risks, mitigations and review status.
 - `supervision-log.md`: verified supervision feedback and resulting actions.
 

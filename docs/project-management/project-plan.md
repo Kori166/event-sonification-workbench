@@ -17,7 +17,7 @@ normalised events, deterministic audio cues and traceable technical outputs.
 | 1. Data ingestion and normalisation | Parse MOT17 and KITTI Tracking annotations into a common event schema | Parsers, schema, validation outputs, provenance records and tests | Complete, 5 August 2026 |
 | 2. Sonification | Map normalised events into scheduled audio cues | Mapping presets, cue schedules, audio files and logs | Complete, 6 August 2026; real MOT17/KITTI chains reproduced exactly |
 | 3. Technical evaluation | Measure coverage, alignment, traceability, cue density, overlap and reproducibility | Evaluation reports, comparison results, audited reporting derivatives and repeat-run checks | Complete, 6 August 2026 |
-| 4. Artefact assembly and release | Validate, document and package the complete workbench | Reproducible release, final documentation and tagged version | Active; Milestone 1 next |
+| 4. Artefact assembly and release | Validate, document and package the complete workbench | Reproducible release, final documentation and tagged version | Active; Milestone 1 Phase 1 validation gate in progress |
 | 5. Reporting and viva preparation | Complete the dissertation and prepare the artefact demonstration | Final report, demonstration plan and viva notes | Planned |
 
 ## Working Method
@@ -215,14 +215,21 @@ participant, accessibility, usability, navigation, mobility or safety conclusion
 
 ## Stage 4 Active Work
 
-Stage 4 begins only after the Stage 3 reporting-evidence pull request is merged. It will assemble a
-versioned release candidate and verify installation, configuration, committed evidence availability
-and end-to-end execution from a clean environment. It must not claim submission readiness until the
-release and reporting gates are satisfied.
+Stage 4 begins from the merged Stage 3 evidence and assembles the deliverable workbench without
+changing the established Stage 1-3 research contracts. Milestone 1 is divided into a headless
+inspection contract, a synchronised inspection vertical slice and cross-dataset release preparation.
+The local interface is a read-only inspection and demonstration layer over verified research outputs;
+it is not a participant study or a new evaluation method.
 
-The exact next milestone is **Stage 4 Milestone 1: assemble a versioned artefact release candidate
+Phase 1 has frozen Workbench Session Contract `0.1.0`, added deterministic session validation,
+runtime media binding and path-free diagnostics, and passed PR #28 CI with Ruff clean and 258
+non-integration tests passed. The remaining Phase 1 acceptance action is to validate one retained
+real MOT17 or KITTI package chain with its actual local media from a clean checkout. Browser work is
+not treated as unblocked until that evidence is recorded.
+
+The current milestone remains **Stage 4 Milestone 1: assemble a versioned artefact release candidate
 and verify installation, configuration, evidence availability and end-to-end execution from a clean
-environment.**
+environment.** Detailed Phase 1-3 gates are recorded in `docs/project-management/stage-4-checklist.md`.
 
 ## Key Project Milestones
 
@@ -238,8 +245,10 @@ environment.**
 
 ## Scope Control
 
-Core deliverables are limited to MOT17, KITTI Tracking, a common event schema, deterministic
-sonification, provenance records and technical evaluation.
+Core research deliverables remain limited to MOT17, KITTI Tracking, a common event schema,
+deterministic sonification, provenance records and technical evaluation. Stage 4 adds a bounded local
+inspection interface as artefact assembly and demonstration infrastructure over those existing
+outputs; it does not extend the research questions or create new technical/perceptual findings.
 
-Participant studies, accessibility claims, interactive interfaces and additional datasets remain
-future work rather than core MSc deliverables.
+Participant studies, validated accessibility/usability/navigation claims, assistive-technology or
+safety claims, additional datasets and broader interface evaluation remain future work.
