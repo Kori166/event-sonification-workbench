@@ -14,6 +14,10 @@ a fresh branch under reopened Issue #29 so that clean CI and private retained-ch
 both be evidenced before the final merge. This history changes neither the decision nor the frozen
 session contract.
 
+Final implementation note, 7 August 2026: PR #32's separate runtime-root clarification passed the
+retained-chain acceptance test for both MOT17 and KITTI Tracking. Workbench Session Contract `0.1.0`
+remained unchanged, and runtime storage locations continue to be non-identity state.
+
 ## Context
 
 Stages 1 to 3 already define and verify deterministic event packages, cue and suppression packages,

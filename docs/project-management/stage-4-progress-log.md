@@ -38,20 +38,21 @@ chronological project-wide record and should be reconciled with this entry when 
 - Package-specific roots take precedence when supplied; `OUTPUT_ROOT` remains a common-root
   fallback.
 - The existing Stage 1 to 3 verified-chain logic remains authoritative for package validity.
-- Browser/UI work remains blocked until Phase 1 acceptance is complete.
+- Browser/UI work remained outside Phase 1; Phase 2 begins with the synchronised inspection slice.
 
-**Current acceptance state**
+**Final acceptance state**
 
-- PR #32 repository CI: passed on run 94 for the corrective implementation and reconciled records.
-- Private retained-chain integration: pending because it requires local retained Stage 2 packages
-  and at least one configured dataset media root.
-- Phase 1 status: open.
-
-**Required close-out evidence**
-
-1. `python -m pytest tests/test_workbench_session_integration.py -m integration -q` passes locally
-   with `STAGE2_EVIDENCE_ROOT` and at least one of `MOT17_ROOT` or `KITTI_TRACKING_ROOT`.
-2. The retained session validates twice with the same deterministic `session_id`.
-3. Event, cue and audio components report `verified`, media reports `available`, and diagnostics are
-   empty and path-free.
-4. The final accepted records are reconciled before merge and Phase 2 begins.
+- The true sequence was PR #28 initial implementation -> retained runtime-layout mismatch identified
+  -> PR #30 correction merged prematurely -> PR #31 full revert -> Issue #29 reopened -> PR #32
+  final correction -> clean CI -> private retained-chain acceptance -> Phase 1 close-out.
+- PR #32 repository CI run 97 passed on Ubuntu 24.04 / Python 3.11.15: editable installation and
+  Ruff passed, and the non-integration suite reported 261 passed and 4 deselected.
+- `python -m pytest tests/test_workbench_session_integration.py -m integration -q` exercised both
+  retained MOT17 and KITTI Tracking `run-a` chains and reported `1 passed in 81.89s`.
+- Both retained sessions validated twice identically with stable deterministic IDs. Event, cue and
+  audio components were verified, media was available, evaluation was intentionally not available,
+  and diagnostics were empty and path-free.
+- The final scope/privacy audit found no private roots or paths, dataset media, retained packages,
+  generated WAV files or Phase 2 browser/UI implementation in the branch diff.
+- Phase 1 status: complete, pending only green close-out-commit CI and merge of PR #32.
+- Next: Phase 2 builds one synchronised inspection vertical slice over an already validated session.

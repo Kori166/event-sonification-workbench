@@ -2,16 +2,16 @@
 
 ## Status
 
-Phase 1 remains open. PR #28 merged the frozen Workbench Session Contract and initial headless
+Phase 1 is complete. PR #28 merged the frozen Workbench Session Contract and initial headless
 validator after clean CI, but before the retained Stage 2 evidence directory layout was exercised.
 A post-merge review identified a bounded runtime-binding mismatch.
 
 Issue #29 and PR #30 implemented the correction and PR #30 passed clean CI. PR #30 was then merged
 before the private retained-chain acceptance gate was run. PR #31 reverted PR #30 in full, returning
 `main` to the post-PR-#28 implementation. Issue #29 was reopened and PR #32 now reapplies the same
-bounded runtime correction from that reverted state. PR #32 passes the repository CI gate. Browser
-and UI implementation remain blocked until one retained real MOT17 or KITTI session validates
-locally with its actual dataset media.
+bounded runtime correction from that reverted state. PR #32 passed the repository CI gate, and both
+retained real MOT17 and KITTI sessions validated locally with their actual dataset media. Browser
+and UI implementation remain Phase 2 work and were not started during this close-out.
 
 ## Purpose
 
@@ -121,7 +121,7 @@ reverted by PR #31. That sequence did not invalidate the implementation or its C
 PR #32 was opened as a draft from the post-PR-#31 `main`. It reapplies the PR #30 runtime-root
 implementation and tests, then reconciles the decision, checklist, development and risk history.
 
-PR #32 CI run 94 passed on Ubuntu 24.04 / Python 3.11.15:
+PR #32 CI run 97 passed on Ubuntu 24.04 / Python 3.11.15:
 
 - editable installation of `.[dev]`: passed;
 - `ruff check .`: passed with no findings;
@@ -132,7 +132,7 @@ The four deselected integration tests include the Stage 4 private retained-chain
 no access to the ignored Stage 2 package evidence or private dataset media, so this is expected and is
 not treated as private acceptance evidence.
 
-PR #32 must not be merged until:
+The final acceptance conditions were:
 
 1. `python -m pytest tests/test_workbench_session_integration.py -m integration -q` passes locally
    with `STAGE2_EVIDENCE_ROOT` and at least one of `MOT17_ROOT` or `KITTI_TRACKING_ROOT` configured;
@@ -153,5 +153,32 @@ The current validator still reuses the established verified-chain implementation
 logic. Exposing a public wrapper remains a possible release-hardening change if Stage 4 continues to
 depend on that private function.
 
-Only after the private retained-chain gate is recorded as passed should Phase 1 be marked complete,
-PR #32 leave draft state and Phase 2 begin.
+## Final retained-chain acceptance
+
+On 7 August 2026, the retained Stage 2 evidence was placed under a dedicated private test-evidence
+root outside the repository. Both retained `run-a` chains were exercised with their corresponding
+local dataset media roots.
+
+- Command: `python -m pytest tests/test_workbench_session_integration.py -m integration -q`
+- Result: `1 passed in 81.89s`.
+- MOT17 session: `session-mot17-mot17-02-dpm-08569247db5a6003`.
+- KITTI Tracking session: `session-kitti_tracking-0000-47c503c0c30db25a`.
+- Each session validated twice with identical returned results and the same deterministic
+  `session_id`.
+- Both returned `event_package`, `cue_package` and `audio_package` as `verified`, `media` as
+  `available`, `evaluation` as `not_available`, and `diagnostics` as an empty list.
+- The returned results contained no absolute path, username, OneDrive marker or machine-specific
+  location.
+- `python -m ruff check .` passed locally with no findings.
+- A local Windows non-integration run reported 258 passed, 3 failed and 4 deselected because the
+  checkout's synthetic source fixture bytes did not match its recorded LF hash. This is not used as
+  clean-checkout evidence; PR #32 CI run 97 remains the accepted pre-close-out result with 261 passed
+  and 4 deselected on Ubuntu 24.04 / Python 3.11.15.
+- An optional `python -m pytest -m integration` attempt exceeded the 304-second command limit and
+  produced no final pytest count; it is not reported as pass evidence.
+- The final diff audit found no private roots, username, machine name, absolute private path, raw
+  dataset media, retained package, WAV file or browser/UI implementation.
+
+Workbench Session Contract `0.1.0` did not change. Phase 1 is complete subject only to green CI on
+the close-out commit and merge of PR #32. Phase 2 handover is to build one synchronised inspection
+vertical slice over an already validated workbench session.
