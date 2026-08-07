@@ -1,8 +1,7 @@
 # Stage 4 Progress Log
 
-This stage-specific log records the recovery of Milestone 1 Phase 1 after the runtime package-layout
-mismatch and the premature merge/revert sequence. The main project progress log remains the
-chronological project-wide record and should be reconciled with this entry when Phase 1 closes.
+This stage-specific log records Milestone 1 contract recovery and the bounded Phase 2 inspection
+candidate. The main project progress log remains the chronological project-wide record.
 
 ## 2026-08-07 - Milestone 1 Phase 1 runtime-binding recovery
 
@@ -56,3 +55,44 @@ chronological project-wide record and should be reconciled with this entry when 
   generated WAV files or Phase 2 browser/UI implementation in the branch diff.
 - Phase 1 status: complete, pending only green close-out-commit CI and merge of PR #32.
 - Next: Phase 2 builds one synchronised inspection vertical slice over an already validated session.
+
+## 2026-08-07 - Milestone 1 Phase 2 implementation candidate
+
+**Work completed**
+
+- Opened Issue #35 and branch `stage-4/phase-2-synchronised-inspection` from clean main at
+  `85c2d6abf249ebb3ebffb50b150aee8c0c099c41`.
+- Recorded Decision 0017: an indexed Python inspection model, standard-library loopback HTTP/media
+  service and package-local HTML/CSS/JavaScript with no production dependency addition.
+- Added a validated-session opener that preserves Phase 1 path-free diagnostics while making local
+  verified bindings available only inside the process.
+- Added bounded session/frame/timeline/trace/evaluation/image/audio routes, safe identifier-only
+  resolution, deterministic JSON and exact WAV range service.
+- Added a dense dark technical frontend with source imagery, SVG event geometry, custom playback and
+  frame stepping, three timeline lanes, cue trace inspection and verified Stage 3 metric cards.
+- Made browser audio `currentTime` the only live playback clock; image frame and timeline cursor are
+  derived from it through the recorded 30 fps relationship.
+- Added the path-free real MOT17 declaration
+  `session-mot17-mot17-02-dpm-3707826663b210c6` with the verified Stage 3 report available.
+- Added four normal-CI inspection tests and one private real MOT17 integration test.
+
+**Validation evidence**
+
+- Ruff passed.
+- Frontend JavaScript syntax validation passed.
+- Non-integration suite: 265 passed, 5 deselected in 39.31s.
+- Existing Phase 1 retained-chain integration: 1 passed in 82.15s.
+- New Phase 2 real MOT17 integration: 1 passed in 45.34s.
+- The real loopback service launched and returned verified session, frame, synchronized timeline,
+  trace and evaluation projections without a private runtime path.
+
+**Acceptance boundary**
+
+- The configured in-app browser tab could be opened, but the required browser-control interface was
+  not exposed to this Codex task. Visual box alignment, live playback synchronization, control
+  interactions, trace rendering, metric rendering and UI path absence could therefore not be
+  evidenced under the mandatory browser workflow.
+- Service/API probes are not substituted for browser evidence. Phase 2 remains incomplete, its eight
+  checklist items remain unchecked, R20 remains open and controlled, and the branch must not merge.
+- Next: restore browser-control capability, run and record the complete real-session browser pass,
+  then complete privacy/hosted-CI gates before considering merge. Phase 3 has not started.

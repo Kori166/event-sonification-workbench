@@ -14,7 +14,9 @@ chain acceptance gate was run. PR #31 then reverted PR #30 in full. Issue #29 wa
 #32 reapplied the same bounded runtime correction from the reverted `main` state. Workbench Session
 Contract `0.1.0` remains unchanged. PR #32 passed its repository CI gate, and the retained local
 real-data acceptance run then passed for both MOT17 and KITTI Tracking. Milestone 1 Phase 1 is
-complete; Phase 2 remains unimplemented.
+complete. The Phase 2 candidate is implemented and passes normal/private automated gates, but
+mandatory controlled browser acceptance is unavailable. Phase 2 therefore remains incomplete and
+all eight acceptance items stay unchecked; the branch must not merge and Phase 3 must not begin.
 
 ## Milestone 1: versioned artefact release candidate
 
@@ -84,6 +86,16 @@ path-free. Phase 1 is complete; PR #32 still requires green CI on the close-out 
 - [ ] Display Stage 1 events, Stage 2 cues and Stage 2 suppressions on the synchronised timeline.
 - [ ] Resolve at least one selected cue through cue, source event, source annotation and render log.
 - [ ] Display available Stage 3 metrics directly from the verified report.
+
+### Phase 2 acceptance state
+
+Issue #35 and Decision 0017 define the candidate. Local evidence currently includes Ruff clean,
+265 non-integration tests passed with 5 integrations deselected, the existing Phase 1 retained-chain
+test passed, the new real MOT17 inspection test passed, and successful launch/path-free API probes.
+The mandatory browser pass remains absent because the configured browser-control interface was not
+available to the task. Model/API evidence does not substitute for visual and interaction evidence;
+none of the eight Phase 2 items is accepted until that gate and the final privacy/hosted-CI review
+are recorded.
 
 ### Phase 3: cross-dataset completion and release preparation
 

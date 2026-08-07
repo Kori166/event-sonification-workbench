@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Event Sonification Inspection</title>
+    <link rel="stylesheet" href="/assets/app.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Stage 4 · verified evidence inspection</p>
+        <h1>Event Sonification Workbench</h1>
+      </div>
+      <div class="session-state" aria-live="polite">
+        <span class="status-dot"></span>
+        <span id="verificationState">Opening verified session…</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero-grid">
+        <article class="panel viewer-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Source sequence</p>
+              <h2 id="sequenceTitle">Loading…</h2>
+            </div>
+            <div class="frame-readout">
+              <span>Frame</span>
+              <strong id="frameNumber">—</strong>
+              <span id="frameTime">—</span>
+            </div>
+          </div>
+          <div class="viewer" id="viewer">
+            <img id="sourceImage" alt="Source sequence frame">
+            <svg id="eventOverlay" role="img" aria-label="Stage 1 event bounding boxes"></svg>
+            <div class="viewer-loading" id="viewerLoading">Loading source frame</div>
+          </div>
+          <div class="legend" aria-label="Overlay legend">
+            <span><i class="legend-mark represented"></i>Represented event</span>
+            <span><i class="legend-mark suppressed"></i>Suppressed event</span>
+            <span><i class="legend-mark event-only"></i>Stage 1 event</span>
+          </div>
+        </article>
+
+        <aside class="panel metrics-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Verified Stage 3 report</p>
+              <h2>Technical metrics</h2>
+            </div>
+            <span class="evidence-tag" id="evaluationState">Checking</span>
+          </div>
+          <div class="metric-grid" id="metricGrid">
+            <div class="skeleton"></div><div class="skeleton"></div>
+            <div class="skeleton"></div><div class="skeleton"></div>
+          </div>
+          <p class="evidence-note">Displayed directly from the verified report. No metrics are recalculated here.</p>
+        </aside>
+      </section>
+
+      <section class="panel transport-panel">
+        <audio id="audio" preload="metadata" src="/api/audio"></audio>
+        <div class="transport">
+          <button id="stepBack" class="icon-button" type="button" aria-label="Previous frame">−1f</button>
+          <button id="playPause" class="play-button" type="button" aria-label="Play">▶</button>
+          <button id="stepForward" class="icon-button" type="button" aria-label="Next frame">+1f</button>
+          <span class="timecode" id="currentTime">00:00.000</span>
+          <input id="seek" type="range" min="0" max="1" step="0.001" value="0" aria-label="Seek audio">
+          <span class="timecode muted" id="duration">00:00.000</span>
+          <button id="mute" class="icon-button" type="button" aria-label="Mute">Audio on</button>
+        </div>
+        <p class="clock-note"><span></span>Audio <code>currentTime</code> is the sole playback clock</p>
+      </section>
+
+      <section class="panel timeline-panel">
+        <div class="panel-heading timeline-heading">
+          <div>
+            <p class="eyebrow">Synchronized evidence window</p>
+            <h2>Events · cues · suppressions</h2>
+          </div>
+          <span id="windowLabel" class="mono">—</span>
+        </div>
+        <div class="timeline-shell">
+          <div class="lane-labels" aria-hidden="true">
+            <span>EVENT</span><span>CUE</span><span>SUPPRESS</span>
+          </div>
+          <canvas id="timeline" height="198" aria-label="Synchronized event, cue and suppression timeline"></canvas>
+        </div>
+        <div class="nearby-cues" id="nearbyCues" aria-label="Cues in the current window"></div>
+      </section>
+
+      <section class="lower-grid">
+        <article class="panel trace-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">End-to-end provenance</p>
+              <h2>Cue trace inspector</h2>
+            </div>
+            <span class="evidence-tag neutral" id="traceState">Select a cue</span>
+          </div>
+          <div id="traceContent" class="trace-empty">
+            Choose a cue marker or nearby cue to inspect its verified source and rendered sample chain.
+          </div>
+        </article>
+
+        <aside class="panel session-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Session contract 0.1.0</p>
+              <h2>Evidence identity</h2>
+            </div>
+          </div>
+          <dl id="sessionDetails" class="session-details"></dl>
+        </aside>
+      </section>
+    </main>
+
+    <footer>
+      Read-only inspection infrastructure · no research outputs are generated or modified
+    </footer>
+    <div id="notice" class="notice" role="status" aria-live="polite"></div>
+    <script src="/assets/app.js" defer></script>
+  </body>
+</html>

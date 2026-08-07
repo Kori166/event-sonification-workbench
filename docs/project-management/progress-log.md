@@ -924,3 +924,29 @@ be added where a short entry would omit important implementation evidence.
 
 - Stage 4 remains active. Milestone 1 Phase 1 is complete; Phase 2 is to build one synchronised
   inspection vertical slice over an already validated workbench session.
+
+---
+
+## 2026-08-07 - Stage 4 Milestone 1 Phase 2 inspection candidate
+
+**Work completed**
+
+- Opened Issue #35 and froze the local presentation/service architecture in Decision 0017.
+- Implemented a validated-only indexed inspection model, loopback read service, exact WAV range
+  delivery and local HTML/CSS/JavaScript interface over real MOT17-02-DPM evidence.
+- Added one-clock playback derived solely from audio `currentTime`, source imagery and SVG event
+  overlays, synchronized event/cue/suppression lanes, complete cue provenance and direct verified
+  Stage 3 metric projection.
+- Committed the path-free real session declaration
+  `session-mot17-mot17-02-dpm-3707826663b210c6` with evaluation available.
+- Added normal-CI model/service tests and a private real-session integration test without changing
+  Stage 1 to 3 research contracts or adding a production dependency.
+
+**Validation and status**
+
+- Ruff and frontend JavaScript syntax checks passed.
+- Non-integration suite: 265 passed and 5 deselected.
+- Existing Phase 1 and new Phase 2 private integration gates each passed.
+- The real loopback service launched and passed path-free model/API probes.
+- Mandatory controlled browser acceptance could not be run because the browser-control interface was
+  not exposed to this task. Phase 2 is therefore incomplete and unmerged; Phase 3 has not begun.

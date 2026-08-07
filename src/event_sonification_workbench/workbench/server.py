@@ -1,0 +1,240 @@
+"""Loopback-only read service for the synchronised inspection interface."""
+
+from __future__ import annotations
+
+import json
+import mimetypes
+import re
+from http import HTTPStatus
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from importlib.resources import files
+from pathlib import Path
+from typing import Any
+from urllib.parse import parse_qs, unquote, urlsplit
+
+from .inspection import InspectionError, InspectionModel
+
+_FRAME_ROUTE = re.compile(r"^/api/frames/(?P<frame>[0-9]+)$")
+_IMAGE_ROUTE = re.compile(r"^/api/frames/(?P<frame>[0-9]+)/image$")
+_STATIC_ROUTES = {
+    "/": "index.html",
+    "/assets/app.css": "app.css",
+    "/assets/app.js": "app.js",
+}
+_LOOPBACK_HOSTS = {"127.0.0.1", "localhost", "::1"}
+
+
+def _json_bytes(value: Any) -> bytes:
+    return (json.dumps(value, sort_keys=True, separators=(",", ":")) + "\n").encode("utf-8")
+
+
+def _parse_range(value: str, size: int) -> tuple[int, int]:
+    if not value.startswith("bytes=") or "," in value:
+        raise InspectionError("invalid_byte_range")
+    spec = value.removeprefix("bytes=")
+    start_text, separator, end_text = spec.partition("-")
+    if not separator:
+        raise InspectionError("invalid_byte_range")
+    try:
+        if not start_text:
+            suffix = int(end_text)
+            if suffix <= 0:
+                raise ValueError
+            start = max(size - suffix, 0)
+            end = size - 1
+        else:
+            start = int(start_text)
+            end = int(end_text) if end_text else size - 1
+    except ValueError as exc:
+        raise InspectionError("invalid_byte_range") from exc
+    if start < 0 or start >= size or end < start:
+        raise InspectionError("invalid_byte_range")
+    return start, min(end, size - 1)
+
+
+def inspection_handler(model: InspectionModel) -> type[BaseHTTPRequestHandler]:
+    """Build a request handler bound to one immutable inspection model."""
+
+    class Handler(BaseHTTPRequestHandler):
+        server_version = "EventSonificationInspection/0.1"
+
+        def log_message(self, format_string: str, *args: object) -> None:
+            return
+
+        def _security_headers(self) -> None:
+            self.send_header("X-Content-Type-Options", "nosniff")
+            self.send_header("Referrer-Policy", "no-referrer")
+            self.send_header("Cross-Origin-Resource-Policy", "same-origin")
+            self.send_header(
+                "Content-Security-Policy",
+                "default-src 'self'; img-src 'self'; media-src 'self'; "
+                "script-src 'self'; style-src 'self'; connect-src 'self'; "
+                "object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+            )
+
+        def _send_json(self, value: Any, status: HTTPStatus = HTTPStatus.OK) -> None:
+            body = _json_bytes(value)
+            self.send_response(status)
+            self._security_headers()
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            if self.command != "HEAD":
+                self.wfile.write(body)
+
+        def _send_file(
+            self,
+            path: Path,
+            *,
+            content_type: str,
+            cache_control: str = "no-store",
+        ) -> None:
+            size = path.stat().st_size
+            self.send_response(HTTPStatus.OK)
+            self._security_headers()
+            self.send_header("Cache-Control", cache_control)
+            self.send_header("Content-Type", content_type)
+            self.send_header("Content-Length", str(size))
+            self.end_headers()
+            if self.command != "HEAD":
+                with path.open("rb") as source:
+                    while chunk := source.read(64 * 1024):
+                        self.wfile.write(chunk)
+
+        def _send_audio(self) -> None:
+            path = model.audio_path
+            size = path.stat().st_size
+            range_header = self.headers.get("Range")
+            if range_header is None:
+                self.send_response(HTTPStatus.OK)
+                start, end = 0, size - 1
+            else:
+                try:
+                    start, end = _parse_range(range_header, size)
+                except InspectionError as exc:
+                    body = _json_bytes({"error": {"code": exc.code}})
+                    self.send_response(HTTPStatus.REQUESTED_RANGE_NOT_SATISFIABLE)
+                    self._security_headers()
+                    self.send_header("Content-Range", f"bytes */{size}")
+                    self.send_header("Content-Type", "application/json; charset=utf-8")
+                    self.send_header("Content-Length", str(len(body)))
+                    self.end_headers()
+                    if self.command != "HEAD":
+                        self.wfile.write(body)
+                    return
+                self.send_response(HTTPStatus.PARTIAL_CONTENT)
+                self.send_header("Content-Range", f"bytes {start}-{end}/{size}")
+            length = end - start + 1
+            self._security_headers()
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("Accept-Ranges", "bytes")
+            self.send_header("Content-Type", "audio/wav")
+            self.send_header("Content-Length", str(length))
+            self.end_headers()
+            if self.command == "HEAD":
+                return
+            with path.open("rb") as source:
+                source.seek(start)
+                remaining = length
+                while remaining:
+                    chunk = source.read(min(64 * 1024, remaining))
+                    if not chunk:
+                        break
+                    self.wfile.write(chunk)
+                    remaining -= len(chunk)
+
+        def _dispatch(self) -> None:
+            request = urlsplit(self.path)
+            path = request.path
+            if path in _STATIC_ROUTES:
+                resource = files("event_sonification_workbench.workbench.static").joinpath(
+                    _STATIC_ROUTES[path]
+                )
+                with resource.open("rb") as source:
+                    body = source.read()
+                content_type = mimetypes.guess_type(_STATIC_ROUTES[path])[0] or "text/plain"
+                self.send_response(HTTPStatus.OK)
+                self._security_headers()
+                self.send_header("Cache-Control", "no-cache")
+                self.send_header("Content-Type", f"{content_type}; charset=utf-8")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                if self.command != "HEAD":
+                    self.wfile.write(body)
+                return
+            if path == "/api/session":
+                self._send_json(model.session_summary())
+                return
+            if path == "/api/timeline":
+                query = parse_qs(request.query, keep_blank_values=True)
+                try:
+                    start = float(query["start"][0])
+                    end = float(query["end"][0])
+                except (KeyError, ValueError, IndexError) as exc:
+                    raise InspectionError("invalid_timeline_window") from exc
+                self._send_json(model.timeline(start, end))
+                return
+            if path == "/api/trace":
+                query = parse_qs(request.query, keep_blank_values=True)
+                try:
+                    cue_id = unquote(query["cue_id"][0])
+                except (KeyError, IndexError) as exc:
+                    raise InspectionError("cue_not_found") from exc
+                self._send_json(model.trace(cue_id))
+                return
+            if path == "/api/evaluation":
+                self._send_json(model.evaluation())
+                return
+            if path == "/api/audio":
+                self._send_audio()
+                return
+            frame_match = _FRAME_ROUTE.fullmatch(path)
+            if frame_match:
+                self._send_json(model.frame(int(frame_match.group("frame"))))
+                return
+            image_match = _IMAGE_ROUTE.fullmatch(path)
+            if image_match:
+                image = model.image_path(int(image_match.group("frame")))
+                content_type = mimetypes.guess_type(image.name)[0] or "application/octet-stream"
+                self._send_file(image, content_type=content_type)
+                return
+            self._send_json(
+                {"error": {"code": "route_not_found"}},
+                status=HTTPStatus.NOT_FOUND,
+            )
+
+        def do_GET(self) -> None:
+            try:
+                self._dispatch()
+            except InspectionError as exc:
+                status = (
+                    HTTPStatus.NOT_FOUND
+                    if exc.code in {"cue_not_found", "frame_image_unavailable"}
+                    else HTTPStatus.BAD_REQUEST
+                )
+                self._send_json({"error": {"code": exc.code}}, status=status)
+            except (OSError, ValueError, TypeError, KeyError):
+                self._send_json(
+                    {"error": {"code": "inspection_request_failed"}},
+                    status=HTTPStatus.INTERNAL_SERVER_ERROR,
+                )
+
+        def do_HEAD(self) -> None:
+            self.do_GET()
+
+    return Handler
+
+
+def build_inspection_server(
+    model: InspectionModel,
+    *,
+    host: str = "127.0.0.1",
+    port: int = 8765,
+) -> ThreadingHTTPServer:
+    """Build a loopback HTTP server; callers control its lifecycle."""
+    if host not in _LOOPBACK_HOSTS:
+        raise InspectionError("inspection_host_not_loopback")
+    if port < 0 or port > 65535:
+        raise InspectionError("inspection_port_invalid")
+    return ThreadingHTTPServer((host, port), inspection_handler(model))
