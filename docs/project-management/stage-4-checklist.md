@@ -9,9 +9,11 @@ runtime-binding mismatch: the validator assumed all package run directories shar
 `OUTPUT_ROOT`, whereas retained Stage 2 evidence stores event, cue and audio packages beneath
 separate stage directories.
 
-Issue #29 and PR #30 correct that runtime assumption without changing Workbench Session Contract
-`0.1.0`. Corrective PR CI has passed. Phase 1 remains open only for the retained local real-data
-acceptance run with actual dataset media.
+PR #30 implemented the correction and passed clean CI, but it was merged before the private retained-
+chain acceptance gate was run. PR #31 then reverted PR #30 in full. Issue #29 has been reopened and
+PR #32 reapplies the same bounded runtime correction from the reverted `main` state. Workbench
+Session Contract `0.1.0` remains unchanged. Phase 1 remains open until PR #32 passes clean CI and the
+retained local real-data acceptance run succeeds with actual dataset media.
 
 ## Milestone 1: versioned artefact release candidate
 
@@ -39,12 +41,13 @@ acceptance run with actual dataset media.
       deterministic session identity.
 - [x] Add path-isolation coverage for invalid explicit package roots.
 - [x] Add a private integration test aligned with the retained `STAGE2_EVIDENCE_ROOT` layout.
-- [x] Pass `python -m ruff check .` on corrective PR #30 CI.
-- [x] Pass the non-integration test suite without regressions on corrective PR #30 CI.
+- [ ] Pass `python -m ruff check .` on final corrective PR #32 CI.
+- [ ] Pass the non-integration test suite without regressions on final corrective PR #32 CI.
 - [ ] Run the retained Stage 4 integration test locally with `STAGE2_EVIDENCE_ROOT` and at least one
       configured dataset root.
 - [ ] Confirm one retained real MOT17 or KITTI session validates twice with the same `session_id`,
       verified package components, available media and no path-bearing diagnostics.
+- [ ] Reconcile Phase 1 records with the accepted PR #30 -> PR #31 -> PR #32 history before merge.
 
 ### Phase 1 acceptance gate
 
@@ -57,11 +60,14 @@ PR #28 CI run 72 passed on Ubuntu 24.04 / Python 3.11.15 with Ruff clean and 258
 tests passed, 3 integration tests deselected. That evidence remains valid for the original contract
 and fixture validation, but it did not exercise the retained Stage 2 package-directory layout.
 
-Corrective PR #30 CI run 82 passed on Ubuntu 24.04 / Python 3.11.15. Ruff reported no findings and
-`python -m pytest -m "not integration"` completed with 261 passed and 4 integration tests deselected.
-The nine Stage 4 non-integration session tests all passed. The additional deselected integration test
-is the new retained Stage 4 chain check and must be run locally with the private roots before this
-phase is closed.
+PR #30 later passed clean CI with Ruff and 261 non-integration tests, including all nine Stage 4
+non-integration session tests, but that PR was reverted by PR #31 because the private retained-chain
+gate had not yet been run. Its CI evidence demonstrates the correction was test-clean at that head;
+it does not substitute for fresh PR #32 CI or the private retained-chain acceptance action.
+
+PR #32 is intentionally kept as a draft until both remaining evidence sources exist: clean CI on the
+final corrective head and a local retained-chain integration pass using private Stage 2 packages and
+dataset media.
 
 ### Phase 2: synchronised inspection vertical slice
 
