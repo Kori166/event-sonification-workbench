@@ -90,12 +90,12 @@ path-free. Phase 1 is complete; PR #32 still requires green CI on the close-out 
 ### Phase 2 acceptance state
 
 Issue #35 and Decision 0017 define the candidate. Local evidence currently includes Ruff clean,
-265 non-integration tests passed with 5 integrations deselected, the existing Phase 1 retained-chain
-test passed, the new real MOT17 inspection test passed, and successful launch/path-free API probes.
+265 non-integration tests passed with 5 integrations deselected both locally and on draft PR #36 CI,
+the existing Phase 1 retained-chain test passed, the new real MOT17 inspection test passed, and
+successful launch/path-free API probes and candidate privacy audit were recorded.
 The mandatory browser pass remains absent because the configured browser-control interface was not
 available to the task. Model/API evidence does not substitute for visual and interaction evidence;
-none of the eight Phase 2 items is accepted until that gate and the final privacy/hosted-CI review
-are recorded.
+none of the eight Phase 2 items is accepted until that gate is recorded.
 
 ### Phase 3: cross-dataset completion and release preparation
 

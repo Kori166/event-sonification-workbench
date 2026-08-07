@@ -83,6 +83,8 @@ candidate. The main project progress log remains the chronological project-wide 
 - Non-integration suite: 265 passed, 5 deselected in 39.31s.
 - Existing Phase 1 retained-chain integration: 1 passed in 82.15s.
 - New Phase 2 real MOT17 integration: 1 passed in 45.34s.
+- Draft PR #36 CI run `31204926127`: editable install and Ruff passed; 265 non-integration tests
+  passed and 5 integrations were deselected on Ubuntu 24.04 / Python 3.11.15.
 - The real loopback service launched and returned verified session, frame, synchronized timeline,
   trace and evaluation projections without a private runtime path.
 
@@ -94,5 +96,5 @@ candidate. The main project progress log remains the chronological project-wide 
   evidenced under the mandatory browser workflow.
 - Service/API probes are not substituted for browser evidence. Phase 2 remains incomplete, its eight
   checklist items remain unchecked, R20 remains open and controlled, and the branch must not merge.
-- Next: restore browser-control capability, run and record the complete real-session browser pass,
-  then complete privacy/hosted-CI gates before considering merge. Phase 3 has not started.
+- Next: restore browser-control capability and run and record the complete real-session browser pass
+  before considering merge. Candidate privacy and hosted-CI gates pass; Phase 3 has not started.

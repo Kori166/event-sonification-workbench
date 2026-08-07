@@ -100,6 +100,11 @@ Final local gates on Windows, Python 3.14.3:
 - `python -m pytest tests/test_workbench_inspection_integration.py -m integration -q`:
   1 passed in 45.34s.
 
+Draft PR #36 CI run `31204926127` passed on Ubuntu 24.04 with Python 3.11.15. Editable installation
+and Ruff passed, and the non-integration suite reported 265 passed and 5 deselected in 17.71s. Its
+only annotation was an upstream Node 20 deprecation warning for `actions/checkout@v4` and
+`actions/setup-python@v5`; the job itself completed successfully.
+
 The four new normal-CI tests cover the indexed model, deterministic frame timing, bounded timeline,
 complete cue trace, direct and unavailable evaluation projections, safe media service, full and
 range WAV bytes, loopback policy, path-free errors and the single-clock frontend contract. The new
@@ -137,4 +142,5 @@ remains open and controlled. Phase 3 cross-dataset presentation, clean-environme
 verification and release packaging have not started.
 
 The branch must not be merged and the eight Phase 2 checklist items must not be accepted until the
-browser gate, final privacy audit and hosted CI are complete.
+browser gate is complete. Hosted CI and the candidate privacy audit pass, but they do not substitute
+for controlled visual and interaction evidence.
