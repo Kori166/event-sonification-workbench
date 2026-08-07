@@ -164,7 +164,7 @@ def generate_session_id(session_dict: dict[str, Any]) -> str:
     dataset = payload["dataset"]
     sequence = payload["sequence"]
     if not isinstance(dataset, str) or not isinstance(sequence, str):
-        raise ValueError("Session dataset and sequence must be strings.")
+        raise TypeError("Session dataset and sequence must be strings.")
     digest = sha256_json(payload)
     return f"session-{dataset}-{sequence}-{digest[:16]}"
 
@@ -175,7 +175,7 @@ def _load_schema(path: Path) -> dict[str, Any]:
     except (OSError, UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise ValueError("Required workbench schema could not be loaded.") from exc
     if not isinstance(document, dict):
-        raise ValueError("Required workbench schema is not a JSON object.")
+        raise TypeError("Required workbench schema is not a JSON object.")
     return document
 
 
@@ -184,7 +184,7 @@ def _schema_diagnostics(session_data: Any) -> list[dict[str, str]]:
     try:
         schema = _load_schema(root / SESSION_SCHEMA_RELATIVE_PATH)
         Draft202012Validator.check_schema(schema)
-    except (ValueError, SchemaError):
+    except (TypeError, ValueError, SchemaError):
         return [_diagnostic("workbench_session_schema_unavailable", "session")]
     validator = Draft202012Validator(schema)
     diagnostics: list[dict[str, str]] = []
@@ -343,16 +343,16 @@ def _validate_evaluation_report(
         raw = report_path.read_bytes()
         report = json.loads(raw.decode("utf-8"))
         if not isinstance(report, dict):
-            raise ValueError
+            raise TypeError
         if raw != canonical_json_bytes(report):
             return [_diagnostic("evaluation_report_not_canonical", "evaluation")]
-    except (OSError, UnicodeDecodeError, json.JSONDecodeError, ValueError):
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError, TypeError, ValueError):
         return [_diagnostic("evaluation_report_invalid", "evaluation")]
 
     try:
         schema = _load_schema(_repository_root() / EVALUATION_REPORT_SCHEMA_RELATIVE_PATH)
         Draft202012Validator.check_schema(schema)
-    except (ValueError, SchemaError):
+    except (TypeError, ValueError, SchemaError):
         return [_diagnostic("evaluation_report_schema_unavailable", "evaluation")]
     if any(Draft202012Validator(schema).iter_errors(report)):
         return [_diagnostic("evaluation_report_schema_invalid", "evaluation")]
