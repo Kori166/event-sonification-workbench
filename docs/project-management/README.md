@@ -5,7 +5,9 @@ This directory contains the working evidence used to plan, track and review the 
 - `project-plan.md`: stages, work order, milestones and completion criteria.
 - `stage-1-checklist.md`: completed operational checklist and close-out gate for Stage 1.
 - `stage-2-checklist.md`: completed sonification milestones and real-data close-out gate.
-- `progress-log.md`: dated record of work, decisions, problems, actions and next steps.
+- `progress-log.md`: dated project-wide record of work, decisions, problems, actions and next steps.
+- `stage-4-progress-log.md`: Stage 4 Milestone 1 Phase 1 recovery record for the runtime-binding
+  correction, premature merge/revert sequence and final acceptance gate.
 - `../development/milestone-2-mot17-vertical-slice.md`: detailed implementation, diagnostic and
   validation evidence for the MOT17 vertical slice.
 - `../development/milestone-3-kitti-extension.md`: KITTI audit, fixture, parser and integration evidence.
