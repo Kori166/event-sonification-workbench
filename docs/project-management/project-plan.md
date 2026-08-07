@@ -17,7 +17,7 @@ normalised events, deterministic audio cues and traceable technical outputs.
 | 1. Data ingestion and normalisation | Parse MOT17 and KITTI Tracking annotations into a common event schema | Parsers, schema, validation outputs, provenance records and tests | Complete, 5 August 2026 |
 | 2. Sonification | Map normalised events into scheduled audio cues | Mapping presets, cue schedules, audio files and logs | Complete, 6 August 2026; real MOT17/KITTI chains reproduced exactly |
 | 3. Technical evaluation | Measure coverage, alignment, traceability, cue density, overlap and reproducibility | Evaluation reports, comparison results, audited reporting derivatives and repeat-run checks | Complete, 6 August 2026 |
-| 4. Artefact assembly and release | Validate, document and package the complete workbench | Reproducible release, final documentation and tagged version | Active; Milestone 1 Phase 1 validation gate in progress |
+| 4. Artefact assembly and release | Validate, document and package the complete workbench | Reproducible release, final documentation and tagged version | Active; Milestone 1 Phase 1 complete, Phase 2 synchronised inspection vertical slice next |
 | 5. Reporting and viva preparation | Complete the dissertation and prepare the artefact demonstration | Final report, demonstration plan and viva notes | Planned |
 
 ## Working Method
@@ -221,11 +221,11 @@ inspection contract, a synchronised inspection vertical slice and cross-dataset 
 The local interface is a read-only inspection and demonstration layer over verified research outputs;
 it is not a participant study or a new evaluation method.
 
-Phase 1 has frozen Workbench Session Contract `0.1.0`, added deterministic session validation,
-runtime media binding and path-free diagnostics, and passed PR #28 CI with Ruff clean and 258
-non-integration tests passed. The remaining Phase 1 acceptance action is to validate one retained
-real MOT17 or KITTI package chain with its actual local media from a clean checkout. Browser work is
-not treated as unblocked until that evidence is recorded.
+Phase 1 froze Workbench Session Contract `0.1.0`, added deterministic session validation, runtime
+media binding and path-free diagnostics, and completed retained-chain acceptance for both real
+MOT17 and KITTI Tracking sessions. PR #32's corrective implementation passed clean CI with Ruff and
+261 non-integration tests. Stage 4 remains active; the next action is Phase 2's synchronised
+inspection vertical slice over an already validated session.
 
 The current milestone remains **Stage 4 Milestone 1: assemble a versioned artefact release candidate
 and verify installation, configuration, evidence availability and end-to-end execution from a clean

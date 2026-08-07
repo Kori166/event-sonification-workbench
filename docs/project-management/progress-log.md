@@ -902,17 +902,25 @@ be added where a short entry would omit important implementation evidence.
 - `tests/test_workbench_session.py`: 6 passed within the successful non-integration suite.
 - Editable installation of `.[dev]` succeeded, including the new `workbench` package.
 
-**Remaining work**
+**Final Phase 1 acceptance and recovery sequence**
 
-- CI cannot access the ignored retained Stage 1/2 package chains or private dataset media, so it
-  cannot satisfy the final Phase 1 real-chain acceptance action.
-- Validate one retained MOT17-02-DPM or KITTI Tracking 0000 package chain with its actual local media
-  from a clean checkout, repeat the validation and confirm the same `session_id`.
-- Confirm that diagnostics and exported session data remain free of absolute local paths, usernames
-  and machine-specific state.
+- Post-merge review of PR #28 identified that one common `OUTPUT_ROOT` did not match the retained
+  event/cue/audio directory layout.
+- PR #30 corrected the runtime bindings but was merged before private acceptance; PR #31 reverted it
+  in full, Issue #29 was reopened, and PR #32 reapplied the bounded correction from reverted `main`.
+- PR #32 CI run 97 passed on Ubuntu 24.04 / Python 3.11.15 with editable installation, Ruff clean,
+  261 non-integration tests passed and 4 integration tests deselected.
+- On 7 August 2026, the dedicated retained-chain command exercised both MOT17-02-DPM and KITTI
+  Tracking 0000 and reported `1 passed in 81.89s`.
+- Each retained session validated twice identically with a stable deterministic `session_id`,
+  verified event/cue/audio components, available media, intentionally unavailable evaluation, and
+  empty path-free diagnostics.
+- The final branch privacy/scope audit found no private roots, dataset media, retained packages,
+  generated WAV files or browser/UI implementation.
+- Workbench Session Contract `0.1.0` and all Stage 1-3 contracts and research evidence remained
+  unchanged.
 
-**Next actions**
+**Next action**
 
-- Keep browser/UI implementation blocked until the retained real-chain Phase 1 acceptance action is
-  recorded as passed.
-- After that gate, merge PR #28 and begin Phase 2 with one synchronised inspection vertical slice.
+- Stage 4 remains active. Milestone 1 Phase 1 is complete; Phase 2 is to build one synchronised
+  inspection vertical slice over an already validated workbench session.

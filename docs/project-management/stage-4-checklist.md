@@ -2,10 +2,19 @@
 
 ## Status
 
-Stage 4 is active. Milestone 1 Phase 1 has frozen the workbench inspection contract and established
-the headless validation layer before browser implementation begins. PR #28 CI passed after one
-Ruff-only correction; retained real-chain validation from a clean local checkout remains the final
-Phase 1 acceptance action before the browser vertical slice is treated as unblocked.
+Stage 4 is active. Milestone 1 Phase 1 froze the workbench inspection contract and established the
+headless validation layer before browser implementation begins. PR #28 merged after clean CI but
+before the retained Stage 2 evidence layout was exercised. Post-merge review identified a bounded
+runtime-binding mismatch: the validator assumed all package run directories shared one
+`OUTPUT_ROOT`, whereas retained Stage 2 evidence stores event, cue and audio packages beneath
+separate stage directories.
+
+PR #30 implemented the correction and passed clean CI, but it was merged before the private retained-
+chain acceptance gate was run. PR #31 then reverted PR #30 in full. Issue #29 was reopened and PR
+#32 reapplied the same bounded runtime correction from the reverted `main` state. Workbench Session
+Contract `0.1.0` remains unchanged. PR #32 passed its repository CI gate, and the retained local
+real-data acceptance run then passed for both MOT17 and KITTI Tracking. Milestone 1 Phase 1 is
+complete; Phase 2 remains unimplemented.
 
 ## Milestone 1: versioned artefact release candidate
 
@@ -24,14 +33,22 @@ Phase 1 acceptance action before the browser vertical slice is treated as unbloc
 - [x] Permit `evaluation.available = false` without calculating substitute metrics.
 - [x] Resolve MOT17 media only beneath `MOT17_ROOT` and KITTI Tracking media only beneath
       `KITTI_TRACKING_ROOT`.
-- [x] Keep `OUTPUT_ROOT`, dataset roots, usernames and machine-specific paths outside `session_id`.
+- [x] Keep package roots, dataset roots, usernames and machine-specific paths outside `session_id`.
 - [x] Return stable path-free diagnostic codes for rejected sessions.
-- [x] Add automated tests for valid loading, package mismatches, hash tampering, absent evaluation
-      evidence and privacy/path isolation.
-- [x] Pass `python -m ruff check .` in pull-request CI.
-- [x] Pass the non-integration test suite without regressions in pull-request CI.
-- [ ] Validate one retained real MOT17 or KITTI package chain and its actual dataset media from a
-      clean local checkout using the frozen session contract.
+- [x] Support separate `EVENT_PACKAGE_ROOT`, `CUE_PACKAGE_ROOT` and `AUDIO_PACKAGE_ROOT` runtime
+      bindings for retained evidence layouts.
+- [x] Retain `OUTPUT_ROOT` as a common-root fallback for compact fixture/output layouts.
+- [x] Add automated tests proving separate and common-root package layouts preserve the same
+      deterministic session identity.
+- [x] Add path-isolation coverage for invalid explicit package roots.
+- [x] Add a private integration test aligned with the retained `STAGE2_EVIDENCE_ROOT` layout.
+- [x] Pass `python -m ruff check .` on final corrective PR #32 CI.
+- [x] Pass the non-integration test suite without regressions on final corrective PR #32 CI.
+- [x] Run the retained Stage 4 integration test locally with `STAGE2_EVIDENCE_ROOT` and at least one
+      configured dataset root.
+- [x] Confirm one retained real MOT17 or KITTI session validates twice with the same `session_id`,
+      verified package components, available media and no path-bearing diagnostics.
+- [x] Reconcile Phase 1 records with the accepted PR #30 -> PR #31 -> PR #32 history before merge.
 
 ### Phase 1 acceptance gate
 
@@ -41,9 +58,21 @@ without exposing its absolute path, reproduce the same session ID from identical
 the existing automated quality gates. Browser or UI code is not part of this phase.
 
 PR #28 CI run 72 passed on Ubuntu 24.04 / Python 3.11.15 with Ruff clean and 258 non-integration
-tests passed, 3 integration tests deselected. The six Stage 4 session tests passed within that suite.
-This CI evidence covers committed fixtures and clean installation; it does not replace the retained
-private-chain/media acceptance action above.
+tests passed, 3 integration tests deselected. That evidence remains valid for the original contract
+and fixture validation, but it did not exercise the retained Stage 2 package-directory layout.
+
+PR #30 later passed clean CI with Ruff and 261 non-integration tests, including all nine Stage 4
+non-integration session tests, but that PR was reverted by PR #31 because the private retained-chain
+gate had not yet been run. Its CI evidence demonstrates the correction was test-clean at that head;
+it does not substitute for the private retained-chain acceptance action.
+
+PR #32 CI run 97 passed on Ubuntu 24.04 / Python 3.11.15. Editable installation succeeded, Ruff
+reported no findings and `python -m pytest -m "not integration"` completed with 261 passed and 4
+integration tests deselected. All nine Stage 4 non-integration session tests passed. The additional
+deselected Stage 4 integration test is deliberately private and was exercised locally on 7 August
+2026 with both retained datasets: `1 passed in 81.89s`. Both sessions validated twice identically,
+all event/cue/audio components were verified, media was available and diagnostics were empty and
+path-free. Phase 1 is complete; PR #32 still requires green CI on the close-out records before merge.
 
 ### Phase 2: synchronised inspection vertical slice
 
