@@ -4,12 +4,14 @@
 
 Phase 1 remains open. PR #28 merged the frozen Workbench Session Contract and initial headless
 validator after clean CI, but before the retained Stage 2 evidence directory layout was exercised.
-A post-merge review identified a bounded runtime-binding mismatch. Issue #29 and PR #30 correct that
-mismatch without changing the session contract or any Stage 1 to 3 research evidence.
+A post-merge review identified a bounded runtime-binding mismatch.
 
-Corrective PR #30 now passes the repository quality gate. Browser and UI implementation remain
-blocked only until one retained real MOT17 or KITTI session validates locally with its actual dataset
-media through the new private integration test.
+Issue #29 and PR #30 implemented the correction and PR #30 passed clean CI. PR #30 was then merged
+before the private retained-chain acceptance gate was run. PR #31 reverted PR #30 in full, returning
+`main` to the post-PR-#28 implementation. Issue #29 was reopened and PR #32 now reapplies the same
+bounded runtime correction from that reverted state. Browser and UI implementation remain blocked
+until PR #32 passes clean CI and one retained real MOT17 or KITTI session validates locally with its
+actual dataset media.
 
 ## Purpose
 
@@ -63,7 +65,7 @@ storage location.
 
 ## Corrective implementation
 
-Issue #29 and PR #30 introduce package-specific runtime roots:
+Issue #29 defines package-specific runtime roots:
 
 - `EVENT_PACKAGE_ROOT` for Stage 1 event-package run directories;
 - `CUE_PACKAGE_ROOT` for Stage 2 cue-package run directories; and
@@ -77,9 +79,13 @@ be symlinks.
 These runtime bindings do not enter `workbench-session.json`, do not affect `generate_session_id`,
 and are not echoed in diagnostics.
 
+PR #30 introduced this implementation. PR #31 reverted it only because the private acceptance gate
+had not yet been exercised. PR #32 reapplies the same implementation; the frozen session contract,
+Stage 1 to 3 package contracts and research evidence remain unchanged throughout that history.
+
 ## Corrective tests
 
-The committed non-integration tests now cover:
+The non-integration tests cover:
 
 - the original common `OUTPUT_ROOT` layout;
 - physically separate event, cue and audio package roots;
@@ -88,30 +94,47 @@ The committed non-integration tests now cover:
 - existing dataset/package mismatch, declared hash tampering, optional evaluation and media-root
   privacy cases.
 
-A new private integration test, `tests/test_workbench_session_integration.py`, constructs retained
+The private integration test, `tests/test_workbench_session_integration.py`, constructs retained
 sessions directly from the committed Stage 3 real-data experiment manifest. It resolves package
 roots beneath the existing `STAGE2_EVIDENCE_ROOT/<dataset>/run-a/{events,cues,audio}` convention and
 uses whichever of `MOT17_ROOT` or `KITTI_TRACKING_ROOT` is configured. For each available dataset it
 requires two identical validations, verified event/cue/audio components, available media, no
 diagnostics and no private-path marker in the returned result.
 
-## Corrective PR quality evidence
+## PR #30 quality evidence and revert
 
-PR #30 CI run 82 completed successfully on Ubuntu 24.04 with Python 3.11.15:
+Final PR #30 head `bf8e242e233338ec53d7a74ddce09de74005220d` passed CI run 84 on Ubuntu 24.04 with Python
+3.11.15:
 
 - editable installation of `.[dev]`: passed;
 - `ruff check .`: passed with no findings;
 - `python -m pytest -m "not integration"`: 261 passed, 4 deselected;
-- `tests/test_workbench_session.py`: 9 passed within the non-integration suite.
+- all 9 non-integration workbench-session tests passed.
 
-The four deselected integration tests include the new Stage 4 retained-chain test. CI does not have
-private Stage 2 packages or dataset media, so that deselection is expected and is not counted as
-retained-chain evidence.
+The fourth deselected integration test was the new private retained-chain acceptance test. PR #30 was
+therefore not sufficient evidence for Phase 1 completion. It was merged prematurely and then fully
+reverted by PR #31. That sequence did not invalidate the implementation or its CI result; it restored
+`main` until the missing private acceptance evidence could be obtained.
+
+## Final corrective PR #32
+
+PR #32 is intentionally opened as a draft from the post-PR-#31 `main`. It reapplies the PR #30
+runtime-root implementation and tests, then reconciles the decision/checklist history. It must not be
+merged until:
+
+1. its final head passes `ruff check .` and the complete non-integration suite in GitHub Actions;
+2. `python -m pytest tests/test_workbench_session_integration.py -m integration -q` passes locally
+   with `STAGE2_EVIDENCE_ROOT` and at least one of `MOT17_ROOT` or `KITTI_TRACKING_ROOT` configured;
+3. at least one retained real session validates twice with the same deterministic `session_id`;
+4. event, cue and audio components report `verified`, media reports `available`, and diagnostics are
+   empty; and
+5. the returned result and final corrective diff remain free of private absolute paths, usernames,
+   datasets, WAV files and other excluded full-data derivatives.
 
 ## Decision boundary
 
-Decision 0016 remains valid. Its implementation note now makes the separate package-root behaviour
-explicit. No session schema field or identity-bearing value was changed, so a contract version bump
+Decision 0016 remains valid. Its implementation note makes the separate package-root behaviour
+explicit. No session schema field or identity-bearing value changed, so a contract version bump
 would incorrectly treat storage location as research content.
 
 The current validator still reuses the established verified-chain implementation through
@@ -119,18 +142,5 @@ The current validator still reuses the established verified-chain implementation
 logic. Exposing a public wrapper remains a possible release-hardening change if Stage 4 continues to
 depend on that private function.
 
-## Remaining acceptance actions
-
-Before Phase 1 is closed:
-
-1. run `python -m pytest tests/test_workbench_session_integration.py -m integration -q` from a clean
-   local checkout with `STAGE2_EVIDENCE_ROOT` and at least one of `MOT17_ROOT` or
-   `KITTI_TRACKING_ROOT` configured;
-2. confirm at least one retained real session validates twice with the same deterministic
-   `session_id`;
-3. confirm event, cue and audio components report `verified`, media reports `available`, and
-   diagnostics are empty; and
-4. confirm the returned result and final corrective diff remain free of private absolute paths,
-   usernames, datasets, WAV files and other excluded full-data derivatives.
-
-Only after those actions are recorded as passed should Phase 1 be marked complete and Phase 2 begin.
+Only after the PR #32 and private retained-chain gates are recorded as passed should Phase 1 be
+marked complete and Phase 2 begin.
