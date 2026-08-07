@@ -1,7 +1,6 @@
 import copy
 import json
 import re
-import shutil
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
@@ -231,32 +230,6 @@ def _runtime_roots(chains: SimpleNamespace) -> dict[str, Path]:
     }
 
 
-def _separate_package_roots(
-    chains: SimpleNamespace,
-    tmp_path: Path,
-) -> dict[str, Path]:
-    package_roots = {
-        "EVENT_PACKAGE_ROOT": tmp_path / "events",
-        "CUE_PACKAGE_ROOT": tmp_path / "cues",
-        "AUDIO_PACKAGE_ROOT": tmp_path / "audio",
-    }
-    for root in package_roots.values():
-        root.mkdir(parents=True)
-    for root_name, result in (
-        ("EVENT_PACKAGE_ROOT", chains.mot17.event),
-        ("CUE_PACKAGE_ROOT", chains.mot17.cue),
-        ("AUDIO_PACKAGE_ROOT", chains.mot17.audio),
-    ):
-        shutil.copytree(result.package_directory, package_roots[root_name] / result.run_id)
-    package_roots.update(
-        {
-            "MOT17_ROOT": chains.mot17_root,
-            "KITTI_TRACKING_ROOT": chains.kitti_root,
-        }
-    )
-    return package_roots
-
-
 def test_valid_loading_of_compliant_session_chain(workbench_chains: SimpleNamespace) -> None:
     session = _session_for(workbench_chains)
     result = validate_workbench_session(session, _runtime_roots(workbench_chains))
@@ -271,36 +244,6 @@ def test_valid_loading_of_compliant_session_chain(workbench_chains: SimpleNamesp
         "media": "available",
     }
     assert result["diagnostics"] == []
-
-
-def test_separate_package_runtime_roots_are_supported(
-    workbench_chains: SimpleNamespace,
-    tmp_path: Path,
-) -> None:
-    session = _session_for(workbench_chains)
-    runtime_roots = _separate_package_roots(workbench_chains, tmp_path)
-
-    result = validate_workbench_session(session, runtime_roots)
-
-    assert result["valid"] is True
-    assert result["session_id"] == session["session_id"]
-    assert result["diagnostics"] == []
-
-
-def test_common_and_separate_runtime_roots_preserve_session_identity(
-    workbench_chains: SimpleNamespace,
-    tmp_path: Path,
-) -> None:
-    session = _session_for(workbench_chains)
-    common_result = validate_workbench_session(session, _runtime_roots(workbench_chains))
-    separate_result = validate_workbench_session(
-        session,
-        _separate_package_roots(workbench_chains, tmp_path),
-    )
-
-    assert common_result["valid"] is True
-    assert separate_result["valid"] is True
-    assert common_result["session_id"] == separate_result["session_id"] == session["session_id"]
 
 
 def test_cross_dataset_package_chain_is_rejected(workbench_chains: SimpleNamespace) -> None:
@@ -370,28 +313,6 @@ def test_runtime_paths_do_not_enter_diagnostics_or_session_identity(
     assert result["valid"] is False
     assert result["session_id"] == original_id
     assert "media_runtime_root_unavailable" in {
-        item["code"] for item in result["diagnostics"]
-    }
-    assert _PRIVATE_PATH.search(serialised) is None
-    assert "alice" not in serialised.lower()
-
-
-def test_invalid_explicit_package_root_is_path_free(
-    workbench_chains: SimpleNamespace,
-    tmp_path: Path,
-) -> None:
-    session = _session_for(workbench_chains)
-    runtime_roots = _runtime_roots(workbench_chains)
-    runtime_roots["EVENT_PACKAGE_ROOT"] = (
-        tmp_path / "Users" / "Alice" / "OneDrive" / "missing-events"
-    )
-
-    result = validate_workbench_session(session, runtime_roots)
-    serialised = json.dumps(result, sort_keys=True)
-
-    assert result["valid"] is False
-    assert result["session_id"] == session["session_id"]
-    assert "event_package_runtime_root_unavailable" in {
         item["code"] for item in result["diagnostics"]
     }
     assert _PRIVATE_PATH.search(serialised) is None

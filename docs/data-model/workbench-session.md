@@ -18,21 +18,9 @@ Two categories of information are deliberately separated.
 file SHA-256 values, preset and renderer identities and optional evaluation identity. These values
 contribute to `session_id`.
 
-**Runtime bindings** locate packages, dataset media and optional repository evidence on the current
-machine. They do not contribute to `session_id` and are never returned in diagnostics. Supported
-runtime keys are:
-
-- `EVENT_PACKAGE_ROOT`: directory containing Stage 1 event-package run directories;
-- `CUE_PACKAGE_ROOT`: directory containing Stage 2 cue-package run directories;
-- `AUDIO_PACKAGE_ROOT`: directory containing Stage 2 audio-package run directories;
-- `OUTPUT_ROOT`: common-root fallback used when the three package types share one parent directory;
-- `MOT17_ROOT`: MOT17 dataset root;
-- `KITTI_TRACKING_ROOT`: KITTI Tracking dataset root; and
-- `REPOSITORY_ROOT`: optional root used to resolve a logical Stage 3 report path.
-
-If a package-specific root is supplied, it takes precedence for that package type. If it is omitted,
-`OUTPUT_ROOT` is used for that package type. Invalid explicit roots are rejected rather than silently
-replaced by the fallback.
+**Runtime bindings** include `OUTPUT_ROOT`, `MOT17_ROOT`, `KITTI_TRACKING_ROOT` and an optional
+repository root used to resolve a logical evaluation-report path. These values locate files on the
+current machine. They do not contribute to `session_id` and are never returned in diagnostics.
 
 ## Top-level fields
 
@@ -154,20 +142,6 @@ must be `MOT17_ROOT`; for KITTI Tracking it must be `KITTI_TRACKING_ROOT`. The P
 that the resolved directory remains beneath the configured root and contains at least one regular
 file. Media-byte hashing is outside contract `0.1.0`.
 
-## Package runtime resolution
-
-Package storage is deliberately not encoded in `workbench-session.json`.
-
-For each package type, the validator resolves the declared `run_id` beneath its package-specific
-runtime root when supplied. Otherwise it resolves the run beneath `OUTPUT_ROOT`. This supports both
-the compact fixture layout used by committed tests and the retained Stage 2 evidence layout where
-event, cue and audio packages are stored under separate directories.
-
-A resolved package run directory must be a real directory beneath its declared root. Missing,
-invalid or symlinked runtime roots and run directories are rejected with path-free diagnostic codes.
-The package itself is then passed to the existing Stage 1 to 3 verification chain. Runtime roots are
-location metadata only and do not weaken package identity checks.
-
 ## Session ID
 
 `session_id` has the form:
@@ -202,7 +176,6 @@ A session file whose stored `session_id` differs from the generated value is inv
 ```
 
 Failures use stable codes such as `cue_event_package_mismatch`,
-`audio_cue_package_mismatch`, `hash_mismatch_cue_schedule`, `hash_mismatch_wav`,
-`event_package_runtime_root_unavailable`, `event_package_directory_unavailable` and
+`audio_cue_package_mismatch`, `hash_mismatch_cue_schedule`, `hash_mismatch_wav` and
 `media_runtime_root_unavailable`. Diagnostics identify the component and field where useful but do
 not echo private path values.
