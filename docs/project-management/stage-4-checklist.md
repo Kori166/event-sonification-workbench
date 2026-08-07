@@ -9,9 +9,9 @@ runtime-binding mismatch: the validator assumed all package run directories shar
 `OUTPUT_ROOT`, whereas retained Stage 2 evidence stores event, cue and audio packages beneath
 separate stage directories.
 
-Issue #29 and branch `stage-4/phase-1-runtime-package-bindings` correct that runtime assumption
-without changing Workbench Session Contract `0.1.0`. Phase 1 remains open until the corrective PR
-passes CI and at least one retained real-data session validates locally with actual dataset media.
+Issue #29 and PR #30 correct that runtime assumption without changing Workbench Session Contract
+`0.1.0`. Corrective PR CI has passed. Phase 1 remains open only for the retained local real-data
+acceptance run with actual dataset media.
 
 ## Milestone 1: versioned artefact release candidate
 
@@ -39,8 +39,8 @@ passes CI and at least one retained real-data session validates locally with act
       deterministic session identity.
 - [x] Add path-isolation coverage for invalid explicit package roots.
 - [x] Add a private integration test aligned with the retained `STAGE2_EVIDENCE_ROOT` layout.
-- [ ] Pass `python -m ruff check .` on the corrective pull request.
-- [ ] Pass the non-integration test suite without regressions on the corrective pull request.
+- [x] Pass `python -m ruff check .` on corrective PR #30 CI.
+- [x] Pass the non-integration test suite without regressions on corrective PR #30 CI.
 - [ ] Run the retained Stage 4 integration test locally with `STAGE2_EVIDENCE_ROOT` and at least one
       configured dataset root.
 - [ ] Confirm one retained real MOT17 or KITTI session validates twice with the same `session_id`,
@@ -55,9 +55,13 @@ the existing automated quality gates. Browser or UI code is not part of this pha
 
 PR #28 CI run 72 passed on Ubuntu 24.04 / Python 3.11.15 with Ruff clean and 258 non-integration
 tests passed, 3 integration tests deselected. That evidence remains valid for the original contract
-and fixture validation, but it did not exercise the retained Stage 2 package-directory layout. The
-corrective branch must therefore pass its own CI and retained-chain acceptance before Phase 1 is
-closed.
+and fixture validation, but it did not exercise the retained Stage 2 package-directory layout.
+
+Corrective PR #30 CI run 82 passed on Ubuntu 24.04 / Python 3.11.15. Ruff reported no findings and
+`python -m pytest -m "not integration"` completed with 261 passed and 4 integration tests deselected.
+The nine Stage 4 non-integration session tests all passed. The additional deselected integration test
+is the new retained Stage 4 chain check and must be run locally with the private roots before this
+phase is closed.
 
 ### Phase 2: synchronised inspection vertical slice
 
