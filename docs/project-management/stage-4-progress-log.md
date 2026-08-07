@@ -27,6 +27,9 @@ chronological project-wide record and should be reconciled with this entry when 
   private retained-chain validation are available.
 - Reconciled Decision 0016, the Stage 4 checklist, Phase 1 development record and risk register with
   the actual PR #30 -> PR #31 -> PR #32 history.
+- PR #32 CI run 94 passed on Ubuntu 24.04 / Python 3.11.15. Editable installation succeeded, Ruff
+  reported no findings and the non-integration suite completed with 261 passed and 4 integration
+  tests deselected. All nine Stage 4 non-integration session tests passed.
 
 **Decisions maintained**
 
@@ -39,17 +42,16 @@ chronological project-wide record and should be reconciled with this entry when 
 
 **Current acceptance state**
 
-- PR #32 repository CI: pending on the final corrective head.
+- PR #32 repository CI: passed on run 94 for the corrective implementation and reconciled records.
 - Private retained-chain integration: pending because it requires local retained Stage 2 packages
   and at least one configured dataset media root.
 - Phase 1 status: open.
 
 **Required close-out evidence**
 
-1. PR #32 final head passes Ruff and the complete non-integration suite.
-2. `python -m pytest tests/test_workbench_session_integration.py -m integration -q` passes locally
+1. `python -m pytest tests/test_workbench_session_integration.py -m integration -q` passes locally
    with `STAGE2_EVIDENCE_ROOT` and at least one of `MOT17_ROOT` or `KITTI_TRACKING_ROOT`.
-3. The retained session validates twice with the same deterministic `session_id`.
-4. Event, cue and audio components report `verified`, media reports `available`, and diagnostics are
+2. The retained session validates twice with the same deterministic `session_id`.
+3. Event, cue and audio components report `verified`, media reports `available`, and diagnostics are
    empty and path-free.
-5. The final accepted records are reconciled before merge and Phase 2 begins.
+4. The final accepted records are reconciled before merge and Phase 2 begins.
