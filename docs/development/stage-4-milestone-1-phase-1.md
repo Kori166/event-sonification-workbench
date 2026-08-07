@@ -4,12 +4,12 @@
 
 Phase 1 remains open. PR #28 merged the frozen Workbench Session Contract and initial headless
 validator after clean CI, but before the retained Stage 2 evidence directory layout was exercised.
-A post-merge review identified a bounded runtime-binding mismatch. Issue #29 and branch
-`stage-4/phase-1-runtime-package-bindings` correct that mismatch without changing the session
-contract or any Stage 1 to 3 research evidence.
+A post-merge review identified a bounded runtime-binding mismatch. Issue #29 and PR #30 correct that
+mismatch without changing the session contract or any Stage 1 to 3 research evidence.
 
-Browser and UI implementation remain blocked until the corrective branch passes repository CI and
-one retained real MOT17 or KITTI session validates locally with its actual dataset media.
+Corrective PR #30 now passes the repository quality gate. Browser and UI implementation remain
+blocked only until one retained real MOT17 or KITTI session validates locally with its actual dataset
+media through the new private integration test.
 
 ## Purpose
 
@@ -63,7 +63,7 @@ storage location.
 
 ## Corrective implementation
 
-Issue #29 introduces package-specific runtime roots:
+Issue #29 and PR #30 introduce package-specific runtime roots:
 
 - `EVENT_PACKAGE_ROOT` for Stage 1 event-package run directories;
 - `CUE_PACKAGE_ROOT` for Stage 2 cue-package run directories; and
@@ -95,6 +95,19 @@ uses whichever of `MOT17_ROOT` or `KITTI_TRACKING_ROOT` is configured. For each 
 requires two identical validations, verified event/cue/audio components, available media, no
 diagnostics and no private-path marker in the returned result.
 
+## Corrective PR quality evidence
+
+PR #30 CI run 82 completed successfully on Ubuntu 24.04 with Python 3.11.15:
+
+- editable installation of `.[dev]`: passed;
+- `ruff check .`: passed with no findings;
+- `python -m pytest -m "not integration"`: 261 passed, 4 deselected;
+- `tests/test_workbench_session.py`: 9 passed within the non-integration suite.
+
+The four deselected integration tests include the new Stage 4 retained-chain test. CI does not have
+private Stage 2 packages or dataset media, so that deselection is expected and is not counted as
+retained-chain evidence.
+
 ## Decision boundary
 
 Decision 0016 remains valid. Its implementation note now makes the separate package-root behaviour
@@ -110,14 +123,14 @@ depend on that private function.
 
 Before Phase 1 is closed:
 
-1. the corrective pull request must pass `ruff check .` and the complete non-integration suite in a
-   clean GitHub Actions checkout;
-2. the new retained Stage 4 integration test must run locally with `STAGE2_EVIDENCE_ROOT` and at
-   least one configured dataset root;
-3. at least one retained real session must validate twice with the same deterministic `session_id`;
-4. event, cue and audio components must report `verified`, media must report `available`, and
-   diagnostics must be empty; and
-5. the returned result and final corrective diff must remain free of private absolute paths,
+1. run `python -m pytest tests/test_workbench_session_integration.py -m integration -q` from a clean
+   local checkout with `STAGE2_EVIDENCE_ROOT` and at least one of `MOT17_ROOT` or
+   `KITTI_TRACKING_ROOT` configured;
+2. confirm at least one retained real session validates twice with the same deterministic
+   `session_id`;
+3. confirm event, cue and audio components report `verified`, media reports `available`, and
+   diagnostics are empty; and
+4. confirm the returned result and final corrective diff remain free of private absolute paths,
    usernames, datasets, WAV files and other excluded full-data derivatives.
 
 Only after those actions are recorded as passed should Phase 1 be marked complete and Phase 2 begin.
