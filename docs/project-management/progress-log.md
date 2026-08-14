@@ -994,5 +994,10 @@ be added where a short entry would omit important implementation evidence.
 - A clean Python 3.14 environment installed and launched the primary command, which reported exactly
   the two verified retained sessions. The Phase 3 privacy/redistribution audit passed with no private
   path/value, media, WAV, screenshot, browser or test artefact and no Stage 1-3 canonical change.
-  R20 remains open and controlled. Hosted CI, PR merge and post-merge release-candidate evidence
-  remain before Phase 3 or Milestone 1 can close.
+  R20 remains open and controlled.
+- Final-head CI run 31817924213 passed on
+  `7b27481241b9a97c0b67a4b402d49ac50df57d1e`. Reviewed PR #38 merged as release-candidate
+  `3c23a6b518fd33b1542145da06ab1939c7d676dc`; Issue #37 closed.
+- Post-merge `main` CI run 31818140887 passed with clean install, Ruff and 271 tests / 6 deselected
+  on Ubuntu 24.04 / Python 3.11.15. Phase 3 and Stage 4 Milestone 1 are complete. Stage 4 remains
+  active.

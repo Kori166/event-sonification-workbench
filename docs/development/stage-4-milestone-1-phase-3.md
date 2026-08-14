@@ -2,8 +2,10 @@
 
 ## Status
 
-Implementation in progress under Issue #37 from clean `main` at
-`16e20e811d4ed654fe60e36f2769b9884ad871ae`.
+Complete. Issue #37 began from clean `main` at
+`16e20e811d4ed654fe60e36f2769b9884ad871ae`. Final branch head
+`7b27481241b9a97c0b67a4b402d49ac50df57d1e` merged through PR #38 as release-candidate merge
+`3c23a6b518fd33b1542145da06ab1939c7d676dc`.
 
 ## Frozen scope
 
@@ -126,4 +128,16 @@ Repository-wide machine-path searches resolve only to deliberate privacy-test pa
 synthetic example fixture. The diff touches no Stage 1-3 schema, parser, canonical output, mapping,
 renderer, metric definition or canonical report path. `git diff --check` passes.
 
-Hosted CI, PR, merge and post-merge evidence will be added only after those gates actually complete.
+### Hosted CI and merge
+
+- Final-head PR CI run 31817924213 passed on branch head
+  `7b27481241b9a97c0b67a4b402d49ac50df57d1e`: clean install, Ruff and 271 non-integration tests
+  passed with 6 private integrations deselected on Ubuntu 24.04 / Python 3.11.15.
+- The focused three-commit PR #38 was reviewed with no unresolved finding and merged normally.
+- Issue #37 closed through the PR link.
+- Post-merge `main` CI run 31818140887 passed on release-candidate merge
+  `3c23a6b518fd33b1542145da06ab1939c7d676dc`: clean install, Ruff and 271 tests passed with 6
+  integrations deselected on Ubuntu 24.04 / Python 3.11.15.
+
+All Phase 3 gates are evidenced. Stage 4 Milestone 1 is complete; Stage 4 remains active. R20
+remains open and controlled as a release limitation rather than a failed engineering gate.

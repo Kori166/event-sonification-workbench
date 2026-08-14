@@ -27,8 +27,9 @@ independently audited report-ready tables, deterministic SVG figures and bounded
 is supported by technical case-study evidence for those sequences, the baseline preset/renderer and
 the recorded environment. It is not perceptual or participant evidence. Stage 4 Milestone 1 Phase 1
 is complete. The Phase 2 synchronised MOT17 inspection slice passed researcher-performed controlled
-browser acceptance and merged through PR #36. Stage 4 remains active, Milestone 1 Phase 3 is next,
-and no release candidate has yet been claimed.
+browser acceptance and merged through PR #36. Phase 3 added and accepted the retained KITTI session
+through the same frozen architecture, and PR #38 merged the Stage 4 Milestone 1 release candidate.
+Stage 4 remains active; Milestone 1 is complete.
 
 Milestone 1 established common schema version `0.1.0`. The cross-dataset review in Milestone 3
 introduced schema `0.2.0`, retaining the event shape while allowing native unnormalised confidence

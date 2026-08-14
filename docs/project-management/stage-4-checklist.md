@@ -103,7 +103,7 @@ Final local close-out gates on Windows / Python 3.14.3 passed: Ruff clean, front
 valid, 266 non-integration tests passed with 5 integrations deselected, the Phase 1 retained-chain
 integration passed once in 83.56s and the Phase 2 real-session integration passed once in 34.93s.
 
-**Stage 4 Milestone 1 Phase 2 complete; Phase 3 next.**
+**Stage 4 Milestone 1 Phases 1-2 complete; Phase 3 close-out recorded below.**
 
 ### Phase 3: cross-dataset completion and release preparation
 
@@ -120,9 +120,12 @@ integration passed once in 83.56s and the Phase 2 real-session integration passe
 - [x] Complete controlled KITTI and cross-session browser acceptance.
 - [x] Verify the primary release launch and path-free configuration failures.
 - [x] Reconcile README, launch/evidence documentation, project plan, progress log and risk register.
-- [ ] Pass the Phase 3 privacy/redistribution audit and final-head hosted CI.
-- [ ] Merge the focused PR, close Issue #37 and pass post-merge `main` CI.
-- [ ] Record the release-candidate merge SHA and mark Stage 4 Milestone 1 complete.
+- [x] Pass the Phase 3 privacy/redistribution audit and final-head hosted CI.
+- [x] Merge the focused PR, close Issue #37 and pass post-merge `main` CI.
+- [x] Record release-candidate merge `3c23a6b518fd33b1542145da06ab1939c7d676dc` and mark Stage 4
+      Milestone 1 complete.
+
+**Stage 4 Milestone 1 complete; Stage 4 remains active.**
 
 ## Scope boundary
 

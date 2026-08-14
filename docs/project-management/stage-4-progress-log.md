@@ -150,4 +150,10 @@ candidate. The main project progress log remains the chronological project-wide 
   direct report metrics, privacy, stable failures and responsive alignment passed. No screenshot or
   browser artefact was saved or committed.
 - R20 remains open: this is browser/technical acceptance, not perceptual, participant, usability or
-  accessibility evidence. Final hosted-CI, PR/merge and post-merge gates remain pending.
+  accessibility evidence.
+- Final-head CI run 31817924213 passed on
+  `7b27481241b9a97c0b67a4b402d49ac50df57d1e`, then reviewed PR #38 merged as release-candidate
+  `3c23a6b518fd33b1542145da06ab1939c7d676dc` and Issue #37 closed.
+- Post-merge `main` CI run 31818140887 passed with clean install, Ruff and 271 tests / 6 deselected
+  on Ubuntu 24.04 / Python 3.11.15. Phase 3 and Stage 4 Milestone 1 are complete; Stage 4 remains
+  active.

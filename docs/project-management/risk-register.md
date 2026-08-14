@@ -25,8 +25,7 @@
 
 ## Review
 
-Last reviewed: 14 August 2026, after Phase 3 cross-dataset implementation and browser acceptance but
-before the final CI/merge gates.
+Last reviewed: 14 August 2026, after the Phase 3 release-candidate merge and post-merge CI.
 
 R9 remains an explicit redistribution limitation. R4 is reduced by real technical values but those
 values are not perceptual evidence. R5 and R15 are reduced by the frozen manual oracle and unchanged
