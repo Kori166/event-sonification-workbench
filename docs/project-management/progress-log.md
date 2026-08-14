@@ -976,3 +976,23 @@ be added where a short entry would omit important implementation evidence.
   criteria checked.
 - All eight Phase 2 checklist items are complete. Stage 4 remains active; Milestone 1 Phase 3 is next
   and has not begun.
+
+---
+
+## 2026-08-14 - Stage 4 Milestone 1 Phase 3 cross-dataset candidate
+
+- Opened Issue #37 from main `16e20e811d4ed654fe60e36f2769b9884ad871ae` and froze the bounded
+  cross-dataset catalogue architecture in Decision 0018 without changing session contract `0.1.0`.
+- Added the retained path-free KITTI Tracking session, two-session lookup/scoped routes and a minimal
+  browser selector that clears and generation-isolates all dataset-dependent state.
+- Ruff and JavaScript syntax passed. The final focused suite passed 19 tests; the complete
+  non-integration suite passed 271 tests with 6 integration tests deselected. The retained Phase 1,
+  Phase 2 MOT17 and new Phase 3 cross-dataset private gates each passed without an accepted skip.
+- Codex performed 13/13 KITTI browser checks plus both MOT17/KITTI switch sequences. Technical
+  presentation, exact retained media selection, traceability, direct metrics, privacy, failures and
+  responsive alignment passed; no screenshot or private browser artefact was retained.
+- A clean Python 3.14 environment installed and launched the primary command, which reported exactly
+  the two verified retained sessions. The Phase 3 privacy/redistribution audit passed with no private
+  path/value, media, WAV, screenshot, browser or test artefact and no Stage 1-3 canonical change.
+  R20 remains open and controlled. Hosted CI, PR merge and post-merge release-candidate evidence
+  remain before Phase 3 or Milestone 1 can close.

@@ -129,3 +129,25 @@ candidate. The main project progress log remains the chronological project-wide 
   completed with all 17 acceptance criteria checked.
 - Stage 4 Milestone 1 Phase 2 is complete. Stage 4 remains active; Phase 3 cross-dataset completion
   and release preparation is next and has not started.
+
+## 2026-08-14 - Milestone 1 Phase 3 cross-dataset candidate
+
+- Opened Issue #37 and branch `stage-4/phase-3-cross-dataset-release` from clean main
+  `16e20e811d4ed654fe60e36f2769b9884ad871ae`.
+- Decision 0018 retains Workbench Session Contract `0.1.0` and freezes a two-entry path-free
+  catalogue over immutable validated inspection models.
+- Added retained KITTI session `session-kitti_tracking-0000-9cae092175c68109`, scoped service/media
+  lookup and a minimal browser selector with generation-based state isolation.
+- Final local checks passed: Ruff, frontend syntax, 19 focused tests and 271 non-integration tests
+  with 6 integration tests deselected. Phase 1 (`1 passed in 72.88s`), Phase 2 MOT17
+  (`1 passed in 43.22s`) and Phase 3 cross-dataset (`1 passed in 42.59s`) private gates passed.
+- A clean Python 3.14 environment installed and launched the primary release command; the catalogue
+  reported exactly the two verified retained sessions and the declared MOT17 default.
+- The Phase 3 privacy/redistribution audit passed: no private path/value, raw media, generated WAV,
+  screenshot, browser/test artefact or Stage 1-3 canonical change occurs in the release diff.
+- Codex completed 13/13 controlled KITTI browser checks and both switching sequences. Genuine KITTI
+  imagery and recorded boxes aligned; playback, one-clock timing, frame stepping, lanes, real trace,
+  direct report metrics, privacy, stable failures and responsive alignment passed. No screenshot or
+  browser artefact was saved or committed.
+- R20 remains open: this is browser/technical acceptance, not perceptual, participant, usability or
+  accessibility evidence. Final hosted-CI, PR/merge and post-merge gates remain pending.

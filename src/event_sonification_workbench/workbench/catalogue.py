@@ -114,4 +114,3 @@ class InspectionCatalogue:
             "default_session_id": self.default_session_id,
             "sessions": sessions,
         }
-

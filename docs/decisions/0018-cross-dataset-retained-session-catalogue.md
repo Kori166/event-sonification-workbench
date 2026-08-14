@@ -68,4 +68,3 @@ management feature.
   unchanged.
 - Browser acceptance is technical presentation evidence only. R20 remains open and controlled; the
   interface establishes no usability, accessibility, navigation, perceptual or safety benefit.
-

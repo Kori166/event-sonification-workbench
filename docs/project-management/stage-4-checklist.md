@@ -108,18 +108,18 @@ integration passed once in 83.56s and the Phase 2 real-session integration passe
 ### Phase 3: cross-dataset completion and release preparation
 
 - [x] Freeze the Phase 3 architecture and scope in Decision 0018.
-- [ ] Retain Workbench Session Contract `0.1.0` unchanged.
-- [ ] Declare one path-free retained real KITTI Tracking session.
-- [ ] Expose only the retained MOT17 and KITTI sessions through bounded catalogue/lookup behaviour.
-- [ ] Use the same validated-session, inspection-model, loopback-service and browser-client path for
+- [x] Retain Workbench Session Contract `0.1.0` unchanged.
+- [x] Declare one path-free retained real KITTI Tracking session.
+- [x] Expose only the retained MOT17 and KITTI sessions through bounded catalogue/lookup behaviour.
+- [x] Use the same validated-session, inspection-model, loopback-service and browser-client path for
       both dataset families.
-- [ ] Preserve Stage 1-3 contracts, canonical results and exact retained WAV bytes unchanged.
-- [ ] Reset all dataset-dependent browser state when session selection changes.
-- [ ] Add focused catalogue, routing, frontend-reset and cross-dataset automated tests.
-- [ ] Pass existing Phase 1 and Phase 2 private integrations plus a new KITTI/cross-dataset gate.
-- [ ] Complete controlled KITTI and cross-session browser acceptance.
-- [ ] Verify the primary release launch and path-free configuration failures.
-- [ ] Reconcile README, launch/evidence documentation, project plan, progress log and risk register.
+- [x] Preserve Stage 1-3 contracts, canonical results and exact retained WAV bytes unchanged.
+- [x] Reset all dataset-dependent browser state when session selection changes.
+- [x] Add focused catalogue, routing, frontend-reset and cross-dataset automated tests.
+- [x] Pass existing Phase 1 and Phase 2 private integrations plus a new KITTI/cross-dataset gate.
+- [x] Complete controlled KITTI and cross-session browser acceptance.
+- [x] Verify the primary release launch and path-free configuration failures.
+- [x] Reconcile README, launch/evidence documentation, project plan, progress log and risk register.
 - [ ] Pass the Phase 3 privacy/redistribution audit and final-head hosted CI.
 - [ ] Merge the focused PR, close Issue #37 and pass post-merge `main` CI.
 - [ ] Record the release-candidate merge SHA and mark Stage 4 Milestone 1 complete.

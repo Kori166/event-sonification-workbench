@@ -19,13 +19,14 @@
 | R15 | A technical metric implementation appears plausible but uses the wrong denominator, boundary or percentile rule | Low | High | Freeze formulas before real-data use and compare every result with a manually calculated synthetic oracle plus fault cases. | Reduced by contract `0.1.0`, Decision 0013, 26 focused oracle tests and unchanged real-data application; retain the golden gate |
 | R16 | Private paths or prohibited full-data derivatives enter committed evaluation evidence | Low | High | Keep full chains/inputs/WAVs ignored, commit only bounded reports/manifests/summaries, and scan every object and final diff for path markers. | Reduced; canonical and report-ready generators reject private path shapes, generated evidence reports zero matches and the final branch scan remains mandatory |
 | R17 | Dissertation tables, figures or prose drift from canonical technical evidence through copying, rounding or denominator changes | Low | High | Generate presentation derivatives from canonical reports, retain raw values and JSON Pointers, audit every displayed value and maintain a claim-to-evidence matrix. | Reduced; 134 values, 136 table cells, 20 figure data points and 12 claims passed automated and independent audits with zero remaining mismatch |
-| R18 | The Stage 4 inspection layer bypasses or weakens Stage 1-3 package validation and presents mismatched evidence as one session | Low | High | Freeze Workbench Session Contract `0.1.0`, reuse the verified cross-stage chain checks, compare declared hashes/identities and reject invalid sessions before UI rendering. | Reduced; the Phase 2 candidate accepts only a validated session and its real MOT17 integration gate verifies the available report before model construction |
-| R19 | Runtime dataset/output paths, usernames or machine-specific state leak into session identities or frontend diagnostics | Low | High | Keep runtime roots outside the deterministic session payload, resolve only safe logical children and return machine-readable path-free diagnostics. | Reduced; loopback routes accept only bounded identifiers, private integration projections are path-free and the final branch scan remains mandatory |
-| R20 | A browser demonstration is mistaken for participant or perceptual validation | Medium | High | Define the UI as a read-only inspection and demonstration layer, source Stage 3 metrics from verified reports only and retain explicit evidence-boundary wording in documentation and presentation. | Open and controlled; the twelve-check browser pass confirms technical presentation and synchronisation only, not participant, perceptual, usability or accessibility evidence |
+| R18 | The Stage 4 inspection layer bypasses or weakens Stage 1-3 package validation and presents mismatched evidence as one session | Low | High | Freeze Workbench Session Contract `0.1.0`, reuse the verified cross-stage chain checks, compare declared hashes/identities and reject invalid sessions before UI rendering. | Reduced; both retained dataset sessions pass the same validator/model path before immutable catalogue exposure |
+| R19 | Runtime dataset/output paths, usernames or machine-specific state leak into session identities or frontend diagnostics | Low | High | Keep runtime roots outside the deterministic session payload, resolve only safe logical children and return machine-readable path-free diagnostics. | Reduced; bounded session lookup, scoped MOT17/KITTI projections and the final Phase 3 repository audit are path-free |
+| R20 | A browser demonstration is mistaken for participant or perceptual validation | Medium | High | Define the UI as a read-only inspection and demonstration layer, source Stage 3 metrics from verified reports only and retain explicit evidence-boundary wording in documentation and presentation. | Open and controlled; cross-dataset browser acceptance confirms technical presentation, synchronisation and state isolation only, not participant, perceptual, usability or accessibility evidence |
 
 ## Review
 
-Last reviewed: 14 August 2026, after researcher-performed Phase 2 browser acceptance and before merge.
+Last reviewed: 14 August 2026, after Phase 3 cross-dataset implementation and browser acceptance but
+before the final CI/merge gates.
 
 R9 remains an explicit redistribution limitation. R4 is reduced by real technical values but those
 values are not perceptual evidence. R5 and R15 are reduced by the frozen manual oracle and unchanged
@@ -42,11 +43,12 @@ acceptance and then reverted by PR #31. Issue #29 was therefore reopened and PR 
 same separate event/cue/audio runtime-root design while preserving the verified chain and content-
 derived identity. Both retained real chains passed identical repeated validation, reducing runtime-
 layout uncertainty under R18. R19 remains a release-level monitoring requirement despite empty,
-path-free retained results. The Phase 2 candidate further reduces R18 and R19 through validated-only
-model construction, bounded loopback routes and path-free service/integration tests. R20 remains open
-and controlled after the successful browser pass: that pass confirms that verified technical
-evidence is presented and synchronised as intended, but provides no participant-based evidence of
-perceptual effectiveness, usability or accessibility.
+path-free retained results. Phase 3 further reduces R18 and R19 by opening both retained families
+through the same validator/model, exposing only a two-entry catalogue, scoping every route by a
+declared session ID and clearing browser state on selection changes. R20 remains open and controlled:
+the cross-dataset pass confirms that verified technical evidence is presented, synchronised and
+isolated as intended, but provides no participant-based evidence of perceptual effectiveness,
+usability or accessibility.
 
 The register must be reviewed when a risk changes, a mitigation is applied, an issue changes the
 agreed scope or a new project stage begins.
