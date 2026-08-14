@@ -970,5 +970,9 @@ be added where a short entry would omit important implementation evidence.
 - Final local gates passed with Ruff clean, frontend JavaScript syntax valid, 266 non-integration
   tests passed / 5 integrations deselected, and genuine single-pass Phase 1 and Phase 2 private
   integration results of 83.56s and 34.93s respectively.
-- All eight Phase 2 checklist items are accepted. Phase 2 acceptance complete; merge pending final
-  CI. Phase 3 has not begun.
+- Final-head hosted CI run 105 passed with installation, Ruff and 266 tests / 5 deselected on Ubuntu
+  24.04 / Python 3.11.15. PR #36 merged as
+  `f9a3101f4eaef65b55d2efbdc1d8b0beaad489ec`, and Issue #35 auto-closed as completed with all 17
+  criteria checked.
+- All eight Phase 2 checklist items are complete. Stage 4 remains active; Milestone 1 Phase 3 is next
+  and has not begun.

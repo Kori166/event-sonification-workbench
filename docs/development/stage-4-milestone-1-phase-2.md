@@ -5,8 +5,8 @@
 Implementation and controlled browser acceptance are complete. The researcher manually performed
 the required browser pass over retained session
 `session-mot17-mot17-02-dpm-3707826663b210c6`; all twelve checks passed after one targeted loading-
-overlay correction. Phase 2 acceptance is complete; merge remains pending the final local gates,
-privacy/scope audit and fresh final-head CI.
+overlay correction. Final local/private gates and the privacy/scope audit passed, hosted CI run 105
+passed on the final head, and PR #36 merged on 14 August 2026. Phase 2 is complete; Phase 3 is next.
 
 Issue #35 defines the acceptance criteria. The implementation branch is
 `stage-4/phase-2-synchronised-inspection`.
@@ -104,6 +104,11 @@ Draft PR #36 CI run `31204926127` passed on Ubuntu 24.04 with Python 3.11.15. Ed
 and Ruff passed, and the non-integration suite reported 265 passed and 5 deselected in 17.71s. Its
 only annotation was an upstream Node 20 deprecation warning for `actions/checkout@v4` and
 `actions/setup-python@v5`; the job itself completed successfully.
+
+Final-head CI run 105 (`31812487335`) passed on
+`bd1994347150e08aeae31d19f3f1adf3598aec85` using Ubuntu 24.04 / Python 3.11.15. Editable
+installation and Ruff passed; the non-integration suite reported 266 passed and 5 deselected in
+16.38s. PR #36 then merged as `f9a3101f4eaef65b55d2efbdc1d8b0beaad489ec`.
 
 The five new normal-CI tests cover the indexed model, deterministic frame timing, bounded timeline,
 complete cue trace, direct and unavailable evaluation projections, safe media service, full and

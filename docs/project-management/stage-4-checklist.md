@@ -15,8 +15,9 @@ chain acceptance gate was run. PR #31 then reverted PR #30 in full. Issue #29 wa
 Contract `0.1.0` remains unchanged. PR #32 passed its repository CI gate, and the retained local
 real-data acceptance run then passed for both MOT17 and KITTI Tracking. Milestone 1 Phase 1 is
 complete. The Phase 2 implementation and researcher-performed controlled browser acceptance now
-support all eight acceptance items. Phase 2 acceptance is complete; merge remains pending final
-local gates, privacy/scope audit and fresh final-head CI. Phase 3 has not begun.
+support all eight acceptance items. Final local/private gates, the privacy/scope audit and hosted CI
+run 105 passed; PR #36 merged and Issue #35 closed. Stage 4 Milestone 1 Phase 2 is complete; Phase 3
+is next and has not begun.
 
 ## Milestone 1: versioned artefact release candidate
 
@@ -95,11 +96,14 @@ targeted `.viewer-loading[hidden] { display: none; }` correction; geometry, unch
 the single audio clock, frame stepping, timeline, trace, metrics, responsive alignment, privacy and
 path-free failures passed. A CSS asset contract test covers the loading-overlay regression. These
 checks are engineering/browser acceptance, not participant, perceptual, usability or accessibility
-evidence. Phase 2 acceptance complete; merge pending final CI.
+evidence. Final-head CI run 105 passed with 266 tests and 5 deselected, and PR #36 merged as
+`f9a3101f4eaef65b55d2efbdc1d8b0beaad489ec`.
 
 Final local close-out gates on Windows / Python 3.14.3 passed: Ruff clean, frontend JavaScript syntax
 valid, 266 non-integration tests passed with 5 integrations deselected, the Phase 1 retained-chain
 integration passed once in 83.56s and the Phase 2 real-session integration passed once in 34.93s.
+
+**Stage 4 Milestone 1 Phase 2 complete; Phase 3 next.**
 
 ### Phase 3: cross-dataset completion and release preparation
 

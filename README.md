@@ -27,8 +27,8 @@ independently audited report-ready tables, deterministic SVG figures and bounded
 is supported by technical case-study evidence for those sequences, the baseline preset/renderer and
 the recorded environment. It is not perceptual or participant evidence. Stage 4 Milestone 1 Phase 1
 is complete. The Phase 2 synchronised MOT17 inspection slice passed researcher-performed controlled
-browser acceptance; merge remains pending final-head CI. Stage 4 remains active and no release
-candidate has yet been claimed.
+browser acceptance and merged through PR #36. Stage 4 remains active, Milestone 1 Phase 3 is next,
+and no release candidate has yet been claimed.
 
 Milestone 1 established common schema version `0.1.0`. The cross-dataset review in Milestone 3
 introduced schema `0.2.0`, retaining the event shape while allowing native unnormalised confidence
@@ -191,8 +191,8 @@ calculate evaluation metrics.
 The service is loopback-only and exposes no write, upload, authentication, database or analytics
 feature. It is inspection/demonstration infrastructure, not participant, accessibility, usability,
 navigation, perceptual-effectiveness or safety evidence. Its twelve-check controlled browser pass is
-engineering acceptance only; see `docs/development/stage-4-milestone-1-phase-2.md`. Phase 2
-acceptance is complete and merge is pending final CI; Phase 3 has not started.
+engineering acceptance only; see `docs/development/stage-4-milestone-1-phase-2.md`. Phase 2 is
+complete; Phase 3 cross-dataset completion and release preparation is next and has not started.
 
 ## Structured event outputs
 

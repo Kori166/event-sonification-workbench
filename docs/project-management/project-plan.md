@@ -17,7 +17,7 @@ normalised events, deterministic audio cues and traceable technical outputs.
 | 1. Data ingestion and normalisation | Parse MOT17 and KITTI Tracking annotations into a common event schema | Parsers, schema, validation outputs, provenance records and tests | Complete, 5 August 2026 |
 | 2. Sonification | Map normalised events into scheduled audio cues | Mapping presets, cue schedules, audio files and logs | Complete, 6 August 2026; real MOT17/KITTI chains reproduced exactly |
 | 3. Technical evaluation | Measure coverage, alignment, traceability, cue density, overlap and reproducibility | Evaluation reports, comparison results, audited reporting derivatives and repeat-run checks | Complete, 6 August 2026 |
-| 4. Artefact assembly and release | Validate, document and package the complete workbench | Reproducible release, final documentation and tagged version | Active; Phase 1 complete, Phase 2 acceptance complete with merge pending final CI |
+| 4. Artefact assembly and release | Validate, document and package the complete workbench | Reproducible release, final documentation and tagged version | Active; Milestone 1 Phases 1-2 complete, Phase 3 next |
 | 5. Reporting and viva preparation | Complete the dissertation and prepare the artefact demonstration | Final report, demonstration plan and viva notes | Planned |
 
 ## Working Method
@@ -227,8 +227,9 @@ MOT17 and KITTI Tracking sessions. PR #32's corrective implementation passed cle
 261 non-integration tests. Phase 2 now has a dependency-free local inspection slice over the
 validated MOT17 session, including the available Stage 3 report. The researcher manually completed
 all twelve controlled browser checks; the one discovered loading-overlay presentation defect has a
-targeted CSS correction and regression test. Phase 2 acceptance is complete and merge is pending
-final local/private gates and fresh final-head CI. Stage 4 remains active; Phase 3 has not begun.
+targeted CSS correction and regression test. Final local/private gates and hosted CI run 105 passed;
+PR #36 merged and Issue #35 closed. Stage 4 Milestone 1 Phase 2 is complete. Stage 4 remains active;
+Phase 3 cross-dataset completion and release preparation is next and has not begun.
 
 The current milestone remains **Stage 4 Milestone 1: assemble a versioned artefact release candidate
 and verify installation, configuration, evidence availability and end-to-end execution from a clean

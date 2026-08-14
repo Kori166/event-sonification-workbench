@@ -123,4 +123,9 @@ candidate. The main project progress log remains the chronological project-wide 
 - Final local close-out gates passed: Ruff clean; frontend JavaScript syntax valid; 266 passed and 5
   deselected in the non-integration suite; Phase 1 private integration 1 passed in 83.56s; Phase 2
   private integration 1 passed in 34.93s.
-- Phase 2 acceptance complete; merge pending final CI. Phase 3 has not started.
+- Final-head hosted CI run 105 passed with installation, Ruff and 266 non-integration tests / 5
+  deselected on Ubuntu 24.04 / Python 3.11.15.
+- PR #36 merged as `f9a3101f4eaef65b55d2efbdc1d8b0beaad489ec`; Issue #35 auto-closed as
+  completed with all 17 acceptance criteria checked.
+- Stage 4 Milestone 1 Phase 2 is complete. Stage 4 remains active; Phase 3 cross-dataset completion
+  and release preparation is next and has not started.
