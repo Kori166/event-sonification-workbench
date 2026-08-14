@@ -40,8 +40,12 @@ def _records(document: Mapping[str, Any], key: str) -> list[dict[str, Any]]:
     return values
 
 
-def _event_projection(event: Mapping[str, Any]) -> dict[str, Any]:
-    return {
+def _event_projection(
+    event: Mapping[str, Any],
+    *,
+    stage_2_outcome: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    projection = {
         "event_id": event["event_id"],
         "frame": event["frame"],
         "timestamp_seconds": event["timestamp"],
@@ -57,6 +61,9 @@ def _event_projection(event: Mapping[str, Any]) -> dict[str, Any]:
         },
         "visibility": event["visibility"],
     }
+    if stage_2_outcome is not None:
+        projection["stage_2_outcome"] = dict(stage_2_outcome)
+    return projection
 
 
 def _cue_projection(cue: Mapping[str, Any]) -> dict[str, Any]:
@@ -71,6 +78,7 @@ def _cue_projection(cue: Mapping[str, Any]) -> dict[str, Any]:
         "frequency_hz": cue["frequency_hz"],
         "amplitude": cue["amplitude"],
         "stereo_pan": cue["stereo_pan"],
+        "class_modifier": cue["class_modifier"],
     }
 
 
@@ -128,6 +136,10 @@ class InspectionModel:
             self._events_by_frame[event["frame"]].append(event)
         self._cues_by_id = {cue["cue_id"]: cue for cue in self._cues}
         self._renders_by_cue = {entry["cue_id"]: entry for entry in render_entries}
+        self._cues_by_event_id = {cue["source_event_id"]: cue for cue in self._cues}
+        self._suppressions_by_event_id = {
+            item["source_event_id"]: item for item in self._suppressions
+        }
 
         self._event_times = [float(event["timestamp"]) for event in self._events]
         self._cue_times = [float(cue["start_time_seconds"]) for cue in self._cues]
@@ -185,7 +197,12 @@ class InspectionModel:
             },
             "timing": {
                 "frame_rate": self.frame_rate,
-                "frame_time_relationship": "timestamp_seconds = frame / frame_rate",
+                "frame_time_relationship": (
+                    "frame = floor(timestamp_seconds * frame_rate)"
+                ),
+                "frame_interval_relationship": (
+                    "frame n covers n / frame_rate <= t < (n + 1) / frame_rate"
+                ),
                 "audio_duration_seconds": self.duration_seconds,
                 "sample_rate_hz": self.sample_rate_hz,
                 "clock_authority": "browser_audio_currentTime",
@@ -212,7 +229,21 @@ class InspectionModel:
         if not math.isfinite(timestamp_seconds):
             raise InspectionError("invalid_timestamp")
         bounded = min(max(timestamp_seconds, 0.0), (self.frame_count - 1) / self.frame_rate)
-        return min(int(bounded * self.frame_rate + 1e-9), self.frame_count - 1)
+        return min(math.floor(bounded * self.frame_rate), self.frame_count - 1)
+
+    def _event_outcome(self, event_id: str) -> dict[str, Any]:
+        cue = self._cues_by_event_id.get(event_id)
+        suppression = self._suppressions_by_event_id.get(event_id)
+        if cue is not None and suppression is not None:
+            raise InspectionError("inspection_event_outcome_conflict")
+        if cue is not None:
+            return {"status": "represented", "cue_id": cue["cue_id"]}
+        if suppression is not None:
+            return {
+                "status": "suppressed",
+                "suppression_code": suppression["suppression_code"],
+            }
+        return {"status": "unresolved"}
 
     def frame(self, frame_number: int) -> dict[str, Any]:
         if frame_number < 0 or frame_number >= self.frame_count:
@@ -223,7 +254,10 @@ class InspectionModel:
             "image_url": f"/api/frames/{frame_number}/image",
             "image": {"width": self.image_width, "height": self.image_height},
             "events": [
-                _event_projection(event)
+                _event_projection(
+                    event,
+                    stage_2_outcome=self._event_outcome(event["event_id"]),
+                )
                 for event in self._events_by_frame.get(frame_number, ())
             ],
         }
@@ -303,7 +337,10 @@ class InspectionModel:
             raise InspectionError("cue_trace_incomplete")
         return {
             "cue": _cue_projection(cue),
-            "event": _event_projection(event),
+            "event": _event_projection(
+                event,
+                stage_2_outcome=self._event_outcome(event["event_id"]),
+            ),
             "source_annotation": {
                 "logical_path": event["source_file"],
                 "row": event["source_row"],

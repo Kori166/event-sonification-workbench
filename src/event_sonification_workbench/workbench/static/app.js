@@ -7,6 +7,8 @@ const sessionSelect = document.querySelector("#sessionSelect");
 const timelineCanvas = document.querySelector("#timeline");
 const timelineContext = timelineCanvas.getContext("2d");
 const overlay = document.querySelector("#eventOverlay");
+const TIMELINE_EDGE_MARGIN_SECONDS = 0.25;
+const CUE_HIT_RADIUS_PX = 7;
 const state = {
   catalogue: null,
   sessionId: null,
@@ -15,9 +17,12 @@ const state = {
   frame: null,
   frameNumber: -1,
   timeline: null,
-  timelineLoading: false,
+  timelinePendingKey: null,
   timelineRequest: 0,
   selectedCue: null,
+  selectedCueFrame: null,
+  selectedCueTime: null,
+  traceRequest: 0,
   frameRequest: 0,
 };
 
@@ -103,11 +108,8 @@ async function renderEvaluation(generation = state.generation) {
     `<div class="metric"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join("");
 }
 
-function outcomeFor(eventId) {
-  if (!state.timeline) return "event-only";
-  if (state.timeline.cues.some((cue) => cue.source_event_id === eventId)) return "represented";
-  if (state.timeline.suppressions.some((item) => item.source_event_id === eventId)) return "suppressed";
-  return "event-only";
+function outcomeFor(event) {
+  return event.stage_2_outcome?.status || "unresolved";
 }
 
 function renderOverlay(frame) {
@@ -115,7 +117,7 @@ function renderOverlay(frame) {
   overlay.replaceChildren();
   for (const event of frame.events) {
     const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    const outcome = outcomeFor(event.event_id);
+    const outcome = outcomeFor(event);
     const rectangle = document.createElementNS("http://www.w3.org/2000/svg", "rect");
     rectangle.setAttribute("x", event.bbox.x);
     rectangle.setAttribute("y", event.bbox.y);
@@ -132,7 +134,13 @@ function renderOverlay(frame) {
   }
 }
 
-async function loadFrame(frameNumber) {
+function setFrameContext(context) {
+  document.querySelector("#frameKind").textContent =
+    context === "cue" ? "Cue source frame" : "Playback frame";
+}
+
+async function loadFrame(frameNumber, context = "playback") {
+  setFrameContext(context);
   if (frameNumber === state.frameNumber) return;
   state.frameNumber = frameNumber;
   const generation = state.generation;
@@ -165,6 +173,61 @@ function timelineX(timestamp, width) {
     (windowData.end_seconds - windowData.start_seconds)) * width;
 }
 
+function frameForTime(timestampSeconds, frameRate, frameCount) {
+  const boundedTime = Math.max(0, timestampSeconds);
+  return Math.min(Math.floor(boundedTime * frameRate), frameCount - 1);
+}
+
+function cueInspectionIsAligned() {
+  return state.selectedCueFrame !== null &&
+    state.selectedCueTime !== null &&
+    audio.paused &&
+    Math.abs(audio.currentTime - state.selectedCueTime) <= 1e-6;
+}
+
+function drawFrameStructure(height, width) {
+  if (!state.session || !state.timeline) return;
+  const frameRate = state.session.timing.frame_rate;
+  const windowStart = state.timeline.window.start_seconds;
+  const windowEnd = state.timeline.window.end_seconds;
+  const playbackFrame = cueInspectionIsAligned()
+    ? state.selectedCueFrame
+    : frameForTime(audio.currentTime, frameRate, state.session.counts.frames);
+  const frameStart = playbackFrame / frameRate;
+  const frameEnd = (playbackFrame + 1) / frameRate;
+  const highlightStart = Math.max(windowStart, frameStart);
+  const highlightEnd = Math.min(windowEnd, frameEnd);
+  if (highlightEnd > highlightStart) {
+    timelineContext.fillStyle = "rgba(117, 240, 193, 0.09)";
+    timelineContext.fillRect(
+      timelineX(highlightStart, width),
+      0,
+      timelineX(highlightEnd, width) - timelineX(highlightStart, width),
+      height,
+    );
+  }
+
+  const firstBoundaryFrame = Math.ceil(windowStart * frameRate);
+  const lastBoundaryFrame = Math.floor(windowEnd * frameRate);
+  const pixelsPerFrame = width / ((windowEnd - windowStart) * frameRate);
+  timelineContext.strokeStyle = "rgba(140, 163, 157, 0.18)";
+  timelineContext.lineWidth = 1;
+  timelineContext.fillStyle = "rgba(140, 163, 157, 0.72)";
+  timelineContext.font = "9px ui-monospace, monospace";
+  for (let frame = firstBoundaryFrame; frame <= lastBoundaryFrame; frame += 1) {
+    const boundaryTime = frame / frameRate;
+    if (boundaryTime < windowStart || boundaryTime > windowEnd) continue;
+    const x = timelineX(boundaryTime, width);
+    timelineContext.beginPath();
+    timelineContext.moveTo(x, 0);
+    timelineContext.lineTo(x, height);
+    timelineContext.stroke();
+    if (pixelsPerFrame >= 32 && x <= width - 18) {
+      timelineContext.fillText(`f${frame}`, x + 3, 10);
+    }
+  }
+}
+
 function drawMarkers(items, lane, color, timestampField, height, width) {
   const laneHeight = height / 3;
   const y = lane * laneHeight;
@@ -187,15 +250,43 @@ function drawTimeline() {
     timelineContext.beginPath(); timelineContext.moveTo(0, lane * 66); timelineContext.lineTo(width, lane * 66); timelineContext.stroke();
   }
   if (!state.timeline) return;
+  drawFrameStructure(height, width);
   drawMarkers(state.timeline.events, 0, "#65b8ff", "timestamp_seconds", height, width);
   drawMarkers(state.timeline.cues, 1, "#75f0c1", "start_time_seconds", height, width);
   drawMarkers(state.timeline.suppressions, 2, "#ff718d", "timestamp_seconds", height, width);
+  const selected = state.timeline.cues.find((cue) => cue.cue_id === state.selectedCue);
+  if (selected) {
+    const selectedX = timelineX(selected.start_time_seconds, width);
+    timelineContext.strokeStyle = "#ffffff";
+    timelineContext.lineWidth = 2;
+    timelineContext.strokeRect(selectedX - 3.5, 76, 7, 46);
+  }
   const cursor = timelineX(audio.currentTime, width);
   timelineContext.strokeStyle = "#ffffff";
   timelineContext.lineWidth = 1.5;
   timelineContext.beginPath(); timelineContext.moveTo(cursor, 0); timelineContext.lineTo(cursor, height); timelineContext.stroke();
   timelineContext.fillStyle = "#ffffff";
   timelineContext.beginPath(); timelineContext.moveTo(cursor - 4, 0); timelineContext.lineTo(cursor + 4, 0); timelineContext.lineTo(cursor, 6); timelineContext.fill();
+}
+
+function cueAtCanvasPoint(event) {
+  if (!state.timeline) return null;
+  const bounds = timelineCanvas.getBoundingClientRect();
+  const x = event.clientX - bounds.left;
+  const y = event.clientY - bounds.top;
+  const laneHeight = bounds.height / 3;
+  if (y < laneHeight + 8 || y > (2 * laneHeight) - 8) return null;
+  let closest = null;
+  let closestDistance = CUE_HIT_RADIUS_PX + 1;
+  for (const cue of state.timeline.cues) {
+    const cueX = timelineX(cue.start_time_seconds, bounds.width);
+    const distance = Math.abs(cueX - x);
+    if (distance <= CUE_HIT_RADIUS_PX && distance < closestDistance) {
+      closest = cue;
+      closestDistance = distance;
+    }
+  }
+  return closest;
 }
 
 function renderNearbyCues() {
@@ -210,24 +301,43 @@ function renderNearbyCues() {
     button.className = `cue-chip${state.selectedCue === cue.cue_id ? " active" : ""}`;
     button.textContent = `${cue.start_time_seconds.toFixed(3)}s · ${cue.object_class} · t${cue.track_id}`;
     button.title = cue.cue_id;
-    button.addEventListener("click", () => loadTrace(cue.cue_id));
+    button.addEventListener("click", () => selectCue(cue.cue_id));
     container.append(button);
   }
 }
 
-async function loadTimeline(force = false) {
-  if (!state.session || state.timelineLoading) return;
-  const generation = state.generation;
-  const requestId = ++state.timelineRequest;
-  const time = audio.currentTime;
-  if (!force && state.timeline &&
-      time > state.timeline.window.start_seconds + 0.25 &&
-      time < state.timeline.window.end_seconds - 0.25) return;
-  state.timelineLoading = true;
+function cachedTimelineCovers(time) {
+  if (!state.timeline || !state.session) return false;
+  const start = state.timeline.window.start_seconds;
+  const end = state.timeline.window.end_seconds;
+  const duration = state.session.timing.audio_duration_seconds;
+  const lowerBound = start <= 0
+    ? start
+    : start + TIMELINE_EDGE_MARGIN_SECONDS;
+  const upperBound = end >= duration
+    ? end
+    : end - TIMELINE_EDGE_MARGIN_SECONDS;
+  return time >= lowerBound && time <= upperBound;
+}
+
+function timelineWindowFor(time) {
   const duration = state.session.timing.audio_duration_seconds;
   let start = Math.max(0, time - 0.35);
   let end = Math.min(duration, start + 1);
   start = Math.max(0, end - 1);
+  return { start, end };
+}
+
+async function loadTimeline(force = false) {
+  if (!state.session) return;
+  const generation = state.generation;
+  const time = audio.currentTime;
+  if (!force && cachedTimelineCovers(time)) return;
+  const { start, end } = timelineWindowFor(time);
+  const requestKey = `${start.toFixed(6)}:${end.toFixed(6)}`;
+  if (!force && state.timelinePendingKey === requestKey) return;
+  const requestId = ++state.timelineRequest;
+  state.timelinePendingKey = requestKey;
   try {
     const timeline = await getJson(`/api/timeline?start=${start.toFixed(6)}&end=${end.toFixed(6)}`);
     if (generation !== state.generation || requestId !== state.timelineRequest) return;
@@ -236,7 +346,7 @@ async function loadTimeline(force = false) {
     renderNearbyCues();
     if (state.frame) renderOverlay(state.frame);
   } finally {
-    if (requestId === state.timelineRequest) state.timelineLoading = false;
+    if (requestId === state.timelineRequest) state.timelinePendingKey = null;
   }
 }
 
@@ -245,28 +355,58 @@ function traceNode(title, lines) {
     `<p>${escapeHtml(label)}<br><strong>${escapeHtml(value)}</strong></p>`).join("")}</section>`;
 }
 
-async function loadTrace(cueId) {
-  const generation = state.generation;
-  const trace = await getJson(`/api/trace?cue_id=${encodeURIComponent(cueId)}`);
-  if (generation !== state.generation) return;
-  state.selectedCue = cueId;
+function renderTrace(trace) {
   document.querySelector("#traceState").textContent = "Complete chain";
   document.querySelector("#traceState").classList.remove("neutral");
   const shortCue = trace.cue.cue_id.replace("cue:", "").slice(0, 12);
   const shortEvent = trace.event.event_id.split(":").slice(-3).join(":");
   document.querySelector("#traceContent").className = "trace-chain";
   document.querySelector("#traceContent").innerHTML = [
-    traceNode("Cue", [["ID", shortCue], ["Start", `${trace.cue.start_time_seconds.toFixed(6)} s`], ["Signal", `${trace.cue.frequency_hz.toFixed(1)} Hz · pan ${trace.cue.stereo_pan}`]]),
-    traceNode("Event", [["ID", shortEvent], ["Frame / track", `${trace.event.frame} / ${trace.event.track_id}`], ["Class", trace.event.object_class]]),
+    traceNode("Cue", [
+      ["ID", shortCue],
+      ["Start (event timestamp)", `${trace.cue.start_time_seconds.toFixed(6)} s`],
+      ["Frequency (vertical centre)", `${trace.cue.frequency_hz.toFixed(1)} Hz`],
+      ["Stereo pan (horizontal centre)", trace.cue.stereo_pan],
+      ["Amplitude (box area)", trace.cue.amplitude],
+      ["Duration", `${trace.cue.duration_seconds.toFixed(3)} s`],
+      ["Class modifier (trace only)", trace.cue.class_modifier],
+    ]),
+    traceNode("Event", [["ID", shortEvent], ["Source frame / track", `${trace.event.frame} / ${trace.event.track_id}`], ["Class", trace.event.object_class]]),
     traceNode("Annotation", [["Logical source", trace.source_annotation.logical_path], ["Physical row", trace.source_annotation.row]]),
-    traceNode("Configuration", [["Preset", `${trace.configuration.preset.name} ${trace.configuration.preset.version}`], ["Renderer", `${trace.configuration.renderer.name} ${trace.configuration.renderer.version}`]]),
+    traceNode("Configuration", [["Preset", `${trace.configuration.preset.name} ${trace.configuration.preset.version}`], ["Renderer", `${trace.configuration.renderer.name} ${trace.configuration.renderer.version}`], ["Class modifier", "Recorded for traceability; not applied to waveform"]]),
     traceNode("Render", [["Samples", `${trace.render.start_sample}–${trace.render.end_sample_exclusive}`], ["Duration", `${trace.render.duration_samples} @ ${trace.render.sample_rate_hz} Hz`]]),
   ].join("");
   renderNearbyCues();
+  drawTimeline();
+}
+
+async function selectCue(cueId) {
+  const generation = state.generation;
+  const requestId = ++state.traceRequest;
+  const trace = await getJson(`/api/trace?cue_id=${encodeURIComponent(cueId)}`);
+  if (generation !== state.generation || requestId !== state.traceRequest) return;
+  audio.pause();
+  audio.currentTime = trace.cue.start_time_seconds;
+  seek.value = trace.cue.start_time_seconds;
+  state.selectedCue = cueId;
+  state.selectedCueFrame = trace.event.frame;
+  state.selectedCueTime = trace.cue.start_time_seconds;
+  await loadFrame(trace.event.frame, "cue");
+  if (generation !== state.generation || requestId !== state.traceRequest) return;
+  await loadTimeline(true);
+  if (generation !== state.generation || requestId !== state.traceRequest) return;
+  renderTrace(trace);
+}
+
+function clearCueFrameAlignment() {
+  state.selectedCueFrame = null;
+  state.selectedCueTime = null;
+  setFrameContext("playback");
 }
 
 function setAudioTime(value) {
   const duration = state.session?.timing.audio_duration_seconds || audio.duration || 0;
+  clearCueFrameAlignment();
   audio.currentTime = Math.min(Math.max(value, 0), duration);
   loadTimeline(true).catch((error) => notice(error.message));
 }
@@ -278,8 +418,11 @@ function resetSessionState(sessionId) {
   state.frame = null;
   state.frameNumber = -1;
   state.timeline = null;
-  state.timelineLoading = false;
+  state.timelinePendingKey = null;
   state.selectedCue = null;
+  state.selectedCueFrame = null;
+  state.selectedCueTime = null;
+  state.traceRequest += 1;
   state.frameRequest += 1;
   state.timelineRequest += 1;
 
@@ -293,6 +436,7 @@ function resetSessionState(sessionId) {
   document.querySelector("#currentTime").textContent = "00:00.000";
   document.querySelector("#duration").textContent = "00:00.000";
   document.querySelector("#sequenceTitle").textContent = "Loading…";
+  document.querySelector("#frameKind").textContent = "Playback frame";
   document.querySelector("#frameNumber").textContent = "—";
   document.querySelector("#frameTime").textContent = "—";
   document.querySelector("#windowLabel").textContent = "—";
@@ -341,8 +485,11 @@ function tick() {
     const time = audio.currentTime;
     seek.value = time;
     document.querySelector("#currentTime").textContent = formatTime(time);
-    const frame = Math.min(Math.floor(time * state.session.timing.frame_rate + 1e-9), state.session.counts.frames - 1);
-    loadFrame(frame).catch((error) => notice(error.message));
+    const inspectingCue = cueInspectionIsAligned();
+    const frame = inspectingCue
+      ? state.selectedCueFrame
+      : frameForTime(time, state.session.timing.frame_rate, state.session.counts.frames);
+    loadFrame(frame, inspectingCue ? "cue" : "playback").catch((error) => notice(error.message));
     loadTimeline().catch((error) => notice(error.message));
     drawTimeline();
   }
@@ -353,19 +500,24 @@ playPause.addEventListener("click", async () => {
   if (!state.session) return;
   if (audio.paused) await audio.play(); else audio.pause();
 });
-audio.addEventListener("play", () => { playPause.textContent = "❚❚"; playPause.setAttribute("aria-label", "Pause"); });
+audio.addEventListener("play", () => {
+  clearCueFrameAlignment();
+  playPause.textContent = "❚❚";
+  playPause.setAttribute("aria-label", "Pause");
+});
 audio.addEventListener("pause", () => { playPause.textContent = "▶"; playPause.setAttribute("aria-label", "Play"); });
 seek.addEventListener("input", () => setAudioTime(Number(seek.value)));
 document.querySelector("#stepBack").addEventListener("click", () => { if (state.session) { audio.pause(); setAudioTime(audio.currentTime - 1 / state.session.timing.frame_rate); } });
 document.querySelector("#stepForward").addEventListener("click", () => { if (state.session) { audio.pause(); setAudioTime(audio.currentTime + 1 / state.session.timing.frame_rate); } });
 document.querySelector("#mute").addEventListener("click", (event) => { audio.muted = !audio.muted; event.currentTarget.textContent = audio.muted ? "Muted" : "Audio on"; });
 timelineCanvas.addEventListener("click", (event) => {
-  if (!state.timeline) return;
-  const bounds = timelineCanvas.getBoundingClientRect();
-  const clickedTime = state.timeline.window.start_seconds + ((event.clientX - bounds.left) / bounds.width) * (state.timeline.window.end_seconds - state.timeline.window.start_seconds);
-  const nearest = state.timeline.cues.reduce((best, cue) => Math.abs(cue.start_time_seconds - clickedTime) < Math.abs(best.start_time_seconds - clickedTime) ? cue : best, state.timeline.cues[0]);
-  if (nearest) loadTrace(nearest.cue_id).catch((error) => notice(error.message));
+  const cue = cueAtCanvasPoint(event);
+  if (cue) selectCue(cue.cue_id).catch((error) => notice(error.message));
 });
+timelineCanvas.addEventListener("mousemove", (event) => {
+  timelineCanvas.style.cursor = cueAtCanvasPoint(event) ? "pointer" : "default";
+});
+timelineCanvas.addEventListener("mouseleave", () => { timelineCanvas.style.cursor = "default"; });
 window.addEventListener("resize", resizeTimeline);
 window.addEventListener("keydown", (event) => {
   if (event.target instanceof HTMLInputElement || event.target instanceof HTMLSelectElement) return;

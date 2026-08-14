@@ -201,6 +201,19 @@ normalised event, logical native annotation/row, configuration and rendered samp
 cards project the verified Stage 3 report directly. Switching sessions clears image, frame,
 playback, timeline, cue, trace, metrics, metadata and error state before loading the selected chain.
 
+Frame presentation uses `frame = floor(audio.currentTime * frame_rate)` and half-open frame
+intervals. Subtle divisions and a highlighted interval show frame structure separately from the
+exact white playback cursor. Only CUE markers and the explicitly labelled nearby-cue buttons are
+selectable. Selecting one pauses playback, seeks to its retained start, loads its recorded source
+frame and presents frequency, pan, amplitude, duration and trace provenance.
+
+The frozen baseline maps event timestamp to cue start, horizontal centre to stereo pan, vertical
+centre to frequency and normalised bounding-box area to amplitude. The class modifier is recorded
+for traceability but is not applied by the current renderer. Bounding-box area is an imperfect
+apparent-scale proxy, not depth: pose-dependent pedestrian width can change amplitude without a
+meaningful apparent-distance change. Height-based or smoothed-height alternatives are possible
+future experiments and are not implemented here.
+
 Repository content includes code, schemas, path-free retained declarations, fixed public test
 fixtures and canonical Stage 3 reports. Private source datasets, retained full Stage 1/2 packages
 and WAV files remain local. The browser is presentation-only: it does not parse annotations,

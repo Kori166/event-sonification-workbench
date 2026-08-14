@@ -1001,3 +1001,16 @@ be added where a short entry would omit important implementation evidence.
 - Post-merge `main` CI run 31818140887 passed with clean install, Ruff and 271 tests / 6 deselected
   on Ubuntu 24.04 / Python 3.11.15. Phase 3 and Stage 4 Milestone 1 are complete. Stage 4 remains
   active.
+
+---
+
+## 2026-08-14 - Stage 4 Milestone 2 inspection-correction candidate
+
+- Began Issue #39 from clean main `799c5ef95d42040d05c2b7d7a757ec765b6d382c`.
+- Verified retained boundary traces and diagnosed repeated clamped-window requests/DOM replacement,
+  not a provenance-chain defect.
+- Decision 0019 bounds the correction to stable timeline caching, cue/source-frame alignment,
+  retained outcome projection, visible frame structure, cue-only interaction and clearer frozen
+  mapping/evidence language.
+- R20 remains open; R21 records bounding-box area as an imperfect apparent-scale proxy. No Stage 1-3
+  result, baseline preset or retained WAV is changed. Final gates remain pending.

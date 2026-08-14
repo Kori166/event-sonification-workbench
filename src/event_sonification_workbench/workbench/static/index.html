@@ -35,7 +35,7 @@
               <h2 id="sequenceTitle">Loading…</h2>
             </div>
             <div class="frame-readout">
-              <span>Frame</span>
+              <span id="frameKind">Playback frame</span>
               <strong id="frameNumber">—</strong>
               <span id="frameTime">—</span>
             </div>
@@ -46,9 +46,10 @@
             <div class="viewer-loading" id="viewerLoading">Loading source frame</div>
           </div>
           <div class="legend" aria-label="Overlay legend">
-            <span><i class="legend-mark represented"></i>Represented event</span>
-            <span><i class="legend-mark suppressed"></i>Suppressed event</span>
-            <span><i class="legend-mark event-only"></i>Stage 1 event</span>
+            <strong>Stage 1 event box → Stage 2 outcome:</strong>
+            <span><i class="legend-mark represented"></i>represented by cue</span>
+            <span><i class="legend-mark suppressed"></i>intentionally suppressed</span>
+            <span><i class="legend-mark unresolved"></i>unresolved</span>
           </div>
         </article>
 
@@ -79,7 +80,7 @@
           <span class="timecode muted" id="duration">00:00.000</span>
           <button id="mute" class="icon-button" type="button" aria-label="Mute">Audio on</button>
         </div>
-        <p class="clock-note"><span></span>Audio <code>currentTime</code> is the sole playback clock</p>
+        <p class="clock-note"><span></span>Audio <code>currentTime</code> is the sole playback clock · frame n covers n/fps ≤ t &lt; (n+1)/fps</p>
       </section>
 
       <section class="panel timeline-panel">
@@ -96,6 +97,11 @@
           </div>
           <canvas id="timeline" height="198" aria-label="Synchronized event, cue and suppression timeline"></canvas>
         </div>
+        <p class="evidence-key">
+          EVENT = Stage 1 normalised event · CUE = Stage 2 represented outcome ·
+          SUPPRESS = Stage 2 intentional suppression. Only CUE markers are selectable.
+        </p>
+        <p class="nearby-label">Nearby cues <span>select one to pause and align its source frame, playback cursor and trace</span></p>
         <div class="nearby-cues" id="nearbyCues" aria-label="Cues in the current window"></div>
       </section>
 
@@ -111,6 +117,22 @@
           <div id="traceContent" class="trace-empty">
             Choose a cue marker or nearby cue to inspect its verified source and rendered sample chain.
           </div>
+          <section class="mapping-key" aria-label="Frozen baseline mapping key">
+            <div>
+              <p class="eyebrow">Frozen baseline mapping</p>
+              <dl>
+                <div><dt>Timing</dt><dd>event timestamp → cue start</dd></div>
+                <div><dt>Pan</dt><dd>horizontal centre → stereo pan</dd></div>
+                <div><dt>Pitch</dt><dd>vertical centre → frequency</dd></div>
+                <div><dt>Amplitude</dt><dd>normalised bounding-box area</dd></div>
+              </dl>
+            </div>
+            <p>
+              Class modifier is recorded for traceability only and is not applied by the current
+              renderer. Bounding-box area is an imperfect apparent-scale proxy, not depth. This is
+              a configurable technical design, not a perceptually validated mapping.
+            </p>
+          </section>
         </article>
 
         <aside class="panel session-panel">

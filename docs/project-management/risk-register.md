@@ -21,11 +21,12 @@
 | R17 | Dissertation tables, figures or prose drift from canonical technical evidence through copying, rounding or denominator changes | Low | High | Generate presentation derivatives from canonical reports, retain raw values and JSON Pointers, audit every displayed value and maintain a claim-to-evidence matrix. | Reduced; 134 values, 136 table cells, 20 figure data points and 12 claims passed automated and independent audits with zero remaining mismatch |
 | R18 | The Stage 4 inspection layer bypasses or weakens Stage 1-3 package validation and presents mismatched evidence as one session | Low | High | Freeze Workbench Session Contract `0.1.0`, reuse the verified cross-stage chain checks, compare declared hashes/identities and reject invalid sessions before UI rendering. | Reduced; both retained dataset sessions pass the same validator/model path before immutable catalogue exposure |
 | R19 | Runtime dataset/output paths, usernames or machine-specific state leak into session identities or frontend diagnostics | Low | High | Keep runtime roots outside the deterministic session payload, resolve only safe logical children and return machine-readable path-free diagnostics. | Reduced; bounded session lookup, scoped MOT17/KITTI projections and the final Phase 3 repository audit are path-free |
-| R20 | A browser demonstration is mistaken for participant or perceptual validation | Medium | High | Define the UI as a read-only inspection and demonstration layer, source Stage 3 metrics from verified reports only and retain explicit evidence-boundary wording in documentation and presentation. | Open and controlled; cross-dataset browser acceptance confirms technical presentation, synchronisation and state isolation only, not participant, perceptual, usability or accessibility evidence |
+| R20 | A browser demonstration is mistaken for participant or perceptual validation | Medium | High | Define the UI as a read-only inspection and demonstration layer, source Stage 3 metrics from verified reports only and retain explicit evidence-boundary wording in documentation and presentation. | Open and controlled; informal researcher inspection found dense overlapping cues difficult to distinguish, but no participant or perceptual evaluation has been conducted and the canonical audio remains unchanged |
+| R21 | Bounding-box area is misrepresented as true depth or a reliable apparent-distance measure | Medium | Medium | Describe area only as the frozen amplitude input and an imperfect apparent-scale proxy; reserve height/smoothing alternatives for separately versioned future experiments. | Open and controlled; Milestone 2 adds accurate UI/release wording without changing the baseline preset, cues, WAVs or reports |
 
 ## Review
 
-Last reviewed: 14 August 2026, after the Phase 3 release-candidate merge and post-merge CI.
+Last reviewed: 14 August 2026, during Milestone 2 inspection-correction implementation.
 
 R9 remains an explicit redistribution limitation. R4 is reduced by real technical values but those
 values are not perceptual evidence. R5 and R15 are reduced by the frozen manual oracle and unchanged
@@ -35,7 +36,7 @@ hash manifests, generator validation and path scans, all of which remain mandato
 by the deterministic reporting build and separate manual audit; those controls must remain active
 when material is transferred into the dissertation.
 
-Stage 4 adds R18-R20. Post-merge review of PR #28 showed that R18 also includes runtime package-layout
+Stage 4 adds R18-R21. Post-merge review of PR #28 showed that R18 also includes runtime package-layout
 compatibility: a valid verification design is insufficient if retained packages cannot be resolved
 from their actual storage structure. PR #30 implemented the correction but was merged before private
 acceptance and then reverted by PR #31. Issue #29 was therefore reopened and PR #32 reapplies the
@@ -48,6 +49,10 @@ declared session ID and clearing browser state on selection changes. R20 remains
 the cross-dataset pass confirms that verified technical evidence is presented, synchronised and
 isolated as intended, but provides no participant-based evidence of perceptual effectiveness,
 usability or accessibility.
+
+Milestone 2 retains R20 and records R21 after researcher inspection. Dense-cue distinguishability
+and pose-sensitive bounding-box area are design limitations, not participant findings. No mapping,
+synthesis, scheduling, suppression, audio or evaluation evidence changes in response.
 
 The register must be reviewed when a risk changes, a mitigation is applied, an issue changes the
 agreed scope or a new project stage begins.

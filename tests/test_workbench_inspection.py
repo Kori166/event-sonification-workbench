@@ -1,5 +1,6 @@
 import hashlib
 import json
+import math
 import re
 import threading
 import urllib.error
@@ -85,21 +86,61 @@ def inspection_fixture(tmp_path: Path) -> SimpleNamespace:
             "visibility": 0.5,
             "metadata": {"sequence_length": 3, "image_extension": ".jpg"},
         },
+        {
+            "event_id": "evt:mot17:synthetic:f000002:t3:r000003",
+            "dataset": "mot17",
+            "sequence": "synthetic",
+            "frame": 2,
+            "timestamp": 1.0,
+            "frame_rate": 2.0,
+            "track_id": "3",
+            "object_class": "pedestrian",
+            "source_object_class": "Pedestrian",
+            "source_row": 3,
+            "source_file": "MOT17/train/SYNTHETIC/gt/gt.txt",
+            "source_file_sha256": "a" * 64,
+            "bbox_x": 55.0,
+            "bbox_y": 25.0,
+            "bbox_width": 15.0,
+            "bbox_height": 30.0,
+            "image_width": 100,
+            "image_height": 80,
+            "visibility": 0.9,
+            "metadata": {"sequence_length": 3, "image_extension": ".jpg"},
+        },
     ]
-    cue = {
-        "cue_id": "cue:synthetic0000000000000000",
-        "source_event_id": events[0]["event_id"],
-        "frame": 0,
-        "start_time_seconds": 0.0,
-        "duration_seconds": 0.25,
-        "track_id": "1",
-        "object_class": "pedestrian",
-        "frequency_hz": 440.0,
-        "amplitude": 0.2,
-        "stereo_pan": 0.0,
-        "source_file": events[0]["source_file"],
-        "source_row": 1,
-    }
+    cues = [
+        {
+            "cue_id": "cue:synthetic0000000000000000",
+            "source_event_id": events[0]["event_id"],
+            "frame": 0,
+            "start_time_seconds": 0.0,
+            "duration_seconds": 0.25,
+            "track_id": "1",
+            "object_class": "pedestrian",
+            "frequency_hz": 440.0,
+            "amplitude": 0.2,
+            "stereo_pan": 0.0,
+            "class_modifier": 1.0,
+            "source_file": events[0]["source_file"],
+            "source_row": 1,
+        },
+        {
+            "cue_id": "cue:synthetic9999999999999999",
+            "source_event_id": events[2]["event_id"],
+            "frame": 2,
+            "start_time_seconds": 1.0,
+            "duration_seconds": 0.25,
+            "track_id": "3",
+            "object_class": "pedestrian",
+            "frequency_hz": 660.0,
+            "amplitude": 0.15,
+            "stereo_pan": 0.5,
+            "class_modifier": 1.0,
+            "source_file": events[2]["source_file"],
+            "source_row": 3,
+        },
+    ]
     suppression = {
         "source_event_id": events[1]["event_id"],
         "frame": 1,
@@ -110,17 +151,28 @@ def inspection_fixture(tmp_path: Path) -> SimpleNamespace:
         "suppression_code": "class_excluded",
         "reason": "The event class is excluded.",
     }
-    render = {
-        "cue_id": cue["cue_id"],
-        "source_event_id": cue["source_event_id"],
-        "start_time_seconds": 0.0,
-        "duration_seconds": 0.25,
-        "start_sample": 0,
-        "end_sample_exclusive": 2000,
-        "duration_samples": 2000,
-    }
+    renders = [
+        {
+            "cue_id": cues[0]["cue_id"],
+            "source_event_id": cues[0]["source_event_id"],
+            "start_time_seconds": 0.0,
+            "duration_seconds": 0.25,
+            "start_sample": 0,
+            "end_sample_exclusive": 2000,
+            "duration_samples": 2000,
+        },
+        {
+            "cue_id": cues[1]["cue_id"],
+            "source_event_id": cues[1]["source_event_id"],
+            "start_time_seconds": 1.0,
+            "duration_seconds": 0.25,
+            "start_sample": 8000,
+            "end_sample_exclusive": 10000,
+            "duration_samples": 2000,
+        },
+    ]
     _write_json(event_directory / "events.json", {"events": events})
-    _write_json(event_directory / "run_metadata.json", {"event_count": 2})
+    _write_json(event_directory / "run_metadata.json", {"event_count": 3})
     _write_json(
         event_directory / "provenance_log.json",
         {
@@ -134,13 +186,13 @@ def inspection_fixture(tmp_path: Path) -> SimpleNamespace:
             ]
         },
     )
-    _write_json(cue_directory / "cue_schedule.json", {"cues": [cue]})
+    _write_json(cue_directory / "cue_schedule.json", {"cues": cues})
     _write_json(cue_directory / "suppression_log.json", {"entries": [suppression]})
     _write_json(
         cue_directory / "sonification_metadata.json",
         {"preset": {"name": "baseline", "version": "0.1.0", "sha256": "c" * 64}},
     )
-    _write_json(audio_directory / "render_log.json", {"entries": [render]})
+    _write_json(audio_directory / "render_log.json", {"entries": renders})
     _write_json(
         audio_directory / "renderer_metadata.json",
         {
@@ -167,7 +219,7 @@ def inspection_fixture(tmp_path: Path) -> SimpleNamespace:
         "evaluation_run_id": "evaluation-mot17-synthetic-0123456789abcdef",
         "valid": True,
         "diagnostic_counts": {"error_count": 0, "warning_count": 0},
-        "event_accounting": {"valid_events": 2},
+        "event_accounting": {"valid_events": 3},
         "timeline": {"duration_seconds": 1.5},
         "metrics": {
             "event_coverage": {"eligible_event_coverage": {"value": 1.0}},
@@ -211,7 +263,7 @@ def inspection_fixture(tmp_path: Path) -> SimpleNamespace:
     return SimpleNamespace(
         model=InspectionModel(opened),
         opened=opened,
-        cue=cue,
+        cues=cues,
         report=report,
         audio_bytes=audio_path.read_bytes(),
         image_bytes=image_bytes + b"\x01",
@@ -226,15 +278,17 @@ def test_indexed_model_projects_frame_timeline_trace_and_report(
 
     assert summary["counts"] == {
         "frames": 3,
-        "events": 2,
-        "cues": 1,
+        "events": 3,
+        "cues": 2,
         "suppressions": 1,
-        "rendered_cues": 1,
+        "rendered_cues": 2,
     }
     assert summary["timing"]["clock_authority"] == "browser_audio_currentTime"
-    assert model.frame_for_time(0.499) == 0
-    assert model.frame_for_time(0.5) == 1
-    assert model.frame(0)["events"][0]["bbox"] == {
+    assert summary["timing"]["frame_time_relationship"] == (
+        "frame = floor(timestamp_seconds * frame_rate)"
+    )
+    first_frame = model.frame(0)
+    assert first_frame["events"][0]["bbox"] == {
         "x": 10.0,
         "y": 20.0,
         "width": 30.0,
@@ -242,9 +296,19 @@ def test_indexed_model_projects_frame_timeline_trace_and_report(
     }
 
     timeline = model.timeline(0.0, 1.0)
-    assert [item["cue_id"] for item in timeline["cues"]] == [inspection_fixture.cue["cue_id"]]
+    assert [item["cue_id"] for item in timeline["cues"]] == [
+        inspection_fixture.cues[0]["cue_id"]
+    ]
     assert timeline["suppressions"][0]["timestamp_seconds"] == 0.5
-    trace = model.trace(inspection_fixture.cue["cue_id"])
+    assert first_frame["events"][0]["stage_2_outcome"] == {
+        "status": "represented",
+        "cue_id": inspection_fixture.cues[0]["cue_id"],
+    }
+    assert model.frame(1)["events"][0]["stage_2_outcome"] == {
+        "status": "suppressed",
+        "suppression_code": "class_excluded",
+    }
+    trace = model.trace(inspection_fixture.cues[0]["cue_id"])
     assert trace["source_annotation"] == {
         "logical_path": "MOT17/train/SYNTHETIC/gt/gt.txt",
         "row": 1,
@@ -253,6 +317,33 @@ def test_indexed_model_projects_frame_timeline_trace_and_report(
     assert trace["render"]["start_sample"] == 0
     assert trace["render"]["end_sample_exclusive"] == 2000
     assert model.evaluation()["metrics"] == inspection_fixture.report["metrics"]
+
+
+def test_frame_time_uses_exact_half_open_intervals(
+    inspection_fixture: SimpleNamespace,
+) -> None:
+    model = inspection_fixture.model
+
+    assert model.frame_for_time(0.0) == 0
+    assert model.frame_for_time(math.nextafter(0.5, 0.0)) == 0
+    assert model.frame_for_time(0.5) == 1
+    assert model.frame_for_time(math.nextafter(0.5, 1.0)) == 1
+    assert model.frame_for_time(99.0) == 2
+
+
+def test_boundary_cues_resolve_complete_retained_traces(
+    inspection_fixture: SimpleNamespace,
+) -> None:
+    model = inspection_fixture.model
+    start = model.timeline(0.0, 0.5)["cues"]
+    end = model.timeline(0.5, 1.5)["cues"]
+
+    assert [item["cue_id"] for item in start] == [inspection_fixture.cues[0]["cue_id"]]
+    assert [item["cue_id"] for item in end] == [inspection_fixture.cues[-1]["cue_id"]]
+    for cue in (start[0], end[-1]):
+        trace = model.trace(cue["cue_id"])
+        assert trace["cue"]["frame"] == trace["event"]["frame"]
+        assert trace["render"]["source_event_id"] == trace["event"]["event_id"]
 
 
 def test_model_rejects_unbounded_queries_and_handles_unavailable_evaluation(
@@ -450,3 +541,27 @@ def test_frontend_scopes_requests_and_resets_cross_session_state(
     assert 'audio.removeAttribute("src")' in script
     assert 'image.removeAttribute("src")' in script
     assert 'document.querySelector("#sessionDetails").replaceChildren()' in script
+
+
+def test_frontend_freezes_boundary_cue_and_frame_inspection_contracts(
+    inspection_url: str,
+) -> None:
+    with urllib.request.urlopen(f"{inspection_url}/assets/app.js") as response:
+        script = response.read().decode()
+    with urllib.request.urlopen(f"{inspection_url}/") as response:
+        page = response.read().decode()
+
+    assert "function cachedTimelineCovers" in script
+    assert "state.timelinePendingKey === requestKey" in script
+    assert "requestId !== state.timelineRequest" in script
+    assert "audio.currentTime = trace.cue.start_time_seconds" in script
+    assert 'loadFrame(trace.event.frame, "cue")' in script
+    assert "Math.floor(boundedTime * frameRate)" in script
+    assert "function cueAtCanvasPoint" in script
+    assert "CUE_HIT_RADIUS_PX" in script
+    assert "state.timeline.cues.reduce" not in script
+    assert "drawFrameStructure" in script
+    assert "Nearby cues" in page
+    assert "Only CUE markers are selectable" in page
+    assert "Frozen baseline mapping" in page
+    assert "traceability only" in page

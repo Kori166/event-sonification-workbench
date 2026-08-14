@@ -112,6 +112,10 @@ def test_retained_cross_dataset_workbench_catalogue() -> None:
         ) == details["counts"]
         frame = model.frame(0)
         assert frame["events"]
+        assert all(
+            event["stage_2_outcome"]["status"] in {"represented", "suppressed"}
+            for event in frame["events"]
+        )
         assert model.image_path(0).read_bytes().startswith(details["image_signature"])
         timeline = model.timeline(0.0, 0.1)
         assert timeline["events"]
@@ -120,6 +124,20 @@ def test_retained_cross_dataset_workbench_catalogue() -> None:
         trace = model.trace(timeline["cues"][0]["cue_id"])
         assert trace["source_annotation"]["logical_path"] == details["source"]
         assert trace["render"]["end_sample_exclusive"] > trace["render"]["start_sample"]
+        duration = summary["timing"]["audio_duration_seconds"]
+        first_window = model.timeline(0.0, min(1.0, duration))
+        final_window = model.timeline(max(0.0, duration - 1.0), duration)
+        boundary_cues = (
+            first_window["cues"][:2] + final_window["cues"][-2:]
+        )
+        assert len(boundary_cues) == 4
+        for boundary_cue in boundary_cues:
+            boundary_trace = model.trace(boundary_cue["cue_id"])
+            assert boundary_trace["cue"]["frame"] == boundary_trace["event"]["frame"]
+            assert boundary_trace["cue"]["class_modifier"] > 0
+            assert boundary_trace["render"]["source_event_id"] == (
+                boundary_trace["event"]["event_id"]
+            )
         evaluation = model.evaluation()
         assert evaluation["available"] is True
         assert evaluation["source"] == "verified_stage_3_report"

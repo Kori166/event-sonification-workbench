@@ -127,6 +127,25 @@ integration passed once in 83.56s and the Phase 2 real-session integration passe
 
 **Stage 4 Milestone 1 complete; Stage 4 remains active.**
 
+### Milestone 2: inspection corrections and final release refinement
+
+- [x] Audit clean `main` and record starting SHA `799c5ef95d42040d05c2b7d7a757ec765b6d382c`.
+- [x] Characterise the boundary provenance defect and verify retained backend traces.
+- [x] Freeze the correction architecture and research boundary in Decision 0019.
+- [x] Stabilise clamped start/end timeline windows and boundary cue controls.
+- [x] Align selected cue time, source frame and provenance without changing timestamps.
+- [x] Document/test half-open frame timing and display frame structure distinctly from the cursor.
+- [x] Project stable retained Stage 2 outcomes for source-frame events.
+- [x] Reconcile overlay and EVENT/CUE/SUPPRESS terminology.
+- [x] Make only cue markers selectable and label nearby cues explicitly.
+- [x] Expose selected-cue technical parameters and the frozen baseline mapping key accurately.
+- [x] Record the bounding-box-area limitation and retain R20 without redesigning audio.
+- [ ] Pass focused, complete-suite and all retained private integration gates.
+- [ ] Pass controlled two-dataset browser/switching/console acceptance.
+- [ ] Pass privacy/scope audit and final-head hosted CI.
+- [ ] Merge the focused PR and pass post-merge `main` CI.
+- [ ] Record the exact Milestone 2 close-out SHA and mark Milestone 2 complete.
+
 ## Scope boundary
 
 Stage 4 assembles and presents existing research outputs. It does not redefine parsing, event

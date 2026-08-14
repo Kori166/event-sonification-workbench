@@ -157,3 +157,15 @@ candidate. The main project progress log remains the chronological project-wide 
 - Post-merge `main` CI run 31818140887 passed with clean install, Ruff and 271 tests / 6 deselected
   on Ubuntu 24.04 / Python 3.11.15. Phase 3 and Stage 4 Milestone 1 are complete; Stage 4 remains
   active.
+
+## 2026-08-14 - Milestone 2 inspection-correction candidate
+
+- Audited clean main `799c5ef95d42040d05c2b7d7a757ec765b6d382c` and opened Issue #39.
+- Direct first/second/penultimate/final trace lookups passed for both retained datasets. The
+  boundary defect was isolated to clamped-window cache churn and repeated cue-control replacement.
+- Decision 0019 freezes stable edge windows, exact half-open frame timing, explicit cue/source-frame
+  inspection, retained event-outcome projection and cue-only timeline interaction.
+- Added visible frame structure, reconciled evidence terminology, selected-cue parameters and a
+  frozen mapping key. R20 remains open and R21 records bounding-box area as an imperfect
+  apparent-scale proxy; no research output changed.
+- Focused automated, private, final browser, privacy, CI and merge gates remain pending.
