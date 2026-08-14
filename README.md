@@ -25,8 +25,10 @@ verified it against a manually calculated synthetic oracle; Milestone 2 applied 
 contract to verified MOT17-02-DPM and KITTI Tracking 0000 evidence chains; Milestone 3 generated and
 independently audited report-ready tables, deterministic SVG figures and bounded RQ3 findings. RQ3
 is supported by technical case-study evidence for those sequences, the baseline preset/renderer and
-the recorded environment. It is not perceptual or participant evidence. Stage 4 artefact assembly
-and release verification is the next active stage; no release candidate has yet been claimed.
+the recorded environment. It is not perceptual or participant evidence. Stage 4 Milestone 1 Phase 1
+is complete. The Phase 2 synchronised MOT17 inspection slice passed researcher-performed controlled
+browser acceptance; merge remains pending final-head CI. Stage 4 remains active and no release
+candidate has yet been claimed.
 
 Milestone 1 established common schema version `0.1.0`. The cross-dataset review in Milestone 3
 introduced schema `0.2.0`, retaining the event shape while allowing native unnormalised confidence
@@ -168,6 +170,29 @@ python -m pytest
 The integration tests use `MOT17_ROOT` and `KITTI_TRACKING_ROOT` independently and skip clearly when
 their private datasets are unavailable. A skip is not evidence of a private-data pass. The CI
 workflow runs the non-integration tests and lint checks for pull requests and pushes to `main`.
+
+## Synchronised inspection candidate
+
+Stage 4 Milestone 1 Phase 2 adds a local, read-only inspection candidate over the retained verified
+MOT17-02-DPM chain. With `MOT17_ROOT` and `STAGE2_EVIDENCE_ROOT` configured in the ignored `.env`,
+launch it from the repository root:
+
+```powershell
+python -m event_sonification_workbench.cli inspect-session
+```
+
+The command validates the committed path-free session declaration and complete Stage 1 to 3 chain
+before serving `http://127.0.0.1:8765/`. The interface presents source imagery with recorded event
+geometry, the exact verified WAV, synchronized event/cue/suppression lanes, cue-to-render provenance
+and metrics read directly from the verified Stage 3 report. Browser audio `currentTime` is the only
+live playback clock; the interface does not parse annotations, schedule cues, render audio or
+calculate evaluation metrics.
+
+The service is loopback-only and exposes no write, upload, authentication, database or analytics
+feature. It is inspection/demonstration infrastructure, not participant, accessibility, usability,
+navigation, perceptual-effectiveness or safety evidence. Its twelve-check controlled browser pass is
+engineering acceptance only; see `docs/development/stage-4-milestone-1-phase-2.md`. Phase 2
+acceptance is complete and merge is pending final CI; Phase 3 has not started.
 
 ## Structured event outputs
 
@@ -393,6 +418,10 @@ RQ3 answer are in `docs/evaluation/reporting/` and `docs/development/stage-3-clo
   supplemental traceability boundary.
 - `docs/decisions/0015-audited-reporting-evidence.md`: deterministic presentation, formatting and
   claim-audit policy.
+- `docs/decisions/0016-workbench-session-and-inspection-layer.md`: frozen session contract and
+  evidence boundary.
+- `docs/decisions/0017-local-synchronised-inspection-architecture.md`: local service, single-clock
+  frontend and dependency decision.
 - `docs/development/milestone-2-mot17-vertical-slice.md`: development and validation evidence.
 - `docs/development/milestone-3-kitti-extension.md`: audit, fixture and integration evidence.
 - `docs/development/milestone-2-fixture-licence-resolution.md`: fixture licence decision.
@@ -404,6 +433,8 @@ RQ3 answer are in `docs/evaluation/reporting/` and `docs/development/stage-3-clo
   and RQ3 boundary.
 - `docs/development/stage-3-closeout.md`: all Stage 3 identities, report-ready hashes, audit and
   quality evidence, bounded RQ3 answer and Stage 4 handover.
+- `docs/development/stage-4-milestone-1-phase-2.md`: inspection implementation, private gates,
+  browser acceptance state and Phase 3 boundary.
 - `docs/project-management/stage-2-checklist.md`: completed Stage 2 implementation and close-out
   gates.
 - `docs/project-management/stage-3-checklist.md`: completed contract, real-data and report-ready

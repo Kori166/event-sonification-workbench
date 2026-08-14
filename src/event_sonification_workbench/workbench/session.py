@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Mapping
+from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from typing import Any
 
@@ -54,6 +55,26 @@ _PACKAGE_RUNTIME_ROOTS = {
     "cue_package": "CUE_PACKAGE_ROOT",
     "audio_package": "AUDIO_PACKAGE_ROOT",
 }
+
+
+class WorkbenchSessionError(ValueError):
+    """Path-free failure raised while opening a validated workbench session."""
+
+    def __init__(self, code: str, validation: Mapping[str, Any] | None = None) -> None:
+        self.code = code
+        self.validation = dict(validation) if validation is not None else None
+        super().__init__(code)
+
+
+@dataclass(frozen=True)
+class ValidatedWorkbenchSession:
+    """Process-local bindings for a session that passed the frozen Phase 1 validator."""
+
+    session: dict[str, Any]
+    validation: dict[str, Any]
+    package_directories: dict[str, Path]
+    media_directory: Path
+    evaluation_report: Path | None
 
 
 def _repository_root() -> Path:
@@ -622,3 +643,43 @@ def validate_workbench_session(
         "components": components,
         "diagnostics": diagnostics,
     }
+
+
+def open_workbench_session(
+    session_data: dict[str, Any], runtime_roots: dict[str, Any]
+) -> ValidatedWorkbenchSession:
+    """Validate a session, then return process-local bindings without serialising paths."""
+    validation = validate_workbench_session(session_data, runtime_roots)
+    if validation["valid"] is not True:
+        raise WorkbenchSessionError("workbench_session_invalid", validation)
+
+    package_directories, diagnostics = _resolve_package_directories(session_data, runtime_roots)
+    if diagnostics:
+        raise WorkbenchSessionError("workbench_session_bindings_unavailable", validation)
+
+    media = session_data["media"]
+    media_root = _safe_runtime_root(runtime_roots, media["root_environment"])
+    if media_root is None:
+        raise WorkbenchSessionError("workbench_session_bindings_unavailable", validation)
+    media_directory = _safe_logical_child(media_root, media["relative_path"])
+    if media_directory is None:
+        raise WorkbenchSessionError("workbench_session_bindings_unavailable", validation)
+
+    report_path: Path | None = None
+    evaluation = session_data["evaluation"]
+    if evaluation["available"]:
+        repository_root = _safe_runtime_root(runtime_roots, "REPOSITORY_ROOT") or _repository_root()
+        report_path = _safe_logical_child(
+            repository_root,
+            evaluation["report_logical_path"],
+        )
+        if report_path is None:
+            raise WorkbenchSessionError("workbench_session_bindings_unavailable", validation)
+
+    return ValidatedWorkbenchSession(
+        session=dict(session_data),
+        validation=validation,
+        package_directories=package_directories,
+        media_directory=media_directory,
+        evaluation_report=report_path,
+    )

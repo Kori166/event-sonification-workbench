@@ -27,6 +27,9 @@ event-sonification = "event_sonification_workbench.cli:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+"event_sonification_workbench.workbench.static" = ["*.html", "*.css", "*.js"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 markers = [

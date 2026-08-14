@@ -1,0 +1,68 @@
+{
+  "audio_package": {
+    "cue_schedule_sha256": "01591926b4c0b33f7760c081483fd1434b431ca419780a9fee6eb2530ec185a4",
+    "input_cue_package_sha256": "6000edf1a4f10dbdb00e85941ea08f3f7ce4257212b40aac47751dbb6318f0c9",
+    "input_cue_run_id": "cue-mot17-mot17-02-dpm-97bdca8f548747c7",
+    "package_sha256": "d3812fceea51fc04c575f1a3bdd23f61ec58b3cc46005d30cc078a315e8f0949",
+    "render_log_sha256": "d7f1b7b27e44e4d3fe89d52d40a51e02673595527a1a8840edde8b94b382d181",
+    "renderer_metadata_sha256": "18dcdf9fd482a3ca41c27aa63432ca276bf3fb4f7458f579a5c3010af67a8691",
+    "renderer_version": "0.1.0",
+    "run_id": "audio-mot17-mot17-02-dpm-e55d5dc901d5572c",
+    "wav_sha256": "0d25af2972ac614790c50d8a86291e0642bb1f69caa751a6ab6189d335ed1ca3"
+  },
+  "configuration": {
+    "preset_name": "baseline",
+    "preset_sha256": "27f9b4e031e12fe9e73e72275aa7359b5255e2f997a35fb2432372dcbd843289",
+    "preset_version": "0.1.0",
+    "renderer_sha256": "1c741306f67633543f9f16de557173662005c8c21c4a911fb4bcf8bbde18770b",
+    "renderer_version": "0.1.0"
+  },
+  "cue_package": {
+    "cue_log_sha256": "806bffa4cb9cff9ff9d6816b6a17395d82748979daa2cee55d9f668b543b0c23",
+    "cue_schedule_csv_sha256": "bf61b4b35696f00cad3cc885e97105c498d16d1d65db1c75ad7bbff2ec7cc0fa",
+    "cue_schedule_sha256": "01591926b4c0b33f7760c081483fd1434b431ca419780a9fee6eb2530ec185a4",
+    "format_version": "0.1.0",
+    "input_event_package_sha256": "1e0ed932f3708be9e35e592361c8c937a583ee2b42b6abd61df8db8e5974bee9",
+    "input_event_run_id": "run-mot17-mot17-02-dpm-03074d7ff016652e",
+    "package_sha256": "6000edf1a4f10dbdb00e85941ea08f3f7ce4257212b40aac47751dbb6318f0c9",
+    "run_id": "cue-mot17-mot17-02-dpm-97bdca8f548747c7",
+    "sonification_metadata_sha256": "f5a1f66153ea0b61aa25367b78ed1e7fa03499eae2a5e2425e2dec5751fc23ba",
+    "suppression_log_sha256": "f589c1730f3aa3f3eaf90d60ffeb3f3618faa81679049b6e3a2019089e81dace"
+  },
+  "dataset": "mot17",
+  "evaluation": {
+    "audio_package_sha256": "d3812fceea51fc04c575f1a3bdd23f61ec58b3cc46005d30cc078a315e8f0949",
+    "audio_run_id": "audio-mot17-mot17-02-dpm-e55d5dc901d5572c",
+    "available": true,
+    "contract_version": "0.1.0",
+    "cue_package_sha256": "6000edf1a4f10dbdb00e85941ea08f3f7ce4257212b40aac47751dbb6318f0c9",
+    "cue_run_id": "cue-mot17-mot17-02-dpm-97bdca8f548747c7",
+    "cue_schedule_sha256": "01591926b4c0b33f7760c081483fd1434b431ca419780a9fee6eb2530ec185a4",
+    "evaluation_run_id": "evaluation-mot17-mot17-02-dpm-2636a438409d649e",
+    "event_package_sha256": "1e0ed932f3708be9e35e592361c8c937a583ee2b42b6abd61df8db8e5974bee9",
+    "event_run_id": "run-mot17-mot17-02-dpm-03074d7ff016652e",
+    "render_log_sha256": "d7f1b7b27e44e4d3fe89d52d40a51e02673595527a1a8840edde8b94b382d181",
+    "report_logical_path": "docs/evaluation/evidence/mot17/mot17_technical_evaluation_report.json",
+    "report_sha256": "d847e805d0b2d7ccd50cd315bbcecfc0ad525f40e7c4c2013938f955d20f13e5",
+    "suppression_log_sha256": "f589c1730f3aa3f3eaf90d60ffeb3f3618faa81679049b6e3a2019089e81dace",
+    "wav_sha256": "0d25af2972ac614790c50d8a86291e0642bb1f69caa751a6ab6189d335ed1ca3"
+  },
+  "event_package": {
+    "events_csv_sha256": "2b4b5e3dac8e70661719b555fc6578a088e8b3aa18758f99447d3137dd43f3ee",
+    "events_sha256": "880232f6ea0696a8c74600f51fe46e8221ff8ee40536dbef4570921a8779b96e",
+    "format_version": "0.1.0",
+    "package_sha256": "1e0ed932f3708be9e35e592361c8c937a583ee2b42b6abd61df8db8e5974bee9",
+    "provenance_log_sha256": "6b44534de1c9ffb9f1f4b7f2d033fa954e08c4dab219e68d8333ef649f55ae5f",
+    "run_id": "run-mot17-mot17-02-dpm-03074d7ff016652e",
+    "run_metadata_sha256": "e247260608d4aaac72f2b5d3e3a602ebe29d7b8e8d2dedd10a2320b6456c7bee",
+    "schema_version": "0.2.0"
+  },
+  "media": {
+    "binding": "runtime",
+    "relative_path": "train/MOT17-02-DPM/img1",
+    "root_environment": "MOT17_ROOT"
+  },
+  "sequence": "mot17-02-dpm",
+  "session_id": "session-mot17-mot17-02-dpm-3707826663b210c6",
+  "session_version": "0.1.0"
+}

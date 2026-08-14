@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from collections.abc import Sequence
 from pathlib import Path, PurePosixPath
 
@@ -76,6 +77,9 @@ from .technical_evaluation_input import (
     load_experiment_manifest,
     write_prepared_evaluation_input,
 )
+from .workbench.inspection import InspectionModel
+from .workbench.server import build_inspection_server
+from .workbench.session import open_workbench_session
 
 DEFAULT_SCHEMA = Path("configs/schemas/event.schema.v0.2.0.json")
 DEFAULT_MOT17_MAPPING = Path("configs/class-mappings/mot17.v0.1.0.json")
@@ -105,6 +109,16 @@ DEFAULT_KITTI_EVALUATION_REPORT = Path(
     "docs/evaluation/evidence/kitti/kitti_technical_evaluation_report.json"
 )
 DEFAULT_REPORTING_OUTPUT_DIRECTORY = Path("docs/evaluation/reporting")
+DEFAULT_WORKBENCH_SESSION = Path("configs/workbench/mot17-phase-2-session.v0.1.0.json")
+_RUNTIME_ENVIRONMENTS = (
+    "EVENT_PACKAGE_ROOT",
+    "CUE_PACKAGE_ROOT",
+    "AUDIO_PACKAGE_ROOT",
+    "OUTPUT_ROOT",
+    "MOT17_ROOT",
+    "KITTI_TRACKING_ROOT",
+    "STAGE2_EVIDENCE_ROOT",
+)
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -250,6 +264,20 @@ def _build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Replace only the generator-owned reporting files already present in the output tree.",
     )
+
+    inspect_session = subparsers.add_parser(
+        "inspect-session",
+        help="Validate and serve one read-only synchronised inspection session on localhost.",
+    )
+    inspect_session.add_argument("--session", type=Path, default=DEFAULT_WORKBENCH_SESSION)
+    inspect_session.add_argument(
+        "--env-file",
+        type=Path,
+        default=Path(".env"),
+        help="Optional local runtime bindings; existing process environment values take precedence.",
+    )
+    inspect_session.add_argument("--host", default="127.0.0.1")
+    inspect_session.add_argument("--port", type=int, default=8765)
     return parser
 
 
@@ -607,6 +635,64 @@ def _run_generate_report_evidence(args: argparse.Namespace) -> int:
     return 0
 
 
+def _load_local_environment(path: Path) -> None:
+    if not path.exists():
+        return
+    for raw_line in path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        name, separator, raw_value = line.partition("=")
+        if not separator or name.strip() not in _RUNTIME_ENVIRONMENTS:
+            continue
+        value = raw_value.strip()
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in {'"', "'"}:
+            value = value[1:-1]
+        os.environ.setdefault(name.strip(), value)
+
+
+def _run_inspect_session(args: argparse.Namespace) -> int:
+    _load_local_environment(args.env_file)
+    session = load_json_object(args.session)
+    runtime_roots: dict[str, Path] = {
+        name: Path(value)
+        for name in _RUNTIME_ENVIRONMENTS
+        if (value := os.environ.get(name, "").strip())
+    }
+    evidence_root = runtime_roots.pop("STAGE2_EVIDENCE_ROOT", None)
+    if evidence_root is not None:
+        dataset_directory = "mot17" if session["dataset"] == "mot17" else "kitti"
+        retained_run = evidence_root / dataset_directory / "run-a"
+        runtime_roots.setdefault("EVENT_PACKAGE_ROOT", retained_run / "events")
+        runtime_roots.setdefault("CUE_PACKAGE_ROOT", retained_run / "cues")
+        runtime_roots.setdefault("AUDIO_PACKAGE_ROOT", retained_run / "audio")
+    runtime_roots["REPOSITORY_ROOT"] = Path.cwd()
+    opened = open_workbench_session(session, runtime_roots)
+    model = InspectionModel(opened)
+    server = build_inspection_server(model, host=args.host, port=args.port)
+    address, port = server.server_address[:2]
+    print(
+        json.dumps(
+            {
+                "command": "inspect-session",
+                "session_id": session["session_id"],
+                "status": "serving_verified_session",
+                "url": f"http://{address}:{port}/",
+            },
+            indent=2,
+            sort_keys=True,
+        ),
+        flush=True,
+    )
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        server.server_close()
+    return 0
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """Run the workbench command-line interface."""
     parser = _build_parser()
@@ -653,6 +739,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             return _run_evaluate_technical(args)
         if args.command == "generate-stage3-report-evidence":
             return _run_generate_report_evidence(args)
+        if args.command == "inspect-session":
+            return _run_inspect_session(args)
     except (PresetValidationError, RendererConfigurationError) as exc:
         parser.error(json.dumps(exc.to_dict(), sort_keys=True))
     except (
