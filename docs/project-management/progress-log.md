@@ -1013,4 +1013,8 @@ be added where a short entry would omit important implementation evidence.
   retained outcome projection, visible frame structure, cue-only interaction and clearer frozen
   mapping/evidence language.
 - R20 remains open; R21 records bounding-box area as an imperfect apparent-scale proxy. No Stage 1-3
-  result, baseline preset or retained WAV is changed. Final gates remain pending.
+  result, baseline preset or retained WAV is changed.
+- Ruff, frontend syntax, 22 focused tests, 274 non-integration tests and each of the Phase 1, Phase 2
+  and expanded cross-dataset private integrations passed. Privacy/frozen-scope audit also passed.
+- Codex technical browser preflight passed both dataset boundary/frame/switch paths. The separate
+  researcher-controlled visual/semantic/console acceptance, CI and merge gates remain pending.

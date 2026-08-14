@@ -140,9 +140,10 @@ integration passed once in 83.56s and the Phase 2 real-session integration passe
 - [x] Make only cue markers selectable and label nearby cues explicitly.
 - [x] Expose selected-cue technical parameters and the frozen baseline mapping key accurately.
 - [x] Record the bounding-box-area limitation and retain R20 without redesigning audio.
-- [ ] Pass focused, complete-suite and all retained private integration gates.
+- [x] Pass focused, complete-suite and all retained private integration gates.
 - [ ] Pass controlled two-dataset browser/switching/console acceptance.
-- [ ] Pass privacy/scope audit and final-head hosted CI.
+- [x] Pass the Milestone 2 privacy and frozen-research-scope audit.
+- [ ] Pass final-head hosted CI.
 - [ ] Merge the focused PR and pass post-merge `main` CI.
 - [ ] Record the exact Milestone 2 close-out SHA and mark Milestone 2 complete.
 

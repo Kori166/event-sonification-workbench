@@ -168,4 +168,9 @@ candidate. The main project progress log remains the chronological project-wide 
 - Added visible frame structure, reconciled evidence terminology, selected-cue parameters and a
   frozen mapping key. R20 remains open and R21 records bounding-box area as an imperfect
   apparent-scale proxy; no research output changed.
-- Focused automated, private, final browser, privacy, CI and merge gates remain pending.
+- Ruff, frontend syntax, 22 focused tests and 274 non-integration tests / 6 deselected passed. The
+  retained Phase 1, Phase 2 MOT17 and expanded Phase 3 cross-dataset private gates each passed once.
+- The privacy/frozen-scope audit passed with no research contract/configuration/result, retained WAV,
+  private content or path-value change.
+- Codex browser preflight passed repeated first/final-time cue, rounded-frame and switching checks on
+  both datasets. Researcher-controlled visual/semantic/console acceptance, CI and merge remain.
