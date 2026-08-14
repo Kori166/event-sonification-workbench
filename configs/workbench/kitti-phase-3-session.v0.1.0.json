@@ -1,0 +1,69 @@
+{
+  "audio_package": {
+    "cue_schedule_sha256": "96200af25ae04c67294b29a320d86f82b87927a4e23eeb24633a60b8e5b94d19",
+    "input_cue_package_sha256": "49b5a778c3cefa694cc8d93fbc643bf088c5fbbe69b30aa201af43a76ec32ec0",
+    "input_cue_run_id": "cue-kitti_tracking-0000-cb42b67e49714a36",
+    "package_sha256": "1bd13cd2e0272ca2b3f5365881e0e8dbddc88cff1c4c2675272b3f963ddb99b0",
+    "render_log_sha256": "cfe4fd3a24eedcbc90a45d08a44b900d3e64cc2fa9a26f20081adc1a78a9ee06",
+    "renderer_metadata_sha256": "56d6f53ca2fc93e97887cf2c46fc144e10ec81b5ba7e4a9f8f539b9eb1eb704a",
+    "renderer_version": "0.1.0",
+    "run_id": "audio-kitti_tracking-0000-9472ddb1a4a87617",
+    "wav_sha256": "9fe11798dfaca388f10af21c346d49efa3507c1879ae2fff50e2a7d6d7d5e6ce"
+  },
+  "configuration": {
+    "preset_name": "baseline",
+    "preset_sha256": "27f9b4e031e12fe9e73e72275aa7359b5255e2f997a35fb2432372dcbd843289",
+    "preset_version": "0.1.0",
+    "renderer_sha256": "1c741306f67633543f9f16de557173662005c8c21c4a911fb4bcf8bbde18770b",
+    "renderer_version": "0.1.0"
+  },
+  "cue_package": {
+    "cue_log_sha256": "2acb5e711d4359fd675e21f732b46a15e1344c475836dbf05632e309a37bd503",
+    "cue_schedule_csv_sha256": "b7e941de4c234951edb95fbf6c2335bb1cdc20b82569c6e97249a25b38ac7147",
+    "cue_schedule_sha256": "96200af25ae04c67294b29a320d86f82b87927a4e23eeb24633a60b8e5b94d19",
+    "format_version": "0.1.0",
+    "input_event_package_sha256": "1295e2fa2c4586308fdd0f4b75a36bd9a9b08a2218569a539a7b60a0f6dd15e2",
+    "input_event_run_id": "run-kitti_tracking-0000-94a4cdc57ff00109",
+    "package_sha256": "49b5a778c3cefa694cc8d93fbc643bf088c5fbbe69b30aa201af43a76ec32ec0",
+    "run_id": "cue-kitti_tracking-0000-cb42b67e49714a36",
+    "sonification_metadata_sha256": "d966fb544422d4cf637210c4a0fe0fea6dcd5008107f1794665b8fece4574093",
+    "suppression_log_sha256": "3787ae6f34fb4003c52ba9827d4342670e48e7b27f77023cadaba88fdeb592cc"
+  },
+  "dataset": "kitti_tracking",
+  "evaluation": {
+    "audio_package_sha256": "1bd13cd2e0272ca2b3f5365881e0e8dbddc88cff1c4c2675272b3f963ddb99b0",
+    "audio_run_id": "audio-kitti_tracking-0000-9472ddb1a4a87617",
+    "available": true,
+    "contract_version": "0.1.0",
+    "cue_package_sha256": "49b5a778c3cefa694cc8d93fbc643bf088c5fbbe69b30aa201af43a76ec32ec0",
+    "cue_run_id": "cue-kitti_tracking-0000-cb42b67e49714a36",
+    "cue_schedule_sha256": "96200af25ae04c67294b29a320d86f82b87927a4e23eeb24633a60b8e5b94d19",
+    "evaluation_run_id": "evaluation-kitti_tracking-0000-d997cdc8f6467c1d",
+    "event_package_sha256": "1295e2fa2c4586308fdd0f4b75a36bd9a9b08a2218569a539a7b60a0f6dd15e2",
+    "event_run_id": "run-kitti_tracking-0000-94a4cdc57ff00109",
+    "render_log_sha256": "cfe4fd3a24eedcbc90a45d08a44b900d3e64cc2fa9a26f20081adc1a78a9ee06",
+    "report_logical_path": "docs/evaluation/evidence/kitti/kitti_technical_evaluation_report.json",
+    "report_sha256": "b5589590a8c645bd7b5654d0318bf90fdb412f987719c26c2374bf3e487f9ff2",
+    "suppression_log_sha256": "3787ae6f34fb4003c52ba9827d4342670e48e7b27f77023cadaba88fdeb592cc",
+    "wav_sha256": "9fe11798dfaca388f10af21c346d49efa3507c1879ae2fff50e2a7d6d7d5e6ce"
+  },
+  "event_package": {
+    "events_csv_sha256": "5068c491c8feace0ba39b91f9398e7b96b6310174c5d63b28a1792c4d8fb0db5",
+    "events_sha256": "542389e4a783380191fdc228b83c37309fa4d483d58913978881ee3cfb6f57a2",
+    "format_version": "0.1.0",
+    "package_sha256": "1295e2fa2c4586308fdd0f4b75a36bd9a9b08a2218569a539a7b60a0f6dd15e2",
+    "provenance_log_sha256": "916703854628b24b0503a56f5bb754204691fe6aa517169fadb3dd5bc2968325",
+    "run_id": "run-kitti_tracking-0000-94a4cdc57ff00109",
+    "run_metadata_sha256": "89cefd74709226303257f6c315368b75b8bb52e84c4c473c03f0f5bf9a37a47b",
+    "schema_version": "0.2.0"
+  },
+  "media": {
+    "binding": "runtime",
+    "relative_path": "training/image_02/0000",
+    "root_environment": "KITTI_TRACKING_ROOT"
+  },
+  "sequence": "0000",
+  "session_id": "session-kitti_tracking-0000-9cae092175c68109",
+  "session_version": "0.1.0"
+}
+

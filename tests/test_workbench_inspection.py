@@ -11,6 +11,10 @@ from types import SimpleNamespace
 
 import pytest
 
+from event_sonification_workbench.workbench.catalogue import (
+    InspectionCatalogue,
+    load_session_catalogue,
+)
 from event_sonification_workbench.workbench.inspection import (
     InspectionError,
     InspectionModel,
@@ -269,6 +273,46 @@ def test_model_rejects_unbounded_queries_and_handles_unavailable_evaluation(
     assert InspectionModel(opened).evaluation() == {"available": False}
 
 
+def test_catalogue_loads_only_declared_safe_sessions(tmp_path: Path) -> None:
+    repository = tmp_path / "repository"
+    declarations = repository / "configs" / "workbench"
+    declarations.mkdir(parents=True)
+    first = {"session_id": "session-first"}
+    second = {"session_id": "session-second"}
+    _write_json(declarations / "first.json", first)
+    _write_json(declarations / "second.json", second)
+    catalogue_path = declarations / "catalogue.json"
+    _write_json(
+        catalogue_path,
+        {
+            "catalogue_version": "0.1.0",
+            "default_session_id": "session-first",
+            "sessions": [
+                "configs/workbench/first.json",
+                "configs/workbench/second.json",
+            ],
+        },
+    )
+
+    default_session_id, sessions = load_session_catalogue(
+        catalogue_path,
+        repository_root=repository,
+    )
+    assert default_session_id == "session-first"
+    assert sessions == [first, second]
+
+    _write_json(
+        catalogue_path,
+        {
+            "catalogue_version": "0.1.0",
+            "default_session_id": "session-first",
+            "sessions": ["../private/session.json"],
+        },
+    )
+    with pytest.raises(InspectionError, match="session_catalogue_invalid"):
+        load_session_catalogue(catalogue_path, repository_root=repository)
+
+
 @pytest.fixture
 def inspection_url(inspection_fixture: SimpleNamespace) -> str:
     server = build_inspection_server(inspection_fixture.model, port=0)
@@ -332,6 +376,56 @@ def test_service_is_loopback_only_and_frontend_uses_one_audio_clock(
     assert "setInterval" not in script
 
 
+def test_catalogue_routes_are_bounded_and_session_scoped(
+    inspection_fixture: SimpleNamespace,
+) -> None:
+    second_opened = replace(
+        inspection_fixture.opened,
+        session={
+            **inspection_fixture.opened.session,
+            "session_id": "session-kitti_tracking-synthetic-fedcba9876543210",
+            "dataset": "kitti_tracking",
+            "sequence": "0000",
+        },
+    )
+    catalogue = InspectionCatalogue(
+        [inspection_fixture.model, InspectionModel(second_opened)],
+        default_session_id=inspection_fixture.opened.session["session_id"],
+    )
+    server = build_inspection_server(catalogue, port=0)
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    host, port = server.server_address[:2]
+    base_url = f"http://{host}:{port}"
+    try:
+        with urllib.request.urlopen(f"{base_url}/api/sessions") as response:
+            summary = json.load(response)
+        assert [item["dataset"] for item in summary["sessions"]] == [
+            "mot17",
+            "kitti_tracking",
+        ]
+        second_id = summary["sessions"][1]["session_id"]
+        with urllib.request.urlopen(
+            f"{base_url}/api/session?session_id={second_id}"
+        ) as response:
+            selected = json.load(response)
+        assert selected["dataset"] == "kitti_tracking"
+        assert selected["sequence"] == "0000"
+
+        with pytest.raises(urllib.error.HTTPError) as error:
+            urllib.request.urlopen(
+                f"{base_url}/api/session?session_id=session-not-declared"
+            )
+        assert error.value.status == 404
+        assert json.loads(error.value.read()) == {
+            "error": {"code": "invalid_session_identifier"}
+        }
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=5)
+
+
 def test_viewer_loading_overlay_honours_hidden_state(inspection_url: str) -> None:
     with urllib.request.urlopen(f"{inspection_url}/assets/app.css") as response:
         stylesheet = response.read().decode()
@@ -340,3 +434,19 @@ def test_viewer_loading_overlay_honours_hidden_state(inspection_url: str) -> Non
         r"\.viewer-loading\[hidden\]\s*\{\s*display:\s*none\s*;\s*\}",
         stylesheet,
     )
+
+
+def test_frontend_scopes_requests_and_resets_cross_session_state(
+    inspection_url: str,
+) -> None:
+    with urllib.request.urlopen(f"{inspection_url}/assets/app.js") as response:
+        script = response.read().decode()
+
+    assert 'url.searchParams.set("session_id", sessionId)' in script
+    assert "state.generation += 1" in script
+    assert "state.frame = null" in script
+    assert "state.timeline = null" in script
+    assert "state.selectedCue = null" in script
+    assert 'audio.removeAttribute("src")' in script
+    assert 'image.removeAttribute("src")' in script
+    assert 'document.querySelector("#sessionDetails").replaceChildren()' in script

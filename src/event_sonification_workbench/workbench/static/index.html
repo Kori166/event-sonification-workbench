@@ -12,9 +12,17 @@
         <p class="eyebrow">Stage 4 · verified evidence inspection</p>
         <h1>Event Sonification Workbench</h1>
       </div>
-      <div class="session-state" aria-live="polite">
-        <span class="status-dot"></span>
-        <span id="verificationState">Opening verified session…</span>
+      <div class="topbar-actions">
+        <label class="session-picker" for="sessionSelect">
+          <span>Retained session</span>
+          <select id="sessionSelect" disabled>
+            <option>Opening catalogue…</option>
+          </select>
+        </label>
+        <div class="session-state" aria-live="polite">
+          <span class="status-dot"></span>
+          <span id="verificationState">Opening verified session…</span>
+        </div>
       </div>
     </header>
 
@@ -61,7 +69,7 @@
       </section>
 
       <section class="panel transport-panel">
-        <audio id="audio" preload="metadata" src="/api/audio"></audio>
+        <audio id="audio" preload="metadata"></audio>
         <div class="transport">
           <button id="stepBack" class="icon-button" type="button" aria-label="Previous frame">−1f</button>
           <button id="playPause" class="play-button" type="button" aria-label="Play">▶</button>

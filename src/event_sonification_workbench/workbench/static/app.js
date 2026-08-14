@@ -3,15 +3,20 @@
 const audio = document.querySelector("#audio");
 const seek = document.querySelector("#seek");
 const playPause = document.querySelector("#playPause");
+const sessionSelect = document.querySelector("#sessionSelect");
 const timelineCanvas = document.querySelector("#timeline");
 const timelineContext = timelineCanvas.getContext("2d");
 const overlay = document.querySelector("#eventOverlay");
 const state = {
+  catalogue: null,
+  sessionId: null,
+  generation: 0,
   session: null,
   frame: null,
   frameNumber: -1,
   timeline: null,
   timelineLoading: false,
+  timelineRequest: 0,
   selectedCue: null,
   frameRequest: 0,
 };
@@ -23,8 +28,15 @@ function notice(message) {
   window.setTimeout(() => element.classList.remove("show"), 4000);
 }
 
-async function getJson(url) {
-  const response = await fetch(url, { headers: { Accept: "application/json" } });
+function withSession(path, sessionId = state.sessionId) {
+  if (!sessionId) return path;
+  const url = new URL(path, window.location.origin);
+  url.searchParams.set("session_id", sessionId);
+  return `${url.pathname}${url.search}`;
+}
+
+async function getJson(path, sessionId = state.sessionId) {
+  const response = await fetch(withSession(path, sessionId), { headers: { Accept: "application/json" } });
   const body = await response.json();
   if (!response.ok) throw new Error(body.error?.code || "request_failed");
   return body;
@@ -46,7 +58,8 @@ function escapeHtml(value) {
 }
 
 function renderSession(summary) {
-  document.querySelector("#sequenceTitle").textContent = `${summary.dataset.toUpperCase()} · ${summary.sequence}`;
+  const datasetName = summary.dataset === "kitti_tracking" ? "KITTI Tracking" : "MOT17";
+  document.querySelector("#sequenceTitle").textContent = `${datasetName} · ${summary.sequence}`;
   document.querySelector("#verificationState").textContent = "Validated Stage 1–3 chain";
   document.querySelector(".session-state").classList.add("verified");
   seek.max = summary.timing.audio_duration_seconds;
@@ -63,8 +76,9 @@ function renderSession(summary) {
     `<div><dt>${escapeHtml(name)}</dt><dd>${escapeHtml(value)}</dd></div>`).join("");
 }
 
-async function renderEvaluation() {
+async function renderEvaluation(generation = state.generation) {
   const report = await getJson("/api/evaluation");
+  if (generation !== state.generation) return;
   const tag = document.querySelector("#evaluationState");
   const grid = document.querySelector("#metricGrid");
   if (!report.available) {
@@ -121,13 +135,16 @@ function renderOverlay(frame) {
 async function loadFrame(frameNumber) {
   if (frameNumber === state.frameNumber) return;
   state.frameNumber = frameNumber;
+  const generation = state.generation;
   const requestId = ++state.frameRequest;
   const frame = await getJson(`/api/frames/${frameNumber}`);
-  if (requestId !== state.frameRequest) return;
+  if (generation !== state.generation || requestId !== state.frameRequest) return;
   state.frame = frame;
   const image = document.querySelector("#sourceImage");
-  image.onload = () => { document.querySelector("#viewerLoading").hidden = true; };
-  image.src = frame.image_url;
+  image.onload = () => {
+    if (generation === state.generation) document.querySelector("#viewerLoading").hidden = true;
+  };
+  image.src = withSession(frame.image_url);
   document.querySelector("#frameNumber").textContent = String(frame.frame).padStart(3, "0");
   document.querySelector("#frameTime").textContent = `${frame.timestamp_seconds.toFixed(3)} s`;
   renderOverlay(frame);
@@ -200,6 +217,8 @@ function renderNearbyCues() {
 
 async function loadTimeline(force = false) {
   if (!state.session || state.timelineLoading) return;
+  const generation = state.generation;
+  const requestId = ++state.timelineRequest;
   const time = audio.currentTime;
   if (!force && state.timeline &&
       time > state.timeline.window.start_seconds + 0.25 &&
@@ -210,12 +229,14 @@ async function loadTimeline(force = false) {
   let end = Math.min(duration, start + 1);
   start = Math.max(0, end - 1);
   try {
-    state.timeline = await getJson(`/api/timeline?start=${start.toFixed(6)}&end=${end.toFixed(6)}`);
+    const timeline = await getJson(`/api/timeline?start=${start.toFixed(6)}&end=${end.toFixed(6)}`);
+    if (generation !== state.generation || requestId !== state.timelineRequest) return;
+    state.timeline = timeline;
     document.querySelector("#windowLabel").textContent = `${state.timeline.window.start_seconds.toFixed(3)}–${state.timeline.window.end_seconds.toFixed(3)} s`;
     renderNearbyCues();
     if (state.frame) renderOverlay(state.frame);
   } finally {
-    state.timelineLoading = false;
+    if (requestId === state.timelineRequest) state.timelineLoading = false;
   }
 }
 
@@ -225,7 +246,9 @@ function traceNode(title, lines) {
 }
 
 async function loadTrace(cueId) {
+  const generation = state.generation;
   const trace = await getJson(`/api/trace?cue_id=${encodeURIComponent(cueId)}`);
+  if (generation !== state.generation) return;
   state.selectedCue = cueId;
   document.querySelector("#traceState").textContent = "Complete chain";
   document.querySelector("#traceState").classList.remove("neutral");
@@ -248,6 +271,71 @@ function setAudioTime(value) {
   loadTimeline(true).catch((error) => notice(error.message));
 }
 
+function resetSessionState(sessionId) {
+  state.generation += 1;
+  state.sessionId = sessionId;
+  state.session = null;
+  state.frame = null;
+  state.frameNumber = -1;
+  state.timeline = null;
+  state.timelineLoading = false;
+  state.selectedCue = null;
+  state.frameRequest += 1;
+  state.timelineRequest += 1;
+
+  audio.pause();
+  audio.removeAttribute("src");
+  audio.load();
+  seek.value = 0;
+  seek.max = 1;
+  playPause.textContent = "▶";
+  playPause.setAttribute("aria-label", "Play");
+  document.querySelector("#currentTime").textContent = "00:00.000";
+  document.querySelector("#duration").textContent = "00:00.000";
+  document.querySelector("#sequenceTitle").textContent = "Loading…";
+  document.querySelector("#frameNumber").textContent = "—";
+  document.querySelector("#frameTime").textContent = "—";
+  document.querySelector("#windowLabel").textContent = "—";
+  document.querySelector("#verificationState").textContent = "Opening verified session…";
+  document.querySelector(".session-state").classList.remove("verified");
+  const image = document.querySelector("#sourceImage");
+  image.onload = null;
+  image.removeAttribute("src");
+  document.querySelector("#viewerLoading").hidden = false;
+  overlay.replaceChildren();
+  document.querySelector("#nearbyCues").replaceChildren();
+  document.querySelector("#sessionDetails").replaceChildren();
+  const evaluationState = document.querySelector("#evaluationState");
+  evaluationState.textContent = "Checking";
+  evaluationState.className = "evidence-tag";
+  document.querySelector("#metricGrid").innerHTML =
+    '<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>';
+  const traceState = document.querySelector("#traceState");
+  traceState.textContent = "Select a cue";
+  traceState.className = "evidence-tag neutral";
+  const traceContent = document.querySelector("#traceContent");
+  traceContent.className = "trace-empty";
+  traceContent.textContent = "Choose a cue marker or nearby cue to inspect its verified source and rendered sample chain.";
+  const noticeElement = document.querySelector("#notice");
+  noticeElement.textContent = "";
+  noticeElement.classList.remove("show");
+  drawTimeline();
+}
+
+async function switchSession(sessionId) {
+  resetSessionState(sessionId);
+  const generation = state.generation;
+  sessionSelect.value = sessionId;
+  const summary = await getJson("/api/session", sessionId);
+  if (generation !== state.generation) return;
+  state.session = summary;
+  renderSession(summary);
+  audio.src = withSession("/api/audio", sessionId);
+  audio.load();
+  await Promise.all([renderEvaluation(generation), loadFrame(0), loadTimeline(true)]);
+  if (generation === state.generation) resizeTimeline();
+}
+
 function tick() {
   if (state.session) {
     const time = audio.currentTime;
@@ -262,13 +350,14 @@ function tick() {
 }
 
 playPause.addEventListener("click", async () => {
+  if (!state.session) return;
   if (audio.paused) await audio.play(); else audio.pause();
 });
 audio.addEventListener("play", () => { playPause.textContent = "❚❚"; playPause.setAttribute("aria-label", "Pause"); });
 audio.addEventListener("pause", () => { playPause.textContent = "▶"; playPause.setAttribute("aria-label", "Play"); });
 seek.addEventListener("input", () => setAudioTime(Number(seek.value)));
-document.querySelector("#stepBack").addEventListener("click", () => { audio.pause(); setAudioTime(audio.currentTime - 1 / state.session.timing.frame_rate); });
-document.querySelector("#stepForward").addEventListener("click", () => { audio.pause(); setAudioTime(audio.currentTime + 1 / state.session.timing.frame_rate); });
+document.querySelector("#stepBack").addEventListener("click", () => { if (state.session) { audio.pause(); setAudioTime(audio.currentTime - 1 / state.session.timing.frame_rate); } });
+document.querySelector("#stepForward").addEventListener("click", () => { if (state.session) { audio.pause(); setAudioTime(audio.currentTime + 1 / state.session.timing.frame_rate); } });
 document.querySelector("#mute").addEventListener("click", (event) => { audio.muted = !audio.muted; event.currentTarget.textContent = audio.muted ? "Muted" : "Audio on"; });
 timelineCanvas.addEventListener("click", (event) => {
   if (!state.timeline) return;
@@ -279,7 +368,7 @@ timelineCanvas.addEventListener("click", (event) => {
 });
 window.addEventListener("resize", resizeTimeline);
 window.addEventListener("keydown", (event) => {
-  if (event.target instanceof HTMLInputElement) return;
+  if (event.target instanceof HTMLInputElement || event.target instanceof HTMLSelectElement) return;
   if (event.code === "Space") { event.preventDefault(); playPause.click(); }
   if (event.code === "ArrowLeft") { event.preventDefault(); document.querySelector("#stepBack").click(); }
   if (event.code === "ArrowRight") { event.preventDefault(); document.querySelector("#stepForward").click(); }
@@ -287,10 +376,23 @@ window.addEventListener("keydown", (event) => {
 
 async function initialise() {
   try {
-    state.session = await getJson("/api/session");
-    renderSession(state.session);
-    await Promise.all([renderEvaluation(), loadFrame(0), loadTimeline(true)]);
-    resizeTimeline();
+    state.catalogue = await getJson("/api/sessions", null);
+    sessionSelect.replaceChildren();
+    for (const session of state.catalogue.sessions) {
+      const option = document.createElement("option");
+      option.value = session.session_id;
+      const datasetName = session.dataset === "kitti_tracking" ? "KITTI Tracking" : "MOT17";
+      option.textContent = `${datasetName} · ${session.sequence}`;
+      sessionSelect.append(option);
+    }
+    sessionSelect.disabled = false;
+    sessionSelect.addEventListener("change", () => {
+      switchSession(sessionSelect.value).catch((error) => {
+        document.querySelector("#verificationState").textContent = "Session unavailable";
+        notice(error.message);
+      });
+    });
+    await switchSession(state.catalogue.default_session_id);
     window.requestAnimationFrame(tick);
   } catch (error) {
     document.querySelector("#verificationState").textContent = "Session unavailable";

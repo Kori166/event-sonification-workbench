@@ -77,7 +77,8 @@ from .technical_evaluation_input import (
     load_experiment_manifest,
     write_prepared_evaluation_input,
 )
-from .workbench.inspection import InspectionModel
+from .workbench.catalogue import InspectionCatalogue, load_session_catalogue
+from .workbench.inspection import InspectionError, InspectionModel
 from .workbench.server import build_inspection_server
 from .workbench.session import open_workbench_session
 
@@ -109,7 +110,7 @@ DEFAULT_KITTI_EVALUATION_REPORT = Path(
     "docs/evaluation/evidence/kitti/kitti_technical_evaluation_report.json"
 )
 DEFAULT_REPORTING_OUTPUT_DIRECTORY = Path("docs/evaluation/reporting")
-DEFAULT_WORKBENCH_SESSION = Path("configs/workbench/mot17-phase-2-session.v0.1.0.json")
+DEFAULT_WORKBENCH_CATALOGUE = Path("configs/workbench/retained-sessions.v0.1.0.json")
 _RUNTIME_ENVIRONMENTS = (
     "EVENT_PACKAGE_ROOT",
     "CUE_PACKAGE_ROOT",
@@ -267,9 +268,19 @@ def _build_parser() -> argparse.ArgumentParser:
 
     inspect_session = subparsers.add_parser(
         "inspect-session",
-        help="Validate and serve one read-only synchronised inspection session on localhost.",
+        help="Validate and serve the retained read-only inspection sessions on localhost.",
     )
-    inspect_session.add_argument("--session", type=Path, default=DEFAULT_WORKBENCH_SESSION)
+    inspect_session.add_argument(
+        "--catalogue",
+        type=Path,
+        default=DEFAULT_WORKBENCH_CATALOGUE,
+        help="Bounded retained-session catalogue used by the primary release launch.",
+    )
+    inspect_session.add_argument(
+        "--session",
+        type=Path,
+        help="Open one declaration instead of the retained catalogue for diagnosis.",
+    )
     inspect_session.add_argument(
         "--env-file",
         type=Path,
@@ -653,30 +664,59 @@ def _load_local_environment(path: Path) -> None:
 
 def _run_inspect_session(args: argparse.Namespace) -> int:
     _load_local_environment(args.env_file)
-    session = load_json_object(args.session)
-    runtime_roots: dict[str, Path] = {
+    repository_root = Path.cwd().resolve()
+    if args.session is not None:
+        sessions = [load_json_object(args.session)]
+        default_session_id = sessions[0]["session_id"]
+    else:
+        default_session_id, sessions = load_session_catalogue(
+            args.catalogue,
+            repository_root=repository_root,
+        )
+
+    base_runtime_roots: dict[str, Path] = {
         name: Path(value)
         for name in _RUNTIME_ENVIRONMENTS
         if (value := os.environ.get(name, "").strip())
     }
-    evidence_root = runtime_roots.pop("STAGE2_EVIDENCE_ROOT", None)
-    if evidence_root is not None:
-        dataset_directory = "mot17" if session["dataset"] == "mot17" else "kitti"
-        retained_run = evidence_root / dataset_directory / "run-a"
-        runtime_roots.setdefault("EVENT_PACKAGE_ROOT", retained_run / "events")
-        runtime_roots.setdefault("CUE_PACKAGE_ROOT", retained_run / "cues")
-        runtime_roots.setdefault("AUDIO_PACKAGE_ROOT", retained_run / "audio")
-    runtime_roots["REPOSITORY_ROOT"] = Path.cwd()
-    opened = open_workbench_session(session, runtime_roots)
-    model = InspectionModel(opened)
-    server = build_inspection_server(model, host=args.host, port=args.port)
+    evidence_root = base_runtime_roots.pop("STAGE2_EVIDENCE_ROOT", None)
+    package_root_names = ("EVENT_PACKAGE_ROOT", "CUE_PACKAGE_ROOT", "AUDIO_PACKAGE_ROOT")
+    if len(sessions) > 1:
+        if evidence_root is None:
+            raise InspectionError("stage2_evidence_root_required")
+        if any(name in base_runtime_roots for name in package_root_names):
+            raise InspectionError("multi_session_package_roots_ambiguous")
+
+    models: list[InspectionModel] = []
+    for session in sessions:
+        runtime_roots = dict(base_runtime_roots)
+        if evidence_root is not None:
+            dataset_directory = "mot17" if session["dataset"] == "mot17" else "kitti"
+            retained_run = evidence_root / dataset_directory / "run-a"
+            for name, child in zip(
+                package_root_names,
+                ("events", "cues", "audio"),
+                strict=True,
+            ):
+                if len(sessions) > 1:
+                    runtime_roots[name] = retained_run / child
+                else:
+                    runtime_roots.setdefault(name, retained_run / child)
+        runtime_roots["REPOSITORY_ROOT"] = repository_root
+        models.append(InspectionModel(open_workbench_session(session, runtime_roots)))
+
+    catalogue = InspectionCatalogue(models, default_session_id=default_session_id)
+    server = build_inspection_server(catalogue, host=args.host, port=args.port)
     address, port = server.server_address[:2]
     print(
         json.dumps(
             {
                 "command": "inspect-session",
-                "session_id": session["session_id"],
-                "status": "serving_verified_session",
+                "default_session_id": default_session_id,
+                "session_ids": [
+                    item["session_id"] for item in catalogue.summary()["sessions"]
+                ],
+                "status": "serving_verified_session_catalogue",
                 "url": f"http://{address}:{port}/",
             },
             indent=2,

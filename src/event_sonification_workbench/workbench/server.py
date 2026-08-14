@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import parse_qs, unquote, urlsplit
 
+from .catalogue import InspectionCatalogue
 from .inspection import InspectionError, InspectionModel
 
 _FRAME_ROUTE = re.compile(r"^/api/frames/(?P<frame>[0-9]+)$")
@@ -52,8 +53,8 @@ def _parse_range(value: str, size: int) -> tuple[int, int]:
     return start, min(end, size - 1)
 
 
-def inspection_handler(model: InspectionModel) -> type[BaseHTTPRequestHandler]:
-    """Build a request handler bound to one immutable inspection model."""
+def inspection_handler(catalogue: InspectionCatalogue) -> type[BaseHTTPRequestHandler]:
+    """Build a request handler bound to a bounded immutable model catalogue."""
 
     class Handler(BaseHTTPRequestHandler):
         server_version = "EventSonificationInspection/0.1"
@@ -102,7 +103,7 @@ def inspection_handler(model: InspectionModel) -> type[BaseHTTPRequestHandler]:
                     while chunk := source.read(64 * 1024):
                         self.wfile.write(chunk)
 
-        def _send_audio(self) -> None:
+        def _send_audio(self, model: InspectionModel) -> None:
             path = model.audio_path
             size = path.stat().st_size
             range_header = self.headers.get("Range")
@@ -163,11 +164,19 @@ def inspection_handler(model: InspectionModel) -> type[BaseHTTPRequestHandler]:
                 if self.command != "HEAD":
                     self.wfile.write(body)
                 return
+            if path == "/api/sessions":
+                self._send_json(catalogue.summary())
+                return
+            query = parse_qs(request.query, keep_blank_values=True)
+            session_values = query.get("session_id")
+            if session_values is not None and len(session_values) != 1:
+                raise InspectionError("invalid_session_identifier")
+            session_id = session_values[0] if session_values is not None else None
+            model = catalogue.model(session_id)
             if path == "/api/session":
                 self._send_json(model.session_summary())
                 return
             if path == "/api/timeline":
-                query = parse_qs(request.query, keep_blank_values=True)
                 try:
                     start = float(query["start"][0])
                     end = float(query["end"][0])
@@ -176,7 +185,6 @@ def inspection_handler(model: InspectionModel) -> type[BaseHTTPRequestHandler]:
                 self._send_json(model.timeline(start, end))
                 return
             if path == "/api/trace":
-                query = parse_qs(request.query, keep_blank_values=True)
                 try:
                     cue_id = unquote(query["cue_id"][0])
                 except (KeyError, IndexError) as exc:
@@ -187,7 +195,7 @@ def inspection_handler(model: InspectionModel) -> type[BaseHTTPRequestHandler]:
                 self._send_json(model.evaluation())
                 return
             if path == "/api/audio":
-                self._send_audio()
+                self._send_audio(model)
                 return
             frame_match = _FRAME_ROUTE.fullmatch(path)
             if frame_match:
@@ -210,7 +218,12 @@ def inspection_handler(model: InspectionModel) -> type[BaseHTTPRequestHandler]:
             except InspectionError as exc:
                 status = (
                     HTTPStatus.NOT_FOUND
-                    if exc.code in {"cue_not_found", "frame_image_unavailable"}
+                    if exc.code
+                    in {
+                        "cue_not_found",
+                        "frame_image_unavailable",
+                        "invalid_session_identifier",
+                    }
                     else HTTPStatus.BAD_REQUEST
                 )
                 self._send_json({"error": {"code": exc.code}}, status=status)
@@ -227,7 +240,7 @@ def inspection_handler(model: InspectionModel) -> type[BaseHTTPRequestHandler]:
 
 
 def build_inspection_server(
-    model: InspectionModel,
+    inspection: InspectionModel | InspectionCatalogue,
     *,
     host: str = "127.0.0.1",
     port: int = 8765,
@@ -237,4 +250,9 @@ def build_inspection_server(
         raise InspectionError("inspection_host_not_loopback")
     if port < 0 or port > 65535:
         raise InspectionError("inspection_port_invalid")
-    return ThreadingHTTPServer((host, port), inspection_handler(model))
+    catalogue = (
+        inspection
+        if isinstance(inspection, InspectionCatalogue)
+        else InspectionCatalogue([inspection])
+    )
+    return ThreadingHTTPServer((host, port), inspection_handler(catalogue))
