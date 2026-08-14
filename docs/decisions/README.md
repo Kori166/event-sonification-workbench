@@ -25,3 +25,4 @@ must be amended or superseded explicitly rather than silently rewritten.
 - [0015: Audited report-ready evaluation evidence](0015-audited-reporting-evidence.md)
 - [0016: Workbench session and inspection layer](0016-workbench-session-and-inspection-layer.md)
 - [0017: Local synchronised inspection architecture](0017-local-synchronised-inspection-architecture.md)
+- [0018: Cross-dataset retained-session catalogue](0018-cross-dataset-retained-session-catalogue.md)
