@@ -330,3 +330,13 @@ def test_service_is_loopback_only_and_frontend_uses_one_audio_clock(
     assert "audio.currentTime" in script
     assert "requestAnimationFrame" in script
     assert "setInterval" not in script
+
+
+def test_viewer_loading_overlay_honours_hidden_state(inspection_url: str) -> None:
+    with urllib.request.urlopen(f"{inspection_url}/assets/app.css") as response:
+        stylesheet = response.read().decode()
+
+    assert re.search(
+        r"\.viewer-loading\[hidden\]\s*\{\s*display:\s*none\s*;\s*\}",
+        stylesheet,
+    )

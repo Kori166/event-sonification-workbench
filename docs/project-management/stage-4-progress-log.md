@@ -98,3 +98,29 @@ candidate. The main project progress log remains the chronological project-wide 
   checklist items remain unchecked, R20 remains open and controlled, and the branch must not merge.
 - Next: restore browser-control capability and run and record the complete real-session browser pass
   before considering merge. Candidate privacy and hosted-CI gates pass; Phase 3 has not started.
+
+## 2026-08-14 - Milestone 1 Phase 2 controlled browser acceptance
+
+**Researcher-observed acceptance**
+
+- The researcher manually completed all twelve controlled browser checks against retained real
+  session `session-mot17-mot17-02-dpm-3707826663b210c6`; Codex did not perform the visual checks.
+- The session, genuine source imagery, unchanged Stage 2 WAV, one-clock synchronisation, paused frame
+  stepping, three timeline lanes, cue trace, Stage 3 metric projection, responsive image/overlay
+  alignment, path-free privacy responses and stable failure behaviour all passed.
+- The image endpoint returned HTTP 200 and JPEG bytes while a CSS presentation defect kept the
+  loading overlay visible. The existing JavaScript correctly set `hidden`; adding
+  `.viewer-loading[hidden] { display: none; }` restored the expected presentation. A deterministic
+  static-asset test now covers that contract.
+- Console scans of session, frame, evaluation, timeline and real-cue trace JSON found no private
+  runtime path, username or OneDrive root. No screenshot containing MOT17 imagery was committed.
+- Extreme 20-50% zoom produced cosmetic background-gradient artefacts only. Informal inspection also
+  found the dense overlapping cue stream difficult to interpret; neither observation changes the
+  accepted evidence or constitutes participant/perceptual evaluation.
+- All eight Phase 2 checklist items are supported. R20 remains open and controlled because browser
+  acceptance establishes engineering presentation/synchronisation only, not usability,
+  accessibility or perceptual effectiveness.
+- Final local close-out gates passed: Ruff clean; frontend JavaScript syntax valid; 266 passed and 5
+  deselected in the non-integration suite; Phase 1 private integration 1 passed in 83.56s; Phase 2
+  private integration 1 passed in 34.93s.
+- Phase 2 acceptance complete; merge pending final CI. Phase 3 has not started.

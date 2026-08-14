@@ -14,9 +14,9 @@ chain acceptance gate was run. PR #31 then reverted PR #30 in full. Issue #29 wa
 #32 reapplied the same bounded runtime correction from the reverted `main` state. Workbench Session
 Contract `0.1.0` remains unchanged. PR #32 passed its repository CI gate, and the retained local
 real-data acceptance run then passed for both MOT17 and KITTI Tracking. Milestone 1 Phase 1 is
-complete. The Phase 2 candidate is implemented and passes normal/private automated gates, but
-mandatory controlled browser acceptance is unavailable. Phase 2 therefore remains incomplete and
-all eight acceptance items stay unchecked; the branch must not merge and Phase 3 must not begin.
+complete. The Phase 2 implementation and researcher-performed controlled browser acceptance now
+support all eight acceptance items. Phase 2 acceptance is complete; merge remains pending final
+local gates, privacy/scope audit and fresh final-head CI. Phase 3 has not begun.
 
 ## Milestone 1: versioned artefact release candidate
 
@@ -78,24 +78,28 @@ path-free. Phase 1 is complete; PR #32 still requires green CI on the close-out 
 
 ### Phase 2: synchronised inspection vertical slice
 
-- [ ] Expose one validated session through a small local inspection API.
-- [ ] Display source sequence imagery using runtime media binding.
-- [ ] Overlay Stage 1 event geometry without recalculating annotations.
-- [ ] Play the verified Stage 2 WAV unchanged.
-- [ ] Use one playback clock for media, annotation state and timeline position.
-- [ ] Display Stage 1 events, Stage 2 cues and Stage 2 suppressions on the synchronised timeline.
-- [ ] Resolve at least one selected cue through cue, source event, source annotation and render log.
-- [ ] Display available Stage 3 metrics directly from the verified report.
+- [x] Expose one validated session through a small local inspection API.
+- [x] Display source sequence imagery using runtime media binding.
+- [x] Overlay Stage 1 event geometry without recalculating annotations.
+- [x] Play the verified Stage 2 WAV unchanged.
+- [x] Use one playback clock for media, annotation state and timeline position.
+- [x] Display Stage 1 events, Stage 2 cues and Stage 2 suppressions on the synchronised timeline.
+- [x] Resolve at least one selected cue through cue, source event, source annotation and render log.
+- [x] Display available Stage 3 metrics directly from the verified report.
 
 ### Phase 2 acceptance state
 
-Issue #35 and Decision 0017 define the candidate. Local evidence currently includes Ruff clean,
-265 non-integration tests passed with 5 integrations deselected both locally and on draft PR #36 CI,
-the existing Phase 1 retained-chain test passed, the new real MOT17 inspection test passed, and
-successful launch/path-free API probes and candidate privacy audit were recorded.
-The mandatory browser pass remains absent because the configured browser-control interface was not
-available to the task. Model/API evidence does not substitute for visual and interaction evidence;
-none of the eight Phase 2 items is accepted until that gate is recorded.
+Issue #35 and Decision 0017 define the slice. The researcher manually completed all twelve browser
+checks against `session-mot17-mot17-02-dpm-3707826663b210c6`. Source imagery rendered after the
+targeted `.viewer-loading[hidden] { display: none; }` correction; geometry, unchanged WAV playback,
+the single audio clock, frame stepping, timeline, trace, metrics, responsive alignment, privacy and
+path-free failures passed. A CSS asset contract test covers the loading-overlay regression. These
+checks are engineering/browser acceptance, not participant, perceptual, usability or accessibility
+evidence. Phase 2 acceptance complete; merge pending final CI.
+
+Final local close-out gates on Windows / Python 3.14.3 passed: Ruff clean, frontend JavaScript syntax
+valid, 266 non-integration tests passed with 5 integrations deselected, the Phase 1 retained-chain
+integration passed once in 83.56s and the Phase 2 real-session integration passed once in 34.93s.
 
 ### Phase 3: cross-dataset completion and release preparation
 

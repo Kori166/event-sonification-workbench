@@ -2,11 +2,11 @@
 
 ## Status
 
-Implementation candidate complete on 7 August 2026; Phase 2 acceptance remains incomplete because
-the mandatory controlled browser interaction and visual pass could not be executed from the current
-Codex task. The local service and real session were launched successfully, but the browser-control
-interface required by the configured browser workflow was not exposed. The branch must remain
-unmerged until that gate is completed and recorded.
+Implementation and controlled browser acceptance are complete. The researcher manually performed
+the required browser pass over retained session
+`session-mot17-mot17-02-dpm-3707826663b210c6`; all twelve checks passed after one targeted loading-
+overlay correction. Phase 2 acceptance is complete; merge remains pending the final local gates,
+privacy/scope audit and fresh final-head CI.
 
 Issue #35 defines the acceptance criteria. The implementation branch is
 `stage-4/phase-2-synchronised-inspection`.
@@ -94,53 +94,79 @@ Final local gates on Windows, Python 3.14.3:
 
 - `python -m ruff check .`: passed;
 - `node --check src/event_sonification_workbench/workbench/static/app.js`: passed;
-- `python -m pytest -m "not integration"`: 265 passed, 5 deselected in 39.31s;
+- `python -m pytest -m "not integration"`: 266 passed, 5 deselected in 57.65s;
 - `python -m pytest tests/test_workbench_session_integration.py -m integration -q`:
-  1 passed in 82.15s; and
+  1 passed in 83.56s after loading the existing ignored runtime bindings into the test process; and
 - `python -m pytest tests/test_workbench_inspection_integration.py -m integration -q`:
-  1 passed in 45.34s.
+  1 passed in 34.93s after loading the same process-local bindings.
 
 Draft PR #36 CI run `31204926127` passed on Ubuntu 24.04 with Python 3.11.15. Editable installation
 and Ruff passed, and the non-integration suite reported 265 passed and 5 deselected in 17.71s. Its
 only annotation was an upstream Node 20 deprecation warning for `actions/checkout@v4` and
 `actions/setup-python@v5`; the job itself completed successfully.
 
-The four new normal-CI tests cover the indexed model, deterministic frame timing, bounded timeline,
+The five new normal-CI tests cover the indexed model, deterministic frame timing, bounded timeline,
 complete cue trace, direct and unavailable evaluation projections, safe media service, full and
 range WAV bytes, loopback policy, path-free errors and the single-clock frontend contract. The new
-private integration test opens the committed real session, requires verified event/cue/audio/report
+fifth test serves the CSS asset and freezes the loading layer's HTML-hidden presentation contract.
+The private integration test opens the committed real session, requires verified
+event/cue/audio/report
 components and imagery, checks real geometry and synchronized windows, follows a real cue through
 render samples, rehashes the WAV, compares report values directly and scans returned projections for
 private path markers.
 
-## Browser acceptance state
+## Controlled browser acceptance
 
-The candidate launched successfully and path-free API probes returned:
+The researcher manually performed the controlled browser acceptance against the real retained
+MOT17-02-DPM session `session-mot17-mot17-02-dpm-3707826663b210c6`. These are researcher-observed
+results; Codex did not perform the visual checks. All twelve checks passed:
 
-- verified session status;
-- 39 Stage 1 events for frame 0;
-- 117 events, 105 cues and 12 suppressions in the first 0.1-second window;
-- a selected trace with 5,292 rendered samples; and
-- `evaluation.available = true` with a valid report.
+1. **Session load:** the interface displayed MOT17 / `mot17-02-dpm`, the expected session ID and the
+   validated Stage 1-3 chain state.
+2. **Source imagery:** `/api/frames/0/image` returned HTTP 200, `image/jpeg` and genuine frame bytes,
+   but the loading layer initially remained visible. The frontend already set
+   `viewerLoading.hidden = true`; `.viewer-loading { display: grid; }` overrode the HTML hidden
+   presentation. Adding `.viewer-loading[hidden] { display: none; }` corrected the defect, after
+   which genuine MOT17 imagery rendered. A deterministic CSS asset regression test freezes this
+   hidden-state contract.
+3. **Stage 1 event geometry:** existing SVG boxes rendered over and remained aligned with the source
+   imagery, and changed with frame progression without annotation recalculation.
+4. **Verified Stage 2 WAV playback:** the accepted WAV played and its play, pause and seek controls
+   operated; total duration was approximately `00:20.087`. The accepted audio was not modified.
+5. **Single playback clock:** audio `currentTime` drove the changing frame, overlay state and timeline
+   cursor; pause and seek remained coherent. `00:20.087` was the total duration, not current time.
+6. **Frame stepping:** `-1f` and `+1f` changed the paused image/frame by one frame and the overlay
+   followed.
+7. **Synchronised timeline:** separate EVENT, CUE and SUPPRESS lanes, temporally coherent markers,
+   the playback cursor and nearby cue selection operated as intended.
+8. **Cue traceability:** a real cue resolved through its Stage 1 event, logical annotation/row,
+   configuration and renderer/sample placement. Displayed references were logical paths such as
+   `MOT17/train/MOT17-02-DPM/gt/gt.txt`.
+9. **Stage 3 metrics:** cards projected the accepted report, including 100.00% eligible-event
+   coverage, 89.86% source representation, 1,342.18 cues/second, peak concurrency 203, 10.14%
+   suppression, 100.00% fully traceable cues, zero P95 alignment and identical byte
+   reproducibility. The interface neither hard-codes nor recalculates these values.
+10. **Privacy:** browser-console scans of session, frame, evaluation, timeline and a selected real-cue
+    trace response found none of `C:\\`, `Users\\`, `OneDrive` or the local username. Responses
+    retained logical project paths only.
+11. **Responsive overlay:** image and SVG geometry remained aligned across the responsive breakpoint
+    and after restoration. At extreme browser zoom of approximately 20-50%, cosmetic background-
+    gradient artefacts appeared but did not affect geometry, alignment, playback or interaction.
+12. **Failure behaviour:** invalid frame, trace and route requests returned stable path-free errors,
+    including `frame_out_of_range`, `cue_not_found` and `route_not_found`, without raw filesystem
+    exceptions.
 
-Those are service/model checks, not a substitute for the mandatory browser gate. The following still
-requires controlled browser evidence before merge:
-
-1. source images render at useful scale and change during playback;
-2. SVG boxes visually align with the MOT17 people/objects;
-3. playback, pause, seek and both frame-step controls remain synchronized;
-4. the three timeline lanes and cursor visibly follow the audio clock;
-5. cue selection visibly populates the complete trace chain;
-6. the verified metric cards render correctly; and
-7. no absolute path, username or machine-specific detail appears anywhere in the UI or its errors.
+No browser screenshot was committed because the observed interface contained private MOT17 imagery.
 
 ## Evidence boundary and limitations
 
-The interface is read-only inspection/demonstration infrastructure. It does not provide participant,
-accessibility, usability, navigation, perceptual-effectiveness or safety evidence. R20 therefore
-remains open and controlled. Phase 3 cross-dataset presentation, clean-environment release
-verification and release packaging have not started.
+The verified Stage 2 WAV played successfully, although the dense overlapping cue stream was
+difficult to interpret during informal inspection. This observation does not constitute perceptual
+or participant evaluation, and the accepted audio evidence was not modified.
 
-The branch must not be merged and the eight Phase 2 checklist items must not be accepted until the
-browser gate is complete. Hosted CI and the candidate privacy audit pass, but they do not substitute
-for controlled visual and interaction evidence.
+Controlled browser acceptance confirmed that the inspection layer presents and synchronises the
+verified technical evidence as intended. It does not provide participant-based evidence of
+perceptual effectiveness, usability or accessibility. It also establishes no navigation,
+learnability, cognitive, mobility or safety benefit. R20 therefore remains open and controlled.
+Phase 3 cross-dataset presentation, clean-environment release verification and release packaging
+have not started.

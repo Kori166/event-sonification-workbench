@@ -950,3 +950,25 @@ be added where a short entry would omit important implementation evidence.
 - The real loopback service launched and passed path-free model/API probes.
 - Mandatory controlled browser acceptance could not be run because the browser-control interface was
   not exposed to this task. Phase 2 is therefore incomplete and unmerged; Phase 3 has not begun.
+
+---
+
+## 2026-08-14 - Stage 4 Milestone 1 Phase 2 browser acceptance
+
+- The researcher manually completed all twelve browser checks against real retained session
+  `session-mot17-mot17-02-dpm-3707826663b210c6`.
+- A loading overlay remained visible even though the image API returned HTTP 200 JPEG data and the
+  frontend set its `hidden` state. The targeted
+  `.viewer-loading[hidden] { display: none; }` correction fixed the presentation and a static asset
+  regression test freezes the behaviour.
+- Genuine imagery, recorded Stage 1 geometry, unchanged verified WAV playback, the single audio
+  clock, frame stepping, timeline, cue trace, report metrics, responsive alignment, JSON privacy and
+  path-free failures passed.
+- No MOT17 screenshot or private media/path was committed. The dense-audio and extreme-zoom notes are
+  bounded informal/cosmetic observations, not participant, perceptual, usability or accessibility
+  evidence; R20 remains open and controlled.
+- Final local gates passed with Ruff clean, frontend JavaScript syntax valid, 266 non-integration
+  tests passed / 5 integrations deselected, and genuine single-pass Phase 1 and Phase 2 private
+  integration results of 83.56s and 34.93s respectively.
+- All eight Phase 2 checklist items are accepted. Phase 2 acceptance complete; merge pending final
+  CI. Phase 3 has not begun.
