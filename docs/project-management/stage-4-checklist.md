@@ -107,12 +107,22 @@ integration passed once in 83.56s and the Phase 2 real-session integration passe
 
 ### Phase 3: cross-dataset completion and release preparation
 
-- [ ] Exercise the same session contract with MOT17 and KITTI Tracking.
-- [ ] Add bounded presentation features required for the artefact demonstration.
-- [ ] Verify installation and local launch from a clean environment.
-- [ ] Reconcile README, project plan, progress log, risk register and release documentation.
-- [ ] Build and verify a versioned release candidate without committing private datasets or generated
-      private media.
+- [x] Freeze the Phase 3 architecture and scope in Decision 0018.
+- [x] Retain Workbench Session Contract `0.1.0` unchanged.
+- [x] Declare one path-free retained real KITTI Tracking session.
+- [x] Expose only the retained MOT17 and KITTI sessions through bounded catalogue/lookup behaviour.
+- [x] Use the same validated-session, inspection-model, loopback-service and browser-client path for
+      both dataset families.
+- [x] Preserve Stage 1-3 contracts, canonical results and exact retained WAV bytes unchanged.
+- [x] Reset all dataset-dependent browser state when session selection changes.
+- [x] Add focused catalogue, routing, frontend-reset and cross-dataset automated tests.
+- [x] Pass existing Phase 1 and Phase 2 private integrations plus a new KITTI/cross-dataset gate.
+- [x] Complete controlled KITTI and cross-session browser acceptance.
+- [x] Verify the primary release launch and path-free configuration failures.
+- [x] Reconcile README, launch/evidence documentation, project plan, progress log and risk register.
+- [ ] Pass the Phase 3 privacy/redistribution audit and final-head hosted CI.
+- [ ] Merge the focused PR, close Issue #37 and pass post-merge `main` CI.
+- [ ] Record the release-candidate merge SHA and mark Stage 4 Milestone 1 complete.
 
 ## Scope boundary
 

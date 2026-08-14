@@ -1,0 +1,8 @@
+{
+  "catalogue_version": "0.1.0",
+  "default_session_id": "session-mot17-mot17-02-dpm-3707826663b210c6",
+  "sessions": [
+    "configs/workbench/mot17-phase-2-session.v0.1.0.json",
+    "configs/workbench/kitti-phase-3-session.v0.1.0.json"
+  ]
+}

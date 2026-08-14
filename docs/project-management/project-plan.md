@@ -228,8 +228,11 @@ MOT17 and KITTI Tracking sessions. PR #32's corrective implementation passed cle
 validated MOT17 session, including the available Stage 3 report. The researcher manually completed
 all twelve controlled browser checks; the one discovered loading-overlay presentation defect has a
 targeted CSS correction and regression test. Final local/private gates and hosted CI run 105 passed;
-PR #36 merged and Issue #35 closed. Stage 4 Milestone 1 Phase 2 is complete. Stage 4 remains active;
-Phase 3 cross-dataset completion and release preparation is next and has not begun.
+PR #36 merged and Issue #35 closed. Stage 4 Milestone 1 Phase 2 is complete. Phase 3 now has a
+two-session MOT17/KITTI implementation candidate under Issue #37; focused/private cross-dataset and
+controlled browser gates pass. The complete local/private suite, clean-environment launch and
+privacy audit also pass. Stage 4 remains active while hosted-CI, merge and post-merge
+release-candidate gates remain pending.
 
 The current milestone remains **Stage 4 Milestone 1: assemble a versioned artefact release candidate
 and verify installation, configuration, evidence availability and end-to-end execution from a clean

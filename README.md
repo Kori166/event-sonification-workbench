@@ -171,28 +171,45 @@ The integration tests use `MOT17_ROOT` and `KITTI_TRACKING_ROOT` independently a
 their private datasets are unavailable. A skip is not evidence of a private-data pass. The CI
 workflow runs the non-integration tests and lint checks for pull requests and pushes to `main`.
 
-## Synchronised inspection candidate
+## Cross-dataset retained evidence inspection
 
-Stage 4 Milestone 1 Phase 2 adds a local, read-only inspection candidate over the retained verified
-MOT17-02-DPM chain. With `MOT17_ROOT` and `STAGE2_EVIDENCE_ROOT` configured in the ignored `.env`,
-launch it from the repository root:
+The Stage 4 workbench is local, read-only research infrastructure for deterministic and traceable
+inspection of the retained annotation-to-sonification evidence. It exposes only two committed,
+path-free declarations through Workbench Session Contract `0.1.0`:
+
+- MOT17-02-DPM: `session-mot17-mot17-02-dpm-3707826663b210c6`; and
+- KITTI Tracking 0000: `session-kitti_tracking-0000-9cae092175c68109`.
+
+Create a local `.env` from `.env.example` and configure `MOT17_ROOT`, `KITTI_TRACKING_ROOT` and
+`STAGE2_EVIDENCE_ROOT`. The dataset roots contain private source imagery; the evidence root contains
+the retained `mot17/run-a` and `kitti/run-a` event, cue and audio packages. These values remain local
+and ignored. From an installed repository environment, the primary launch command is:
 
 ```powershell
 python -m event_sonification_workbench.cli inspect-session
 ```
 
-The command validates the committed path-free session declaration and complete Stage 1 to 3 chain
-before serving `http://127.0.0.1:8765/`. The interface presents source imagery with recorded event
-geometry, the exact verified WAV, synchronized event/cue/suppression lanes, cue-to-render provenance
-and metrics read directly from the verified Stage 3 report. Browser audio `currentTime` is the only
-live playback clock; the interface does not parse annotations, schedule cues, render audio or
-calculate evaluation metrics.
+The command validates both committed declarations and their complete Stage 1-3 chains before serving
+`http://127.0.0.1:8765/`. Missing or inconsistent private bindings fail with path-free diagnostic
+codes before the port is opened. The service binds only to loopback and never modifies an output.
+
+Use the retained-session selector to inspect either dataset. The source panel shows runtime-bound
+frames and recorded Stage 1 boxes; transport controls play the exact retained Stage 2 WAV unchanged;
+EVENT, CUE and SUPPRESS lanes follow browser audio `currentTime`; selecting a cue displays its
+normalised event, logical native annotation/row, configuration and rendered sample range; technical
+cards project the verified Stage 3 report directly. Switching sessions clears image, frame,
+playback, timeline, cue, trace, metrics, metadata and error state before loading the selected chain.
+
+Repository content includes code, schemas, path-free retained declarations, fixed public test
+fixtures and canonical Stage 3 reports. Private source datasets, retained full Stage 1/2 packages
+and WAV files remain local. The browser is presentation-only: it does not parse annotations,
+normalise events, schedule cues, render audio, evaluate metrics or regenerate canonical evidence.
 
 The service is loopback-only and exposes no write, upload, authentication, database or analytics
 feature. It is inspection/demonstration infrastructure, not participant, accessibility, usability,
-navigation, perceptual-effectiveness or safety evidence. Its twelve-check controlled browser pass is
-engineering acceptance only; see `docs/development/stage-4-milestone-1-phase-2.md`. Phase 2 is
-complete; Phase 3 cross-dataset completion and release preparation is next and has not started.
+navigation, perceptual-effectiveness or safety evidence. The MOT17 and KITTI controlled browser
+passes are engineering acceptance only; see the Phase 2 and Phase 3 development records. R20 remains
+open: the interface does not resolve dense-audio interpretation or establish a perceptual benefit.
 
 ## Structured event outputs
 

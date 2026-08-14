@@ -396,3 +396,32 @@ def test_invalid_explicit_package_root_is_path_free(
     }
     assert _PRIVATE_PATH.search(serialised) is None
     assert "alice" not in serialised.lower()
+
+
+@pytest.mark.parametrize(
+    "relative_path, expected_session_id, expected_dataset",
+    [
+        (
+            "configs/workbench/mot17-phase-2-session.v0.1.0.json",
+            "session-mot17-mot17-02-dpm-3707826663b210c6",
+            "mot17",
+        ),
+        (
+            "configs/workbench/kitti-phase-3-session.v0.1.0.json",
+            "session-kitti_tracking-0000-9cae092175c68109",
+            "kitti_tracking",
+        ),
+    ],
+)
+def test_retained_session_declarations_reproduce_frozen_identity(
+    relative_path: str,
+    expected_session_id: str,
+    expected_dataset: str,
+) -> None:
+    session = _load(ROOT / relative_path)
+
+    assert session["session_version"] == "0.1.0"
+    assert session["dataset"] == expected_dataset
+    assert session["session_id"] == expected_session_id
+    assert generate_session_id(session) == expected_session_id
+    assert _PRIVATE_PATH.search(json.dumps(session, sort_keys=True)) is None
