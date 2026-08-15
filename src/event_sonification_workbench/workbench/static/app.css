@@ -115,14 +115,15 @@ main { position: relative; display: grid; gap: 1rem; max-width: 1600px; margin: 
 .viewer-loading[hidden] { display: none; }
 .event-box { fill: rgba(117, 240, 193, 0.05); stroke: var(--accent); stroke-width: 3; vector-effect: non-scaling-stroke; }
 .event-box.suppressed { fill: rgba(255, 113, 141, 0.04); stroke: var(--danger); stroke-dasharray: 8 5; }
-.event-box.unresolved { fill: rgba(101, 184, 255, 0.04); stroke: var(--accent-2); }
+.event-box.anomaly { fill: rgba(255, 255, 255, 0.03); stroke: #d6c8a0; stroke-dasharray: 4 4; }
 .event-label { fill: #f5fffb; font-family: ui-monospace, monospace; font-size: 22px; paint-order: stroke; stroke: rgba(3, 9, 7, 0.9); stroke-width: 5px; }
 .legend { display: flex; flex-wrap: wrap; gap: 1rem; padding: 0 1.15rem 1rem; color: var(--muted); font-size: 0.7rem; }
 .legend span { display: flex; align-items: center; gap: 0.35rem; }
 .legend strong { color: #b7ccc6; font-weight: 600; }
 .legend-mark { width: 0.72rem; height: 0.42rem; border: 1px solid var(--accent); }
 .legend-mark.suppressed { border-color: var(--danger); border-style: dashed; }
-.legend-mark.unresolved { border-color: var(--accent-2); }
+.integrity-warning { margin: 0 1.15rem 1rem; padding: 0.65rem 0.75rem; border: 1px solid #d6c8a0; border-radius: 7px; color: #f0e4bd; background: rgba(214, 200, 160, 0.08); font-family: ui-monospace, monospace; font-size: 0.68rem; }
+.integrity-warning[hidden] { display: none; }
 
 .evidence-tag { padding: 0.33rem 0.55rem; border: 1px solid rgba(117, 240, 193, 0.28); border-radius: 6px; color: var(--accent); background: rgba(117, 240, 193, 0.07); font-family: ui-monospace, monospace; font-size: 0.62rem; text-transform: uppercase; }
 .evidence-tag.neutral { border-color: var(--line); color: var(--muted); background: rgba(255,255,255,0.02); }

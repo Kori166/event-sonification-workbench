@@ -203,13 +203,15 @@ playback, timeline, cue, trace, metrics, metadata and error state before loading
 
 Frame presentation uses `frame = floor(audio.currentTime * frame_rate)` and half-open frame
 intervals. Subtle divisions and a highlighted interval show frame structure separately from the
-exact white playback cursor. Only CUE markers and the explicitly labelled nearby-cue buttons are
+exact white playback cursor. Only CUE markers and the explicitly labelled evidence-window cues are
 selectable. Selecting one pauses playback, seeks to its retained start, loads its recorded source
-frame and presents frequency, pan, amplitude, duration and trace provenance.
+frame and presents frequency, pan, amplitude, duration and trace provenance. Window cue controls
+remain in deterministic time/track/cue order when selection changes.
 
-The frozen baseline maps event timestamp to cue start, horizontal centre to stereo pan, vertical
-centre to frequency and normalised bounding-box area to amplitude. The class modifier is recorded
-for traceability but is not applied by the current renderer. Bounding-box area is an imperfect
+The technical baseline uses event time for when the cue plays, horizontal object position for
+left/right placement, vertical object position for pitch and bounding-box area for loudness. It is
+not perceptually validated. The class modifier is recorded in provenance for traceability but is not
+applied by the current renderer. Bounding-box area is an imperfect
 apparent-scale proxy, not depth: pose-dependent pedestrian width can change amplitude without a
 meaningful apparent-distance change. Height-based or smoothed-height alternatives are possible
 future experiments and are not implemented here.

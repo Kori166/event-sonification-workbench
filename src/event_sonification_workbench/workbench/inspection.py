@@ -96,6 +96,20 @@ def _suppression_projection(
     }
 
 
+def _cue_order_key(cue: Mapping[str, Any]) -> tuple[float, int, int | str, str]:
+    track_id = str(cue["track_id"])
+    try:
+        track_order: tuple[int, int | str] = (0, int(track_id))
+    except ValueError:
+        track_order = (1, track_id)
+    return (
+        float(cue["start_time_seconds"]),
+        track_order[0],
+        track_order[1],
+        str(cue["cue_id"]),
+    )
+
+
 class InspectionModel:
     """Immutable in-memory indexes over verified Stage 1 to 3 artefacts."""
 
@@ -142,7 +156,13 @@ class InspectionModel:
         }
 
         self._event_times = [float(event["timestamp"]) for event in self._events]
-        self._cue_times = [float(cue["start_time_seconds"]) for cue in self._cues]
+        self._ordered_cues = sorted(
+            self._cues,
+            key=_cue_order_key,
+        )
+        self._cue_times = [
+            float(cue["start_time_seconds"]) for cue in self._ordered_cues
+        ]
         suppression_pairs = [
             (
                 float(self._events_by_id[item["source_event_id"]]["timestamp"]),
@@ -298,7 +318,12 @@ class InspectionModel:
         events = self._window_slice(
             self._event_times, self._events, start_seconds, end_seconds
         )
-        cues = self._window_slice(self._cue_times, self._cues, start_seconds, end_seconds)
+        cues = self._window_slice(
+            self._cue_times,
+            self._ordered_cues,
+            start_seconds,
+            end_seconds,
+        )
         suppressions = self._window_slice(
             self._suppression_times,
             self._ordered_suppressions,

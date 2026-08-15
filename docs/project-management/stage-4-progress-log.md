@@ -174,3 +174,23 @@ candidate. The main project progress log remains the chronological project-wide 
   private content or path-value change.
 - Codex browser preflight passed repeated first/final-time cue, rounded-frame and switching checks on
   both datasets. Researcher-controlled visual/semantic/console acceptance, CI and merge remain.
+
+## 2026-08-15 - Milestone 2 first acceptance findings and follow-up correction
+
+- The first researcher-controlled acceptance attempt on PR #40 candidate
+  `02130795678b991e07570b64052d6d1442aeb889` did not pass. Firefox lagged, Chrome froze/stuttered
+  more severely, cue controls reordered after selection, and the unresolved/mapping explanations
+  were confusing.
+- Execution-frequency profiling confirmed that the animation loop fully repainted thousands of
+  static timeline markers at display rate and invoked the guarded frame loader every refresh.
+- The follow-up caches static timeline drawing, schedules frame/image work only at source-frame
+  transitions or explicit inspection, bounds preloading to the next image and keeps timeline
+  requests/DOM replacement window-scoped.
+- Cue controls now use stable time/track/cue ordering. Normal legend wording covers cue generation
+  and intentional suppression; unresolved evidence is a path-free integrity anomaly. Mapping and
+  EVENT/CUE/SUPPRESS language is simplified without changing research semantics.
+- Ruff and frontend syntax passed; 26 focused and 278 non-integration tests passed, with six private
+  tests deselected. Phase 1, Phase 2 and the expanded all-frame Phase 3 private gates each passed.
+- Privacy/frozen-scope audit found no binary, media, private value or Stage 1-3 research change.
+  Exact-head hosted CI remains required before the revised 22-check Firefox/Chrome researcher
+  retest. PR #40 remains draft and unmerged.

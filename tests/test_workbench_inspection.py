@@ -331,6 +331,46 @@ def test_frame_time_uses_exact_half_open_intervals(
     assert model.frame_for_time(99.0) == 2
 
 
+def test_timeline_cues_use_stable_time_track_and_cue_order(
+    inspection_fixture: SimpleNamespace,
+) -> None:
+    cue_path = (
+        inspection_fixture.opened.package_directories["cue_package"]
+        / "cue_schedule.json"
+    )
+    document = json.loads(cue_path.read_text(encoding="utf-8"))
+    base = document["cues"][0]
+    document["cues"] = [
+        document["cues"][1],
+        {**base, "cue_id": "cue:tie-track-10", "track_id": "10"},
+        {**base, "cue_id": "cue:tie-track-2-b", "track_id": "2"},
+        {**base, "cue_id": "cue:tie-track-2-a", "track_id": "2"},
+    ]
+    _write_json(cue_path, document)
+
+    ordered = InspectionModel(inspection_fixture.opened).timeline(0.0, 0.5)["cues"]
+
+    assert [cue["cue_id"] for cue in ordered] == [
+        "cue:tie-track-2-a",
+        "cue:tie-track-2-b",
+        "cue:tie-track-10",
+    ]
+
+
+def test_unresolved_event_outcome_remains_detectable_as_integrity_evidence(
+    inspection_fixture: SimpleNamespace,
+) -> None:
+    suppression_path = (
+        inspection_fixture.opened.package_directories["cue_package"]
+        / "suppression_log.json"
+    )
+    _write_json(suppression_path, {"entries": []})
+
+    unresolved = InspectionModel(inspection_fixture.opened).frame(1)["events"][0]
+
+    assert unresolved["stage_2_outcome"] == {"status": "unresolved"}
+
+
 def test_boundary_cues_resolve_complete_retained_traces(
     inspection_fixture: SimpleNamespace,
 ) -> None:
@@ -552,7 +592,7 @@ def test_frontend_freezes_boundary_cue_and_frame_inspection_contracts(
         page = response.read().decode()
 
     assert "function cachedTimelineCovers" in script
-    assert "state.timelinePendingKey === requestKey" in script
+    assert "state.timelinePendingKey !== null" in script
     assert "requestId !== state.timelineRequest" in script
     assert "audio.currentTime = trace.cue.start_time_seconds" in script
     assert 'loadFrame(trace.event.frame, "cue")' in script
@@ -560,8 +600,57 @@ def test_frontend_freezes_boundary_cue_and_frame_inspection_contracts(
     assert "function cueAtCanvasPoint" in script
     assert "CUE_HIT_RADIUS_PX" in script
     assert "state.timeline.cues.reduce" not in script
-    assert "drawFrameStructure" in script
-    assert "Nearby cues" in page
+    assert "drawFrameBoundaries" in script
+    assert "Cues in this evidence window" in page
     assert "Only CUE markers are selectable" in page
-    assert "Frozen baseline mapping" in page
-    assert "traceability only" in page
+    assert "How this cue is encoded" in page
+    assert "Technical baseline mapping; not perceptually validated." in page
+    assert "not true distance or depth" in page
+    assert "Recorded for traceability; not applied to waveform" in script
+
+
+def test_frontend_uses_bounded_playback_work_and_stable_cue_controls(
+    inspection_url: str,
+) -> None:
+    with urllib.request.urlopen(f"{inspection_url}/assets/app.js") as response:
+        script = response.read().decode()
+
+    tick = script[script.index("function tick()") : script.index("playPause.addEventListener")]
+    trace = script[script.index("function renderTrace") : script.index("async function selectCue")]
+    cue_render = script[
+        script.index("function renderWindowCues") : script.index("function cachedTimelineCovers")
+    ]
+
+    assert "if (time !== state.lastPlaybackTime)" in tick
+    assert "if (frame !== state.frameNumber && !state.framePending)" in tick
+    assert "rebuildTimelineBase" not in tick
+    assert "renderWindowCues" not in tick
+    assert "renderWindowCues" not in trace
+    assert "updateCueSelection" in trace
+    assert ".sort(compareCueOrder)" in cue_render
+    assert "audio.currentTime" not in cue_render
+    assert "timelineBaseCanvas" in script
+    assert "await prepareFrameImage(frame.frame, imageUrl)" in script
+    assert "preloadFollowingFrames(frame.frame, generation)" in script
+    assert "state.preloadImages.size >= 2" in script
+    assert "state.timelinePendingKey !== null" in script
+    assert "if (!cueIsInCurrentWindow)" in script
+
+
+def test_frontend_presents_two_normal_outcomes_and_flags_unresolved_anomaly(
+    inspection_url: str,
+) -> None:
+    with urllib.request.urlopen(f"{inspection_url}/assets/app.js") as response:
+        script = response.read().decode()
+    with urllib.request.urlopen(f"{inspection_url}/") as response:
+        page = response.read().decode()
+
+    legend = page[page.index('class="legend"') : page.index("</div>", page.index('class="legend"'))]
+    assert "Cue generated" in legend
+    assert "Intentionally suppressed" in legend
+    assert "unresolved" not in legend.lower()
+    assert 'return "anomaly"' in script
+    assert "evidence_integrity_anomaly:unresolved_stage_2_outcome" in script
+    assert 'id="integrityWarning"' in page
+    assert "Stage 2 cue generated from that event" in page
+    assert "Stage 2 event intentionally not sonified" in page

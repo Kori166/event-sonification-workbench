@@ -46,6 +46,25 @@ outcomes. It exposes retained cue parameters and a static key for the frozen bas
 renderer policy is stated accurately: `class_modifier` is retained for traceability but is not
 applied to the waveform.
 
+### Follow-up refinement after first browser acceptance
+
+The first researcher-controlled acceptance attempt on 15 August 2026 did not pass. Display-rate
+redrawing of every dense timeline marker caused avoidable playback work, cue controls were ordered
+by distance from the playback clock, and the normal legend/mapping language was too complex.
+
+The static timeline layer is therefore cached and rebuilt only when its evidence window or size
+changes; the display-rate path composites that layer with the current frame interval and cursor.
+Frame projection/image work occurs only on source-frame transitions or explicit inspection actions.
+Images are prepared off-screen, with preloading bounded to the following two frames. Cue controls use stable
+`(start_time_seconds, track_id, cue_id)` order and selection changes only their highlight when the
+window is already present.
+
+`unresolved` remains a backend integrity state but is not a normal displayed Stage 2 outcome. The
+validated-session legend shows only cue generation and intentional suppression; any unresolved
+projection raises a neutral, path-free integrity warning. The visible mapping key uses plain
+Time/Left-right/Pitch/Loudness wording while retaining the technical-baseline, no-depth and no-
+perceptual-validation limitations.
+
 ## Consequences
 
 - No Stage 1 schema/parser/event package, Stage 2 preset/scheduler/renderer/WAV or Stage 3

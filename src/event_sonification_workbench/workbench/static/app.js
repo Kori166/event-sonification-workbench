@@ -6,6 +6,8 @@ const playPause = document.querySelector("#playPause");
 const sessionSelect = document.querySelector("#sessionSelect");
 const timelineCanvas = document.querySelector("#timeline");
 const timelineContext = timelineCanvas.getContext("2d");
+const timelineBaseCanvas = document.createElement("canvas");
+const timelineBaseContext = timelineBaseCanvas.getContext("2d");
 const overlay = document.querySelector("#eventOverlay");
 const TIMELINE_EDGE_MARGIN_SECONDS = 0.25;
 const CUE_HIT_RADIUS_PX = 7;
@@ -16,6 +18,8 @@ const state = {
   session: null,
   frame: null,
   frameNumber: -1,
+  frameContext: null,
+  framePending: false,
   timeline: null,
   timelinePendingKey: null,
   timelineRequest: 0,
@@ -24,6 +28,9 @@ const state = {
   selectedCueTime: null,
   traceRequest: 0,
   frameRequest: 0,
+  integrityAnomalies: new Set(),
+  lastPlaybackTime: null,
+  preloadImages: new Map(),
 };
 
 function notice(message) {
@@ -109,7 +116,19 @@ async function renderEvaluation(generation = state.generation) {
 }
 
 function outcomeFor(event) {
-  return event.stage_2_outcome?.status || "unresolved";
+  const outcome = event.stage_2_outcome?.status;
+  if (outcome === "represented" || outcome === "suppressed") return outcome;
+  reportIntegrityAnomaly(event.event_id);
+  return "anomaly";
+}
+
+function reportIntegrityAnomaly(eventId) {
+  if (state.integrityAnomalies.has(eventId)) return;
+  state.integrityAnomalies.add(eventId);
+  const warning = document.querySelector("#integrityWarning");
+  warning.textContent = "Evidence-integrity warning: an event has no retained cue or suppression outcome.";
+  warning.hidden = false;
+  console.error("evidence_integrity_anomaly:unresolved_stage_2_outcome");
 }
 
 function renderOverlay(frame) {
@@ -135,6 +154,8 @@ function renderOverlay(frame) {
 }
 
 function setFrameContext(context) {
+  if (context === state.frameContext) return;
+  state.frameContext = context;
   document.querySelector("#frameKind").textContent =
     context === "cue" ? "Cue source frame" : "Playback frame";
 }
@@ -142,20 +163,58 @@ function setFrameContext(context) {
 async function loadFrame(frameNumber, context = "playback") {
   setFrameContext(context);
   if (frameNumber === state.frameNumber) return;
-  state.frameNumber = frameNumber;
   const generation = state.generation;
   const requestId = ++state.frameRequest;
-  const frame = await getJson(`/api/frames/${frameNumber}`);
-  if (generation !== state.generation || requestId !== state.frameRequest) return;
-  state.frame = frame;
-  const image = document.querySelector("#sourceImage");
-  image.onload = () => {
-    if (generation === state.generation) document.querySelector("#viewerLoading").hidden = true;
-  };
-  image.src = withSession(frame.image_url);
-  document.querySelector("#frameNumber").textContent = String(frame.frame).padStart(3, "0");
-  document.querySelector("#frameTime").textContent = `${frame.timestamp_seconds.toFixed(3)} s`;
-  renderOverlay(frame);
+  state.framePending = true;
+  try {
+    const frame = await getJson(`/api/frames/${frameNumber}`);
+    if (generation !== state.generation || requestId !== state.frameRequest) return;
+    const imageUrl = withSession(frame.image_url);
+    await prepareFrameImage(frame.frame, imageUrl);
+    if (generation !== state.generation || requestId !== state.frameRequest) return;
+    state.frame = frame;
+    state.frameNumber = frameNumber;
+    const image = document.querySelector("#sourceImage");
+    image.onload = () => {
+      if (generation === state.generation) document.querySelector("#viewerLoading").hidden = true;
+    };
+    image.src = imageUrl;
+    preloadFollowingFrames(frame.frame, generation);
+    document.querySelector("#frameNumber").textContent = String(frame.frame).padStart(3, "0");
+    document.querySelector("#frameTime").textContent = `${frame.timestamp_seconds.toFixed(3)} s`;
+    renderOverlay(frame);
+  } finally {
+    if (requestId === state.frameRequest) state.framePending = false;
+  }
+}
+
+function prepareFrameImage(frameNumber, imageUrl) {
+  const existing = state.preloadImages.get(frameNumber);
+  if (existing) return existing.promise;
+  const image = new Image();
+  const entry = { image, promise: null };
+  const imagePromise = new Promise((resolve, reject) => {
+    image.onload = () => resolve(image);
+    image.onerror = () => reject(new Error("frame_image_unavailable"));
+  });
+  entry.promise = imagePromise.finally(() => {
+    if (state.preloadImages.get(frameNumber) === entry) {
+      state.preloadImages.delete(frameNumber);
+    }
+  });
+  state.preloadImages.set(frameNumber, entry);
+  image.src = imageUrl;
+  return entry.promise;
+}
+
+function preloadFollowingFrames(frameNumber, generation) {
+  if (!state.session || generation !== state.generation) return;
+  for (const nextFrame of [frameNumber + 1, frameNumber + 2]) {
+    if (nextFrame >= state.session.counts.frames) break;
+    if (state.preloadImages.size >= 2) break;
+    prepareFrameImage(nextFrame, withSession(`/api/frames/${nextFrame}/image`))
+      .catch(() => {});
+  }
 }
 
 function resizeTimeline() {
@@ -163,7 +222,11 @@ function resizeTimeline() {
   const width = Math.max(300, timelineCanvas.clientWidth);
   timelineCanvas.width = Math.floor(width * ratio);
   timelineCanvas.height = Math.floor(198 * ratio);
+  timelineBaseCanvas.width = Math.floor(width * ratio);
+  timelineBaseCanvas.height = Math.floor(198 * ratio);
   timelineContext.setTransform(ratio, 0, 0, ratio, 0, 0);
+  timelineBaseContext.setTransform(ratio, 0, 0, ratio, 0, 0);
+  rebuildTimelineBase();
   drawTimeline();
 }
 
@@ -185,7 +248,7 @@ function cueInspectionIsAligned() {
     Math.abs(audio.currentTime - state.selectedCueTime) <= 1e-6;
 }
 
-function drawFrameStructure(height, width) {
+function drawCurrentFrameInterval(height, width) {
   if (!state.session || !state.timeline) return;
   const frameRate = state.session.timing.frame_rate;
   const windowStart = state.timeline.window.start_seconds;
@@ -206,36 +269,58 @@ function drawFrameStructure(height, width) {
       height,
     );
   }
+}
 
+function drawFrameBoundaries(context, height, width) {
+  if (!state.session || !state.timeline) return;
+  const frameRate = state.session.timing.frame_rate;
+  const windowStart = state.timeline.window.start_seconds;
+  const windowEnd = state.timeline.window.end_seconds;
   const firstBoundaryFrame = Math.ceil(windowStart * frameRate);
   const lastBoundaryFrame = Math.floor(windowEnd * frameRate);
   const pixelsPerFrame = width / ((windowEnd - windowStart) * frameRate);
-  timelineContext.strokeStyle = "rgba(140, 163, 157, 0.18)";
-  timelineContext.lineWidth = 1;
-  timelineContext.fillStyle = "rgba(140, 163, 157, 0.72)";
-  timelineContext.font = "9px ui-monospace, monospace";
+  context.strokeStyle = "rgba(140, 163, 157, 0.18)";
+  context.lineWidth = 1;
+  context.fillStyle = "rgba(140, 163, 157, 0.72)";
+  context.font = "9px ui-monospace, monospace";
   for (let frame = firstBoundaryFrame; frame <= lastBoundaryFrame; frame += 1) {
     const boundaryTime = frame / frameRate;
     if (boundaryTime < windowStart || boundaryTime > windowEnd) continue;
     const x = timelineX(boundaryTime, width);
-    timelineContext.beginPath();
-    timelineContext.moveTo(x, 0);
-    timelineContext.lineTo(x, height);
-    timelineContext.stroke();
+    context.beginPath();
+    context.moveTo(x, 0);
+    context.lineTo(x, height);
+    context.stroke();
     if (pixelsPerFrame >= 32 && x <= width - 18) {
-      timelineContext.fillText(`f${frame}`, x + 3, 10);
+      context.fillText(`f${frame}`, x + 3, 10);
     }
   }
 }
 
-function drawMarkers(items, lane, color, timestampField, height, width) {
+function drawMarkers(context, items, lane, color, timestampField, height, width) {
   const laneHeight = height / 3;
   const y = lane * laneHeight;
-  timelineContext.fillStyle = color;
+  context.fillStyle = color;
   for (const item of items) {
     const x = timelineX(item[timestampField], width);
-    timelineContext.fillRect(Math.max(0, x - 0.65), y + 12, 1.3, laneHeight - 24);
+    context.fillRect(Math.max(0, x - 0.65), y + 12, 1.3, laneHeight - 24);
   }
+}
+
+function rebuildTimelineBase() {
+  const width = timelineCanvas.clientWidth;
+  const height = 198;
+  timelineBaseContext.clearRect(0, 0, width, height);
+  timelineBaseContext.strokeStyle = "#172c28";
+  timelineBaseContext.lineWidth = 1;
+  for (let lane = 1; lane < 3; lane += 1) {
+    timelineBaseContext.beginPath(); timelineBaseContext.moveTo(0, lane * 66); timelineBaseContext.lineTo(width, lane * 66); timelineBaseContext.stroke();
+  }
+  if (!state.timeline) return;
+  drawFrameBoundaries(timelineBaseContext, height, width);
+  drawMarkers(timelineBaseContext, state.timeline.events, 0, "#65b8ff", "timestamp_seconds", height, width);
+  drawMarkers(timelineBaseContext, state.timeline.cues, 1, "#75f0c1", "start_time_seconds", height, width);
+  drawMarkers(timelineBaseContext, state.timeline.suppressions, 2, "#ff718d", "timestamp_seconds", height, width);
 }
 
 function drawTimeline() {
@@ -244,16 +329,19 @@ function drawTimeline() {
   timelineContext.clearRect(0, 0, width, height);
   timelineContext.fillStyle = "#07110f";
   timelineContext.fillRect(0, 0, width, height);
-  timelineContext.strokeStyle = "#172c28";
-  timelineContext.lineWidth = 1;
-  for (let lane = 1; lane < 3; lane += 1) {
-    timelineContext.beginPath(); timelineContext.moveTo(0, lane * 66); timelineContext.lineTo(width, lane * 66); timelineContext.stroke();
-  }
   if (!state.timeline) return;
-  drawFrameStructure(height, width);
-  drawMarkers(state.timeline.events, 0, "#65b8ff", "timestamp_seconds", height, width);
-  drawMarkers(state.timeline.cues, 1, "#75f0c1", "start_time_seconds", height, width);
-  drawMarkers(state.timeline.suppressions, 2, "#ff718d", "timestamp_seconds", height, width);
+  drawCurrentFrameInterval(height, width);
+  timelineContext.drawImage(
+    timelineBaseCanvas,
+    0,
+    0,
+    timelineBaseCanvas.width,
+    timelineBaseCanvas.height,
+    0,
+    0,
+    width,
+    height,
+  );
   const selected = state.timeline.cues.find((cue) => cue.cue_id === state.selectedCue);
   if (selected) {
     const selectedX = timelineX(selected.start_time_seconds, width);
@@ -289,10 +377,22 @@ function cueAtCanvasPoint(event) {
   return closest;
 }
 
-function renderNearbyCues() {
+function compareCueOrder(a, b) {
+  const timeDifference = a.start_time_seconds - b.start_time_seconds;
+  if (timeDifference !== 0) return timeDifference;
+  const trackDifference = String(a.track_id).localeCompare(
+    String(b.track_id),
+    undefined,
+    { numeric: true },
+  );
+  if (trackDifference !== 0) return trackDifference;
+  return a.cue_id.localeCompare(b.cue_id);
+}
+
+function renderWindowCues() {
   const container = document.querySelector("#nearbyCues");
   const cues = [...state.timeline.cues]
-    .sort((a, b) => Math.abs(a.start_time_seconds - audio.currentTime) - Math.abs(b.start_time_seconds - audio.currentTime))
+    .sort(compareCueOrder)
     .slice(0, 10);
   container.replaceChildren();
   for (const cue of cues) {
@@ -335,7 +435,7 @@ async function loadTimeline(force = false) {
   if (!force && cachedTimelineCovers(time)) return;
   const { start, end } = timelineWindowFor(time);
   const requestKey = `${start.toFixed(6)}:${end.toFixed(6)}`;
-  if (!force && state.timelinePendingKey === requestKey) return;
+  if (!force && state.timelinePendingKey !== null) return;
   const requestId = ++state.timelineRequest;
   state.timelinePendingKey = requestKey;
   try {
@@ -343,10 +443,16 @@ async function loadTimeline(force = false) {
     if (generation !== state.generation || requestId !== state.timelineRequest) return;
     state.timeline = timeline;
     document.querySelector("#windowLabel").textContent = `${state.timeline.window.start_seconds.toFixed(3)}–${state.timeline.window.end_seconds.toFixed(3)} s`;
-    renderNearbyCues();
-    if (state.frame) renderOverlay(state.frame);
+    renderWindowCues();
+    rebuildTimelineBase();
   } finally {
     if (requestId === state.timelineRequest) state.timelinePendingKey = null;
+  }
+}
+
+function updateCueSelection() {
+  for (const button of document.querySelectorAll("#nearbyCues .cue-chip")) {
+    button.classList.toggle("active", button.title === state.selectedCue);
   }
 }
 
@@ -369,32 +475,35 @@ function renderTrace(trace) {
       ["Stereo pan (horizontal centre)", trace.cue.stereo_pan],
       ["Amplitude (box area)", trace.cue.amplitude],
       ["Duration", `${trace.cue.duration_seconds.toFixed(3)} s`],
-      ["Class modifier (trace only)", trace.cue.class_modifier],
     ]),
     traceNode("Event", [["ID", shortEvent], ["Source frame / track", `${trace.event.frame} / ${trace.event.track_id}`], ["Class", trace.event.object_class]]),
     traceNode("Annotation", [["Logical source", trace.source_annotation.logical_path], ["Physical row", trace.source_annotation.row]]),
     traceNode("Configuration", [["Preset", `${trace.configuration.preset.name} ${trace.configuration.preset.version}`], ["Renderer", `${trace.configuration.renderer.name} ${trace.configuration.renderer.version}`], ["Class modifier", "Recorded for traceability; not applied to waveform"]]),
     traceNode("Render", [["Samples", `${trace.render.start_sample}–${trace.render.end_sample_exclusive}`], ["Duration", `${trace.render.duration_samples} @ ${trace.render.sample_rate_hz} Hz`]]),
   ].join("");
-  renderNearbyCues();
+  updateCueSelection();
   drawTimeline();
 }
 
 async function selectCue(cueId) {
   const generation = state.generation;
   const requestId = ++state.traceRequest;
+  const cueIsInCurrentWindow = state.timeline?.cues.some((cue) => cue.cue_id === cueId) ?? false;
   const trace = await getJson(`/api/trace?cue_id=${encodeURIComponent(cueId)}`);
   if (generation !== state.generation || requestId !== state.traceRequest) return;
   audio.pause();
   audio.currentTime = trace.cue.start_time_seconds;
+  state.lastPlaybackTime = audio.currentTime;
   seek.value = trace.cue.start_time_seconds;
   state.selectedCue = cueId;
   state.selectedCueFrame = trace.event.frame;
   state.selectedCueTime = trace.cue.start_time_seconds;
   await loadFrame(trace.event.frame, "cue");
   if (generation !== state.generation || requestId !== state.traceRequest) return;
-  await loadTimeline(true);
-  if (generation !== state.generation || requestId !== state.traceRequest) return;
+  if (!cueIsInCurrentWindow) {
+    await loadTimeline(true);
+    if (generation !== state.generation || requestId !== state.traceRequest) return;
+  }
   renderTrace(trace);
 }
 
@@ -408,7 +517,7 @@ function setAudioTime(value) {
   const duration = state.session?.timing.audio_duration_seconds || audio.duration || 0;
   clearCueFrameAlignment();
   audio.currentTime = Math.min(Math.max(value, 0), duration);
-  loadTimeline(true).catch((error) => notice(error.message));
+  loadTimeline().catch((error) => notice(error.message));
 }
 
 function resetSessionState(sessionId) {
@@ -417,6 +526,8 @@ function resetSessionState(sessionId) {
   state.session = null;
   state.frame = null;
   state.frameNumber = -1;
+  state.frameContext = null;
+  state.framePending = false;
   state.timeline = null;
   state.timelinePendingKey = null;
   state.selectedCue = null;
@@ -425,6 +536,9 @@ function resetSessionState(sessionId) {
   state.traceRequest += 1;
   state.frameRequest += 1;
   state.timelineRequest += 1;
+  state.integrityAnomalies.clear();
+  state.lastPlaybackTime = null;
+  state.preloadImages.clear();
 
   audio.pause();
   audio.removeAttribute("src");
@@ -440,6 +554,9 @@ function resetSessionState(sessionId) {
   document.querySelector("#frameNumber").textContent = "—";
   document.querySelector("#frameTime").textContent = "—";
   document.querySelector("#windowLabel").textContent = "—";
+  const integrityWarning = document.querySelector("#integrityWarning");
+  integrityWarning.textContent = "";
+  integrityWarning.hidden = true;
   document.querySelector("#verificationState").textContent = "Opening verified session…";
   document.querySelector(".session-state").classList.remove("verified");
   const image = document.querySelector("#sourceImage");
@@ -459,10 +576,11 @@ function resetSessionState(sessionId) {
   traceState.className = "evidence-tag neutral";
   const traceContent = document.querySelector("#traceContent");
   traceContent.className = "trace-empty";
-  traceContent.textContent = "Choose a cue marker or nearby cue to inspect its verified source and rendered sample chain.";
+  traceContent.textContent = "Choose a cue marker or window cue to inspect its verified source and rendered sample chain.";
   const noticeElement = document.querySelector("#notice");
   noticeElement.textContent = "";
   noticeElement.classList.remove("show");
+  rebuildTimelineBase();
   drawTimeline();
 }
 
@@ -483,15 +601,20 @@ async function switchSession(sessionId) {
 function tick() {
   if (state.session) {
     const time = audio.currentTime;
-    seek.value = time;
-    document.querySelector("#currentTime").textContent = formatTime(time);
-    const inspectingCue = cueInspectionIsAligned();
-    const frame = inspectingCue
-      ? state.selectedCueFrame
-      : frameForTime(time, state.session.timing.frame_rate, state.session.counts.frames);
-    loadFrame(frame, inspectingCue ? "cue" : "playback").catch((error) => notice(error.message));
-    loadTimeline().catch((error) => notice(error.message));
-    drawTimeline();
+    if (time !== state.lastPlaybackTime) {
+      state.lastPlaybackTime = time;
+      seek.value = time;
+      document.querySelector("#currentTime").textContent = formatTime(time);
+      const inspectingCue = cueInspectionIsAligned();
+      const frame = inspectingCue
+        ? state.selectedCueFrame
+        : frameForTime(time, state.session.timing.frame_rate, state.session.counts.frames);
+      if (frame !== state.frameNumber && !state.framePending) {
+        loadFrame(frame, inspectingCue ? "cue" : "playback").catch((error) => notice(error.message));
+      }
+      loadTimeline().catch((error) => notice(error.message));
+      drawTimeline();
+    }
   }
   window.requestAnimationFrame(tick);
 }

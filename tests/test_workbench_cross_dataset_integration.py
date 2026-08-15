@@ -116,6 +116,12 @@ def test_retained_cross_dataset_workbench_catalogue() -> None:
             event["stage_2_outcome"]["status"] in {"represented", "suppressed"}
             for event in frame["events"]
         )
+        for frame_number in range(counts["frames"]):
+            assert all(
+                event["stage_2_outcome"]["status"]
+                in {"represented", "suppressed"}
+                for event in model.frame(frame_number)["events"]
+            )
         assert model.image_path(0).read_bytes().startswith(details["image_signature"])
         timeline = model.timeline(0.0, 0.1)
         assert timeline["events"]

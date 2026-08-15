@@ -1018,3 +1018,22 @@ be added where a short entry would omit important implementation evidence.
   and expanded cross-dataset private integrations passed. Privacy/frozen-scope audit also passed.
 - Codex technical browser preflight passed both dataset boundary/frame/switch paths. The separate
   researcher-controlled visual/semantic/console acceptance, CI and merge gates remain pending.
+
+---
+
+## 2026-08-15 - Stage 4 Milestone 2 follow-up correction
+
+- The first researcher browser gate on PR #40 head
+  `02130795678b991e07570b64052d6d1442aeb889` failed because Firefox playback lagged, Chrome
+  froze/stuttered more severely, cue controls reordered on selection, and the normal
+  unresolved/mapping wording remained confusing.
+- Profiling separated display-rate cursor work from source-frame, timeline-window and DOM work. The
+  dense static marker layer is now cached, frame/image work is transition-driven with one bounded
+  next-frame preload, and cue controls are only rebuilt when their window changes.
+- Cue order is deterministic by time, track and cue ID. Unresolved backend outcomes remain
+  detectable but surface as integrity anomalies; the visible evidence-chain and technical mapping
+  wording is simpler and preserves R20/R21 limitations.
+- Ruff, frontend syntax, 26 focused tests, 278 non-integration tests and all three retained private
+  phases passed. Privacy/frozen-scope audit found no binary, private value or Stage 1-3 research
+  change. PR #40 stays draft pending exact-head hosted CI and a fresh researcher-controlled
+  22-check browser acceptance.

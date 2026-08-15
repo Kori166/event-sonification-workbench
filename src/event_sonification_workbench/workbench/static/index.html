@@ -47,10 +47,10 @@
           </div>
           <div class="legend" aria-label="Overlay legend">
             <strong>Stage 1 event box → Stage 2 outcome:</strong>
-            <span><i class="legend-mark represented"></i>represented by cue</span>
-            <span><i class="legend-mark suppressed"></i>intentionally suppressed</span>
-            <span><i class="legend-mark unresolved"></i>unresolved</span>
+            <span><i class="legend-mark represented"></i>Cue generated</span>
+            <span><i class="legend-mark suppressed"></i>Intentionally suppressed</span>
           </div>
+          <p class="integrity-warning" id="integrityWarning" role="alert" hidden></p>
         </article>
 
         <aside class="panel metrics-panel">
@@ -98,10 +98,10 @@
           <canvas id="timeline" height="198" aria-label="Synchronized event, cue and suppression timeline"></canvas>
         </div>
         <p class="evidence-key">
-          EVENT = Stage 1 normalised event · CUE = Stage 2 represented outcome ·
-          SUPPRESS = Stage 2 intentional suppression. Only CUE markers are selectable.
+          EVENT = Stage 1 normalised annotation · CUE = Stage 2 cue generated from that event ·
+          SUPPRESS = Stage 2 event intentionally not sonified. Only CUE markers are selectable.
         </p>
-        <p class="nearby-label">Nearby cues <span>select one to pause and align its source frame, playback cursor and trace</span></p>
+        <p class="nearby-label">Cues in this evidence window <span>Select a cue to align its source frame and provenance.</span></p>
         <div class="nearby-cues" id="nearbyCues" aria-label="Cues in the current window"></div>
       </section>
 
@@ -115,22 +115,21 @@
             <span class="evidence-tag neutral" id="traceState">Select a cue</span>
           </div>
           <div id="traceContent" class="trace-empty">
-            Choose a cue marker or nearby cue to inspect its verified source and rendered sample chain.
+            Choose a cue marker or window cue to inspect its verified source and rendered sample chain.
           </div>
-          <section class="mapping-key" aria-label="Frozen baseline mapping key">
+          <section class="mapping-key" aria-label="How this cue is encoded">
             <div>
-              <p class="eyebrow">Frozen baseline mapping</p>
+              <p class="eyebrow">How this cue is encoded</p>
               <dl>
-                <div><dt>Timing</dt><dd>event timestamp → cue start</dd></div>
-                <div><dt>Pan</dt><dd>horizontal centre → stereo pan</dd></div>
-                <div><dt>Pitch</dt><dd>vertical centre → frequency</dd></div>
-                <div><dt>Amplitude</dt><dd>normalised bounding-box area</dd></div>
+                <div><dt>Time</dt><dd>when the event occurs</dd></div>
+                <div><dt>Left/right</dt><dd>horizontal object position</dd></div>
+                <div><dt>Pitch</dt><dd>vertical object position</dd></div>
+                <div><dt>Loudness</dt><dd>bounding-box area</dd></div>
               </dl>
             </div>
             <p>
-              Class modifier is recorded for traceability only and is not applied by the current
-              renderer. Bounding-box area is an imperfect apparent-scale proxy, not depth. This is
-              a configurable technical design, not a perceptually validated mapping.
+              Technical baseline mapping; not perceptually validated. Bounding-box area is an
+              imperfect apparent-scale proxy, not true distance or depth.
             </p>
           </section>
         </article>
