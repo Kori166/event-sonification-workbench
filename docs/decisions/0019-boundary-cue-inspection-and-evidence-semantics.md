@@ -85,6 +85,21 @@ The lane explanation moves into a native keyboard-accessible `details` control a
 legend retains only the two normal outcomes. Frame divisions, current-frame interval and the thin
 white exact playback cursor remain unchanged.
 
+### Final interaction refinement after third browser acceptance
+
+The third researcher-controlled attempt confirmed nearly all previous corrections but found that
+explicit cue selection left the numeric transport text stale. The cue path assigned the retained
+time to both `audio.currentTime` and the animation-loop comparison state while updating only the
+slider, so the next display pass correctly treated time as unchanged. Slider and formatted numeric
+time presentation are now centralised and invoked immediately for explicit cue, seek/step, reset
+and playback updates; retained cue precision and frame semantics do not change.
+
+Represented video events already carry the exact retained `stage_2_outcome.cue_id`. Their overlay
+groups now expose click and Enter/Space controls that invoke the same cue-selection function as CUE
+markers and frame buttons. Suppressed and unresolved/anomaly events receive no cue identity or cue
+handler. These are alternative controls for one retained evidence relationship, not new mapping,
+scheduling or interpretation logic.
+
 ## Consequences
 
 - No Stage 1 schema/parser/event package, Stage 2 preset/scheduler/renderer/WAV or Stage 3

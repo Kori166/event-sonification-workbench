@@ -725,6 +725,63 @@ def test_frontend_uses_bounded_playback_work_and_stable_cue_controls(
     assert 'timelineContext.strokeStyle = "#ffffff"' in script
 
 
+def test_frontend_synchronises_transport_and_unifies_retained_cue_selection(
+    inspection_url: str,
+) -> None:
+    with urllib.request.urlopen(f"{inspection_url}/assets/app.js") as response:
+        script = response.read().decode()
+    with urllib.request.urlopen(f"{inspection_url}/assets/app.css") as response:
+        stylesheet = response.read().decode()
+
+    transport = script[
+        script.index("function updateTransportPresentation") : script.index(
+            "function escapeHtml"
+        )
+    ]
+    overlay_render = script[
+        script.index("function renderOverlay") : script.index("function setFrameContext")
+    ]
+    cue_selection = script[
+        script.index("async function selectCue") : script.index(
+            "function clearCueFrameAlignment"
+        )
+    ]
+    direct_seek = script[
+        script.index("function setAudioTime") : script.index(
+            "function resetSessionState"
+        )
+    ]
+    tick = script[script.index("function tick()") : script.index("playPause.addEventListener")]
+
+    assert "seek.value = seconds" in transport
+    assert "currentTimeDisplay.textContent = formatTime(seconds)" in transport
+    assert "audio.currentTime = trace.cue.start_time_seconds" in cue_selection
+    assert "state.lastPlaybackTime = audio.currentTime" in cue_selection
+    assert "updateTransportPresentation(audio.currentTime)" in cue_selection
+    assert "seek.value = trace.cue.start_time_seconds" not in cue_selection
+    assert "updateTransportPresentation(audio.currentTime)" in direct_seek
+    assert "updateTransportPresentation(time)" in tick
+    assert "updateTransportPresentation(0)" in script
+
+    assert 'outcome === "represented" ? event.stage_2_outcome?.cue_id : null' in (
+        overlay_render
+    )
+    assert 'group.setAttribute("role", "button")' in overlay_render
+    assert 'group.setAttribute("tabindex", "0")' in overlay_render
+    assert 'group.setAttribute("data-cue-id", cueId)' in overlay_render
+    assert "selectCue(cueId)" in overlay_render
+    assert 'keyboardEvent.key !== "Enter"' in overlay_render
+    assert 'keyboardEvent.key !== " "' in overlay_render
+    assert "keyboardEvent.stopPropagation()" in overlay_render
+    assert "if (cueId)" in overlay_render
+    assert 'control.getAttribute("data-cue-id") === state.selectedCue' in script
+    assert 'button.addEventListener("click", () => selectCue(cue.cue_id))' in script
+    assert "if (cue) selectCue(cue.cue_id)" in script
+    assert ".event-cue-control { pointer-events: all; cursor: pointer;" in stylesheet
+    assert ".event-cue-control:focus-visible .event-box" in stylesheet
+    assert ".event-cue-control.selected .event-box" in stylesheet
+
+
 def test_frontend_presents_two_normal_outcomes_and_flags_unresolved_anomaly(
     inspection_url: str,
 ) -> None:

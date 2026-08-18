@@ -150,7 +150,11 @@ integration passed once in 83.56s and the Phase 2 real-session integration passe
 - [x] Cover zero-, one- and multi-cue frames plus retained final frames 599 and 153.
 - [x] Move lane detail behind accessible help and remove the redundant legend lead-in.
 - [x] Record the second researcher acceptance findings without treating them as perceptual evidence.
-- [ ] Pass revised 28-check Firefox/Chrome, two-dataset browser acceptance.
+- [x] Record the mostly passed third researcher acceptance and remaining transport/video-box work.
+- [x] Synchronise numeric transport presentation on explicit cue, seek and frame-step actions.
+- [x] Make represented video boxes select their exact retained cue through the common interaction.
+- [x] Keep suppressed/anomaly video boxes contextual and add represented-box keyboard operation.
+- [ ] Pass final focused 16-check Firefox/Chrome, two-dataset browser acceptance.
 - [x] Pass the Milestone 2 privacy and frozen-research-scope audit.
 - [ ] Pass final-head hosted CI.
 - [ ] Merge the focused PR and pass post-merge `main` CI.

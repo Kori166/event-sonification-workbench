@@ -2,6 +2,7 @@
 
 const audio = document.querySelector("#audio");
 const seek = document.querySelector("#seek");
+const currentTimeDisplay = document.querySelector("#currentTime");
 const playPause = document.querySelector("#playPause");
 const sessionSelect = document.querySelector("#sessionSelect");
 const timelineCanvas = document.querySelector("#timeline");
@@ -63,6 +64,10 @@ function formatTime(seconds) {
 
 function formatPercent(value) { return `${(value * 100).toFixed(2)}%`; }
 function formatNumber(value, digits = 2) { return Number(value).toLocaleString(undefined, { maximumFractionDigits: digits }); }
+function updateTransportPresentation(seconds) {
+  seek.value = seconds;
+  currentTimeDisplay.textContent = formatTime(seconds);
+}
 function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, (character) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;",
@@ -148,9 +153,27 @@ function renderOverlay(frame) {
     label.setAttribute("y", Math.max(22, event.bbox.y - 7));
     label.setAttribute("class", "event-label");
     label.textContent = `${event.object_class} · t${event.track_id}`;
+    const cueId = outcome === "represented" ? event.stage_2_outcome?.cue_id : null;
+    if (cueId) {
+      group.setAttribute("class", "event-cue-control");
+      group.setAttribute("role", "button");
+      group.setAttribute("tabindex", "0");
+      group.setAttribute("focusable", "true");
+      group.setAttribute("data-cue-id", cueId);
+      group.setAttribute("aria-label", `Select ${event.object_class} track ${event.track_id} cue at frame ${event.frame}`);
+      const selectRepresentedCue = () => selectCue(cueId).catch((error) => notice(error.message));
+      group.addEventListener("click", selectRepresentedCue);
+      group.addEventListener("keydown", (keyboardEvent) => {
+        if (keyboardEvent.key !== "Enter" && keyboardEvent.key !== " ") return;
+        keyboardEvent.preventDefault();
+        keyboardEvent.stopPropagation();
+        selectRepresentedCue();
+      });
+    }
     group.append(rectangle, label);
     overlay.append(group);
   }
+  updateCueSelection();
 }
 
 function setFrameContext(context) {
@@ -466,6 +489,11 @@ function updateCueSelection() {
     button.classList.toggle("active", isActive);
     button.setAttribute("aria-pressed", String(isActive));
   }
+  for (const control of overlay.querySelectorAll(".event-cue-control")) {
+    const isActive = control.getAttribute("data-cue-id") === state.selectedCue;
+    control.classList.toggle("selected", isActive);
+    control.setAttribute("aria-pressed", String(isActive));
+  }
 }
 
 function traceNode(title, lines) {
@@ -506,10 +534,11 @@ async function selectCue(cueId) {
   audio.pause();
   audio.currentTime = trace.cue.start_time_seconds;
   state.lastPlaybackTime = audio.currentTime;
-  seek.value = trace.cue.start_time_seconds;
   state.selectedCue = cueId;
   state.selectedCueFrame = trace.event.frame;
   state.selectedCueTime = trace.cue.start_time_seconds;
+  updateTransportPresentation(audio.currentTime);
+  drawTimeline();
   await loadFrame(trace.event.frame, "cue");
   if (generation !== state.generation || requestId !== state.traceRequest) return;
   if (!cueIsInCurrentWindow) {
@@ -529,6 +558,7 @@ function setAudioTime(value) {
   const duration = state.session?.timing.audio_duration_seconds || audio.duration || 0;
   clearCueFrameAlignment();
   audio.currentTime = Math.min(Math.max(value, 0), duration);
+  updateTransportPresentation(audio.currentTime);
   loadTimeline().catch((error) => notice(error.message));
 }
 
@@ -555,11 +585,10 @@ function resetSessionState(sessionId) {
   audio.pause();
   audio.removeAttribute("src");
   audio.load();
-  seek.value = 0;
   seek.max = 1;
+  updateTransportPresentation(0);
   playPause.textContent = "▶";
   playPause.setAttribute("aria-label", "Play");
-  document.querySelector("#currentTime").textContent = "00:00.000";
   document.querySelector("#duration").textContent = "00:00.000";
   document.querySelector("#sequenceTitle").textContent = "Loading…";
   document.querySelector("#frameKind").textContent = "Playback frame";
@@ -616,8 +645,7 @@ function tick() {
     const time = audio.currentTime;
     if (time !== state.lastPlaybackTime) {
       state.lastPlaybackTime = time;
-      seek.value = time;
-      document.querySelector("#currentTime").textContent = formatTime(time);
+      updateTransportPresentation(time);
       const inspectingCue = cueInspectionIsAligned();
       const frame = inspectingCue
         ? state.selectedCueFrame

@@ -1058,3 +1058,24 @@ be added where a short entry would omit important implementation evidence.
   playback runs and an error-free in-app console.
 - PR #40 remains draft and unmerged pending exact-head hosted CI and the revised 28-check
   researcher-controlled browser acceptance.
+
+---
+
+## 2026-08-18 - Stage 4 Milestone 2 final interaction correction
+
+- The latest researcher pass confirmed nearly all 28 checks. The remaining defect was stale numeric
+  transport text after cue selection; represented video cue boxes were also requested as a bounded
+  additional route to the retained inspector.
+- Transport slider/text presentation is now centralised and invoked immediately for explicit cue,
+  seek/step, reset and playback changes. Retained timestamps and half-open frame semantics are
+  unchanged.
+- Represented overlay boxes use their projected exact cue ID and the common `selectCue()` path, with
+  restrained hover/focus/selected states and Enter/Space operation. Suppressed and anomaly boxes do
+  not become cue controls.
+- PR #40 stays draft and unmerged pending exact-head validation/CI and the focused 16-check
+  researcher-controlled Firefox/Chrome gate.
+- Ruff, JavaScript syntax, 28 focused tests and 280 non-integration tests passed; all three genuine
+  retained integrations passed in 61.61s, 29.50s and 30.80s. Privacy/frozen-scope audit was clean.
+- Technical browser preflight confirmed immediate `00:00.033` rounded display, exact common-route
+  cue identity, same-frame order stability, suppressed-box isolation, KITTI cyclist selection,
+  smooth ten-second runs and no in-app console warning/error.

@@ -63,6 +63,23 @@ it did not establish a frame-local cue context. Frame is already retained on eve
 so the smallest complete correction is a read-only frame cue projection rather than a wider
 timeline or any Stage 2 recomputation.
 
+### Final interaction diagnosis
+
+The subsequent researcher-controlled pass confirmed nearly all 28 checks, including complete
+first/final/dense frame groups, cyclist discoverability, marker context, frame presentation,
+provenance, deterministic controls, session isolation and ten-second Firefox/Chrome playback.
+
+One transport defect remained. `selectCue()` explicitly assigned the retained cue time to both
+`audio.currentTime` and `state.lastPlaybackTime`, but updated only the range input. The animation
+loop updates the numeric time only when those two values differ, so its next iteration correctly
+skipped the presentation block and left the text stale. This is a frontend presentation defect;
+retained time/frame evidence remains correct.
+
+The same inspection also established a bounded interaction requirement: represented Stage 1 video
+boxes should select their already-linked retained Stage 2 cue. Frame projections already expose the
+exact relationship as `stage_2_outcome.cue_id`; no timestamp, class, track or canvas-position
+inference is needed. Suppressed boxes have no cue and remain contextual evidence.
+
 ## Frozen correction boundary
 
 Decision 0019 limits Milestone 2 to read-only inspection corrections: stable boundary windows,
@@ -103,6 +120,13 @@ Stage 1-3 research semantics/results, baseline configuration and retained audio 
   its active highlight, selected marker and provenance, without rebuilding or reordering the group.
 - The one-second canvas, cached static layer, cue-only hit testing, frame divisions, highlighted
   interval and thin white exact playback cursor are unchanged.
+- A single transport-presentation helper updates the range value and formatted numeric time for
+  explicit cue selection, seek/frame-step actions, session reset and animation-driven playback.
+  Explicit cue selection invokes it immediately before asynchronous frame/trace work.
+- Represented video overlay groups read their exact retained `stage_2_outcome.cue_id` and invoke the
+  same `selectCue()` path as timeline markers and frame buttons. They expose restrained hover,
+  focus and selected states plus Enter/Space operation. Suppressed/anomaly boxes receive no cue
+  control, cue identity or selection handler.
 - Normal overlay semantics now show only `Cue generated` and `Intentionally suppressed`.
   Backend `unresolved` detection remains, but the frontend presents it as a neutral, path-free
   evidence-integrity anomaly and emits a stable diagnostic rather than a research category.
@@ -141,6 +165,19 @@ traces every cue in those selected groups and re-verifies exact declared WAV has
 MOT17 final group is frame 599; the retained KITTI final group is frame 153. KITTI's real frame-0
 van/cyclist/pedestrian group is complete, stable and independently traceable.
 
+Final interaction-correction results on Windows / Python 3.14.3:
+
+- Ruff: passed;
+- frontend JavaScript syntax: passed;
+- focused workbench suite: 28 passed in 7.48s;
+- complete non-integration suite: 280 passed, 6 deselected in 38.14s;
+- Phase 1 retained-chain private integration: 1 passed in 61.61s;
+- Phase 2 MOT17 inspection private integration: 1 passed in 29.50s; and
+- Phase 3 cross-dataset private integration: 1 passed in 30.80s.
+
+The retained integrations again verify genuine media, complete outcome/cue/trace projections and
+the exact declared WAV hashes. No retained package was regenerated.
+
 ### Privacy and scope audit
 
 The complete Milestone 2 diff contains no binary, media, WAV, screenshot, browser storage, temporary
@@ -172,6 +209,14 @@ claiming the researcher-only visual/semantic acceptance below. No screenshot was
   MOT17 frame 322 and KITTI frame 109, and the in-app technical console contained no warnings or
   errors. This is diagnostic engineering evidence only; it is not the Firefox/Chrome researcher
   gate and does not satisfy items 27-28.
+- The final interaction preflight selected a MOT17 `0.033333s` CUE marker and immediately observed
+  `00:00.033`, frame 001 and matching active frame-button/video cue IDs. Click, Enter and Space on
+  represented video controls selected their exact projected cue; two same-frame siblings retained
+  control order and Space did not start playback. Suppressed boxes exposed no role, tab stop or cue
+  ID. Video, timeline and frame-button routes converged on one cue ID/frame; the real KITTI cyclist
+  box selected its matching cue and complete trace. Ten-second runs reached KITTI frame 108 and
+  MOT17 frame 322, with no in-app console warnings or errors. This remains Codex technical
+  preflight, not the final Firefox/Chrome researcher gate.
 
 ### First researcher-controlled browser acceptance attempt
 
@@ -195,44 +240,48 @@ requested collapsed lane help and removal of the overlay-legend lead-in. Explici
 the thin white playback cursor and final Firefox/Chrome console results remained pending. These are
 iterative technical inspection findings, not usability or perceptual evidence.
 
-### Revised researcher-controlled browser acceptance procedure
+### Third researcher-controlled browser acceptance attempt
+
+The latest pass against `6c73a1754eed2d2a40e9d6480afc982ccf81e357` confirmed the large majority
+of the 28-check procedure: first/final cues, complete frame groups, dense multi-class and cyclist
+cue discoverability, marker context, deterministic selection, frame divisions/current interval,
+the distinct thin white cursor, collapsed help, simplified legend/mapping, complete provenance,
+both session-switch directions and ten-second Firefox/Chrome playback on both retained datasets.
+
+It found one remaining defect: cue selection moved the slider, cursor, source frame and provenance
+but left the numeric transport-time text at its previous value. It also supplied one bounded
+technical requirement: a represented cue shown as a green video bounding box should be directly
+selectable through the same retained cue-selection path. This is researcher-controlled technical
+inspection, not participant feedback or usability/accessibility/perceptual evaluation.
+
+### Final focused researcher-controlled browser acceptance procedure
 
 This gate is pending researcher observation. Launch the primary command, open
 `http://127.0.0.1:8765/`, keep browser zoom at 100%, and open Developer Tools Console. Record each
 item as pass/fail with a short observation; do not treat the result as usability or perceptual
 testing.
 
-1. Confirm the MOT17 first cue opens.
-2. Repeatedly select the MOT17 first cue and confirm it remains stable.
-3. Confirm MOT17 frame 599 exposes its cue group and final cue trace.
-4. Confirm the MOT17 `0.033333s` cue remains aligned to frame 1.
-5. Confirm KITTI frame 000 exposes its first cue group and remains stable.
-6. Confirm KITTI frame 153 exposes its cue group and final cue trace.
-7. Click a CUE marker and confirm the controls update to that cue's frame.
-8. Confirm every cue on that selected frame is exposed as a button.
-9. On a dense multi-class/track frame, confirm every relevant cue is present, including the
-   previously missing cyclist/bicycle-related cue.
-10. Select one cue and confirm the frame group keeps the same deterministic order.
-11. Repeat selections and confirm only highlight/provenance change; controls do not reorder.
-12. Confirm frame divisions and labels are visible.
-13. Confirm the current-frame interval is visible.
-14. Confirm the thin white playback cursor is clearly distinct from the highlighted interval.
-15. Confirm the EVENT/CUE/SUPPRESS lane names remain understandable.
-16. Confirm detailed lane explanation is available behind the help control rather than permanently
-    displayed.
-17. Confirm the overlay legend shows only `Cue generated` and `Intentionally suppressed`.
-18. Click EVENT, SUPPRESS and empty-lane areas and confirm none selects a cue; confirm CUE markers do.
-19. Confirm selected-cue provenance remains complete.
-20. Confirm the simplified technical mapping explanation remains accurate and makes no depth or
-    perceptual-effectiveness claim.
-21. Perform MOT17 → KITTI → MOT17 and confirm state resets.
-22. Perform KITTI → MOT17 → KITTI and confirm state resets.
-23. In Firefox at 100% zoom, play MOT17 continuously for 10 seconds without visible freezing.
-24. In Firefox at 100% zoom, play KITTI continuously for 10 seconds without visible freezing.
-25. In Chrome at 100% zoom, play MOT17 continuously for 10 seconds without visible freezing.
-26. In Chrome at 100% zoom, play KITTI continuously for 10 seconds without visible freezing.
-27. Confirm the Firefox console contains no workbench errors or warnings.
-28. Confirm the Chrome console contains no workbench errors or warnings.
+1. Select the MOT17 first cue from its frame button; confirm slider, numeric time, white cursor,
+   source frame and provenance align.
+2. Select the MOT17 `0.033333s` cue from the CUE lane; confirm visible time is approximately
+   `00:00.033` and source frame remains 1.
+3. Select a clearly later MOT17 cue; confirm numeric time changes immediately.
+4. Repeat equivalent cue selection in KITTI and confirm transport/frame/provenance alignment.
+5. Click a represented MOT17 video box; confirm its exact retained cue, frame button, provenance and
+   transport position become active.
+6. Click a different represented box on that frame; confirm the correct sibling becomes active and
+   button order does not change.
+7. Click a represented KITTI video box; confirm its exact retained cue and provenance are selected.
+8. Confirm a cyclist/bicycle-related represented KITTI box is selectable where present.
+9. Confirm intentionally suppressed boxes do not behave as generated cue controls.
+10. Select the same cue through its video box, CUE marker and frame button; confirm the same cue ID
+    and source frame result.
+11. Confirm MOT17 frame 599 still exposes its final cue group and trace.
+12. Confirm KITTI frame 153 still exposes its final cue group and trace.
+13. Confirm playback remains smooth in Firefox.
+14. Confirm playback remains smooth in Chrome.
+15. Confirm the Firefox console contains no workbench errors or warnings.
+16. Confirm the Chrome console contains no workbench errors or warnings.
 
 These checks are technical browser acceptance, not usability or perceptual evaluation. Fresh hosted
 CI is required on the exact revised head before this candidate is returned for the retest. PR #40

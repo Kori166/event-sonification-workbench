@@ -116,6 +116,10 @@ main { position: relative; display: grid; gap: 1rem; max-width: 1600px; margin: 
 .event-box { fill: rgba(117, 240, 193, 0.05); stroke: var(--accent); stroke-width: 3; vector-effect: non-scaling-stroke; }
 .event-box.suppressed { fill: rgba(255, 113, 141, 0.04); stroke: var(--danger); stroke-dasharray: 8 5; }
 .event-box.anomaly { fill: rgba(255, 255, 255, 0.03); stroke: #d6c8a0; stroke-dasharray: 4 4; }
+.event-cue-control { pointer-events: all; cursor: pointer; outline: none; }
+.event-cue-control:hover .event-box,
+.event-cue-control:focus-visible .event-box { fill: rgba(117, 240, 193, 0.12); stroke-width: 4; }
+.event-cue-control.selected .event-box { fill: rgba(117, 240, 193, 0.16); stroke: #ffffff; stroke-width: 4; }
 .event-label { fill: #f5fffb; font-family: ui-monospace, monospace; font-size: 22px; paint-order: stroke; stroke: rgba(3, 9, 7, 0.9); stroke-width: 5px; }
 .legend { display: flex; flex-wrap: wrap; gap: 1rem; padding: 0 1.15rem 1rem; color: var(--muted); font-size: 0.7rem; }
 .legend span { display: flex; align-items: center; gap: 0.35rem; }

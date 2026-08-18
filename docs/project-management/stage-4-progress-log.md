@@ -221,3 +221,26 @@ candidate. The main project progress log remains the chronological project-wide 
   collapsed help, both ten-second playback runs and the in-app console passed.
 - PR #40 remains draft and unmerged pending exact-head hosted CI and the revised 28-check
   researcher-controlled browser acceptance.
+
+## 2026-08-18 - Milestone 2 final interaction correction
+
+- The next researcher-controlled pass confirmed nearly all 28 checks, including first/final/dense
+  cue groups, cyclist discoverability, frame/timeline presentation, provenance, deterministic
+  selection, both switch directions and ten-second Firefox/Chrome playback on both datasets.
+- One defect remained: cue selection moved the slider, cursor, frame and provenance but left the
+  numeric transport time stale. The same technical inspection requested direct selection of
+  represented green video boxes through their retained cue relationship.
+- Audit confirmed `selectCue()` assigned both `audio.currentTime` and `state.lastPlaybackTime` before
+  the animation loop could update text. A shared helper now updates slider and formatted time during
+  cue selection, seek/step, reset and playback.
+- Represented overlay groups now use only `stage_2_outcome.cue_id` and invoke the existing
+  `selectCue()` path by click or Enter/Space. Frame buttons, CUE markers and video boxes therefore
+  converge on one inspection model. Suppressed/anomaly boxes remain non-cue contextual evidence.
+- PR #40 remains draft and unmerged pending exact-head gates and the focused 16-check researcher
+  retest. This is technical inspection evidence, not usability/accessibility/perceptual evaluation.
+- Ruff, JavaScript syntax, 28 focused tests and 280 non-integration tests passed. The three genuine
+  retained integrations passed in 61.61s, 29.50s and 30.80s; exact WAV hashes remained verified.
+- Privacy/frozen-scope audit found nine presentation/test/record files, no media/binary/private path
+  value and no Stage 1-3 research-contract/configuration/result change. Browser preflight confirmed
+  immediate rounded transport text, exact video/button/marker identity, suppressed-box isolation,
+  real KITTI cyclist selection, both ten-second runs and a clean in-app console.
