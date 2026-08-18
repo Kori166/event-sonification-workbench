@@ -154,7 +154,7 @@ integration passed once in 83.56s and the Phase 2 real-session integration passe
 - [x] Synchronise numeric transport presentation on explicit cue, seek and frame-step actions.
 - [x] Make represented video boxes select their exact retained cue through the common interaction.
 - [x] Keep suppressed/anomaly video boxes contextual and add represented-box keyboard operation.
-- [ ] Pass final focused 16-check Firefox/Chrome, two-dataset browser acceptance.
+- [x] Pass final focused 16-check Firefox/Chrome, two-dataset browser acceptance.
 - [x] Pass the Milestone 2 privacy and frozen-research-scope audit.
 - [ ] Pass final-head hosted CI.
 - [ ] Merge the focused PR and pass post-merge `main` CI.

@@ -1079,3 +1079,20 @@ be added where a short entry would omit important implementation evidence.
 - Technical browser preflight confirmed immediate `00:00.033` rounded display, exact common-route
   cue identity, same-frame order stability, suppressed-box isolation, KITTI cyclist selection,
   smooth ten-second runs and no in-app console warning/error.
+
+---
+
+## 2026-08-18 - Stage 4 Milestone 2 final researcher interaction acceptance
+
+- The researcher confirmed all 16 focused Firefox/Chrome checks against implementation candidate
+  `39cf6953b72c30a03e920f672a81259b44399c12`.
+- Transport presentation aligned with retained cue time, source frame and provenance in both
+  datasets, including the MOT17 `0.033333s` / frame-1 boundary case and immediate later-cue updates.
+- Represented MOT17, KITTI and cyclist/bicycle-related boxes selected their exact retained cues;
+  sibling order remained stable, suppressed boxes remained non-cue controls, and video/marker/frame
+  control routes converged on the same selected cue and source frame.
+- MOT17 frame 599 and KITTI frame 153 remained fully inspectable. Playback remained smooth and both
+  Firefox and Chrome consoles contained no workbench errors or warnings.
+- This completes researcher-controlled technical browser acceptance without introducing usability,
+  accessibility, participant or perceptual evidence. Documentation-head CI, PR merge, post-merge
+  `main` CI and final Milestone 2 close-out recording remain.

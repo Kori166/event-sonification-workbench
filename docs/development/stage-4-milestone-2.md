@@ -254,35 +254,29 @@ technical requirement: a represented cue shown as a green video bounding box sho
 selectable through the same retained cue-selection path. This is researcher-controlled technical
 inspection, not participant feedback or usability/accessibility/perceptual evaluation.
 
-### Final focused researcher-controlled browser acceptance procedure
+### Final focused researcher-controlled browser acceptance
 
-This gate is pending researcher observation. Launch the primary command, open
-`http://127.0.0.1:8765/`, keep browser zoom at 100%, and open Developer Tools Console. Record each
-item as pass/fail with a short observation; do not treat the result as usability or perceptual
-testing.
+The researcher completed the final focused gate against implementation candidate
+`39cf6953b72c30a03e920f672a81259b44399c12` on 18 August 2026. All 16 checks passed:
 
-1. Select the MOT17 first cue from its frame button; confirm slider, numeric time, white cursor,
-   source frame and provenance align.
-2. Select the MOT17 `0.033333s` cue from the CUE lane; confirm visible time is approximately
-   `00:00.033` and source frame remains 1.
-3. Select a clearly later MOT17 cue; confirm numeric time changes immediately.
-4. Repeat equivalent cue selection in KITTI and confirm transport/frame/provenance alignment.
-5. Click a represented MOT17 video box; confirm its exact retained cue, frame button, provenance and
-   transport position become active.
-6. Click a different represented box on that frame; confirm the correct sibling becomes active and
-   button order does not change.
-7. Click a represented KITTI video box; confirm its exact retained cue and provenance are selected.
-8. Confirm a cyclist/bicycle-related represented KITTI box is selectable where present.
-9. Confirm intentionally suppressed boxes do not behave as generated cue controls.
-10. Select the same cue through its video box, CUE marker and frame button; confirm the same cue ID
-    and source frame result.
-11. Confirm MOT17 frame 599 still exposes its final cue group and trace.
-12. Confirm KITTI frame 153 still exposes its final cue group and trace.
-13. Confirm playback remains smooth in Firefox.
-14. Confirm playback remains smooth in Chrome.
-15. Confirm the Firefox console contains no workbench errors or warnings.
-16. Confirm the Chrome console contains no workbench errors or warnings.
+1. MOT17 first-cue slider, numeric time, white cursor, source frame and provenance aligned.
+2. The MOT17 `0.033333s` CUE marker displayed approximately `00:00.033` and remained on frame 1.
+3. A clearly later MOT17 cue updated numeric time immediately.
+4. Equivalent KITTI cue selection aligned transport, frame and provenance.
+5. A represented MOT17 video box selected its exact retained cue and matching inspection state.
+6. A different same-frame represented box selected the correct sibling without reordering buttons.
+7. A represented KITTI video box selected its exact retained cue and provenance.
+8. A cyclist/bicycle-related represented KITTI box was selectable.
+9. Intentionally suppressed boxes did not behave as generated cue controls.
+10. Video box, CUE marker and frame button routes resolved the same cue ID and source frame.
+11. MOT17 frame 599 retained its final cue group and trace.
+12. KITTI frame 153 retained its final cue group and trace.
+13. Firefox playback remained smooth.
+14. Chrome playback remained smooth.
+15. The Firefox console contained no workbench errors or warnings.
+16. The Chrome console contained no workbench errors or warnings.
 
-These checks are technical browser acceptance, not usability or perceptual evaluation. Fresh hosted
-CI is required on the exact revised head before this candidate is returned for the retest. PR #40
-must remain draft and unmerged until the researcher supplies the new observations.
+This is researcher-controlled technical browser acceptance, not participant feedback or usability,
+accessibility or perceptual evaluation. The implementation candidate had already passed exact-head
+hosted CI run 32131916988. A documentation-only acceptance commit still requires exact-head CI
+before PR #40 can merge, followed by post-merge `main` CI and close-out recording.

@@ -244,3 +244,18 @@ candidate. The main project progress log remains the chronological project-wide 
   value and no Stage 1-3 research-contract/configuration/result change. Browser preflight confirmed
   immediate rounded transport text, exact video/button/marker identity, suppressed-box isolation,
   real KITTI cyclist selection, both ten-second runs and a clean in-app console.
+
+## 2026-08-18 - Milestone 2 final researcher interaction acceptance
+
+- The researcher confirmed all 16 focused checks against implementation candidate
+  `39cf6953b72c30a03e920f672a81259b44399c12`.
+- MOT17 and KITTI transport time, slider, white cursor, frame and provenance remained aligned;
+  `0.033333s` displayed approximately `00:00.033` while retaining MOT17 frame 1.
+- Represented MOT17, KITTI and cyclist/bicycle-related video boxes selected their exact retained
+  cues. Same-frame sibling order remained stable, suppressed boxes remained non-cue controls, and
+  video box/CUE marker/frame button routes resolved the same cue and frame.
+- MOT17 frame 599 and KITTI frame 153 retained their complete final cue groups and traces. Firefox
+  and Chrome playback remained smooth, with no workbench console errors or warnings in either.
+- This passes the researcher-controlled technical browser gate; it is not usability,
+  accessibility, participant or perceptual evidence. Documentation-head CI, merge, post-merge
+  `main` CI and exact close-out recording remain.
