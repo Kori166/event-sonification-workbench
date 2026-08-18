@@ -183,6 +183,7 @@ async function loadFrame(frameNumber, context = "playback") {
     document.querySelector("#frameNumber").textContent = String(frame.frame).padStart(3, "0");
     document.querySelector("#frameTime").textContent = `${frame.timestamp_seconds.toFixed(3)} s`;
     renderOverlay(frame);
+    renderFrameCues();
   } finally {
     if (requestId === state.frameRequest) state.framePending = false;
   }
@@ -389,16 +390,26 @@ function compareCueOrder(a, b) {
   return a.cue_id.localeCompare(b.cue_id);
 }
 
-function renderWindowCues() {
-  const container = document.querySelector("#nearbyCues");
-  const cues = [...state.timeline.cues]
-    .sort(compareCueOrder)
-    .slice(0, 10);
+function renderFrameCues() {
+  const container = document.querySelector("#frameCues");
+  const cues = [...(state.frame?.cues || [])].sort(compareCueOrder);
+  const frameNumber = state.frame?.frame;
+  document.querySelector("#frameCueSummary").textContent = Number.isInteger(frameNumber)
+    ? `Frame ${String(frameNumber).padStart(3, "0")} · ${cues.length} ${cues.length === 1 ? "cue" : "cues"}`
+    : "—";
   container.replaceChildren();
+  if (cues.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "cue-empty";
+    empty.textContent = `No generated cues on frame ${String(frameNumber).padStart(3, "0")}.`;
+    container.append(empty);
+    return;
+  }
   for (const cue of cues) {
     const button = document.createElement("button");
     button.type = "button";
     button.className = `cue-chip${state.selectedCue === cue.cue_id ? " active" : ""}`;
+    button.setAttribute("aria-pressed", String(state.selectedCue === cue.cue_id));
     button.textContent = `${cue.start_time_seconds.toFixed(3)}s · ${cue.object_class} · t${cue.track_id}`;
     button.title = cue.cue_id;
     button.addEventListener("click", () => selectCue(cue.cue_id));
@@ -443,7 +454,6 @@ async function loadTimeline(force = false) {
     if (generation !== state.generation || requestId !== state.timelineRequest) return;
     state.timeline = timeline;
     document.querySelector("#windowLabel").textContent = `${state.timeline.window.start_seconds.toFixed(3)}–${state.timeline.window.end_seconds.toFixed(3)} s`;
-    renderWindowCues();
     rebuildTimelineBase();
   } finally {
     if (requestId === state.timelineRequest) state.timelinePendingKey = null;
@@ -451,8 +461,10 @@ async function loadTimeline(force = false) {
 }
 
 function updateCueSelection() {
-  for (const button of document.querySelectorAll("#nearbyCues .cue-chip")) {
-    button.classList.toggle("active", button.title === state.selectedCue);
+  for (const button of document.querySelectorAll("#frameCues .cue-chip")) {
+    const isActive = button.title === state.selectedCue;
+    button.classList.toggle("active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
   }
 }
 
@@ -564,7 +576,8 @@ function resetSessionState(sessionId) {
   image.removeAttribute("src");
   document.querySelector("#viewerLoading").hidden = false;
   overlay.replaceChildren();
-  document.querySelector("#nearbyCues").replaceChildren();
+  document.querySelector("#frameCueSummary").textContent = "—";
+  document.querySelector("#frameCues").replaceChildren();
   document.querySelector("#sessionDetails").replaceChildren();
   const evaluationState = document.querySelector("#evaluationState");
   evaluationState.textContent = "Checking";
@@ -576,7 +589,7 @@ function resetSessionState(sessionId) {
   traceState.className = "evidence-tag neutral";
   const traceContent = document.querySelector("#traceContent");
   traceContent.className = "trace-empty";
-  traceContent.textContent = "Choose a cue marker or window cue to inspect its verified source and rendered sample chain.";
+  traceContent.textContent = "Choose a cue marker or frame cue to inspect its verified source and rendered sample chain.";
   const noticeElement = document.querySelector("#notice");
   noticeElement.textContent = "";
   noticeElement.classList.remove("show");

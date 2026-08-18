@@ -294,6 +294,13 @@ def test_indexed_model_projects_frame_timeline_trace_and_report(
         "width": 30.0,
         "height": 40.0,
     }
+    assert [cue["cue_id"] for cue in first_frame["cues"]] == [
+        inspection_fixture.cues[0]["cue_id"]
+    ]
+    assert model.frame(1)["cues"] == []
+    assert [cue["cue_id"] for cue in model.frame(2)["cues"]] == [
+        inspection_fixture.cues[1]["cue_id"]
+    ]
 
     timeline = model.timeline(0.0, 1.0)
     assert [item["cue_id"] for item in timeline["cues"]] == [
@@ -355,6 +362,71 @@ def test_timeline_cues_use_stable_time_track_and_cue_order(
         "cue:tie-track-2-b",
         "cue:tie-track-10",
     ]
+
+
+def test_frame_projection_exposes_every_cue_in_stable_order(
+    inspection_fixture: SimpleNamespace,
+) -> None:
+    directories = inspection_fixture.opened.package_directories
+    event_path = directories["event_package"] / "events.json"
+    cue_path = directories["cue_package"] / "cue_schedule.json"
+    render_path = directories["audio_package"] / "render_log.json"
+    event_document = json.loads(event_path.read_text(encoding="utf-8"))
+    cue_document = json.loads(cue_path.read_text(encoding="utf-8"))
+    render_document = json.loads(render_path.read_text(encoding="utf-8"))
+    base_event = event_document["events"][0]
+    base_cue = cue_document["cues"][0]
+    base_render = render_document["entries"][0]
+    frame_events = []
+    frame_cues = []
+    frame_renders = []
+    for track in range(12, 0, -1):
+        event_id = f"evt:mot17:synthetic:f000000:t{track}:r{track:06d}"
+        cue_id = f"cue:frame-zero-track-{track:02d}"
+        object_class = "cyclist" if track == 2 else "pedestrian"
+        frame_events.append(
+            {
+                **base_event,
+                "event_id": event_id,
+                "track_id": str(track),
+                "object_class": object_class,
+                "source_object_class": object_class.title(),
+                "source_row": track,
+            }
+        )
+        frame_cues.append(
+            {
+                **base_cue,
+                "cue_id": cue_id,
+                "source_event_id": event_id,
+                "track_id": str(track),
+                "object_class": object_class,
+                "source_row": track,
+            }
+        )
+        frame_renders.append(
+            {
+                **base_render,
+                "cue_id": cue_id,
+                "source_event_id": event_id,
+            }
+        )
+    event_document["events"] = frame_events + event_document["events"][1:]
+    cue_document["cues"] = frame_cues + cue_document["cues"][1:]
+    render_document["entries"] = frame_renders + render_document["entries"][1:]
+    _write_json(event_path, event_document)
+    _write_json(cue_path, cue_document)
+    _write_json(render_path, render_document)
+
+    model = InspectionModel(inspection_fixture.opened)
+    projected = model.frame(0)["cues"]
+
+    assert len(projected) == 12
+    assert [cue["track_id"] for cue in projected] == [str(track) for track in range(1, 13)]
+    cyclist = next(cue for cue in projected if cue["object_class"] == "cyclist")
+    trace = model.trace(cyclist["cue_id"])
+    assert trace["cue"]["frame"] == 0
+    assert trace["cue"]["source_event_id"] == trace["event"]["event_id"]
 
 
 def test_unresolved_event_outcome_remains_detectable_as_integrity_evidence(
@@ -469,6 +541,12 @@ def test_read_only_service_serves_path_free_json_media_and_exact_wav(
 
     with urllib.request.urlopen(f"{inspection_url}/api/frames/0/image") as response:
         assert response.read() == inspection_fixture.image_bytes
+
+    with urllib.request.urlopen(f"{inspection_url}/api/frames/0") as response:
+        frame = json.load(response)
+    assert [cue["cue_id"] for cue in frame["cues"]] == [
+        inspection_fixture.cues[0]["cue_id"]
+    ]
 
     with urllib.request.urlopen(f"{inspection_url}/api/audio") as response:
         served_audio = response.read()
@@ -601,7 +679,13 @@ def test_frontend_freezes_boundary_cue_and_frame_inspection_contracts(
     assert "CUE_HIT_RADIUS_PX" in script
     assert "state.timeline.cues.reduce" not in script
     assert "drawFrameBoundaries" in script
-    assert "Cues in this evidence window" in page
+    assert "Cues at selected/current frame" in page
+    assert 'id="frameCueSummary"' in page
+    assert 'id="frameCues"' in page
+    assert '<details class="evidence-help">' in page
+    assert "<summary>Timeline lane help</summary>" in page
+    assert 'class="evidence-key"' not in page
+    assert "Stage 1 event box" not in page
     assert "Only CUE markers are selectable" in page
     assert "How this cue is encoded" in page
     assert "Technical baseline mapping; not perceptually validated." in page
@@ -618,16 +702,19 @@ def test_frontend_uses_bounded_playback_work_and_stable_cue_controls(
     tick = script[script.index("function tick()") : script.index("playPause.addEventListener")]
     trace = script[script.index("function renderTrace") : script.index("async function selectCue")]
     cue_render = script[
-        script.index("function renderWindowCues") : script.index("function cachedTimelineCovers")
+        script.index("function renderFrameCues") : script.index("function cachedTimelineCovers")
     ]
 
     assert "if (time !== state.lastPlaybackTime)" in tick
     assert "if (frame !== state.frameNumber && !state.framePending)" in tick
     assert "rebuildTimelineBase" not in tick
-    assert "renderWindowCues" not in tick
-    assert "renderWindowCues" not in trace
+    assert "renderFrameCues" not in tick
+    assert "renderFrameCues" not in trace
     assert "updateCueSelection" in trace
     assert ".sort(compareCueOrder)" in cue_render
+    assert ".slice(" not in cue_render
+    assert "state.frame?.cues" in cue_render
+    assert 'button.setAttribute("aria-pressed"' in cue_render
     assert "audio.currentTime" not in cue_render
     assert "timelineBaseCanvas" in script
     assert "await prepareFrameImage(frame.frame, imageUrl)" in script
@@ -635,6 +722,7 @@ def test_frontend_uses_bounded_playback_work_and_stable_cue_controls(
     assert "state.preloadImages.size >= 2" in script
     assert "state.timelinePendingKey !== null" in script
     assert "if (!cueIsInCurrentWindow)" in script
+    assert 'timelineContext.strokeStyle = "#ffffff"' in script
 
 
 def test_frontend_presents_two_normal_outcomes_and_flags_unresolved_anomaly(

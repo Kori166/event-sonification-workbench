@@ -160,6 +160,9 @@ class InspectionModel:
             self._cues,
             key=_cue_order_key,
         )
+        self._cues_by_frame: dict[int, list[dict[str, Any]]] = defaultdict(list)
+        for cue in self._ordered_cues:
+            self._cues_by_frame[cue["frame"]].append(cue)
         self._cue_times = [
             float(cue["start_time_seconds"]) for cue in self._ordered_cues
         ]
@@ -279,6 +282,10 @@ class InspectionModel:
                     stage_2_outcome=self._event_outcome(event["event_id"]),
                 )
                 for event in self._events_by_frame.get(frame_number, ())
+            ],
+            "cues": [
+                _cue_projection(cue)
+                for cue in self._cues_by_frame.get(frame_number, ())
             ],
         }
 

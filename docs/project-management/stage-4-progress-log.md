@@ -194,3 +194,30 @@ candidate. The main project progress log remains the chronological project-wide 
 - Privacy/frozen-scope audit found no binary, media, private value or Stage 1-3 research change.
   Exact-head hosted CI remains required before the revised 22-check Firefox/Chrome researcher
   retest. PR #40 remains draft and unmerged.
+
+## 2026-08-18 - Milestone 2 frame-scoped cue-inspection follow-up
+
+- The next researcher-controlled PR #40 attempt confirmed stable first/repeated/rounded cues,
+  cue-only canvas interaction, frame structure, session switching and ten-second Firefox/Chrome
+  playback for both retained datasets. Performance is no longer the blocking finding.
+- The attempt did not pass: window controls ended before MOT17 frame 599 and KITTI frame 153; some
+  visible cyclist/bicycle-related cues lacked buttons; marker selection did not establish the
+  expected local control group; lane detail was too prominent; the overlay legend lead-in remained;
+  explicit white-cursor confirmation and both final console results were pending.
+- Audit confirmed that the frontend sorted the one-second cue window and then truncated it with
+  `.slice(0, 10)`. Dense early cues displaced later controls, and selecting an in-window marker
+  deliberately preserved the same broad window group.
+- Frame responses now project all retained Stage 2 cues for their source frame in stable
+  time/track/cue-ID order. The canvas remains a one-second context; marker selection loads its frame,
+  the complete frame group becomes the disambiguation mechanism, and same-frame selection changes
+  only highlight/provenance.
+- The permanent lane sentence moved behind native accessible help, the redundant legend lead-in was
+  removed, and the thin white playback cursor plus previous performance architecture remain intact.
+- Ruff, JavaScript syntax, 27 focused tests and 279 non-integration tests passed. The three genuine
+  retained gates passed in 69.34s, 31.22s and 28.84s; privacy/frozen-scope audit found no media,
+  private path value or Stage 1-3 research change.
+- Technical browser preflight exposed 35 MOT17 frame-0 cues, 37 on frame 599, the KITTI frame-0
+  van/cyclist/pedestrian group and nine cues on frame 153. Marker context, stable sibling selection,
+  collapsed help, both ten-second playback runs and the in-app console passed.
+- PR #40 remains draft and unmerged pending exact-head hosted CI and the revised 28-check
+  researcher-controlled browser acceptance.

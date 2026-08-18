@@ -137,7 +137,7 @@ integration passed once in 83.56s and the Phase 2 real-session integration passe
 - [x] Document/test half-open frame timing and display frame structure distinctly from the cursor.
 - [x] Project stable retained Stage 2 outcomes for source-frame events.
 - [x] Reconcile overlay and EVENT/CUE/SUPPRESS terminology.
-- [x] Make only cue markers selectable and label evidence-window cues explicitly.
+- [x] Make only cue markers selectable and expose complete frame-scoped cue controls.
 - [x] Expose selected-cue technical parameters and the technical baseline mapping accurately.
 - [x] Record the bounding-box-area limitation and retain R20 without redesigning audio.
 - [x] Record the failed first researcher acceptance without treating it as perceptual evidence.
@@ -146,7 +146,11 @@ integration passed once in 83.56s and the Phase 2 real-session integration passe
 - [x] Make cue controls deterministic by time, track and cue ID without selection reordering.
 - [x] Present unresolved evidence as an integrity anomaly, not a normal Stage 2 category.
 - [x] Pass focused, complete-suite and all retained private integration gates.
-- [ ] Pass revised 22-check Firefox/Chrome, two-dataset browser acceptance.
+- [x] Remove fixed-count cue truncation and project all retained cues on the displayed frame.
+- [x] Cover zero-, one- and multi-cue frames plus retained final frames 599 and 153.
+- [x] Move lane detail behind accessible help and remove the redundant legend lead-in.
+- [x] Record the second researcher acceptance findings without treating them as perceptual evidence.
+- [ ] Pass revised 28-check Firefox/Chrome, two-dataset browser acceptance.
 - [x] Pass the Milestone 2 privacy and frozen-research-scope audit.
 - [ ] Pass final-head hosted CI.
 - [ ] Merge the focused PR and pass post-merge `main` CI.

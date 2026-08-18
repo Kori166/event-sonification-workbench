@@ -46,7 +46,6 @@
             <div class="viewer-loading" id="viewerLoading">Loading source frame</div>
           </div>
           <div class="legend" aria-label="Overlay legend">
-            <strong>Stage 1 event box → Stage 2 outcome:</strong>
             <span><i class="legend-mark represented"></i>Cue generated</span>
             <span><i class="legend-mark suppressed"></i>Intentionally suppressed</span>
           </div>
@@ -97,12 +96,15 @@
           </div>
           <canvas id="timeline" height="198" aria-label="Synchronized event, cue and suppression timeline"></canvas>
         </div>
-        <p class="evidence-key">
-          EVENT = Stage 1 normalised annotation · CUE = Stage 2 cue generated from that event ·
-          SUPPRESS = Stage 2 event intentionally not sonified. Only CUE markers are selectable.
-        </p>
-        <p class="nearby-label">Cues in this evidence window <span>Select a cue to align its source frame and provenance.</span></p>
-        <div class="nearby-cues" id="nearbyCues" aria-label="Cues in the current window"></div>
+        <details class="evidence-help">
+          <summary>Timeline lane help</summary>
+          <p>
+            EVENT = Stage 1 normalised annotation · CUE = Stage 2 cue generated from that event ·
+            SUPPRESS = Stage 2 event intentionally not sonified. Only CUE markers are selectable.
+          </p>
+        </details>
+        <p class="nearby-label">Cues at selected/current frame <span id="frameCueSummary">—</span></p>
+        <div class="nearby-cues" id="frameCues" aria-label="All cues at the displayed source frame" aria-live="polite"></div>
       </section>
 
       <section class="lower-grid">
@@ -115,7 +117,7 @@
             <span class="evidence-tag neutral" id="traceState">Select a cue</span>
           </div>
           <div id="traceContent" class="trace-empty">
-            Choose a cue marker or window cue to inspect its verified source and rendered sample chain.
+            Choose a cue marker or frame cue to inspect its verified source and rendered sample chain.
           </div>
           <section class="mapping-key" aria-label="How this cue is encoded">
             <div>

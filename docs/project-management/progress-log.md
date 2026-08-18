@@ -1037,3 +1037,24 @@ be added where a short entry would omit important implementation evidence.
   phases passed. Privacy/frozen-scope audit found no binary, private value or Stage 1-3 research
   change. PR #40 stays draft pending exact-head hosted CI and a fresh researcher-controlled
   22-check browser acceptance.
+
+---
+
+## 2026-08-18 - Stage 4 Milestone 2 frame-scoped cue follow-up
+
+- The next researcher gate confirmed the cross-browser performance correction but found that final
+  MOT17/KITTI and some cyclist-related cues had no buttons, because one-second window controls were
+  deterministically sorted and then truncated to ten. Marker selection inside the cached window
+  also preserved that broad group instead of establishing a frame-local context.
+- The existing frame view now projects every retained cue on that source frame. The canvas remains
+  a bounded one-second context; frame controls have no arbitrary cap, preserve stable time/track/cue
+  order and use the complete frame group to disambiguate coincident markers.
+- Lane detail is collapsed behind native keyboard-accessible help, the redundant legend lead-in is
+  removed, and the cached timeline, thin white cursor, boundary alignment and session isolation are
+  preserved. No Stage 1-3 research output or retained WAV is changed.
+- Ruff, JavaScript syntax, 27 focused tests, 279 non-integration tests and all three genuine retained
+  integrations passed. Privacy/frozen-scope audit was clean. Technical browser preflight covered
+  complete first/final/multi-class groups, marker context, stable selection, help, both ten-second
+  playback runs and an error-free in-app console.
+- PR #40 remains draft and unmerged pending exact-head hosted CI and the revised 28-check
+  researcher-controlled browser acceptance.

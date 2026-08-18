@@ -65,6 +65,26 @@ projection raises a neutral, path-free integrity warning. The visible mapping ke
 Time/Left-right/Pitch/Loudness wording while retaining the technical-baseline, no-depth and no-
 perceptual-validation limitations.
 
+### Final follow-up refinement after second browser acceptance
+
+The next researcher-controlled attempt confirmed the playback correction in Firefox and Chrome for
+both retained datasets, but exposed a cue-discoverability defect. The one-second evidence window
+could contain more than ten cues, while its control renderer kept only the first ten. Later cues,
+including final-frame and cyclist-related cues, therefore remained visible on the canvas without a
+corresponding inspection button. Selecting a marker already inside the cached window also left that
+window-scoped control set unchanged.
+
+The canvas remains a bounded one-second context. Cue controls are now scoped to the displayed source
+frame instead: the existing frame view projects every retained Stage 2 cue whose recorded `frame`
+matches that source frame, in stable `(start_time_seconds, track_id, cue_id)` order. A marker click
+loads its source frame and therefore establishes the complete sibling-cue group; selecting a sibling
+on the same frame changes only highlight and provenance. This is a read-only evidence projection,
+not a Workbench Session Contract or Stage 2 change.
+
+The lane explanation moves into a native keyboard-accessible `details` control and the overlay
+legend retains only the two normal outcomes. Frame divisions, current-frame interval and the thin
+white exact playback cursor remain unchanged.
+
 ## Consequences
 
 - No Stage 1 schema/parser/event package, Stage 2 preset/scheduler/renderer/WAV or Stage 3
