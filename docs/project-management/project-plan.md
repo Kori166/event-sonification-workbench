@@ -17,7 +17,7 @@ normalised events, deterministic audio cues and traceable technical outputs.
 | 1. Data ingestion and normalisation | Parse MOT17 and KITTI Tracking annotations into a common event schema | Parsers, schema, validation outputs, provenance records and tests | Complete, 5 August 2026 |
 | 2. Sonification | Map normalised events into scheduled audio cues | Mapping presets, cue schedules, audio files and logs | Complete, 6 August 2026; real MOT17/KITTI chains reproduced exactly |
 | 3. Technical evaluation | Measure coverage, alignment, traceability, cue density, overlap and reproducibility | Evaluation reports, comparison results, audited reporting derivatives and repeat-run checks | Complete, 6 August 2026 |
-| 4. Artefact assembly and release | Validate, document and package the complete workbench | Reproducible release, final documentation and tagged version | Active; Milestone 1 complete, Milestone 2 corrections active |
+| 4. Artefact assembly and release | Validate, document and package the complete workbench | Reproducible release, final documentation and tagged version | Complete, 18 August 2026 |
 | 5. Reporting and viva preparation | Complete the dissertation and prepare the artefact demonstration | Final report, demonstration plan and viva notes | Planned |
 
 ## Working Method
@@ -213,7 +213,7 @@ participant, accessibility, usability, navigation, mobility or safety conclusion
 | 2. Real-data technical evaluation | Apply unchanged contract `0.1.0` to selected verified MOT17 and KITTI Tracking evidence packages and write deterministic dataset reports | Complete, 6 August 2026 |
 | 3. Audited report-ready evidence | Link verified values to canonical reports, audit tables/figures and state bounded RQ3 findings | Complete, 6 August 2026 |
 
-## Stage 4 Active Work
+## Stage 4 Complete
 
 Stage 4 begins from the merged Stage 3 evidence and assembles the deliverable workbench without
 changing the established Stage 1-3 research contracts. Milestone 1 is divided into a headless
@@ -231,8 +231,7 @@ targeted CSS correction and regression test. Final local/private gates and hoste
 PR #36 merged and Issue #35 closed. Phase 3 then retained KITTI through the same contract/model/
 service/browser architecture and passed focused, complete-suite, private, clean-environment,
 browser, switching and privacy gates. Final-head and post-merge CI passed. PR #38 merged as
-`3c23a6b518fd33b1542145da06ab1939c7d676dc` and Issue #37 closed. Stage 4 Milestone 1 is complete;
-Stage 4 remains active.
+`3c23a6b518fd33b1542145da06ab1939c7d676dc` and Issue #37 closed. Stage 4 Milestone 1 is complete.
 
 **Stage 4 Milestone 1 is complete:** the versioned artefact release candidate passed installation,
 configuration, evidence-availability and end-to-end verification from a clean environment. Detailed
@@ -241,6 +240,12 @@ Phase 1-3 gates are recorded in `docs/project-management/stage-4-checklist.md`.
 Milestone 2 is a bounded final-release refinement under Issue #39. Decision 0019 records confirmed
 browser-side boundary refresh, cue/frame alignment, stable outcome and interaction-semantics
 corrections. It does not reopen or regenerate Stage 1-3 research evidence.
+
+Milestone 2 passed all automated, retained-private, privacy, frozen-scope and final 16-check
+researcher-controlled technical browser gates. PR #40 merged as
+`b6c8310c9f8a731d2ef374e725ba6f99342e85e1`; post-merge `main` CI run 32135202315 passed with Ruff
+and 280 tests / 6 private integrations deselected. Issue #39 closed, completing Stage 4. Stage 5
+reporting and viva preparation remains planned.
 
 ## Key Project Milestones
 

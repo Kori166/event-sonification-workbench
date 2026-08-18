@@ -1096,3 +1096,18 @@ be added where a short entry would omit important implementation evidence.
 - This completes researcher-controlled technical browser acceptance without introducing usability,
   accessibility, participant or perceptual evidence. Documentation-head CI, PR merge, post-merge
   `main` CI and final Milestone 2 close-out recording remain.
+
+---
+
+## 2026-08-18 - Stage 4 Milestone 2 and Stage 4 close-out
+
+- Acceptance-record head `c76932ad16cbc0567e32af62d9b7e258ea8ff573` passed exact-head hosted
+  CI run 32135052175 with Ruff and 280 tests / 6 private integrations deselected in 21.15 seconds.
+- PR #40 merged as `b6c8310c9f8a731d2ef374e725ba6f99342e85e1`, closing Issue #39 only
+  after all researcher-controlled checks and exact-head CI had passed.
+- Post-merge `main` CI run 32135202315 passed with Ruff and 280 tests / 6 private integrations
+  deselected in 21.43 seconds.
+- Workbench Session Contract `0.1.0`, Stage 1-3 evidence, cue schedules and retained WAV bytes remain
+  unchanged. R20 and R21 remain explicit open limitations rather than evaluation findings.
+- Stage 4 Milestone 2 is complete. Stage 4 is complete; Stage 5 reporting and viva preparation
+  remains planned.

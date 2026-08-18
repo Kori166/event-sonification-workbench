@@ -259,3 +259,14 @@ candidate. The main project progress log remains the chronological project-wide 
 - This passes the researcher-controlled technical browser gate; it is not usability,
   accessibility, participant or perceptual evidence. Documentation-head CI, merge, post-merge
   `main` CI and exact close-out recording remain.
+
+## 2026-08-18 - Milestone 2 and Stage 4 close-out
+
+- Acceptance-record head `c76932ad16cbc0567e32af62d9b7e258ea8ff573` passed exact-head CI run
+  32135052175 with Ruff and 280 tests / 6 private integrations deselected.
+- PR #40 merged as `b6c8310c9f8a731d2ef374e725ba6f99342e85e1`; Issue #39 closed through
+  the accepted merge.
+- Post-merge `main` CI run 32135202315 passed with Ruff and 280 tests / 6 private integrations
+  deselected. The final research boundary remains unchanged and R20/R21 remain open limitations.
+- Stage 4 Milestone 2 is complete. Stage 4 is complete; Stage 5 reporting and viva preparation is
+  next and remains planned.

@@ -280,3 +280,11 @@ This is researcher-controlled technical browser acceptance, not participant feed
 accessibility or perceptual evaluation. The implementation candidate had already passed exact-head
 hosted CI run 32131916988. A documentation-only acceptance commit still requires exact-head CI
 before PR #40 can merge, followed by post-merge `main` CI and close-out recording.
+
+### Merge and close-out
+
+The documentation-only acceptance head `c76932ad16cbc0567e32af62d9b7e258ea8ff573` passed hosted CI
+run 32135052175 with Ruff clean and 280 tests / 6 private integrations deselected in 21.15 seconds.
+PR #40 then merged to `main` as `b6c8310c9f8a731d2ef374e725ba6f99342e85e1`. Post-merge `main`
+CI run 32135202315 passed with Ruff clean and 280 tests / 6 private integrations deselected in
+21.43 seconds. Issue #39 closed through the accepted merge. Milestone 2 and Stage 4 are complete.

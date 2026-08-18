@@ -29,7 +29,9 @@ the recorded environment. It is not perceptual or participant evidence. Stage 4 
 is complete. The Phase 2 synchronised MOT17 inspection slice passed researcher-performed controlled
 browser acceptance and merged through PR #36. Phase 3 added and accepted the retained KITTI session
 through the same frozen architecture, and PR #38 merged the Stage 4 Milestone 1 release candidate.
-Stage 4 remains active; Milestone 1 is complete.
+Milestone 2 then completed the bounded inspection corrections, passed all 16 final researcher
+technical browser checks, and merged through PR #40 as
+`b6c8310c9f8a731d2ef374e725ba6f99342e85e1`. Stage 4 is complete; Stage 5 remains planned.
 
 Milestone 1 established common schema version `0.1.0`. The cross-dataset review in Milestone 3
 introduced schema `0.2.0`, retaining the event shape while allowing native unnormalised confidence

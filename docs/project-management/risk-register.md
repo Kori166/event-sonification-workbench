@@ -26,7 +26,7 @@
 
 ## Review
 
-Last reviewed: 14 August 2026, during Milestone 2 inspection-correction implementation.
+Last reviewed: 18 August 2026, during Stage 4 Milestone 2 close-out.
 
 R9 remains an explicit redistribution limitation. R4 is reduced by real technical values but those
 values are not perceptual evidence. R5 and R15 are reduced by the frozen manual oracle and unchanged
@@ -53,6 +53,9 @@ usability or accessibility.
 Milestone 2 retains R20 and records R21 after researcher inspection. Dense-cue distinguishability
 and pose-sensitive bounding-box area are design limitations, not participant findings. No mapping,
 synthesis, scheduling, suppression, audio or evaluation evidence changes in response.
+All 16 final researcher-controlled technical browser checks passed before PR #40 merged, but this
+does not close R20 or R21: no participant, usability, accessibility or perceptual evaluation was
+performed, and the frozen mapping/audio evidence remains unchanged.
 
 The register must be reviewed when a risk changes, a mitigation is applied, an issue changes the
 agreed scope or a new project stage begins.

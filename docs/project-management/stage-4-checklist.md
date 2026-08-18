@@ -2,8 +2,8 @@
 
 ## Status
 
-Stage 4 is active. Milestone 1 Phase 1 froze the workbench inspection contract and established the
-headless validation layer before browser implementation begins. PR #28 merged after clean CI but
+Stage 4 is complete. Milestone 1 Phase 1 froze the workbench inspection contract and established the
+headless validation layer before browser implementation. PR #28 merged after clean CI but
 before the retained Stage 2 evidence layout was exercised. Post-merge review identified a bounded
 runtime-binding mismatch: the validator assumed all package run directories shared one
 `OUTPUT_ROOT`, whereas retained Stage 2 evidence stores event, cue and audio packages beneath
@@ -156,9 +156,11 @@ integration passed once in 83.56s and the Phase 2 real-session integration passe
 - [x] Keep suppressed/anomaly video boxes contextual and add represented-box keyboard operation.
 - [x] Pass final focused 16-check Firefox/Chrome, two-dataset browser acceptance.
 - [x] Pass the Milestone 2 privacy and frozen-research-scope audit.
-- [ ] Pass final-head hosted CI.
-- [ ] Merge the focused PR and pass post-merge `main` CI.
-- [ ] Record the exact Milestone 2 close-out SHA and mark Milestone 2 complete.
+- [x] Pass final-head hosted CI.
+- [x] Merge the focused PR and pass post-merge `main` CI.
+- [x] Record Milestone 2 merge `b6c8310c9f8a731d2ef374e725ba6f99342e85e1` and mark Milestone 2 complete.
+
+**Stage 4 Milestone 2 complete; Stage 4 complete.**
 
 ## Scope boundary
 
