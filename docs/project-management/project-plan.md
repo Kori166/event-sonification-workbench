@@ -17,7 +17,7 @@ normalised events, deterministic audio cues and traceable technical outputs.
 | 1. Data ingestion and normalisation | Parse MOT17 and KITTI Tracking annotations into a common event schema | Parsers, schema, validation outputs, provenance records and tests | Complete, 5 August 2026 |
 | 2. Sonification | Map normalised events into scheduled audio cues | Mapping presets, cue schedules, audio files and logs | Complete, 6 August 2026; real MOT17/KITTI chains reproduced exactly |
 | 3. Technical evaluation | Measure coverage, alignment, traceability, cue density, overlap and reproducibility | Evaluation reports, comparison results, audited reporting derivatives and repeat-run checks | Complete, 6 August 2026 |
-| 4. Artefact assembly and release | Validate, document and package the complete workbench | Reproducible release, final documentation and tagged version | Active; Milestone 1 complete, 14 August 2026 |
+| 4. Artefact assembly and release | Validate, document and package the complete workbench | Reproducible release, final documentation and tagged version | Active; Milestone 1 complete, Milestone 2 corrections active |
 | 5. Reporting and viva preparation | Complete the dissertation and prepare the artefact demonstration | Final report, demonstration plan and viva notes | Planned |
 
 ## Working Method
@@ -237,6 +237,10 @@ Stage 4 remains active.
 **Stage 4 Milestone 1 is complete:** the versioned artefact release candidate passed installation,
 configuration, evidence-availability and end-to-end verification from a clean environment. Detailed
 Phase 1-3 gates are recorded in `docs/project-management/stage-4-checklist.md`.
+
+Milestone 2 is a bounded final-release refinement under Issue #39. Decision 0019 records confirmed
+browser-side boundary refresh, cue/frame alignment, stable outcome and interaction-semantics
+corrections. It does not reopen or regenerate Stage 1-3 research evidence.
 
 ## Key Project Milestones
 

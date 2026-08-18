@@ -35,7 +35,7 @@
               <h2 id="sequenceTitle">Loading…</h2>
             </div>
             <div class="frame-readout">
-              <span>Frame</span>
+              <span id="frameKind">Playback frame</span>
               <strong id="frameNumber">—</strong>
               <span id="frameTime">—</span>
             </div>
@@ -46,10 +46,10 @@
             <div class="viewer-loading" id="viewerLoading">Loading source frame</div>
           </div>
           <div class="legend" aria-label="Overlay legend">
-            <span><i class="legend-mark represented"></i>Represented event</span>
-            <span><i class="legend-mark suppressed"></i>Suppressed event</span>
-            <span><i class="legend-mark event-only"></i>Stage 1 event</span>
+            <span><i class="legend-mark represented"></i>Cue generated</span>
+            <span><i class="legend-mark suppressed"></i>Intentionally suppressed</span>
           </div>
+          <p class="integrity-warning" id="integrityWarning" role="alert" hidden></p>
         </article>
 
         <aside class="panel metrics-panel">
@@ -79,7 +79,7 @@
           <span class="timecode muted" id="duration">00:00.000</span>
           <button id="mute" class="icon-button" type="button" aria-label="Mute">Audio on</button>
         </div>
-        <p class="clock-note"><span></span>Audio <code>currentTime</code> is the sole playback clock</p>
+        <p class="clock-note"><span></span>Audio <code>currentTime</code> is the sole playback clock · frame n covers n/fps ≤ t &lt; (n+1)/fps</p>
       </section>
 
       <section class="panel timeline-panel">
@@ -96,7 +96,15 @@
           </div>
           <canvas id="timeline" height="198" aria-label="Synchronized event, cue and suppression timeline"></canvas>
         </div>
-        <div class="nearby-cues" id="nearbyCues" aria-label="Cues in the current window"></div>
+        <details class="evidence-help">
+          <summary>Timeline lane help</summary>
+          <p>
+            EVENT = Stage 1 normalised annotation · CUE = Stage 2 cue generated from that event ·
+            SUPPRESS = Stage 2 event intentionally not sonified. Only CUE markers are selectable.
+          </p>
+        </details>
+        <p class="nearby-label">Cues at selected/current frame <span id="frameCueSummary">—</span></p>
+        <div class="nearby-cues" id="frameCues" aria-label="All cues at the displayed source frame" aria-live="polite"></div>
       </section>
 
       <section class="lower-grid">
@@ -109,8 +117,23 @@
             <span class="evidence-tag neutral" id="traceState">Select a cue</span>
           </div>
           <div id="traceContent" class="trace-empty">
-            Choose a cue marker or nearby cue to inspect its verified source and rendered sample chain.
+            Choose a cue marker or frame cue to inspect its verified source and rendered sample chain.
           </div>
+          <section class="mapping-key" aria-label="How this cue is encoded">
+            <div>
+              <p class="eyebrow">How this cue is encoded</p>
+              <dl>
+                <div><dt>Time</dt><dd>when the event occurs</dd></div>
+                <div><dt>Left/right</dt><dd>horizontal object position</dd></div>
+                <div><dt>Pitch</dt><dd>vertical object position</dd></div>
+                <div><dt>Loudness</dt><dd>bounding-box area</dd></div>
+              </dl>
+            </div>
+            <p>
+              Technical baseline mapping; not perceptually validated. Bounding-box area is an
+              imperfect apparent-scale proxy, not true distance or depth.
+            </p>
+          </section>
         </article>
 
         <aside class="panel session-panel">

@@ -157,3 +157,105 @@ candidate. The main project progress log remains the chronological project-wide 
 - Post-merge `main` CI run 31818140887 passed with clean install, Ruff and 271 tests / 6 deselected
   on Ubuntu 24.04 / Python 3.11.15. Phase 3 and Stage 4 Milestone 1 are complete; Stage 4 remains
   active.
+
+## 2026-08-14 - Milestone 2 inspection-correction candidate
+
+- Audited clean main `799c5ef95d42040d05c2b7d7a757ec765b6d382c` and opened Issue #39.
+- Direct first/second/penultimate/final trace lookups passed for both retained datasets. The
+  boundary defect was isolated to clamped-window cache churn and repeated cue-control replacement.
+- Decision 0019 freezes stable edge windows, exact half-open frame timing, explicit cue/source-frame
+  inspection, retained event-outcome projection and cue-only timeline interaction.
+- Added visible frame structure, reconciled evidence terminology, selected-cue parameters and a
+  frozen mapping key. R20 remains open and R21 records bounding-box area as an imperfect
+  apparent-scale proxy; no research output changed.
+- Ruff, frontend syntax, 22 focused tests and 274 non-integration tests / 6 deselected passed. The
+  retained Phase 1, Phase 2 MOT17 and expanded Phase 3 cross-dataset private gates each passed once.
+- The privacy/frozen-scope audit passed with no research contract/configuration/result, retained WAV,
+  private content or path-value change.
+- Codex browser preflight passed repeated first/final-time cue, rounded-frame and switching checks on
+  both datasets. Researcher-controlled visual/semantic/console acceptance, CI and merge remain.
+
+## 2026-08-15 - Milestone 2 first acceptance findings and follow-up correction
+
+- The first researcher-controlled acceptance attempt on PR #40 candidate
+  `02130795678b991e07570b64052d6d1442aeb889` did not pass. Firefox lagged, Chrome froze/stuttered
+  more severely, cue controls reordered after selection, and the unresolved/mapping explanations
+  were confusing.
+- Execution-frequency profiling confirmed that the animation loop fully repainted thousands of
+  static timeline markers at display rate and invoked the guarded frame loader every refresh.
+- The follow-up caches static timeline drawing, schedules frame/image work only at source-frame
+  transitions or explicit inspection, bounds preloading to the next image and keeps timeline
+  requests/DOM replacement window-scoped.
+- Cue controls now use stable time/track/cue ordering. Normal legend wording covers cue generation
+  and intentional suppression; unresolved evidence is a path-free integrity anomaly. Mapping and
+  EVENT/CUE/SUPPRESS language is simplified without changing research semantics.
+- Ruff and frontend syntax passed; 26 focused and 278 non-integration tests passed, with six private
+  tests deselected. Phase 1, Phase 2 and the expanded all-frame Phase 3 private gates each passed.
+- Privacy/frozen-scope audit found no binary, media, private value or Stage 1-3 research change.
+  Exact-head hosted CI remains required before the revised 22-check Firefox/Chrome researcher
+  retest. PR #40 remains draft and unmerged.
+
+## 2026-08-18 - Milestone 2 frame-scoped cue-inspection follow-up
+
+- The next researcher-controlled PR #40 attempt confirmed stable first/repeated/rounded cues,
+  cue-only canvas interaction, frame structure, session switching and ten-second Firefox/Chrome
+  playback for both retained datasets. Performance is no longer the blocking finding.
+- The attempt did not pass: window controls ended before MOT17 frame 599 and KITTI frame 153; some
+  visible cyclist/bicycle-related cues lacked buttons; marker selection did not establish the
+  expected local control group; lane detail was too prominent; the overlay legend lead-in remained;
+  explicit white-cursor confirmation and both final console results were pending.
+- Audit confirmed that the frontend sorted the one-second cue window and then truncated it with
+  `.slice(0, 10)`. Dense early cues displaced later controls, and selecting an in-window marker
+  deliberately preserved the same broad window group.
+- Frame responses now project all retained Stage 2 cues for their source frame in stable
+  time/track/cue-ID order. The canvas remains a one-second context; marker selection loads its frame,
+  the complete frame group becomes the disambiguation mechanism, and same-frame selection changes
+  only highlight/provenance.
+- The permanent lane sentence moved behind native accessible help, the redundant legend lead-in was
+  removed, and the thin white playback cursor plus previous performance architecture remain intact.
+- Ruff, JavaScript syntax, 27 focused tests and 279 non-integration tests passed. The three genuine
+  retained gates passed in 69.34s, 31.22s and 28.84s; privacy/frozen-scope audit found no media,
+  private path value or Stage 1-3 research change.
+- Technical browser preflight exposed 35 MOT17 frame-0 cues, 37 on frame 599, the KITTI frame-0
+  van/cyclist/pedestrian group and nine cues on frame 153. Marker context, stable sibling selection,
+  collapsed help, both ten-second playback runs and the in-app console passed.
+- PR #40 remains draft and unmerged pending exact-head hosted CI and the revised 28-check
+  researcher-controlled browser acceptance.
+
+## 2026-08-18 - Milestone 2 final interaction correction
+
+- The next researcher-controlled pass confirmed nearly all 28 checks, including first/final/dense
+  cue groups, cyclist discoverability, frame/timeline presentation, provenance, deterministic
+  selection, both switch directions and ten-second Firefox/Chrome playback on both datasets.
+- One defect remained: cue selection moved the slider, cursor, frame and provenance but left the
+  numeric transport time stale. The same technical inspection requested direct selection of
+  represented green video boxes through their retained cue relationship.
+- Audit confirmed `selectCue()` assigned both `audio.currentTime` and `state.lastPlaybackTime` before
+  the animation loop could update text. A shared helper now updates slider and formatted time during
+  cue selection, seek/step, reset and playback.
+- Represented overlay groups now use only `stage_2_outcome.cue_id` and invoke the existing
+  `selectCue()` path by click or Enter/Space. Frame buttons, CUE markers and video boxes therefore
+  converge on one inspection model. Suppressed/anomaly boxes remain non-cue contextual evidence.
+- PR #40 remains draft and unmerged pending exact-head gates and the focused 16-check researcher
+  retest. This is technical inspection evidence, not usability/accessibility/perceptual evaluation.
+- Ruff, JavaScript syntax, 28 focused tests and 280 non-integration tests passed. The three genuine
+  retained integrations passed in 61.61s, 29.50s and 30.80s; exact WAV hashes remained verified.
+- Privacy/frozen-scope audit found nine presentation/test/record files, no media/binary/private path
+  value and no Stage 1-3 research-contract/configuration/result change. Browser preflight confirmed
+  immediate rounded transport text, exact video/button/marker identity, suppressed-box isolation,
+  real KITTI cyclist selection, both ten-second runs and a clean in-app console.
+
+## 2026-08-18 - Milestone 2 final researcher interaction acceptance
+
+- The researcher confirmed all 16 focused checks against implementation candidate
+  `39cf6953b72c30a03e920f672a81259b44399c12`.
+- MOT17 and KITTI transport time, slider, white cursor, frame and provenance remained aligned;
+  `0.033333s` displayed approximately `00:00.033` while retaining MOT17 frame 1.
+- Represented MOT17, KITTI and cyclist/bicycle-related video boxes selected their exact retained
+  cues. Same-frame sibling order remained stable, suppressed boxes remained non-cue controls, and
+  video box/CUE marker/frame button routes resolved the same cue and frame.
+- MOT17 frame 599 and KITTI frame 153 retained their complete final cue groups and traces. Firefox
+  and Chrome playback remained smooth, with no workbench console errors or warnings in either.
+- This passes the researcher-controlled technical browser gate; it is not usability,
+  accessibility, participant or perceptual evidence. Documentation-head CI, merge, post-merge
+  `main` CI and exact close-out recording remain.

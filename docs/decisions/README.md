@@ -26,3 +26,4 @@ must be amended or superseded explicitly rather than silently rewritten.
 - [0016: Workbench session and inspection layer](0016-workbench-session-and-inspection-layer.md)
 - [0017: Local synchronised inspection architecture](0017-local-synchronised-inspection-architecture.md)
 - [0018: Cross-dataset retained-session catalogue](0018-cross-dataset-retained-session-catalogue.md)
+- [0019: Boundary cue inspection and evidence semantics](0019-boundary-cue-inspection-and-evidence-semantics.md)

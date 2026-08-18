@@ -127,6 +127,39 @@ integration passed once in 83.56s and the Phase 2 real-session integration passe
 
 **Stage 4 Milestone 1 complete; Stage 4 remains active.**
 
+### Milestone 2: inspection corrections and final release refinement
+
+- [x] Audit clean `main` and record starting SHA `799c5ef95d42040d05c2b7d7a757ec765b6d382c`.
+- [x] Characterise the boundary provenance defect and verify retained backend traces.
+- [x] Freeze the correction architecture and research boundary in Decision 0019.
+- [x] Stabilise clamped start/end timeline windows and boundary cue controls.
+- [x] Align selected cue time, source frame and provenance without changing timestamps.
+- [x] Document/test half-open frame timing and display frame structure distinctly from the cursor.
+- [x] Project stable retained Stage 2 outcomes for source-frame events.
+- [x] Reconcile overlay and EVENT/CUE/SUPPRESS terminology.
+- [x] Make only cue markers selectable and expose complete frame-scoped cue controls.
+- [x] Expose selected-cue technical parameters and the technical baseline mapping accurately.
+- [x] Record the bounding-box-area limitation and retain R20 without redesigning audio.
+- [x] Record the failed first researcher acceptance without treating it as perceptual evidence.
+- [x] Profile playback work and cache dense static timeline drawing outside the display-rate path.
+- [x] Restrict source-frame work to frame transitions/explicit inspection and bound preloading.
+- [x] Make cue controls deterministic by time, track and cue ID without selection reordering.
+- [x] Present unresolved evidence as an integrity anomaly, not a normal Stage 2 category.
+- [x] Pass focused, complete-suite and all retained private integration gates.
+- [x] Remove fixed-count cue truncation and project all retained cues on the displayed frame.
+- [x] Cover zero-, one- and multi-cue frames plus retained final frames 599 and 153.
+- [x] Move lane detail behind accessible help and remove the redundant legend lead-in.
+- [x] Record the second researcher acceptance findings without treating them as perceptual evidence.
+- [x] Record the mostly passed third researcher acceptance and remaining transport/video-box work.
+- [x] Synchronise numeric transport presentation on explicit cue, seek and frame-step actions.
+- [x] Make represented video boxes select their exact retained cue through the common interaction.
+- [x] Keep suppressed/anomaly video boxes contextual and add represented-box keyboard operation.
+- [x] Pass final focused 16-check Firefox/Chrome, two-dataset browser acceptance.
+- [x] Pass the Milestone 2 privacy and frozen-research-scope audit.
+- [ ] Pass final-head hosted CI.
+- [ ] Merge the focused PR and pass post-merge `main` CI.
+- [ ] Record the exact Milestone 2 close-out SHA and mark Milestone 2 complete.
+
 ## Scope boundary
 
 Stage 4 assembles and presents existing research outputs. It does not redefine parsing, event

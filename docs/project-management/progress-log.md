@@ -1001,3 +1001,98 @@ be added where a short entry would omit important implementation evidence.
 - Post-merge `main` CI run 31818140887 passed with clean install, Ruff and 271 tests / 6 deselected
   on Ubuntu 24.04 / Python 3.11.15. Phase 3 and Stage 4 Milestone 1 are complete. Stage 4 remains
   active.
+
+---
+
+## 2026-08-14 - Stage 4 Milestone 2 inspection-correction candidate
+
+- Began Issue #39 from clean main `799c5ef95d42040d05c2b7d7a757ec765b6d382c`.
+- Verified retained boundary traces and diagnosed repeated clamped-window requests/DOM replacement,
+  not a provenance-chain defect.
+- Decision 0019 bounds the correction to stable timeline caching, cue/source-frame alignment,
+  retained outcome projection, visible frame structure, cue-only interaction and clearer frozen
+  mapping/evidence language.
+- R20 remains open; R21 records bounding-box area as an imperfect apparent-scale proxy. No Stage 1-3
+  result, baseline preset or retained WAV is changed.
+- Ruff, frontend syntax, 22 focused tests, 274 non-integration tests and each of the Phase 1, Phase 2
+  and expanded cross-dataset private integrations passed. Privacy/frozen-scope audit also passed.
+- Codex technical browser preflight passed both dataset boundary/frame/switch paths. The separate
+  researcher-controlled visual/semantic/console acceptance, CI and merge gates remain pending.
+
+---
+
+## 2026-08-15 - Stage 4 Milestone 2 follow-up correction
+
+- The first researcher browser gate on PR #40 head
+  `02130795678b991e07570b64052d6d1442aeb889` failed because Firefox playback lagged, Chrome
+  froze/stuttered more severely, cue controls reordered on selection, and the normal
+  unresolved/mapping wording remained confusing.
+- Profiling separated display-rate cursor work from source-frame, timeline-window and DOM work. The
+  dense static marker layer is now cached, frame/image work is transition-driven with one bounded
+  next-frame preload, and cue controls are only rebuilt when their window changes.
+- Cue order is deterministic by time, track and cue ID. Unresolved backend outcomes remain
+  detectable but surface as integrity anomalies; the visible evidence-chain and technical mapping
+  wording is simpler and preserves R20/R21 limitations.
+- Ruff, frontend syntax, 26 focused tests, 278 non-integration tests and all three retained private
+  phases passed. Privacy/frozen-scope audit found no binary, private value or Stage 1-3 research
+  change. PR #40 stays draft pending exact-head hosted CI and a fresh researcher-controlled
+  22-check browser acceptance.
+
+---
+
+## 2026-08-18 - Stage 4 Milestone 2 frame-scoped cue follow-up
+
+- The next researcher gate confirmed the cross-browser performance correction but found that final
+  MOT17/KITTI and some cyclist-related cues had no buttons, because one-second window controls were
+  deterministically sorted and then truncated to ten. Marker selection inside the cached window
+  also preserved that broad group instead of establishing a frame-local context.
+- The existing frame view now projects every retained cue on that source frame. The canvas remains
+  a bounded one-second context; frame controls have no arbitrary cap, preserve stable time/track/cue
+  order and use the complete frame group to disambiguate coincident markers.
+- Lane detail is collapsed behind native keyboard-accessible help, the redundant legend lead-in is
+  removed, and the cached timeline, thin white cursor, boundary alignment and session isolation are
+  preserved. No Stage 1-3 research output or retained WAV is changed.
+- Ruff, JavaScript syntax, 27 focused tests, 279 non-integration tests and all three genuine retained
+  integrations passed. Privacy/frozen-scope audit was clean. Technical browser preflight covered
+  complete first/final/multi-class groups, marker context, stable selection, help, both ten-second
+  playback runs and an error-free in-app console.
+- PR #40 remains draft and unmerged pending exact-head hosted CI and the revised 28-check
+  researcher-controlled browser acceptance.
+
+---
+
+## 2026-08-18 - Stage 4 Milestone 2 final interaction correction
+
+- The latest researcher pass confirmed nearly all 28 checks. The remaining defect was stale numeric
+  transport text after cue selection; represented video cue boxes were also requested as a bounded
+  additional route to the retained inspector.
+- Transport slider/text presentation is now centralised and invoked immediately for explicit cue,
+  seek/step, reset and playback changes. Retained timestamps and half-open frame semantics are
+  unchanged.
+- Represented overlay boxes use their projected exact cue ID and the common `selectCue()` path, with
+  restrained hover/focus/selected states and Enter/Space operation. Suppressed and anomaly boxes do
+  not become cue controls.
+- PR #40 stays draft and unmerged pending exact-head validation/CI and the focused 16-check
+  researcher-controlled Firefox/Chrome gate.
+- Ruff, JavaScript syntax, 28 focused tests and 280 non-integration tests passed; all three genuine
+  retained integrations passed in 61.61s, 29.50s and 30.80s. Privacy/frozen-scope audit was clean.
+- Technical browser preflight confirmed immediate `00:00.033` rounded display, exact common-route
+  cue identity, same-frame order stability, suppressed-box isolation, KITTI cyclist selection,
+  smooth ten-second runs and no in-app console warning/error.
+
+---
+
+## 2026-08-18 - Stage 4 Milestone 2 final researcher interaction acceptance
+
+- The researcher confirmed all 16 focused Firefox/Chrome checks against implementation candidate
+  `39cf6953b72c30a03e920f672a81259b44399c12`.
+- Transport presentation aligned with retained cue time, source frame and provenance in both
+  datasets, including the MOT17 `0.033333s` / frame-1 boundary case and immediate later-cue updates.
+- Represented MOT17, KITTI and cyclist/bicycle-related boxes selected their exact retained cues;
+  sibling order remained stable, suppressed boxes remained non-cue controls, and video/marker/frame
+  control routes converged on the same selected cue and source frame.
+- MOT17 frame 599 and KITTI frame 153 remained fully inspectable. Playback remained smooth and both
+  Firefox and Chrome consoles contained no workbench errors or warnings.
+- This completes researcher-controlled technical browser acceptance without introducing usability,
+  accessibility, participant or perceptual evidence. Documentation-head CI, PR merge, post-merge
+  `main` CI and final Milestone 2 close-out recording remain.

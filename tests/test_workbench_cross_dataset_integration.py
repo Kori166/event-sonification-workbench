@@ -89,11 +89,13 @@ def test_retained_cross_dataset_workbench_catalogue() -> None:
     expected = {
         "mot17": {
             "counts": (600, 30003, 26960, 3043),
+            "final_frame": 599,
             "image_signature": b"\xff\xd8",
             "source": "MOT17/train/MOT17-02-DPM/gt/gt.txt",
         },
         "kitti_tracking": {
             "counts": (154, 1089, 711, 378),
+            "final_frame": 153,
             "image_signature": b"\x89PNG\r\n\x1a\n",
             "source": "training/label_02/0000.txt",
         },
@@ -110,8 +112,71 @@ def test_retained_cross_dataset_workbench_catalogue() -> None:
             counts["cues"],
             counts["suppressions"],
         ) == details["counts"]
-        frame = model.frame(0)
+        frame_projections = [model.frame(number) for number in range(counts["frames"])]
+        frame = frame_projections[0]
         assert frame["events"]
+        assert frame["cues"]
+        assert all(
+            event["stage_2_outcome"]["status"] in {"represented", "suppressed"}
+            for event in frame["events"]
+        )
+        for projected_frame in frame_projections:
+            assert all(
+                event["stage_2_outcome"]["status"]
+                in {"represented", "suppressed"}
+                for event in projected_frame["events"]
+            )
+            represented_cue_ids = {
+                event["stage_2_outcome"]["cue_id"]
+                for event in projected_frame["events"]
+                if event["stage_2_outcome"]["status"] == "represented"
+            }
+            assert {cue["cue_id"] for cue in projected_frame["cues"]} == (
+                represented_cue_ids
+            )
+        final_frame = frame_projections[details["final_frame"]]
+        assert final_frame["frame"] == counts["frames"] - 1
+        assert final_frame["cues"]
+        dense_frame = max(frame_projections, key=lambda item: len(item["cues"]))
+        assert len(dense_frame["cues"]) > 1
+        for inspected_frame in (frame, dense_frame, final_frame):
+            ordered = inspected_frame["cues"]
+            assert ordered == sorted(
+                ordered,
+                key=lambda cue: (
+                    cue["start_time_seconds"],
+                    int(cue["track_id"]),
+                    cue["cue_id"],
+                ),
+            )
+            for frame_cue in ordered:
+                frame_trace = model.trace(frame_cue["cue_id"])
+                assert frame_trace["cue"]["frame"] == inspected_frame["frame"]
+                assert frame_trace["cue"]["source_event_id"] == (
+                    frame_trace["event"]["event_id"]
+                )
+        if dataset == "kitti_tracking":
+            cyclist_frames = [
+                item
+                for item in frame_projections
+                if any(
+                    cue["object_class"] in {"cyclist", "bicycle"}
+                    for cue in item["cues"]
+                )
+            ]
+            assert cyclist_frames
+            cyclist_frame = max(cyclist_frames, key=lambda item: len(item["cues"]))
+            assert len(cyclist_frame["cues"]) > 1
+            assert len({cue["object_class"] for cue in cyclist_frame["cues"]}) > 1
+            cyclist_cues = [
+                cue
+                for cue in cyclist_frame["cues"]
+                if cue["object_class"] in {"cyclist", "bicycle"}
+            ]
+            assert cyclist_cues
+            for cue in cyclist_frame["cues"]:
+                cyclist_trace = model.trace(cue["cue_id"])
+                assert cyclist_trace["event"]["frame"] == cyclist_frame["frame"]
         assert model.image_path(0).read_bytes().startswith(details["image_signature"])
         timeline = model.timeline(0.0, 0.1)
         assert timeline["events"]
@@ -120,6 +185,20 @@ def test_retained_cross_dataset_workbench_catalogue() -> None:
         trace = model.trace(timeline["cues"][0]["cue_id"])
         assert trace["source_annotation"]["logical_path"] == details["source"]
         assert trace["render"]["end_sample_exclusive"] > trace["render"]["start_sample"]
+        duration = summary["timing"]["audio_duration_seconds"]
+        first_window = model.timeline(0.0, min(1.0, duration))
+        final_window = model.timeline(max(0.0, duration - 1.0), duration)
+        boundary_cues = (
+            first_window["cues"][:2] + final_window["cues"][-2:]
+        )
+        assert len(boundary_cues) == 4
+        for boundary_cue in boundary_cues:
+            boundary_trace = model.trace(boundary_cue["cue_id"])
+            assert boundary_trace["cue"]["frame"] == boundary_trace["event"]["frame"]
+            assert boundary_trace["cue"]["class_modifier"] > 0
+            assert boundary_trace["render"]["source_event_id"] == (
+                boundary_trace["event"]["event_id"]
+            )
         evaluation = model.evaluation()
         assert evaluation["available"] is True
         assert evaluation["source"] == "verified_stage_3_report"
