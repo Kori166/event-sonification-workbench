@@ -12,20 +12,16 @@ This supersedes broader proposal language about preset comparison and replay exp
 
 ## 2. Research questions
 
-The repository does not contain a formally accepted final list of RQ wording. An external interim
-viva deck contains the following concise questions, and they remain aligned with the completed scope:
+The final research questions confirmed for the dissertation are:
 
-- **RQ1:** How can annotated video datasets be transformed into a common event schema?
-- **RQ2:** How can normalised visual events become deterministic, traceable audio cues?
-- **RQ3:** How can outputs be evaluated using technical metrics?
+- **RQ1:** How can public annotated video datasets be transformed into a common event schema suitable for event-based sonification?
+- **RQ2:** How can normalised visual events be mapped into deterministic and traceable audio cues?
+- **RQ3:** How can event-based sonification outputs be evaluated using technical metrics for coverage, alignment, traceability and reproducibility?
 
-These are selected without expanding their claims. Earlier proposal wording named three datasets,
-multiple presets and ablations and is contradicted by the final implementation. If the submitted
-proposal legally or academically fixes different wording, the researcher must confirm it before
-Phase B; this is the only unresolved wording issue. The following evidence-aligned elaborations are
-explanatory, not replacements: RQ1 concerns MOT17/KITTI Tracking conversion while preserving native
-ontology/provenance; RQ2 concerns one versioned deterministic mapping/renderer; RQ3 concerns coverage,
-timing, traceability, density, overlap and reproducibility under contract `0.1.0`.
+These questions remain bounded by the completed implementation: RQ1 concerns MOT17/KITTI Tracking
+conversion while preserving native ontology and provenance; RQ2 concerns one versioned deterministic
+mapping and renderer; RQ3 concerns technical metrics under contract `0.1.0` rather than participant or
+perceptual evaluation.
 
 ## 3. RQ-to-evidence map
 

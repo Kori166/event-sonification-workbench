@@ -75,6 +75,5 @@ The table prioritises claims that could alter research questions, methods, resul
 8. State that `class_modifier` is trace-only and bounding-box area is not depth.
 9. Preserve the evidence boundary: no participant, perceptual, usability, accessibility, navigation,
    mobility or safety conclusion, and no cross-platform byte-identity conclusion.
-10. Obtain researcher confirmation that the concise RQ wording selected in
-    [`evidence-map.md`](evidence-map.md) is the institutionally accepted wording; the repository
-    records RQ3 evidence but not a formal final RQ statement.
+10. Use the research-question wording confirmed by the Stage 5 Phase B brief exactly as recorded in
+    [`evidence-map.md`](evidence-map.md) and [`report-structure.md`](report-structure.md).

@@ -1111,3 +1111,20 @@ be added where a short entry would omit important implementation evidence.
   unchanged. R20 and R21 remain explicit open limitations rather than evaluation findings.
 - Stage 4 Milestone 2 is complete. Stage 4 is complete; Stage 5 reporting and viva preparation
   remains planned.
+
+---
+
+## 2026-08-19 - Stage 5 Phase B core dissertation drafting
+
+- Added repository-side, transfer-ready drafts for Methodology and Research Design, Workbench Design
+  and Implementation, Technical Evaluation and Results, Discussion, and Conclusion and Future Work.
+- No canonical post-implementation dissertation manuscript was present in the repository. A transfer
+  note therefore records the intended chapter order, editorial boundaries and reuse of the audited
+  Stage 3 tables and figures; external pre-implementation Word documents were not edited.
+- Updated the Phase A evidence map, report structure and reconciliation to use the researcher-confirmed
+  final RQ wording verbatim. No Stage 1-4 implementation or evaluation evidence was changed.
+- The five assessed-body drafts contain approximately 3,886 words before Word transfer and final
+  word-processor counting. Local links and exact RQ occurrences passed validation; Ruff and the full
+  automated suite passed with 280 tests and 6 private-data integration tests skipped.
+- Stage 5 is now in progress. Literature integration, ethics/governance, final assembly, bibliography
+  verification and viva preparation remain for subsequent phases.

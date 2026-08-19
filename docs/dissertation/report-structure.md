@@ -12,6 +12,12 @@ The assessed-body target below is **5,500 words**, leaving a 500-word margin. Ta
 be included manually where the word processor does not count embedded text. Appendices should contain
 supporting reference material only; arguments required for marking must remain in the main body.
 
+The final research questions must be reproduced verbatim:
+
+1. **How can public annotated video datasets be transformed into a common event schema suitable for event-based sonification?**
+2. **How can normalised visual events be mapped into deterministic and traceable audio cues?**
+3. **How can event-based sonification outputs be evaluated using technical metrics for coverage, alignment, traceability and reproducibility?**
+
 | Section | Purpose and questions answered | Evidence to use | Keep elsewhere | Budget |
 |---|---|---|---|---:|
 | Abstract (excluded if the policy applies) | Concise problem, method, artefact, two-case technical findings, contribution and evidence boundary. | Baseline and audited Stage 3 results. | Literature detail, implementation diary, new claims. | 200 excluded |
