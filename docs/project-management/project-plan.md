@@ -20,6 +20,19 @@ normalised events, deterministic audio cues and traceable technical outputs.
 | 4. Artefact assembly and release | Validate, document and package the complete workbench | Reproducible release, final documentation and tagged version | Complete, 18 August 2026 |
 | 5. Reporting and viva preparation | Complete the dissertation and prepare the artefact demonstration | Final report, demonstration plan and viva notes | In progress |
 
+### Stage 5 phase status
+
+- Phase A, evidence and structure: complete, 18 August 2026.
+- Phase B, core dissertation drafting: complete, 19 August 2026.
+- Phase C, academic synthesis and manuscript integration: complete, 19 August 2026. The repository
+  working manuscript includes the Abstract, Chapters 1–8, a verified reference list, integrated
+  figures/tables and citation/evidence audits.
+- Phase D, final reduction, formatting and academic QA: complete, 19 August 2026. The private Word
+  and PDF candidates contain a 5,650-word assessed body and passed evidence, reference, layout and
+  page-by-page PDF checks.
+- Stage 5 remains **in progress** for focused supervisor review, viva preparation, final submission
+  packaging and the researcher-controlled submission action.
+
 ## Working Method
 
 The project will be developed iteratively. Work will be recorded through GitHub Issues and commits,

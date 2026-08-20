@@ -2,33 +2,42 @@
 
 ## 3.1 Research approach
 
-This project used an iterative design-and-evaluation methodology to construct and examine an event-based sonification workbench. The research artefact is a deterministic pipeline that transforms public video annotations into normalised events, maps eligible events to audio cues, renders those cues, and exposes the resulting evidence for inspection. The method is centred on traceable technical claims: each claim must be supported by a versioned contract, generated artefact, automated check or recorded decision.
+The study used an iterative design-and-evaluation method to construct and examine a computational research artefact. The pipeline transforms annotations into normalised events, maps eligible events to cues, renders audio and exposes evidence for inspection. Reproducible-computing principles informed version recording, retained intermediates and avoidance of manual result manipulation (Sandve *et al.*, 2013; Pineau *et al.*, 2021). Each claim had to resolve to a contract, generated artefact, automated check or recorded decision.
 
-Development was divided into four implementation stages followed by dissertation synthesis. Stage 1 defined the common event schema and dataset adapters. Stage 2 implemented deterministic event-to-cue mapping and audio rendering. Stage 3 froze and applied the technical evaluation contract. Stage 4 integrated the validated chain into a local inspection workbench. Decisions, risks and verification evidence were recorded as the artefact evolved, allowing the final analysis to distinguish implemented behaviour from intended or future work.
+Development proceeded through common-schema/adaptor construction, mapping/rendering, frozen technical evaluation and integration into a local read-only workbench. An **event** is one valid annotation observation at one frame; a **cue** is a scheduled audio representation; and a **suppression** is an explicit reason-coded decision that a valid event produces no cue. **Technical evaluation** concerns the computational transformation, not listener performance.
 
-## 3.2 Case selection and data
+This order separated research questions that would otherwise be coupled. Schema/adaptor validation established the input meaning before audio was produced; mapping and rendering were then evaluated against that stable representation; and the inspection interface was built over retained evidence rather than becoming a second processing implementation. Decisions, risks and verification records distinguished implemented behaviour from proposal intent throughout development.
 
-Two public annotated tracking datasets were selected as contrasting technical cases. MOT17-02-DPM supplies a dense pedestrian-tracking sequence at 30 frames per second and uses a compact numeric row format with one-based frame indices. KITTI Tracking sequence 0000 supplies road-scene annotations at 10 frames per second, uses zero-based frames, and includes a broader native ontology and additional fields for truncation, occlusion and three-dimensional geometry. The cases were not sampled to support population inference. They were selected to test whether a common pipeline could preserve and process different annotation conventions.
+## 3.2 Case selection and construction
 
-The raw datasets, full intermediate packages and rendered WAV files were kept outside version control. Reproduction declarations record logical inputs, expected hashes and runtime-root environment variables. This design limits repository size and avoids redistributing source data while retaining checks that connect local inputs to the reported results.
+MOT17-02-DPM and KITTI Tracking 0000 were purposively selected to exercise different conventions rather than support population inference (Dendorfer *et al.*, 2021; Geiger *et al.*, 2013). Table 1 summarises the relevant boundary.
 
-## 3.3 Artefact construction
+MOT17 provides a dense pedestrian-focused case at 30 frames per second, whereas KITTI supplies a lower-rate road-scene case with broader classes and richer metadata. Their contrast tests whether shared downstream processing can coexist with source-specific parsing, but it does not make the sequences statistically comparable or representative of their complete datasets.
 
-Each adapter parses its native source, applies explicit index and geometry conversions, preserves source-specific metadata, and emits the same versioned event-package structure. The mapper consumes only validated event packages and a versioned preset. It produces both cue records and explicit suppression records, so ineligible events remain part of the account. The renderer verifies the cue package and emits audio with a sample-level render log. Stable identifiers and content hashes connect all stages.
+**Table 1. Native case differences and adapter treatment. Author summary of dataset documentation and implemented contracts.**
 
-The integrated workbench reuses these pipeline artefacts rather than recreating their logic in the interface. A versioned session contract declares the event, cue, audio and evaluation inputs. Before serving a session, validation checks the complete chain. The interface is local, read-only and loopback-bound; it provides synchronised visual, auditory, timeline, trace and metric views for technical inspection.
+| Concern | MOT17-02-DPM | KITTI 0000 | Common treatment |
+|---|---|---|---|
+| Frame/time | One-based; 30 fps | Zero-based; 10 fps | Zero-based frame and derived timestamp |
+| Geometry | `x`, `y`, width, height | left, top, right, bottom | Pixel `x`, `y`, width, height |
+| Semantics | Tracking classes/evaluation mark | Road classes, `DontCare`, 3D fields | Common/source labels separated; native metadata retained |
+| Confidence | Evaluation mark is not probability | Optional score | Confidence populated only where source meaning supports it |
+| Provenance | Source row/configuration | Source row/configuration | Deterministic identity, logical origin and hashes |
 
-## 3.4 Evaluation method
+Each adapter applies explicit index/geometry conversions and emits schema `0.2.0` event packages. The mapper consumes validated events under preset `0.1.0`, producing a cue or suppression account. Renderer `0.1.0` emits PCM audio and sample-level logs. Stable identifiers and hashes connect stages. Session Contract `0.1.0` binds retained event, cue, audio and evaluation artefacts for inspection without reimplementing processing.
 
-The Technical Evaluation Contract version 0.1.0 was frozen before the real-data milestones. It defines event outcomes, coverage denominators, three timing domains, traceability requirements, density and overlap calculations, and distinct reproducibility claims. This prevented favourable results from changing the meaning of a metric after observation.
+Full datasets, generated packages and WAV files remained outside version control. Logical inputs, expected hashes and environment-variable roots connect independently obtained local data to results without embedding private machine paths.
 
-Evaluation proceeded in three layers. First, a small manual oracle tested known event outcomes and sample calculations. Second, focused negative cases tested whether incorrect links, outcomes and sample placements were detected. Third, the two public-data cases were executed through the full chain. Repeated builds tested determinism, while a separate reporting audit compared reports, tables, figures, captions and hashes against the canonical evidence.
+## 3.3 Evaluation design
 
-The analysis is deliberately bounded to technical evaluation. No participants were recruited, and no perceptual, accessibility or task-performance experiment was conducted. Cue density and overlap are therefore reported as measurable properties of the output rather than proxies for intelligibility or usefulness.
+Technical Evaluation Contract `0.1.0` was frozen before the real cases. It defines event outcomes and coverage denominators, sample/seconds timing domains, resolved traceability, density/overlap and levels of reproducibility. Freezing definitions reduced scope for post-hoc favourable metrics.
 
-## 3.5 Research quality and scope controls
+A manually calculated synthetic oracle first exercised five events, five cues, one suppression, overlapping/touching intervals and sample conversion. Negative cases introduced eligible misses, orphan cues, contradictory outcomes, broken links and a one-sample displacement, mitigating the risk that pipeline and evaluator shared the same error. The unchanged contract was then applied to both public-data chains. Repeated builds tested determinism; an independent audit compared canonical reports with tables, figures, captions and hashes.
 
-Reliability was supported by versioned schemas and contracts, deterministic identifiers, fixed renderer policies, automated tests and byte-level comparisons. Validity was supported by keeping source and common meanings separate, making suppressions explicit, using sample-domain timing checks and documenting limitations in a live risk register. The independent reporting audit reduced the risk of transcription drift between machine-readable reports and dissertation-facing artefacts.
+Accounting completeness requires one recognised outcome per valid event. Eligible coverage excludes intentional suppressions, while source representation includes them. Alignment compares expected and actual boundaries; traceability resolves identifiers and hashes; density/overlap describe load; and reproducibility distinguishes semantic, byte, audio and configuration identity.
 
-The method does not eliminate all threats. One mapping preset, two sequences and one recorded execution platform limit generalisation. The methodological claim is consequently modest: the project demonstrates and technically evaluates a reproducible architecture and procedure, rather than proving an optimal or perceptually validated sonification.
+These distinctions were methodological controls rather than reporting conveniences. They prevent intentional policy exclusions being labelled misses, floating-point seconds obscuring exact sample placement, plausible identifiers being accepted without resolving their links, and same-environment equality being generalised to untested platforms.
 
+## 3.4 Research quality and scope
+
+Versioned contracts, deterministic identities, automated tests, byte comparisons, the independent oracle, injected faults and the reporting audit support reliability and internal validity. Construct validity is bounded: the metrics measure transformation properties, not intelligibility. External validity is limited by two selected sequences, rectangular annotations, one mapping/renderer and one recorded execution environment. Shared conventions may still influence pipeline and evaluator despite independent checks. Conclusions are therefore descriptive technical claims. No participant, accessibility or task-performance experiment was conducted, and cross-platform byte identity was not tested.

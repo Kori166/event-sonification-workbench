@@ -1128,3 +1128,57 @@ be added where a short entry would omit important implementation evidence.
   automated suite passed with 280 tests and 6 private-data integration tests skipped.
 - Stage 5 is now in progress. Literature integration, ethics/governance, final assembly, bibliography
   verification and viva preparation remain for subsequent phases.
+
+---
+
+## 2026-08-19 - Stage 5 Phase C academic synthesis and manuscript integration
+
+- Added the Introduction, critical Literature Review, Ethical Considerations and Critical Reflection,
+  Abstract and verified UWE Harvard reference list; integrated scholarly citations and strengthened
+  validity analysis across the five Phase B chapters.
+- Assembled `docs/dissertation/working-manuscript.md` in canonical chapter order using a deterministic
+  assembly script that rebases chapter-relative links. The assessed Chapters 1–8 contain approximately
+  8,603 working words before the later submission-length compression pass.
+- Added an author-created architecture/provenance SVG and documentary Tables 1–3. Retained audited
+  Stage 3 Figures 2–4 and Tables 4–6 without changing their data. Excluded the optional workbench
+  screenshot because source-image reproduction/privacy clearance remains unresolved.
+- Verified 21 cited external sources against publisher, DOI, proceedings, dataset-owner or official
+  documentation pages. The bidirectional audit found 21 reference entries, no citation mismatches and
+  no unresolved markers. Corrected the older Ji article citation to *Sensors* 21(10), article 3558.
+- Completed claim, obsolete-history, scope, academic-quality and local-link audits. All three frozen
+  RQs are used verbatim and explicitly answered; O1/O2 remain achieved and O3/O4 partially achieved.
+  R20 remains informal researcher reflection and R21 remains an apparent-scale limitation.
+- Preserved the Stage 1–4 baseline: the two canonical evaluation-report hashes still match the Phase A
+  baseline, and no configuration, implementation, test, development, decision or evaluation-evidence
+  file was modified.
+- Ruff, JavaScript syntax checking and the full automated suite passed with 280 tests and 6 private-data
+  integrations skipped. Local link validation checked 29 links with no breakage; final `git diff
+  --check` and working-tree review passed after record assembly.
+- Phase C is complete. Stage 5 remains in progress for Word/PDF transfer, final compression,
+  proofreading, supervisor review, viva preparation and submission packaging.
+
+---
+
+## 2026-08-19 - Stage 5 Phase D final manuscript and academic QA
+
+- Created the compression plan before editing, then reduced Chapters 1–8 from the Phase C estimate
+  of 8,603 words to 5,294 repository-source words. The authoritative formatted count is 5,650 words,
+  including headings, captions and embedded table content but excluding front matter, Abstract and
+  References: a reduction of 2,953 words (34.3%).
+- Created a new private submission container instead of overwriting the obsolete proposal. The final
+  editable manuscript and matching PDF are stored under the private `Submission` directory as
+  `24046378 report.docx` and `24046378 report.pdf`; an initial formatted candidate was backed up
+  before the final reduction and layout corrections.
+- Preserved the three frozen RQs, O1/O2 achieved and O3/O4 partially achieved, threats to validity,
+  ethics, R20/R21 and all canonical Stage 3 values. The two canonical report SHA-256 hashes still
+  match the Phase A baseline, and `docs/evaluation` has no Phase D modification.
+- Revalidated 21 cited sources against 21 reference entries with no bidirectional mismatch or
+  unresolved issue. Claim-strength, terminology, obsolete-history, RQ, objective and placeholder
+  scans passed; the Word package contains no tracked changes or comments.
+- The 24-page A4 manuscript contains a verified Contents page, Lists of Figures and Tables, four
+  figures and six tables. Successive render checks corrected image cropping, list styling, reference
+  alignment and an avoidable widow page. Every page of the final candidate was visually inspected;
+  figures and tables are readable and unclipped.
+- Deterministic assembly, 104 local-link checks, Ruff, 280 tests with 6 private-data integrations
+  skipped, accessibility/structure audits and `git diff --check` passed. Stage 5 remains in progress
+  for supervisor feedback, viva preparation, submission packaging and researcher-controlled upload.

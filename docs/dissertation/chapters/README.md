@@ -1,22 +1,26 @@
-# Stage 5 Phase B chapter drafts
+# Stage 5 dissertation chapter sources
 
-These Markdown files are the repository-side drafting source for the core dissertation chapters. No canonical dissertation manuscript was present in the repository at the Phase B baseline (`824b5b8235cfffcf4adbe85085d54dee57f66930`), and the Word documents found outside the repository pre-date implementation. They were therefore treated as planning context rather than edited as the final manuscript.
+These Markdown files are the repository-side sources for the integrated dissertation. No canonical post-implementation dissertation manuscript was present at the Phase A baseline, and the external Word documents found then pre-dated implementation or described materially different projects. They were retained as historical material rather than overwritten. Phase D created a new private submission manuscript from these validated sources.
 
-## Intended transfer
+## Assembly order
 
-Transfer the files into the canonical dissertation in this order:
+`scripts/assemble_working_manuscript.py` assembles the sources in this order:
 
-1. `03-methodology-and-research-design.md`
-2. `04-workbench-design-and-implementation.md`
-3. `05-technical-evaluation-and-results.md`
-4. `06-discussion.md`
-5. `08-conclusion-and-future-work.md`
+1. `00-abstract.md`
+2. `01-introduction.md`
+3. `02-literature-review.md`
+4. `03-methodology-and-research-design.md`
+5. `04-workbench-design-and-implementation.md`
+6. `05-technical-evaluation-and-results.md`
+7. `06-discussion.md`
+8. `07-ethical-considerations-and-critical-reflection.md`
+9. `08-conclusion-and-future-work.md`
+10. `09-references.md`
 
-The numbering reserves Chapters 1 and 2 for the introduction and literature review and Chapter 7 for ethics, governance and reproducibility, all scheduled for Phase C. Headings labelled “Drafting note” are editorial instructions and should not appear in the submitted dissertation.
+The generated review source is [`../working-manuscript.md`](../working-manuscript.md). Phase D reduced the repository-side Chapters 1–8 to approximately 5,294 words. The formatted Word manuscript counts 5,650 assessed words after including headings, captions and embedded table content. The private submission candidates are stored outside Git at `C:\Users\korif\OneDrive\Documents\MSc Project - Event-Based Sonification Workbench\Submission\24046378 report.docx` and the matching PDF path. The assembly source remains authoritative for future editorial corrections; submission binaries are not committed.
 
-The three evaluation figures and three tables referenced by the Results chapter are the audited Stage 3 artefacts in `docs/evaluation/reporting/`. They should be inserted into the canonical manuscript without reconstructing their data. Figure numbering assumes that the architecture diagram reserved in the Implementation chapter becomes Figure 1; numbering may be adjusted during final assembly.
+## Evidence and visual boundaries
 
-## Evidence boundary
+The prose is constrained by the Stage 5 Phase A evidence baseline and reconciliation. Repository links remain drafting provenance for project-specific claims; external academic claims use the verified UWE Harvard reference list. Figure 1 is a new explanatory architecture/provenance diagram and contains no experimental values. Figures 2–4 and Tables 4–6 are unchanged audited Stage 3 presentation derivatives. Tables 1–3 are concise documentary summaries of implemented contracts.
 
-The prose is constrained by the Stage 5 Phase A evidence baseline and reconciliation. Repository links are drafting provenance, not a finished Harvard bibliography. Phase C must integrate the literature sources and replace repository-path citations with the final citation system where appropriate. No participant study, perceptual experiment, accessibility validation, or cross-platform reproducibility claim is implied by these drafts.
-
+The optional Stage 4 screenshot is excluded because the repository has no retained screenshot with a completed source-image reproduction and privacy review. No participant study, perceptual experiment, accessibility validation or cross-platform reproducibility claim is implied by the manuscript.
