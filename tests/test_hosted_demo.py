@@ -65,9 +65,15 @@ def _fake_opened(tmp_path: Path, session: dict[str, object]) -> SimpleNamespace:
     )
 
 
-def test_hosted_entry_point_has_no_synthetic_fallback() -> None:
-    assert hosted_demo.main is hosted_retained.main
+def test_hosted_entry_point_has_no_synthetic_fallback(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
     assert not hasattr(hosted_demo, "build_hosted_demo")
+    result = hosted_demo.main(["--bundle-sha256", "0" * 64])
+    assert result == 2
+    error = json.loads(capsys.readouterr().err)
+    assert error["status"] == "failed_closed"
+    assert error["error"]["code"] == "hosted_bundle_source_required"
 
 
 def test_hosted_bundle_is_deterministic_and_contains_two_retained_sessions(
