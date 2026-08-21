@@ -1,253 +1,270 @@
 # Event Sonification Workbench
 
-A reproducible workbench for converting annotated video datasets into deterministic, traceable
-events, cue schedules and PCM audio.
+A reproducible workbench for converting annotated video tracking data into normalised events, deterministic audio cues, traceable PCM audio and technically evaluated outputs.
 
-## Project
-
-This repository contains the rebuilt artefact for the MSc Data Science dissertation:
+This repository contains the MSc Data Science project:
 
 **A Reproducible Workbench for Event-Based Sonification of Annotated Video Datasets**
 
-The workbench is research infrastructure. It is not a validated accessibility, navigation, usability
-or assistive system.
+The workbench is research infrastructure. It is **not** a validated accessibility, navigation, usability or assistive system.
 
-The bounded dataset scope is MOT17 and KITTI Tracking. The artefact normalises annotations, maps
-events to configurable cues, preserves provenance and supports technical evaluation.
+## Try the Workbench
 
-## Status
+### Hosted demonstration
 
-Stages 0, 1 and 2 are complete. Stage 1 closed on 5 August 2026 after real-data event-package
-verification. Stage 2 closed on 6 August 2026 after the complete native-annotation to event to cue
-to deterministic stereo PCM WAV chain repeated exactly for real MOT17 and KITTI Tracking data.
-Stage 3 closed on 6 August 2026. Milestone 1 froze technical-evaluation contract `0.1.0` and
-verified it against a manually calculated synthetic oracle; Milestone 2 applied the unchanged
-contract to verified MOT17-02-DPM and KITTI Tracking 0000 evidence chains; Milestone 3 generated and
-independently audited report-ready tables, deterministic SVG figures and bounded RQ3 findings. RQ3
-is supported by technical case-study evidence for those sequences, the baseline preset/renderer and
-the recorded environment. It is not perceptual or participant evidence. Stage 4 Milestone 1 Phase 1
-is complete. The Phase 2 synchronised MOT17 inspection slice passed researcher-performed controlled
-browser acceptance and merged through PR #36. Phase 3 added and accepted the retained KITTI session
-through the same frozen architecture, and PR #38 merged the Stage 4 Milestone 1 release candidate.
-Milestone 2 then completed the bounded inspection corrections, passed all 16 final researcher
-technical browser checks, and merged through PR #40 as
-`b6c8310c9f8a731d2ef374e725ba6f99342e85e1`. Stage 4 is complete; Stage 5 remains planned.
+[**Open Live Workbench →**](https://REPLACE-ME.onrender.com)
 
-Milestone 1 established common schema version `0.1.0`. The cross-dataset review in Milestone 3
-introduced schema `0.2.0`, retaining the event shape while allowing native unnormalised confidence
-scores. Both the completed MOT17 and KITTI Tracking adapters emit `0.2.0`.
+> **Render deployment placeholder.** The public deployment has not yet been created. Replace this URL with the final Render address once the hosted demonstration is available.
 
-Issues #4, #5 and #6 are closed. Their implementations merged through pull requests #16, #15 and
-#17 respectively. Common schema `0.2.0` is current, and validated events can be written to canonical
-JSON, fixed-column CSV, run metadata and a provenance log beneath a content-derived run ID.
+The hosted version is intended to provide a one-click, read-only demonstration of the inspection interface using a bounded deployment package. It will not replace the retained research evidence used for the dissertation findings.
 
-The close-out converted real sequence `MOT17-02-DPM` into 30,003 valid events and KITTI Tracking
-sequence `0000` into 1,089 valid events. Separate repeat runs produced identical run IDs, event
-ordering, package bytes and SHA-256 values. MOT17 retained 988 permitted out-of-image geometry
-warnings; KITTI produced no warnings. Full evidence is recorded in
-`docs/development/stage-1-closeout.md`.
+### Full local workbench
 
-Stage 2 converted those same collections into 26,960 MOT17 cues plus 3,043 explicit suppressions,
-and 711 KITTI cues plus 378 explicit `DontCare` suppressions. Every scheduled cue rendered, every
-source event was accounted for, and independent full runs reproduced all 4 event files, 5 cue files
-and 3 audio files byte-for-byte and by SHA-256. The complete environment, hashes, WAV properties,
-test results and limitations are recorded in `docs/development/stage-2-closeout.md`.
+The complete research workbench uses locally obtained MOT17 and KITTI Tracking media together with retained Stage 1-3 evidence packages. These large/private artefacts are deliberately not stored in Git.
 
-## Repository structure
+See [Full Local Setup](#full-local-setup) below.
+
+---
+
+## What the Workbench Does
+
+The implemented research workflow is:
+
+```text
+MOT17 / KITTI annotations
+        ↓
+dataset-specific adapters
+        ↓
+common event schema 0.2.0
+        ↓
+validated event packages
+        ↓
+versioned sonification mapping
+        ↓
+cues + explicit suppressions
+        ↓
+deterministic stereo PCM WAV
+        ↓
+technical evaluation
+        ↓
+read-only inspection workbench
+```
+
+The pipeline preserves source identity and provenance so that generated cues and suppressions can be traced back to the source annotation, configuration and rendered sample range.
+
+The bounded dataset cases used in the completed technical evaluation are:
+
+- **MOT17-02-DPM**
+- **KITTI Tracking sequence 0000**
+
+## Quick Access
+
+| Looking for | Location |
+|---|---|
+| Workbench source code | [`src/event_sonification_workbench/`](src/event_sonification_workbench/) |
+| Dissertation working manuscript | [`docs/dissertation/working-manuscript.md`](docs/dissertation/working-manuscript.md) |
+| Dissertation chapters | [`docs/dissertation/chapters/`](docs/dissertation/chapters/) |
+| Canonical technical evaluation evidence | [`docs/evaluation/evidence/`](docs/evaluation/evidence/) |
+| Report-ready tables and figures | [`docs/evaluation/reporting/`](docs/evaluation/reporting/) |
+| Technical evaluation contract | [`docs/evaluation/technical-evaluation-contract-v0.1.0.md`](docs/evaluation/technical-evaluation-contract-v0.1.0.md) |
+| Common event schema documentation | [`docs/data-model/common-event-schema.md`](docs/data-model/common-event-schema.md) |
+| Design decisions | [`docs/decisions/`](docs/decisions/) |
+| Project plan | [`docs/project-management/project-plan.md`](docs/project-management/project-plan.md) |
+| Progress log | [`docs/project-management/progress-log.md`](docs/project-management/progress-log.md) |
+| Risk register | [`docs/project-management/risk-register.md`](docs/project-management/risk-register.md) |
+| Stage checklists | [`docs/project-management/`](docs/project-management/) |
+| Automated tests and fixtures | [`tests/`](tests/) |
+
+## Project Status
+
+| Stage | Status |
+|---|---|
+| 0. Project setup | Complete |
+| 1. Data ingestion and normalisation | Complete |
+| 2. Sonification | Complete |
+| 3. Technical evaluation | Complete |
+| 4. Artefact assembly and release | Complete |
+| 5. Reporting and viva preparation | In progress |
+
+Stage 5 Phases A-D are complete. Remaining work is limited to researcher-controlled review, viva preparation, final submission packaging and submission. Full stage history is recorded in [`docs/project-management/project-plan.md`](docs/project-management/project-plan.md).
+
+## Repository Structure
 
 ```text
 event-sonification-workbench/
-|-- configs/
-|   |-- class-mappings/
-|   `-- schemas/
-|-- docs/
-|   |-- data-model/
-|   |-- decisions/
-|   |-- development/
-|   `-- project-management/
-|-- src/event_sonification_workbench/
-|   `-- adapters/
-|-- tests/
-|   `-- fixtures/
-|-- .env.example
-|-- pyproject.toml
-`-- README.md
+├── configs/                         # schemas, mappings and renderer configuration
+├── docs/
+│   ├── data-model/                  # technical contracts and formats
+│   ├── decisions/                   # architecture and research decisions
+│   ├── development/                 # milestone and close-out evidence
+│   ├── dissertation/                # working manuscript, chapters and audits
+│   ├── evaluation/                  # canonical Stage 3 evidence and reporting outputs
+│   └── project-management/          # plan, progress, risks and stage records
+├── src/event_sonification_workbench/
+│   ├── adapters/                    # MOT17 and KITTI Tracking adapters
+│   └── workbench/                   # read-only inspection service and browser UI
+├── tests/                           # unit, contract, fixture and integration tests
+├── .env.example
+├── pyproject.toml
+└── README.md
 ```
 
-## Data configuration
+## What Is Included in Git
 
-Full datasets remain outside Git. Copy `.env.example` to `.env` and configure local roots. `.env`
-is excluded from version control.
+The repository contains the material needed to inspect the implementation and its documented technical evidence:
 
-```text
-MOT17_ROOT=
-KITTI_TRACKING_ROOT=
-```
+- Python source code;
+- event, preset, renderer and evaluation schemas;
+- deterministic mapping and rendering configuration;
+- fixed public/synthetic test fixtures;
+- automated tests;
+- canonical Stage 3 technical evaluation reports;
+- audited report-ready tables and figures;
+- dissertation source material and audit records;
+- design decisions and project-management evidence; and
+- path-free retained workbench session declarations.
 
-MOT17 provenance paths are logical dataset-relative values such as
-`MOT17/train/MOT17-02-DPM/gt/gt.txt`. Events do not contain private absolute paths.
-KITTI provenance paths are rooted at `KITTI_TRACKING_ROOT`, for example
-`training/label_02/0000.txt`, and likewise exclude private absolute paths.
+The following remain outside Git:
+
+- full MOT17 and KITTI Tracking datasets;
+- source video/image sequences;
+- complete generated Stage 1 and Stage 2 packages;
+- retained full WAV files; and
+- machine-specific paths or local environment settings.
+
+This boundary keeps the repository portable and avoids treating externally obtained datasets or retained large outputs as ordinary source files.
 
 ## Installation
 
+### Requirements
+
+- Python **3.11 or later**
+- Git
+- A supported modern browser for the inspection interface
+
+Clone and enter the repository:
+
+```bash
+git clone https://github.com/Kori166/event-sonification-workbench.git
+cd event-sonification-workbench
+```
+
+Create a virtual environment:
+
 ```bash
 python -m venv .venv
+```
+
+Activate it.
+
+**Windows PowerShell**
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+**macOS / Linux**
+
+```bash
+source .venv/bin/activate
+```
+
+Install the project and development dependencies:
+
+```bash
 python -m pip install -e ".[dev]"
 ```
 
-## MOT17 parser
+## Run the Repository Tests
 
-The parser accepts nine-column MOT17 training ground truth and reads sequence values from
-`seqinfo.ini`. It converts one-based source frames to zero-based common frames. Native box
-coordinates and dimensions are preserved. The evaluation mark remains dataset-specific metadata,
-and common confidence is `null`.
-
-Run the preferred real sequence check with `MOT17_ROOT` configured:
-
-```bash
-python -m event_sonification_workbench.cli mot17-check \
-  --sequence MOT17-02-DPM
-```
-
-The command reports parsed rows, validation results and warnings. It does not write event packages.
-
-## KITTI Tracking parser
-
-The parser accepts 17-field KITTI Tracking rows and the optional eighteenth score. It retains
-zero-based source frames, converts left/top/right/bottom coordinates to left/top/width/height,
-preserves native and common classes, and records truncation, occlusion, observation angle, 3D
-geometry and rotation in metadata. Optional scores are preserved without rescaling.
-
-`DontCare` rows are not silently discarded: they become `dont_care` events with track `-1`, native
-geometry and `metadata.is_dont_care = true`. The private integration test reads
-`KITTI_TRACKING_ROOT` and skips clearly when it is unavailable.
-
-## MOT17 fixture decision
-
-A fixed 12-row extract from `MOT17-02-DPM` is committed under
-`tests/fixtures/mot17/dataset-derived/`. The official MOTChallenge website states that datasets
-provided on the site are published under Creative Commons Attribution-NonCommercial-ShareAlike 3.0.
-The fixture notice records attribution, licence terms, selected source lines and hashes.
-
-The manifest-driven command can reproduce the same fixture from a configured local dataset:
-
-```bash
-python -m event_sonification_workbench.cli mot17-fixture \
-  --manifest tests/fixtures/mot17/manifest.json \
-  --output .local-fixtures/mot17
-```
-
-Normal CI also uses a 12-row structurally equivalent synthetic fixture with independently calculated
-expected events and deliberately malformed rows.
-
-## KITTI fixture decision
-
-`tests/fixtures/kitti/` contains 12 attributed annotation rows selected deterministically from
-training sequence `0000`, plus a manifest containing source line numbers, the selection algorithm,
-source/fixture hashes and sequence metadata. KITTI publishes the dataset under Creative Commons
-Attribution-NonCommercial-ShareAlike 3.0; the fixture README and licence notice preserve that
-attribution and the requested CVPR 2012 citation. No images, video or full annotation file is
-included. Synthetic malformed rows are marked separately as project-authored data.
-
-## Validation
-
-Single events and complete MOT17 or KITTI Tracking event collections can be checked against common
-schema `0.2.0`. Collection validation preserves input order, treats errors as invalidating, retains
-warnings as permitted findings and can write a canonical `validation_report.json`. See
-`docs/data-model/event-validation.md` for the API, diagnostic codes and ordering policy.
-
-Run lint and normal tests without requiring the private datasets:
+Run linting and the normal test suite without private datasets:
 
 ```bash
 python -m ruff check .
 python -m pytest -m "not integration"
 ```
 
-Run the complete available suite, including integrations when their roots are configured:
+Run the complete available suite when local dataset/evidence roots are configured:
 
 ```bash
 python -m pytest
 ```
 
-The integration tests use `MOT17_ROOT` and `KITTI_TRACKING_ROOT` independently and skip clearly when
-their private datasets are unavailable. A skip is not evidence of a private-data pass. The CI
-workflow runs the non-integration tests and lint checks for pull requests and pushes to `main`.
+Integration tests use the configured external roots and skip when those resources are unavailable. A skipped integration test is not evidence that the private-data path passed.
 
-## Cross-dataset retained evidence inspection
+## Full Local Setup
 
-The Stage 4 workbench is local, read-only research infrastructure for deterministic and traceable
-inspection of the retained annotation-to-sonification evidence. It exposes only two committed,
-path-free declarations through Workbench Session Contract `0.1.0`:
+The complete inspection workbench requires three local roots.
 
-- MOT17-02-DPM: `session-mot17-mot17-02-dpm-3707826663b210c6`; and
-- KITTI Tracking 0000: `session-kitti_tracking-0000-9cae092175c68109`.
+Copy the example environment file:
 
-Create a local `.env` from `.env.example` and configure `MOT17_ROOT`, `KITTI_TRACKING_ROOT` and
-`STAGE2_EVIDENCE_ROOT`. The dataset roots contain private source imagery; the evidence root contains
-the retained `mot17/run-a` and `kitti/run-a` event, cue and audio packages. These values remain local
-and ignored. From an installed repository environment, the primary launch command is:
+**Windows PowerShell**
 
 ```powershell
+Copy-Item .env.example .env
+```
+
+**macOS / Linux**
+
+```bash
+cp .env.example .env
+```
+
+Configure:
+
+```text
+MOT17_ROOT=
+KITTI_TRACKING_ROOT=
+STAGE2_EVIDENCE_ROOT=
+```
+
+Where:
+
+- `MOT17_ROOT` points to the locally obtained MOT17 dataset;
+- `KITTI_TRACKING_ROOT` points to the locally obtained KITTI Tracking dataset; and
+- `STAGE2_EVIDENCE_ROOT` points to the retained event, cue and audio evidence tree used by the accepted Stage 3/4 sessions.
+
+The `.env` file is ignored by Git and must not be committed.
+
+### Launch the local workbench
+
+From the installed repository environment:
+
+```bash
 python -m event_sonification_workbench.cli inspect-session
 ```
 
-The command validates both committed declarations and their complete Stage 1-3 chains before serving
-`http://127.0.0.1:8765/`. Missing or inconsistent private bindings fail with path-free diagnostic
-codes before the port is opened. The service binds only to loopback and never modifies an output.
-
-Use the retained-session selector to inspect either dataset. The source panel shows runtime-bound
-frames and recorded Stage 1 boxes; transport controls play the exact retained Stage 2 WAV unchanged;
-EVENT, CUE and SUPPRESS lanes follow browser audio `currentTime`; selecting a cue displays its
-normalised event, logical native annotation/row, configuration and rendered sample range; technical
-cards project the verified Stage 3 report directly. Switching sessions clears image, frame,
-playback, timeline, cue, trace, metrics, metadata and error state before loading the selected chain.
-
-Frame presentation uses `frame = floor(audio.currentTime * frame_rate)` and half-open frame
-intervals. Subtle divisions and a highlighted interval show frame structure separately from the
-exact white playback cursor. Only CUE markers are selectable on the canvas. Selecting one pauses
-playback, seeks to its retained start and immediately synchronises the slider and numeric transport
-time. Represented source-video boxes and frame cue buttons invoke that same exact retained cue path;
-suppressed boxes remain contextual. Selection loads the recorded source frame and presents every
-cue retained for that frame as a complete control group. Frame cue controls remain in deterministic
-time/track/cue order and are not truncated by the one-second evidence window.
-
-The technical baseline uses event time for when the cue plays, horizontal object position for
-left/right placement, vertical object position for pitch and bounding-box area for loudness. It is
-not perceptually validated. The class modifier is recorded in provenance for traceability but is not
-applied by the current renderer. Bounding-box area is an imperfect
-apparent-scale proxy, not depth: pose-dependent pedestrian width can change amplitude without a
-meaningful apparent-distance change. Height-based or smoothed-height alternatives are possible
-future experiments and are not implemented here.
-
-Repository content includes code, schemas, path-free retained declarations, fixed public test
-fixtures and canonical Stage 3 reports. Private source datasets, retained full Stage 1/2 packages
-and WAV files remain local. The browser is presentation-only: it does not parse annotations,
-normalise events, schedule cues, render audio, evaluate metrics or regenerate canonical evidence.
-
-The service is loopback-only and exposes no write, upload, authentication, database or analytics
-feature. It is inspection/demonstration infrastructure, not participant, accessibility, usability,
-navigation, perceptual-effectiveness or safety evidence. The MOT17 and KITTI controlled browser
-passes are engineering acceptance only; see the Phase 2 and Phase 3 development records. R20 remains
-open: the interface does not resolve dense-audio interpretation or establish a perceptual benefit.
-
-## Structured event outputs
-
-Validated sequence events can be written to an ignored deterministic package:
+Then open:
 
 ```text
-outputs/<run-id>/
-|-- events.json
-|-- events.csv
-|-- run_metadata.json
-`-- provenance_log.json
+http://127.0.0.1:8765/
 ```
 
-The event files use the documented dataset, sequence, frame, track ID, source-row and event-ID
-ordering. Package content contains logical source/configuration references and hashes, never private
-dataset roots or output-directory paths. It contains no changing wall-clock timestamp.
+Before serving the interface, the command validates the retained Stage 1-3 evidence chain. Missing or inconsistent local bindings fail before the service is opened.
 
-Run either adapter-to-package command with its private root configured:
+The browser interface is read-only. It does not parse annotations, regenerate events, schedule new cues, render new audio or recalculate evaluation metrics.
+
+## Using the Inspection Workbench
+
+The workbench exposes the retained MOT17 and KITTI Tracking sessions through the same inspection architecture.
+
+It provides:
+
+- source-frame display with recorded bounding boxes;
+- playback of the retained Stage 2 audio;
+- synchronised EVENT, CUE and SUPPRESS timeline lanes;
+- frame-scoped cue controls;
+- cue-to-source provenance inspection;
+- rendered sample-range information; and
+- technical metrics projected directly from the verified Stage 3 report.
+
+Selecting a cue pauses playback, seeks to the retained cue start and exposes its normalised event, native source reference, configuration and rendered sample range.
+
+## Reproducing the Processing Pipeline
+
+The commands below are the main processing path. Detailed contracts and field definitions are linked from the relevant documentation rather than duplicated here.
+
+### 1. Create validated event packages
 
 ```bash
 python -m event_sonification_workbench.cli mot17-package \
@@ -259,13 +276,9 @@ python -m event_sonification_workbench.cli kitti-package \
   --output-directory outputs
 ```
 
-Both commands parse, collection-validate and then write. They refuse parser errors or invalid
-collections. Generated packages remain ignored and must not be committed. The exact format, CSV
-columns, hash scopes and overwrite policy are documented in `docs/data-model/output-package.md`.
+See [`docs/data-model/output-package.md`](docs/data-model/output-package.md).
 
-## Deterministic cue scheduling
-
-Stage 2 Milestone 1 maps a valid schema `0.2.0` event package through the versioned baseline preset:
+### 2. Schedule cues and suppressions
 
 ```bash
 python -m event_sonification_workbench.cli schedule-cues \
@@ -274,211 +287,95 @@ python -m event_sonification_workbench.cli schedule-cues \
   --output-directory outputs
 ```
 
-The command independently checks package integrity, recorded validation status, schema/semantic
-validity and deterministic event order. It refuses incompatible presets, malformed packages and
-unsafe paths. Each accepted event becomes exactly one cue or one explicit suppression. The
-baseline records class exclusions, low available confidence, frame-stride policy and `DontCare`
-treatment rather than silently dropping events.
+Each accepted valid event produces either one cue or one explicit suppression record.
 
-The ignored content-derived run directory contains:
+See [`docs/data-model/sonification-preset.md`](docs/data-model/sonification-preset.md) and [`docs/data-model/cue-schedule.md`](docs/data-model/cue-schedule.md).
 
-```text
-outputs/<cue-run-id>/
-|-- cue_schedule.json
-|-- cue_schedule.csv
-|-- cue_log.json
-|-- suppression_log.json
-`-- sonification_metadata.json
-```
+### 3. Render deterministic audio
 
-Outputs preserve source event/file/row and preset identity, use canonical JSON and LF-stable CSV,
-and repeat byte-for-byte for identical input and configuration. The baseline values are configurable
-technical choices, not perceptual or accessibility findings.
-See `docs/data-model/sonification-preset.md` and `docs/data-model/cue-schedule.md`.
-
-## Deterministic WAV rendering
-
-Stage 2 Milestone 2 verifies a cue package before rendering it through renderer configuration
-`0.1.0`. In PowerShell:
-
-```powershell
-python -m event_sonification_workbench.cli render-audio `
-  --cue-package outputs/<cue-run-id> `
-  --renderer-config configs/sonification/renderers/baseline-v0.1.0.json `
+```bash
+python -m event_sonification_workbench.cli render-audio \
+  --cue-package outputs/<cue-run-id> \
+  --renderer-config configs/sonification/renderers/baseline-v0.1.0.json \
   --output-directory outputs
 ```
 
-The ignored content-derived audio run contains `sonification.wav`, `render_log.json` and
-`renderer_metadata.json`. The baseline is stereo, 44,100 Hz, signed 16-bit little-endian PCM with
-fixed-phase sine cues, linear attack/release and pan, ordered overlap summation and conditional
-peak limiting. Time placement uses decimal round-half-up; quantisation occurs after mixing and any
-global gain. Identical fixture runs produce identical bytes and hashes in the tested environment.
-This is reproducibility evidence for technical behaviour, not evidence of perceptual quality,
-accessibility, usefulness or safety. See `docs/data-model/audio-rendering.md`.
+The baseline renderer produces stereo 44.1 kHz signed 16-bit PCM audio with deterministic sample placement under the recorded configuration.
 
-Independent packages of the same type can be compared exactly:
+See [`docs/data-model/audio-rendering.md`](docs/data-model/audio-rendering.md).
 
-```powershell
-python -m event_sonification_workbench.cli compare-packages `
-  --left-package <first-package> `
-  --right-package <second-package>
-```
+### 4. Run technical evaluation
 
-The path-free deterministic report covers every expected package file, exact byte equality and
-independent SHA-256 values. Any mismatch is named and returns a nonzero status.
+A small committed synthetic oracle can be evaluated directly:
 
-## Technical evaluation contract
-
-Stage 3 Milestone 1 defines event coverage/accounting, three timing-error domains, resolved-link
-traceability, cue density, half-open interval overlap burden and four separate reproducibility
-levels in contract `0.1.0`. Every rate retains its numerator and denominator; zero denominators are
-`null`. Suppressed events remain distinct from eligible misses, and traceability requires records
-and hashes to agree rather than merely containing plausible identifiers.
-
-The minimum evaluator accepts a prepared, validated event/cue/suppression/render record chain:
-
-```powershell
-python -m event_sonification_workbench.cli evaluate-technical `
-  --input tests/fixtures/evaluation_oracle/input.json `
+```bash
+python -m event_sonification_workbench.cli evaluate-technical \
+  --input tests/fixtures/evaluation_oracle/input.json \
   --output outputs/technical_evaluation_report.json
 ```
 
-It writes canonical JSON with a content-derived evaluation run ID, deterministic diagnostics,
-input versions/hashes, timeline, metric counts and output hash scope. The committed fixture is
-synthetic: its five events, five cues, one suppression and 10 Hz render timeline are independently
-calculated in `tests/fixtures/evaluation_oracle/oracle-calculation.md`. Fault cases cover eligible
-misses, orphans, contradictory outcomes, broken provenance and timing displacement.
+The full real-data evaluation uses prepared and verified event, cue, suppression and render evidence. Metric semantics are frozen in [`docs/evaluation/technical-evaluation-contract-v0.1.0.md`](docs/evaluation/technical-evaluation-contract-v0.1.0.md).
 
-Milestone 2 adds a strict adapter that joins already verified event, cue and audio package contracts
-without recalculating Stage 1 or Stage 2 records:
+## Technical Evaluation Evidence
 
-```powershell
-python -m event_sonification_workbench.cli prepare-technical-evaluation `
-  --event-package <event-package> `
-  --cue-package <cue-package> `
-  --audio-package <audio-package> `
-  --repeat-event-package <repeat-event-package> `
-  --repeat-cue-package <repeat-cue-package> `
-  --repeat-audio-package <repeat-audio-package> `
-  --output <technical-evaluation-input.json>
-```
+Under Technical Evaluation Contract `0.1.0`:
 
-The assembler checks exact package membership, canonical serialisation, documented hashes, content
-identities, ordering, source references and cross-stage links, then writes a content-derived input
-identity and hash manifest. Full inputs remain ignored because they contain generated full-sequence
-records.
+- MOT17-02-DPM contains **30,003** valid events, represented by **26,960** cues and **3,043** intentional suppressions;
+- KITTI Tracking 0000 contains **1,089** valid events, represented by **711** cues and **378** intentional suppressions;
+- both cases have zero eligible misses under the frozen policy;
+- cue and suppression provenance resolves through the retained evidence chain; and
+- repeated packages, audio and reports were identical in the recorded evaluation environment.
 
-Under the unchanged contract, MOT17 accounts for 30,003 events as 26,960 represented and 3,043
-intentionally suppressed, while KITTI accounts for 1,089 events as 711 represented and 378
-intentionally suppressed `DontCare` events. Both have zero eligible misses, zero broken links and
-complete eligible-event coverage. The rendered timelines contain 1,342.1838698971126 and
-46.10894941634241 cues/second respectively; these are descriptive technical values, not listener-
-quality judgements. Canonical report SHA-256 values are
-`d847e805d0b2d7ccd50cd315bbcecfc0ad525f40e7c4c2013938f955d20f13e5` and
-`b5589590a8c645bd7b5654d0318bf90fdb412f987719c26c2374bf3e487f9ff2`.
+These are technical case-study findings. They do **not** establish perceptual effectiveness, usability, accessibility, navigation benefit, safety or cross-platform byte identity.
 
-See `docs/evaluation/evidence/`, the record-level traceability audit and the bounded cross-dataset
-summary for every numerator, denominator, timing statistic, overlap value, hash and repeat result.
-No perceptual, participant, accessibility, usability, navigation or safety conclusion follows from
-these technical metrics. Cross-environment byte identity remains untested.
+Canonical results are stored in [`docs/evaluation/evidence/`](docs/evaluation/evidence/). Audited report-ready derivatives are stored in [`docs/evaluation/reporting/`](docs/evaluation/reporting/).
 
-The audited reporting derivative can be rebuilt entirely from the committed canonical reports:
+## Reproducibility Controls
 
-```powershell
-python -m event_sonification_workbench.cli generate-stage3-report-evidence `
-  --mot17-report docs/evaluation/evidence/mot17/mot17_technical_evaluation_report.json `
-  --kitti-report docs/evaluation/evidence/kitti/kitti_technical_evaluation_report.json `
-  --output docs/evaluation/reporting `
-  --replace-generated
-```
+The implementation uses:
 
-The generator verifies both source hashes and the frozen schema, resolves structural JSON Pointers,
-preserves exact canonical raw scalars, applies documented display formatting and audits every table,
-figure and claim reference. The committed package contains 134 manifested values, 136 table cells,
-20 figure data points and 12 principal claims with zero automated or manual mismatches. Two isolated
-fresh builds produced all 24 generator-owned files byte-identically. Exact hashes and the bounded
-RQ3 answer are in `docs/evaluation/reporting/` and `docs/development/stage-3-closeout.md`.
+- versioned schemas, presets, renderer and evaluation contracts;
+- deterministic event, cue and run identifiers;
+- canonical JSON and stable CSV serialisation;
+- logical dataset-relative provenance paths;
+- file and configuration SHA-256 hashes;
+- explicit cue-or-suppression accounting;
+- sample-level rendering logs;
+- manual-oracle and injected-fault evaluation tests;
+- repeat-run package, audio and report comparisons; and
+- audited links between canonical results and dissertation tables/figures.
 
-## Reproducibility controls
+Detailed evidence is recorded under [`docs/development/`](docs/development/) and [`docs/evaluation/`](docs/evaluation/).
 
-- schema, parser and class-mapping versions;
-- deterministic event identifiers and canonical JSON hashes;
-- dataset-relative source paths and source-row references;
-- source, sequence-metadata, mapping and fixture hashes;
-- manifest-driven source-line selection;
-- content-derived output run IDs, canonical package JSON and LF-stable CSV;
-- versioned preset validation, deterministic cue IDs and complete cue-or-suppression accounting;
-- canonical cue/suppression logs and content-derived schedule run IDs;
-- versioned renderer configuration, verified cue inputs and content-derived audio run IDs;
-- explicit sample placement, envelope, panning, mixing, normalisation and PCM quantisation rules;
-- file-level output hashes and path-free run provenance;
-- versioned evaluation policy/report schemas with explicit rate denominators and null rules;
-- a manually calculated synthetic evaluation oracle and deterministic canonical report hash;
-- a versioned real-data experiment/environment manifest and verified package-to-evaluator adapter;
-- three-run semantic and canonical-byte comparison reports for real MOT17 and KITTI case studies;
-- deterministic dataset summaries and selected record-level traceability audits;
-- structural presentation-value provenance, deterministic report-ready tables/SVG figures and
-  automated plus independent presentation audits;
-- schema, semantic, provenance and determinism tests;
-- LF-normalised hashed fixtures; and
-- explicit evidence boundaries between fixed CI data and local full-dataset integration data.
+## Scope and Limitations
 
-## Documentation
+The completed research is deliberately bounded:
 
-- `docs/data-model/common-event-schema.md`: current common schema `0.2.0` contract.
-- `docs/data-model/event-validation.md`: single-event and collection validation contract.
-- `docs/data-model/output-package.md`: JSON, CSV, metadata and provenance output contract.
-- `docs/data-model/sonification-preset.md`: preset schema, baseline formulas and suppression policy.
-- `docs/data-model/cue-schedule.md`: schedule input gate, records, files, IDs and hash contract.
-- `docs/data-model/audio-rendering.md`: renderer input gate, synthesis, WAV and provenance contract.
-- `docs/evaluation/technical-evaluation-contract-v0.1.0.md`: frozen metric definitions, inputs,
-  boundaries, failure policy and deterministic report contract.
-- `docs/evaluation/stage-3-real-data-evaluation-protocol.md`: pre-result real-data scope, integrity
-  gates, repeat policy and prohibited interpretations.
-- `docs/evaluation/evidence/`: canonical reports, machine-readable/CSV summaries, comparison
-  reports, input manifests and selected-record audits.
-- `docs/evaluation/stage-3-real-data-traceability-audit.md`: deterministic source-to-WAV and
-  source-to-suppression selections.
-- `docs/evaluation/stage-3-cross-dataset-technical-summary.md`: bounded descriptive comparison.
-- `docs/evaluation/reporting/`: deterministic report-ready tables, SVG figures, value manifest,
-  claim matrix, bounded RQ3 findings and automated/manual audits.
-- `docs/data-model/mot17-adapter.md`: MOT17 format and conversion rules.
-- `docs/data-model/kitti-tracking-adapter.md`: KITTI definitions, conversion and `DontCare` policy.
-- `docs/decisions/0007-mot17-ground-truth-mapping.md`: mapping decision.
-- `docs/decisions/0008-kitti-tracking-mapping-and-schema-v0.2.0.md`: KITTI and schema decision.
-- `docs/decisions/0009-collection-validation-policy.md`: diagnostic and report policy.
-- `docs/decisions/0010-deterministic-output-package.md`: deterministic package format decision.
-- `docs/decisions/0011-versioned-preset-and-cue-schedule.md`: Stage 2 scheduling decision.
-- `docs/decisions/0012-deterministic-wav-rendering.md`: renderer, mixing and PCM policy decision.
-- `docs/decisions/0013-technical-evaluation-contract.md`: Stage 3 metric and interpretation policy.
-- `docs/decisions/0014-real-data-evaluation-evidence.md`: real package reuse, evidence storage and
-  supplemental traceability boundary.
-- `docs/decisions/0015-audited-reporting-evidence.md`: deterministic presentation, formatting and
-  claim-audit policy.
-- `docs/decisions/0016-workbench-session-and-inspection-layer.md`: frozen session contract and
-  evidence boundary.
-- `docs/decisions/0017-local-synchronised-inspection-architecture.md`: local service, single-clock
-  frontend and dependency decision.
-- `docs/development/milestone-2-mot17-vertical-slice.md`: development and validation evidence.
-- `docs/development/milestone-3-kitti-extension.md`: audit, fixture and integration evidence.
-- `docs/development/milestone-2-fixture-licence-resolution.md`: fixture licence decision.
-- `docs/development/stage-1-closeout.md`: real-data package, repeat-run and quality-gate evidence.
-- `docs/development/stage-2-closeout.md`: real event-to-cue-to-WAV hashes, repeat evidence and
-  Stage 3 handover.
-- `docs/development/stage-3-milestone-1.md`: synthetic-oracle results, quality evidence and limits.
-- `docs/development/stage-3-milestone-2-closeout.md`: real-data reports, repeats, quality evidence
-  and RQ3 boundary.
-- `docs/development/stage-3-closeout.md`: all Stage 3 identities, report-ready hashes, audit and
-  quality evidence, bounded RQ3 answer and Stage 4 handover.
-- `docs/development/stage-4-milestone-1-phase-2.md`: inspection implementation, private gates,
-  browser acceptance state and Phase 3 boundary.
-- `docs/project-management/stage-2-checklist.md`: completed Stage 2 implementation and close-out
-  gates.
-- `docs/project-management/stage-3-checklist.md`: completed contract, real-data and report-ready
-  audit gates.
-- `tests/fixtures/mot17/README.md`: fixture selection and reproduction evidence.
-- `tests/fixtures/kitti/README.md`: KITTI fixture provenance, licence and reproduction evidence.
-- `outputs/README.md`: generated-output storage boundary.
+- two selected tracking sequences were evaluated;
+- the common schema was tested against MOT17 and KITTI Tracking rather than all annotation formats;
+- one frozen baseline sonification mapping and renderer were evaluated;
+- no participant study was conducted;
+- cue density and overlap are technical output properties, not measures of intelligibility;
+- bounding-box area is an imperfect apparent-scale input and is not true depth;
+- browser acceptance was engineering inspection, not usability testing; and
+- byte-identical reproduction has only been established in the recorded execution environment.
+
+Participant evaluation, alternative mappings, density-control strategies, additional annotation formats and cross-platform reproducibility remain future work.
+
+## Key Documentation
+
+For deeper technical detail, begin with:
+
+- [`docs/data-model/common-event-schema.md`](docs/data-model/common-event-schema.md)
+- [`docs/data-model/mot17-adapter.md`](docs/data-model/mot17-adapter.md)
+- [`docs/data-model/kitti-tracking-adapter.md`](docs/data-model/kitti-tracking-adapter.md)
+- [`docs/data-model/sonification-preset.md`](docs/data-model/sonification-preset.md)
+- [`docs/data-model/audio-rendering.md`](docs/data-model/audio-rendering.md)
+- [`docs/evaluation/technical-evaluation-contract-v0.1.0.md`](docs/evaluation/technical-evaluation-contract-v0.1.0.md)
+- [`docs/development/stage-1-closeout.md`](docs/development/stage-1-closeout.md)
+- [`docs/development/stage-2-closeout.md`](docs/development/stage-2-closeout.md)
+- [`docs/development/stage-3-closeout.md`](docs/development/stage-3-closeout.md)
+- [`docs/project-management/project-plan.md`](docs/project-management/project-plan.md)
 
 ## Author
 
