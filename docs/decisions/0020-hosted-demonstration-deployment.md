@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted, 21 August 2026.
+Superseded by Decision 0021 on 21 August 2026.
 
 ## Context
 
@@ -41,25 +41,17 @@ A separate bounded hosted-demonstration path will be used.
 
 ## Rationale
 
-This separates deployment convenience from research evidence. The public demonstration can show the
-inspection architecture, cue/suppression behaviour, audio playback and provenance interaction without
-requiring private machine paths, large retained packages or externally obtained dataset media. At the same
-time, the original local command and the retained real-data evidence chain remain unchanged.
+This separated deployment convenience from research evidence, but the resulting public service did not
+represent the retained workbench used for Stage 4 inspection. It exposed a four-event synthetic sequence,
+synthetic images and no Stage 3 metrics. This made the deployment unsuitable as the intended hosted form
+of the completed artefact.
 
-The synthetic chain is built with the production package writer, scheduler, renderer and session validator
-rather than with a second simplified mock implementation. This keeps the demonstration technically close
-to the released workbench while preventing it from being mistaken for an additional evaluated case study.
+The synthetic chain was built with the production package writer, scheduler, renderer and session
+validator, so it remained useful as a development experiment. It is no longer the public deployment path.
 
 ## Consequences
 
-- The public deployment is supplementary demonstration evidence, not the basis of the dissertation
-  findings.
-- MOT17-02-DPM and KITTI Tracking 0000 remain the bounded real technical evaluation cases.
-- No participant, accessibility, usability, navigation, perceptual-effectiveness or safety evidence is
-  introduced by hosting the interface.
-- The local `inspect-session` workflow continues to reject public wildcard binding unless a separate
-  hosted caller opts into the restricted public-bind mode.
-- Deployment can be reproduced from the repository without copying local `.env` values, dataset roots or
-  retained Stage 1-3 package roots to Render.
-- The final public URL can be inserted into the README only after the Render service has been created and
-  verified.
+- The synthetic hosted sequence must not be used as the public artefact demonstration.
+- Decision 0021 replaces the synthetic deployment with a verified external bundle containing the accepted
+  retained MOT17-02-DPM and KITTI Tracking 0000 inspection inputs.
+- The loopback-only default for the local workbench remains unchanged.
