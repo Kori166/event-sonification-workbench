@@ -27,4 +27,5 @@ must be amended or superseded explicitly rather than silently rewritten.
 - [0017: Local synchronised inspection architecture](0017-local-synchronised-inspection-architecture.md)
 - [0018: Cross-dataset retained-session catalogue](0018-cross-dataset-retained-session-catalogue.md)
 - [0019: Boundary cue inspection and evidence semantics](0019-boundary-cue-inspection-and-evidence-semantics.md)
-- [0020: Hosted demonstration deployment boundary](0020-hosted-demonstration-deployment.md)
+- [0020: Hosted demonstration deployment boundary](0020-hosted-demonstration-deployment.md) — superseded
+- [0021: Verified retained hosted workbench](0021-verified-retained-hosted-workbench.md)

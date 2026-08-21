@@ -1,72 +1,169 @@
 import json
-import re
+import zipfile
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
-from event_sonification_workbench.workbench.hosted_demo import build_hosted_demo
-from event_sonification_workbench.workbench.inspection import InspectionError
-from event_sonification_workbench.workbench.server import build_inspection_server
-
-ROOT = Path(__file__).resolve().parents[1]
-_PRIVATE_PATH = re.compile(
-    r"(?:[A-Za-z]:[\\/]|onedrive|users[\\/]|/home/|/tmp/)", re.IGNORECASE
+from event_sonification_workbench.workbench import hosted_bundle as bundle_module
+from event_sonification_workbench.workbench import hosted_demo, hosted_retained
+from event_sonification_workbench.workbench.hosted_bundle import (
+    BUNDLE_MANIFEST,
+    HostedBundleError,
+    acquire_hosted_bundle,
+    build_hosted_bundle,
+    extract_hosted_bundle,
 )
 
 
-def test_hosted_demo_builds_bounded_synthetic_verified_chain(tmp_path: Path) -> None:
-    catalogue = build_hosted_demo(ROOT, tmp_path)
-    summary = catalogue.summary()
-
-    assert summary["catalogue_version"] == "0.1.0"
-    assert len(summary["sessions"]) == 1
-    assert summary["sessions"][0]["dataset"] == "mot17"
-    assert summary["sessions"][0]["sequence"] == "synthetic_hosted_demo"
-    assert summary["sessions"][0]["status"] == "verified"
-    assert summary["sessions"][0]["evaluation_available"] is False
-
-    model = catalogue.model()
-    session = model.session_summary()
-    assert session["counts"] == {
-        "frames": 4,
-        "events": 4,
-        "cues": 2,
-        "suppressions": 2,
-        "rendered_cues": 2,
-    }
-    assert session["evaluation"]["available"] is False
-    assert model.audio_path.is_file()
-    assert model.image_path(0).read_bytes().startswith(b"\x89PNG\r\n\x1a\n")
-
-    first_frame = model.frame(0)
-    assert len(first_frame["events"]) == 1
-    assert first_frame["events"][0]["stage_2_outcome"]["status"] == "represented"
-    assert len(first_frame["cues"]) == 1
-
-    projection = json.dumps(
-        {
-            "catalogue": summary,
-            "session": session,
-            "frame": first_frame,
+def _session(dataset: str, sequence: str, marker: str) -> dict[str, object]:
+    return {
+        "session_id": f"session-{dataset}-{sequence}-{marker * 16}",
+        "dataset": dataset,
+        "sequence": sequence,
+        "event_package": {
+            "run_id": f"run-{dataset}-{sequence}-{marker * 16}",
+            "package_sha256": marker * 64,
         },
-        sort_keys=True,
+        "cue_package": {
+            "run_id": f"cue-{dataset}-{sequence}-{marker * 16}",
+            "package_sha256": marker * 64,
+        },
+        "audio_package": {
+            "run_id": f"audio-{dataset}-{sequence}-{marker * 16}",
+            "package_sha256": marker * 64,
+        },
+        "evaluation": {"available": False},
+        "media": {
+            "relative_path": (
+                "train/MOT17-02-DPM/img1"
+                if dataset == "mot17"
+                else "training/image_02/0000"
+            )
+        },
+    }
+
+
+def _fake_opened(tmp_path: Path, session: dict[str, object]) -> SimpleNamespace:
+    root = tmp_path / "source" / str(session["dataset"])
+    package_directories: dict[str, Path] = {}
+    for component in ("event_package", "cue_package", "audio_package"):
+        directory = root / component
+        directory.mkdir(parents=True, exist_ok=True)
+        (directory / f"{component}.txt").write_text(
+            f"{session['session_id']}:{component}\n",
+            encoding="utf-8",
+        )
+        package_directories[component] = directory
+    media_directory = root / "media"
+    media_directory.mkdir(parents=True, exist_ok=True)
+    extension = ".jpg" if session["dataset"] == "mot17" else ".png"
+    (media_directory / f"000001{extension}").write_bytes(b"fixture-media")
+    return SimpleNamespace(
+        package_directories=package_directories,
+        media_directory=media_directory,
     )
-    assert _PRIVATE_PATH.search(projection) is None
 
 
-def test_public_binding_is_explicit_and_local_default_stays_loopback_only(tmp_path: Path) -> None:
-    catalogue = build_hosted_demo(ROOT, tmp_path)
+def test_hosted_entry_point_has_no_synthetic_fallback(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    assert not hasattr(hosted_demo, "build_hosted_demo")
+    result = hosted_demo.main(["--bundle-sha256", "0" * 64])
+    assert result == 2
+    error = json.loads(capsys.readouterr().err)
+    assert error["status"] == "failed_closed"
+    assert error["error"]["code"] == "hosted_bundle_source_required"
 
-    with pytest.raises(InspectionError, match="inspection_host_not_loopback"):
-        build_inspection_server(catalogue, host="0.0.0.0", port=0)
 
-    server = build_inspection_server(
-        catalogue,
-        host="0.0.0.0",
-        port=0,
-        allow_public_host=True,
+def test_hosted_bundle_is_deterministic_and_contains_two_retained_sessions(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    repository_root = tmp_path / "repository"
+    repository_root.mkdir()
+    catalogue_path = repository_root / "catalogue.json"
+    catalogue_path.write_text('{"catalogue_version":"test"}\n', encoding="utf-8")
+    sessions = [
+        _session("mot17", "mot17-02-dpm", "a"),
+        _session("kitti_tracking", "0000", "b"),
+    ]
+
+    monkeypatch.setattr(
+        bundle_module,
+        "load_session_catalogue",
+        lambda path, repository_root: (str(sessions[0]["session_id"]), sessions),
     )
-    try:
-        assert server.server_address[1] > 0
-    finally:
-        server.server_close()
+    opened = {
+        str(session["session_id"]): _fake_opened(tmp_path, session) for session in sessions
+    }
+    monkeypatch.setattr(
+        bundle_module,
+        "open_workbench_session",
+        lambda session, runtime_roots: opened[str(session["session_id"])],
+    )
+
+    first = build_hosted_bundle(
+        repository_root=repository_root,
+        stage2_evidence_root=tmp_path / "evidence",
+        mot17_root=tmp_path / "mot17",
+        kitti_root=tmp_path / "kitti",
+        output_path=tmp_path / "first.zip",
+        catalogue_path=catalogue_path,
+    )
+    second = build_hosted_bundle(
+        repository_root=repository_root,
+        stage2_evidence_root=tmp_path / "evidence",
+        mot17_root=tmp_path / "mot17",
+        kitti_root=tmp_path / "kitti",
+        output_path=tmp_path / "second.zip",
+        catalogue_path=catalogue_path,
+    )
+
+    assert first["sha256"] == second["sha256"]
+    assert first["session_ids"] == [session["session_id"] for session in sessions]
+    with zipfile.ZipFile(first["path"]) as archive:
+        manifest = json.loads(archive.read(BUNDLE_MANIFEST))
+        names = set(archive.namelist())
+    assert manifest["bundle_version"] == "0.1.0"
+    assert len(manifest["sessions"]) == 2
+    assert {item["dataset"] for item in manifest["sessions"]} == {
+        "mot17",
+        "kitti_tracking",
+    }
+    assert any(name.startswith("stage2-evidence/mot17/run-a/events/") for name in names)
+    assert any(name.startswith("stage2-evidence/kitti/run-a/audio/") for name in names)
+    assert any(name.startswith("media/mot17/train/MOT17-02-DPM/img1/") for name in names)
+    assert any(name.startswith("media/kitti/training/image_02/0000/") for name in names)
+
+
+def test_hosted_bundle_sha256_mismatch_fails_closed(tmp_path: Path) -> None:
+    source = tmp_path / "bundle.zip"
+    source.write_bytes(b"not-the-declared-bundle")
+
+    with pytest.raises(HostedBundleError, match="hosted_bundle_sha256_mismatch"):
+        acquire_hosted_bundle(
+            destination=tmp_path / "copy.zip",
+            expected_sha256="0" * 64,
+            bundle_path=source,
+        )
+    assert not (tmp_path / "copy.zip").exists()
+
+
+def test_hosted_bundle_archive_traversal_is_rejected(tmp_path: Path) -> None:
+    archive_path = tmp_path / "malicious.zip"
+    with zipfile.ZipFile(archive_path, "w") as archive:
+        archive.writestr("../escape.txt", "blocked")
+
+    with pytest.raises(HostedBundleError, match="hosted_bundle_archive_path_invalid"):
+        extract_hosted_bundle(archive_path, tmp_path / "extracted")
+    assert not (tmp_path / "escape.txt").exists()
+
+
+def test_hosted_service_requires_bundle_source_and_hash(capsys: pytest.CaptureFixture[str]) -> None:
+    result = hosted_retained.main(["--bundle-sha256", "0" * 64])
+
+    assert result == 2
+    error = json.loads(capsys.readouterr().err)
+    assert error["status"] == "failed_closed"
+    assert error["error"]["code"] == "hosted_bundle_source_required"
