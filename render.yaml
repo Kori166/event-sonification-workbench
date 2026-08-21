@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: event-sonification-workbench
+    runtime: python
+    plan: free
+    buildCommand: python -m pip install -e .
+    startCommand: python -m event_sonification_workbench.workbench.hosted_demo --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/sessions
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.15
