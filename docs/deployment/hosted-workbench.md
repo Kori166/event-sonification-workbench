@@ -7,6 +7,9 @@ show the MOT17-02-DPM and KITTI Tracking 0000 package chains, retained WAV files
 Stage 3 metrics declared by `configs/workbench/retained-sessions.v0.1.0.json`.
 
 The service does not regenerate research outputs and does not substitute synthetic events or metrics.
+It exists only to make the non-commercial MSc research artefact easier for a marker to inspect. The
+bundle is deliberately limited to MOT17-02-DPM and KITTI Tracking sequence 0000; it is not a replacement
+distribution of either complete dataset.
 
 ## Deployment boundary
 
@@ -17,6 +20,9 @@ HTTPS location.
 The bundle builder validates both retained sessions before copying any files. Render then verifies the
 complete archive SHA-256, validates the bundle manifest against the committed catalogue, and opens both
 sessions through the unchanged Stage 4 validation path before serving HTTP requests.
+
+Every bundle also contains `THIRD_PARTY_DATASET_ATTRIBUTION.txt`. Its fixed UTF-8 bytes and SHA-256 are
+recorded in the bundle manifest, so startup rejects a release in which the notice is absent or modified.
 
 ## 1. Prepare local bindings
 
@@ -32,9 +38,24 @@ The values can be exported into the shell or supplied explicitly to the bundle c
 
 ## 2. Review dataset redistribution conditions
 
-Source frames are not project-generated artefacts. The applicable MOT17 and KITTI licence/terms must be
-reviewed before placing a bundle containing those frames at a public URL. The builder requires an explicit
-acknowledgement flag so this release decision cannot happen accidentally.
+Source frames are not project-generated artefacts. The local research copies were obtained from publicly
+accessible Kaggle mirrors:
+
+- KITTI Tracking: <https://www.kaggle.com/datasets/leducnhuan/kitti-tracking/data>
+- MOT17: <https://www.kaggle.com/datasets/wenhoujinjust/mot-17>
+
+Kaggle is recorded only as the acquisition route. Dataset identity, ownership, attribution and licensing
+remain associated with the original [MOTChallenge](https://motchallenge.net/) and [KITTI Vision Benchmark
+Suite](https://www.cvlibs.net/datasets/kitti/) projects, not the mirror uploaders.
+
+The applicable original-project licence/terms must be reviewed before placing a bundle containing source
+frames at a public URL. The builder requires `--acknowledge-media-redistribution` so this researcher-owned
+release decision cannot happen accidentally. The flag records explicit acknowledgement that the terms were
+reviewed; it is not an automated legal determination that publication or redistribution is permitted.
+
+The embedded notice attributes both original projects, records the bounded sequences and frame counts,
+identifies the project-recorded CC BY-NC-SA 3.0 terms and citations, and explains the non-commercial
+academic inspection scope. No ownership of the original imagery is claimed.
 
 ## 3. Build the deterministic bundle
 
@@ -67,10 +88,13 @@ the two retained session identifiers.
 
 ## 4. Place the bundle at an HTTPS location
 
-Upload the ZIP to a location that Render can download over HTTPS. Do not commit the bundle, dataset frames,
-retained WAV files or machine-specific roots to this repository.
+Upload the ZIP and its `.sha256` companion to a stable location that Render can download over HTTPS. A
+public GitHub Release asset is suitable when it provides a direct download without authentication. Do not
+commit the bundle, dataset frames, retained WAV files or machine-specific roots to this repository.
 
-Preserve the generated SHA-256 separately from the archive URL.
+Before configuring Render, download the public ZIP while logged out, recompute its SHA-256 independently,
+and confirm that it matches the locally verified digest. Preserve that digest separately from the archive
+URL.
 
 ## 5. Configure Render
 
@@ -80,6 +104,9 @@ The service requires:
 WORKBENCH_BUNDLE_URL=<https URL of event-sonification-retained-workbench.zip>
 WORKBENCH_BUNDLE_SHA256=<64-character SHA-256 printed by the builder>
 ```
+
+Clear the Render build cache when replacing an earlier bundle configuration, redeploy `main`, and do not
+record a public workbench URL until both retained sessions have passed the checks below.
 
 The repository `render.yaml` launches:
 
