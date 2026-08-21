@@ -1,4 +1,4 @@
-"""Loopback-only read service for the synchronised inspection interface."""
+"""Read-only service for the synchronised inspection interface."""
 
 from __future__ import annotations
 
@@ -23,6 +23,7 @@ _STATIC_ROUTES = {
     "/assets/app.js": "app.js",
 }
 _LOOPBACK_HOSTS = {"127.0.0.1", "localhost", "::1"}
+_PUBLIC_BIND_HOSTS = {"0.0.0.0", "::"}
 
 
 def _json_bytes(value: Any) -> bytes:
@@ -244,9 +245,12 @@ def build_inspection_server(
     *,
     host: str = "127.0.0.1",
     port: int = 8765,
+    allow_public_host: bool = False,
 ) -> ThreadingHTTPServer:
-    """Build a loopback HTTP server; callers control its lifecycle."""
-    if host not in _LOOPBACK_HOSTS:
+    """Build a read-only HTTP server with loopback binding unless explicitly widened."""
+    if host not in _LOOPBACK_HOSTS and not (
+        allow_public_host and host in _PUBLIC_BIND_HOSTS
+    ):
         raise InspectionError("inspection_host_not_loopback")
     if port < 0 or port > 65535:
         raise InspectionError("inspection_port_invalid")
