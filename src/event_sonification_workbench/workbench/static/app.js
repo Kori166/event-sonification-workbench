@@ -112,9 +112,7 @@ async function renderEvaluation(generation = state.generation) {
     ["Cue density / second", formatNumber(metrics.cue_density.cues_per_second)],
     ["Peak concurrency", formatNumber(metrics.overlap_burden.peak_concurrency, 0)],
     ["Suppression rate", formatPercent(metrics.event_coverage.suppression_rate.value)],
-    ["Fully traceable cues", formatPercent(metrics.traceability.fully_traceable_cue.value)],
-    ["P95 alignment (samples)", formatNumber(metrics.timing_alignment.end_to_end.samples.p95, 0)],
-    ["Byte reproducibility", metrics.reproducibility.byte.equal ? "Identical" : "Mismatch"],
+    ["Fully traceable cues", formatPercent(metrics.traceability.fully_traceable_cue.value)],    
   ];
   grid.innerHTML = cards.map(([label, value]) =>
     `<div class="metric"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join("");

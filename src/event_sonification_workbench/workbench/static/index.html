@@ -56,7 +56,7 @@
           <div class="panel-heading">
             <div>
               <p class="eyebrow">Verified Stage 3 report</p>
-              <h2>Technical metrics</h2>
+              <h2>Technical Metrics</h2>
             </div>
             <span class="evidence-tag" id="evaluationState">Checking</span>
           </div>
@@ -64,7 +64,7 @@
             <div class="skeleton"></div><div class="skeleton"></div>
             <div class="skeleton"></div><div class="skeleton"></div>
           </div>
-          <p class="evidence-note">Displayed directly from the verified report. No metrics are recalculated here.</p>
+          <p class="evidence-note"></p>
         </aside>
       </section>
 
@@ -79,14 +79,14 @@
           <span class="timecode muted" id="duration">00:00.000</span>
           <button id="mute" class="icon-button" type="button" aria-label="Mute">Audio on</button>
         </div>
-        <p class="clock-note"><span></span>Audio <code>currentTime</code> is the sole playback clock · frame n covers n/fps ≤ t &lt; (n+1)/fps</p>
+        
       </section>
 
       <section class="panel timeline-panel">
         <div class="panel-heading timeline-heading">
           <div>
-            <p class="eyebrow">Synchronized evidence window</p>
-            <h2>Events · cues · suppressions</h2>
+            <p class="eyebrow">Synchronised evidence window</p>
+            <h2>Events · Cues · Suppressions</h2>
           </div>
           <span id="windowLabel" class="mono">—</span>
         </div>
@@ -94,10 +94,10 @@
           <div class="lane-labels" aria-hidden="true">
             <span>EVENT</span><span>CUE</span><span>SUPPRESS</span>
           </div>
-          <canvas id="timeline" height="198" aria-label="Synchronized event, cue and suppression timeline"></canvas>
+          <canvas id="timeline" height="198" aria-label="Synchronised event, cue and suppression timeline"></canvas>
         </div>
         <details class="evidence-help">
-          <summary>Timeline lane help</summary>
+          <summary>Timeline Info</summary>
           <p>
             EVENT = Stage 1 normalised annotation · CUE = Stage 2 cue generated from that event ·
             SUPPRESS = Stage 2 event intentionally not sonified. Only CUE markers are selectable.
@@ -112,35 +112,20 @@
           <div class="panel-heading">
             <div>
               <p class="eyebrow">End-to-end provenance</p>
-              <h2>Cue trace inspector</h2>
+              <h2>Cue Trace Inspector</h2>
             </div>
             <span class="evidence-tag neutral" id="traceState">Select a cue</span>
           </div>
           <div id="traceContent" class="trace-empty">
             Choose a cue marker or frame cue to inspect its verified source and rendered sample chain.
-          </div>
-          <section class="mapping-key" aria-label="How this cue is encoded">
-            <div>
-              <p class="eyebrow">How this cue is encoded</p>
-              <dl>
-                <div><dt>Time</dt><dd>when the event occurs</dd></div>
-                <div><dt>Left/right</dt><dd>horizontal object position</dd></div>
-                <div><dt>Pitch</dt><dd>vertical object position</dd></div>
-                <div><dt>Loudness</dt><dd>bounding-box area</dd></div>
-              </dl>
-            </div>
-            <p>
-              Technical baseline mapping; not perceptually validated. Bounding-box area is an
-              imperfect apparent-scale proxy, not true distance or depth.
-            </p>
-          </section>
+          </div>          
         </article>
 
         <aside class="panel session-panel">
           <div class="panel-heading">
             <div>
               <p class="eyebrow">Session contract 0.1.0</p>
-              <h2>Evidence identity</h2>
+              <h2>Session Overview</h2>
             </div>
           </div>
           <dl id="sessionDetails" class="session-details"></dl>
@@ -149,7 +134,7 @@
     </main>
 
     <footer>
-      Read-only inspection infrastructure · no research outputs are generated or modified
+      Read-only inspection. No research outputs are generated or modified.
     </footer>
     <div id="notice" class="notice" role="status" aria-live="polite"></div>
     <script src="/assets/app.js" defer></script>
