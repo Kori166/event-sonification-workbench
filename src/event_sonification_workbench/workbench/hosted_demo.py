@@ -39,7 +39,7 @@ _DECISION_RECORD = "docs/decisions/0020-hosted-demonstration-deployment.md"
 def _load_json(path: Path) -> dict[str, Any]:
     value = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(value, dict):
-        raise ValueError("hosted_demo_fixture_invalid")
+        raise TypeError("hosted_demo_fixture_invalid")
     return value
 
 
@@ -53,7 +53,7 @@ def _demo_events(repository_root: Path) -> list[dict[str, Any]]:
     events = copy.deepcopy(source_events[:4])
     for event in events:
         if not isinstance(event, dict):
-            raise ValueError("hosted_demo_fixture_invalid")
+            raise TypeError("hosted_demo_fixture_invalid")
         event["dataset"] = "mot17"
         event["sequence"] = _SEQUENCE
         event["event_id"] = (
