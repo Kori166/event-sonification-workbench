@@ -1,3 +1,4 @@
+import hashlib
 import json
 import stat
 import zipfile
@@ -9,6 +10,8 @@ import pytest
 from event_sonification_workbench.workbench import hosted_bundle as bundle_module
 from event_sonification_workbench.workbench import hosted_demo, hosted_retained
 from event_sonification_workbench.workbench.hosted_bundle import (
+    ATTRIBUTION_FILE,
+    ATTRIBUTION_TEXT,
     BUNDLE_MANIFEST,
     HostedBundleError,
     acquire_hosted_bundle,
@@ -68,6 +71,41 @@ def _fake_opened(tmp_path: Path, session: dict[str, object]) -> SimpleNamespace:
     )
 
 
+def _minimal_bundle_root(
+    tmp_path: Path,
+    catalogue_path: Path,
+    sessions: list[dict[str, object]],
+) -> Path:
+    bundle_root = tmp_path / "bundle"
+    bundle_root.mkdir()
+    attribution_path = bundle_root / ATTRIBUTION_FILE
+    attribution_path.write_text(ATTRIBUTION_TEXT, encoding="utf-8", newline="\n")
+    manifest = {
+        "bundle_version": "0.1.0",
+        "attribution": {
+            "path": ATTRIBUTION_FILE,
+            "sha256": hashlib.sha256(attribution_path.read_bytes()).hexdigest(),
+        },
+        "catalogue_sha256": bundle_module.sha256_file(catalogue_path),
+        "default_session_id": sessions[0]["session_id"],
+        "sessions": [
+            bundle_module._session_manifest_record(session, 1) for session in sessions
+        ],
+    }
+    (bundle_root / BUNDLE_MANIFEST).write_text(json.dumps(manifest), encoding="utf-8")
+    for session in sessions:
+        dataset_directory = "mot17" if session["dataset"] == "mot17" else "kitti"
+        media = (
+            bundle_root
+            / "media"
+            / dataset_directory
+            / Path(str(session["media"]["relative_path"]))
+        )
+        media.mkdir(parents=True)
+        (media / "frame.bin").write_bytes(b"frame")
+    return bundle_root
+
+
 def test_hosted_entry_point_has_no_synthetic_fallback(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
@@ -83,6 +121,10 @@ def test_hosted_bundle_is_deterministic_and_contains_two_retained_sessions(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    private_marker = r"C:\Users\Researcher\OneDrive\private-data"
+    monkeypatch.setenv("MOT17_ROOT", private_marker)
+    monkeypatch.setenv("KITTI_TRACKING_ROOT", private_marker)
+    monkeypatch.setenv("STAGE2_EVIDENCE_ROOT", private_marker)
     repository_root = tmp_path / "repository"
     repository_root.mkdir()
     catalogue_path = repository_root / "catalogue.json"
@@ -124,11 +166,31 @@ def test_hosted_bundle_is_deterministic_and_contains_two_retained_sessions(
     )
 
     assert first["sha256"] == second["sha256"]
+    assert Path(str(first["path"])).read_bytes() == Path(str(second["path"])).read_bytes()
     assert first["session_ids"] == [session["session_id"] for session in sessions]
     with zipfile.ZipFile(first["path"]) as archive:
         manifest = json.loads(archive.read(BUNDLE_MANIFEST))
+        attribution = archive.read(ATTRIBUTION_FILE)
         names = set(archive.namelist())
+    with zipfile.ZipFile(second["path"]) as archive:
+        second_attribution = archive.read(ATTRIBUTION_FILE)
     assert manifest["bundle_version"] == "0.1.0"
+    assert attribution == ATTRIBUTION_TEXT.encode("utf-8")
+    assert second_attribution == attribution
+    assert manifest["attribution"] == {
+        "path": ATTRIBUTION_FILE,
+        "sha256": hashlib.sha256(attribution).hexdigest(),
+    }
+    attribution_text = attribution.decode("utf-8")
+    assert "MOT17-02-DPM" in attribution_text
+    assert "KITTI Tracking" in attribution_text
+    assert "Sequence included: 0000" in attribution_text
+    assert "MOTChallenge" in attribution_text
+    assert "KITTI Vision Benchmark Suite" in attribution_text
+    assert "Kaggle" in attribution_text
+    assert private_marker not in attribution_text
+    assert ".env" not in attribution_text
+    assert "synthetic_hosted_demo" not in attribution_text
     assert len(manifest["sessions"]) == 2
     assert {item["dataset"] for item in manifest["sessions"]} == {
         "mot17",
@@ -175,6 +237,15 @@ def test_hosted_bundle_archive_symlink_is_rejected(tmp_path: Path) -> None:
         extract_hosted_bundle(archive_path, tmp_path / "extracted")
 
 
+def test_hosted_bundle_missing_attribution_is_rejected(tmp_path: Path) -> None:
+    archive_path = tmp_path / "missing-attribution.zip"
+    with zipfile.ZipFile(archive_path, "w") as archive:
+        archive.writestr(BUNDLE_MANIFEST, "{}")
+
+    with pytest.raises(HostedBundleError, match="hosted_bundle_attribution_unavailable"):
+        extract_hosted_bundle(archive_path, tmp_path / "extracted")
+
+
 def test_invalid_retained_session_is_reported_as_hosted_bundle_failure(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -187,27 +258,7 @@ def test_invalid_retained_session_is_reported_as_hosted_bundle_failure(
         _session("mot17", "mot17-02-dpm", "a"),
         _session("kitti_tracking", "0000", "b"),
     ]
-    manifest = {
-        "bundle_version": "0.1.0",
-        "catalogue_sha256": bundle_module.sha256_file(catalogue_path),
-        "default_session_id": sessions[0]["session_id"],
-        "sessions": [
-            bundle_module._session_manifest_record(session, 1) for session in sessions
-        ],
-    }
-    bundle_root = tmp_path / "bundle"
-    bundle_root.mkdir()
-    (bundle_root / BUNDLE_MANIFEST).write_text(json.dumps(manifest), encoding="utf-8")
-    for session in sessions:
-        dataset_directory = "mot17" if session["dataset"] == "mot17" else "kitti"
-        media = (
-            bundle_root
-            / "media"
-            / dataset_directory
-            / Path(str(session["media"]["relative_path"]))
-        )
-        media.mkdir(parents=True)
-        (media / "frame.bin").write_bytes(b"frame")
+    bundle_root = _minimal_bundle_root(tmp_path, catalogue_path, sessions)
 
     monkeypatch.setattr(
         bundle_module,
@@ -223,6 +274,38 @@ def test_invalid_retained_session_is_reported_as_hosted_bundle_failure(
     )
 
     with pytest.raises(HostedBundleError, match="hosted_bundle_retained_session_invalid"):
+        load_hosted_catalogue(
+            repository_root=repository_root,
+            bundle_root=bundle_root,
+            catalogue_path=catalogue_path,
+        )
+
+
+def test_modified_attribution_is_rejected(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    repository_root = tmp_path / "repository"
+    repository_root.mkdir()
+    catalogue_path = repository_root / "catalogue.json"
+    catalogue_path.write_text('{"catalogue_version":"test"}\n', encoding="utf-8")
+    sessions = [
+        _session("mot17", "mot17-02-dpm", "a"),
+        _session("kitti_tracking", "0000", "b"),
+    ]
+    bundle_root = _minimal_bundle_root(tmp_path, catalogue_path, sessions)
+    (bundle_root / ATTRIBUTION_FILE).write_text(
+        ATTRIBUTION_TEXT + "modified\n",
+        encoding="utf-8",
+        newline="\n",
+    )
+    monkeypatch.setattr(
+        bundle_module,
+        "load_session_catalogue",
+        lambda path, repository_root: (str(sessions[0]["session_id"]), sessions),
+    )
+
+    with pytest.raises(HostedBundleError, match="hosted_bundle_attribution_hash_mismatch"):
         load_hosted_catalogue(
             repository_root=repository_root,
             bundle_root=bundle_root,
