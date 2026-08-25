@@ -16,8 +16,8 @@ from typing import Any
 
 from ..provenance import sha256_file
 from .catalogue import InspectionCatalogue, load_session_catalogue
-from .inspection import InspectionModel
-from .session import open_workbench_session
+from .inspection import InspectionError, InspectionModel
+from .session import WorkbenchSessionError, open_workbench_session
 
 BUNDLE_VERSION = "0.1.0"
 BUNDLE_MANIFEST = "workbench-hosted-bundle.json"
@@ -36,6 +36,10 @@ _DATASET_DIRECTORIES = {
 _MEDIA_ENVIRONMENTS = {
     "mot17": "MOT17_ROOT",
     "kitti_tracking": "KITTI_TRACKING_ROOT",
+}
+_EXPECTED_RETAINED_CASES = {
+    ("mot17", "mot17-02-dpm"),
+    ("kitti_tracking", "0000"),
 }
 
 
@@ -143,6 +147,36 @@ def _session_manifest_record(session: Mapping[str, Any], media_file_count: int) 
     }
 
 
+def _validate_retained_catalogue(sessions: list[dict[str, Any]]) -> None:
+    cases = {(session.get("dataset"), session.get("sequence")) for session in sessions}
+    evaluations = [session.get("evaluation") for session in sessions]
+    if (
+        len(sessions) != len(_EXPECTED_RETAINED_CASES)
+        or cases != _EXPECTED_RETAINED_CASES
+        or any(
+            not isinstance(evaluation, Mapping) or evaluation.get("available") is not True
+            for evaluation in evaluations
+        )
+    ):
+        raise HostedBundleError("hosted_bundle_retained_catalogue_unexpected")
+
+
+def _load_retained_catalogue(
+    catalogue_path: Path,
+    *,
+    repository_root: Path,
+) -> tuple[str, list[dict[str, Any]]]:
+    try:
+        default_session_id, sessions = load_session_catalogue(
+            catalogue_path,
+            repository_root=repository_root,
+        )
+    except InspectionError as exc:
+        raise HostedBundleError("hosted_bundle_retained_catalogue_unexpected") from exc
+    _validate_retained_catalogue(sessions)
+    return default_session_id, sessions
+
+
 def _deterministic_zip(source_root: Path, output_path: Path) -> None:
     output_path.parent.mkdir(parents=True, exist_ok=True)
     files = sorted(
@@ -186,15 +220,10 @@ def build_hosted_bundle(
         else repository_root / catalogue_path
     ).resolve()
 
-    default_session_id, sessions = load_session_catalogue(
+    default_session_id, sessions = _load_retained_catalogue(
         catalogue_path,
         repository_root=repository_root,
     )
-    if len(sessions) != 2 or {session["dataset"] for session in sessions} != {
-        "mot17",
-        "kitti_tracking",
-    }:
-        raise HostedBundleError("hosted_bundle_retained_catalogue_unexpected")
 
     output_path = output_path.resolve()
     with tempfile.TemporaryDirectory(prefix="event-sonification-hosted-bundle-") as temporary:
@@ -444,15 +473,10 @@ def load_hosted_catalogue(
         if catalogue_path.is_absolute()
         else repository_root / catalogue_path
     ).resolve()
-    default_session_id, sessions = load_session_catalogue(
+    default_session_id, sessions = _load_retained_catalogue(
         catalogue_path,
         repository_root=repository_root,
     )
-    if len(sessions) != 2 or {session["dataset"] for session in sessions} != {
-        "mot17",
-        "kitti_tracking",
-    }:
-        raise HostedBundleError("hosted_bundle_retained_catalogue_unexpected")
     manifest = _json_object(bundle_root / BUNDLE_MANIFEST)
     _validate_manifest(
         manifest,
@@ -464,11 +488,17 @@ def load_hosted_catalogue(
     )
 
     models = []
-    for session in sessions:
-        runtime_roots = _runtime_roots_for_bundle(
-            session,
-            repository_root=repository_root,
-            bundle_root=bundle_root,
-        )
-        models.append(InspectionModel(open_workbench_session(session, runtime_roots)))
-    return InspectionCatalogue(models, default_session_id=default_session_id)
+    try:
+        for session in sessions:
+            runtime_roots = _runtime_roots_for_bundle(
+                session,
+                repository_root=repository_root,
+                bundle_root=bundle_root,
+            )
+            models.append(InspectionModel(open_workbench_session(session, runtime_roots)))
+    except (InspectionError, WorkbenchSessionError) as exc:
+        raise HostedBundleError("hosted_bundle_retained_session_invalid") from exc
+    try:
+        return InspectionCatalogue(models, default_session_id=default_session_id)
+    except InspectionError as exc:
+        raise HostedBundleError("hosted_bundle_retained_session_invalid") from exc

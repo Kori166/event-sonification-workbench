@@ -1,4 +1,5 @@
 import json
+import stat
 import zipfile
 from pathlib import Path
 from types import SimpleNamespace
@@ -13,7 +14,9 @@ from event_sonification_workbench.workbench.hosted_bundle import (
     acquire_hosted_bundle,
     build_hosted_bundle,
     extract_hosted_bundle,
+    load_hosted_catalogue,
 )
+from event_sonification_workbench.workbench.session import WorkbenchSessionError
 
 
 def _session(dataset: str, sequence: str, marker: str) -> dict[str, object]:
@@ -33,7 +36,7 @@ def _session(dataset: str, sequence: str, marker: str) -> dict[str, object]:
             "run_id": f"audio-{dataset}-{sequence}-{marker * 16}",
             "package_sha256": marker * 64,
         },
-        "evaluation": {"available": False},
+        "evaluation": {"available": True, "report_sha256": marker * 64},
         "media": {
             "relative_path": (
                 "train/MOT17-02-DPM/img1"
@@ -158,6 +161,99 @@ def test_hosted_bundle_archive_traversal_is_rejected(tmp_path: Path) -> None:
     with pytest.raises(HostedBundleError, match="hosted_bundle_archive_path_invalid"):
         extract_hosted_bundle(archive_path, tmp_path / "extracted")
     assert not (tmp_path / "escape.txt").exists()
+
+
+def test_hosted_bundle_archive_symlink_is_rejected(tmp_path: Path) -> None:
+    archive_path = tmp_path / "malicious.zip"
+    link = zipfile.ZipInfo("linked-entry")
+    link.create_system = 3
+    link.external_attr = (stat.S_IFLNK | 0o777) << 16
+    with zipfile.ZipFile(archive_path, "w") as archive:
+        archive.writestr(link, "target")
+
+    with pytest.raises(HostedBundleError, match="hosted_bundle_archive_symlink_rejected"):
+        extract_hosted_bundle(archive_path, tmp_path / "extracted")
+
+
+def test_invalid_retained_session_is_reported_as_hosted_bundle_failure(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    repository_root = tmp_path / "repository"
+    repository_root.mkdir()
+    catalogue_path = repository_root / "catalogue.json"
+    catalogue_path.write_text('{"catalogue_version":"test"}\n', encoding="utf-8")
+    sessions = [
+        _session("mot17", "mot17-02-dpm", "a"),
+        _session("kitti_tracking", "0000", "b"),
+    ]
+    manifest = {
+        "bundle_version": "0.1.0",
+        "catalogue_sha256": bundle_module.sha256_file(catalogue_path),
+        "default_session_id": sessions[0]["session_id"],
+        "sessions": [
+            bundle_module._session_manifest_record(session, 1) for session in sessions
+        ],
+    }
+    bundle_root = tmp_path / "bundle"
+    bundle_root.mkdir()
+    (bundle_root / BUNDLE_MANIFEST).write_text(json.dumps(manifest), encoding="utf-8")
+    for session in sessions:
+        dataset_directory = "mot17" if session["dataset"] == "mot17" else "kitti"
+        media = (
+            bundle_root
+            / "media"
+            / dataset_directory
+            / Path(str(session["media"]["relative_path"]))
+        )
+        media.mkdir(parents=True)
+        (media / "frame.bin").write_bytes(b"frame")
+
+    monkeypatch.setattr(
+        bundle_module,
+        "load_session_catalogue",
+        lambda path, repository_root: (str(sessions[0]["session_id"]), sessions),
+    )
+    monkeypatch.setattr(
+        bundle_module,
+        "open_workbench_session",
+        lambda session, runtime_roots: (_ for _ in ()).throw(
+            WorkbenchSessionError("workbench_session_invalid")
+        ),
+    )
+
+    with pytest.raises(HostedBundleError, match="hosted_bundle_retained_session_invalid"):
+        load_hosted_catalogue(
+            repository_root=repository_root,
+            bundle_root=bundle_root,
+            catalogue_path=catalogue_path,
+        )
+
+
+def test_unexpected_synthetic_session_declaration_is_rejected(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    repository_root = tmp_path / "repository"
+    repository_root.mkdir()
+    catalogue_path = repository_root / "catalogue.json"
+    catalogue_path.write_text('{"catalogue_version":"test"}\n', encoding="utf-8")
+    sessions = [
+        _session("mot17", "synthetic_hosted_demo", "a"),
+        _session("kitti_tracking", "0000", "b"),
+    ]
+    monkeypatch.setattr(
+        bundle_module,
+        "load_session_catalogue",
+        lambda path, repository_root: (str(sessions[0]["session_id"]), sessions),
+    )
+
+    with pytest.raises(HostedBundleError, match="hosted_bundle_retained_catalogue_unexpected"):
+        load_hosted_catalogue(
+            repository_root=repository_root,
+            bundle_root=tmp_path / "bundle",
+            catalogue_path=catalogue_path,
+        )
 
 
 def test_hosted_service_requires_bundle_source_and_hash(capsys: pytest.CaptureFixture[str]) -> None:
