@@ -12,7 +12,7 @@ The workbench is research infrastructure. It is **not** a validated accessibilit
 
 ### Hosted demonstration
 
-[**Open Live Workbench →**](https://REPLACE-ME.onrender.com)
+[**Open Live Workbench →**](https://event-sonification-workbench.onrender.com)
 
 > **Render deployment placeholder.** The public deployment has not yet been created. Replace this URL with the final Render address once the hosted demonstration is available.
 
