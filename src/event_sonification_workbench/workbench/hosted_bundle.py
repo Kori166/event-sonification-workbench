@@ -21,6 +21,65 @@ from .session import WorkbenchSessionError, open_workbench_session
 
 BUNDLE_VERSION = "0.1.0"
 BUNDLE_MANIFEST = "workbench-hosted-bundle.json"
+ATTRIBUTION_FILE = "THIRD_PARTY_DATASET_ATTRIBUTION.txt"
+ATTRIBUTION_TEXT = """Third-party dataset attribution
+
+Purpose and scope
+=================
+
+This release package supports inspection of "A Reproducible Workbench for Event-Based
+Sonification of Annotated Video Datasets", a non-commercial MSc research artefact. Source images
+are supporting media for the inspection interface. The package is not presented as a replacement
+distribution of either complete dataset, and no ownership of the original dataset imagery is
+claimed.
+
+MOT17 / MOTChallenge
+====================
+
+Dataset: MOT17
+Sequence included: MOT17-02-DPM
+Frames included: 600
+Original project: MOTChallenge
+Original project URL: https://motchallenge.net/
+Licence identified by the original project: Creative Commons Attribution-NonCommercial-ShareAlike
+3.0 (CC BY-NC-SA 3.0)
+Licence URL: https://creativecommons.org/licenses/by-nc-sa/3.0/
+Citation used by this project: Milan et al., "MOT16: A Benchmark for Multi-Object Tracking"
+(2016). https://arxiv.org/abs/1603.00831
+
+The imagery remains third-party material and is included solely for non-commercial academic
+demonstration of the MSc artefact. The complete MOT17 dataset is not included.
+
+KITTI Vision Benchmark Suite
+============================
+
+Dataset: KITTI Tracking
+Sequence included: 0000
+Frames included: 154
+Original project: KITTI Vision Benchmark Suite
+Original project URL: https://www.cvlibs.net/datasets/kitti/
+Licence identified by the original project: Creative Commons Attribution-NonCommercial-ShareAlike
+3.0 Unported (CC BY-NC-SA 3.0)
+Licence URL: https://creativecommons.org/licenses/by-nc-sa/3.0/
+Relevant citation: Andreas Geiger, Philip Lenz and Raquel Urtasun. "Are we ready for Autonomous
+Driving? The KITTI Vision Benchmark Suite." CVPR 2012.
+
+The imagery remains third-party material and is included solely for non-commercial academic
+demonstration of the MSc artefact. The complete KITTI dataset is not included.
+
+Acquisition note
+================
+
+The local research copies used for development were obtained from publicly accessible Kaggle
+mirrors:
+
+- KITTI Tracking: https://www.kaggle.com/datasets/leducnhuan/kitti-tracking/data
+- MOT17: https://www.kaggle.com/datasets/wenhoujinjust/mot-17
+
+Dataset ownership, attribution and licensing remain associated with the original MOTChallenge and
+KITTI projects rather than the mirror uploaders. This notice records attribution and release scope;
+it is not an automated legal determination about publication or redistribution.
+"""
 DEFAULT_CATALOGUE = Path("configs/workbench/retained-sessions.v0.1.0.json")
 MAX_DOWNLOAD_BYTES = 2_000_000_000
 MAX_EXTRACTED_BYTES = 3_000_000_000
@@ -147,6 +206,14 @@ def _session_manifest_record(session: Mapping[str, Any], media_file_count: int) 
     }
 
 
+def _attribution_sha256() -> str:
+    return hashlib.sha256(ATTRIBUTION_TEXT.encode("utf-8")).hexdigest()
+
+
+def _attribution_manifest_record() -> dict[str, str]:
+    return {"path": ATTRIBUTION_FILE, "sha256": _attribution_sha256()}
+
+
 def _validate_retained_catalogue(sessions: list[dict[str, Any]]) -> None:
     cases = {(session.get("dataset"), session.get("sequence")) for session in sessions}
     evaluations = [session.get("evaluation") for session in sessions]
@@ -229,6 +296,11 @@ def build_hosted_bundle(
     with tempfile.TemporaryDirectory(prefix="event-sonification-hosted-bundle-") as temporary:
         staging = Path(temporary) / "bundle"
         staging.mkdir()
+        (staging / ATTRIBUTION_FILE).write_text(
+            ATTRIBUTION_TEXT,
+            encoding="utf-8",
+            newline="\n",
+        )
         session_records: list[dict[str, Any]] = []
 
         for session in sessions:
@@ -261,6 +333,7 @@ def build_hosted_bundle(
 
         manifest = {
             "bundle_version": BUNDLE_VERSION,
+            "attribution": _attribution_manifest_record(),
             "catalogue_sha256": sha256_file(catalogue_path),
             "default_session_id": default_session_id,
             "sessions": session_records,
@@ -393,6 +466,9 @@ def extract_hosted_bundle(archive_path: Path, destination: Path) -> Path:
 
     if not (destination / BUNDLE_MANIFEST).is_file():
         raise HostedBundleError("hosted_bundle_manifest_unavailable")
+    attribution_path = destination / ATTRIBUTION_FILE
+    if attribution_path.is_symlink() or not attribution_path.is_file():
+        raise HostedBundleError("hosted_bundle_attribution_unavailable")
     return destination
 
 
@@ -407,6 +483,14 @@ def _validate_manifest(
 ) -> None:
     if manifest.get("bundle_version") != BUNDLE_VERSION:
         raise HostedBundleError("hosted_bundle_version_invalid")
+    attribution = manifest.get("attribution")
+    if attribution != _attribution_manifest_record():
+        raise HostedBundleError("hosted_bundle_attribution_manifest_invalid")
+    attribution_path = bundle_root / ATTRIBUTION_FILE
+    if attribution_path.is_symlink() or not attribution_path.is_file():
+        raise HostedBundleError("hosted_bundle_attribution_unavailable")
+    if sha256_file(attribution_path) != attribution["sha256"]:
+        raise HostedBundleError("hosted_bundle_attribution_hash_mismatch")
     if manifest.get("catalogue_sha256") != sha256_file(catalogue_path):
         raise HostedBundleError("hosted_bundle_catalogue_mismatch")
     if manifest.get("default_session_id") != default_session_id:
