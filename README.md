@@ -10,13 +10,16 @@ The workbench is research infrastructure. It is **not** a validated accessibilit
 
 ## Try the Workbench
 
-### Hosted demonstration
+### Hosted workbench
 
-[**Open Live Workbench →**](https://event-sonification-workbench.onrender.com)
+[**Open Live Workbench →**](https://event-sonification-workbench.onrender.com/)
 
-> **Render deployment placeholder.** The public deployment has not yet been created. Replace this URL with the final Render address once the hosted demonstration is available.
+The hosted read-only workbench provides one-click inspection of the two retained technical evaluation cases:
 
-The hosted version is intended to provide a one-click, read-only demonstration of the inspection interface using a bounded deployment package. It will not replace the retained research evidence used for the dissertation findings.
+- **MOT17-02-DPM**
+- **KITTI Tracking sequence 0000**
+
+The deployment uses the verified retained evidence and bounded deployment package produced for the project. It provides convenient inspection of the research artefact and does not constitute additional usability, accessibility or perceptual evaluation.
 
 ### Full local workbench
 
