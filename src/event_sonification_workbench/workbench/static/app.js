@@ -715,7 +715,7 @@ function renderTrace(trace) {
     traceNode("Configuration", [
       ["Preset", `${trace.configuration.preset.name} ${trace.configuration.preset.version}`],
       ["Renderer", `${trace.configuration.renderer.name} ${trace.configuration.renderer.version}`],
-      ["Class modifier", "Recorded for traceability; not applied to waveform"],
+      ["Class modifier", "Recorded for traceability. Not applied to waveform."],
     ]),
 
     traceNode("Render", [
