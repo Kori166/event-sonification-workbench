@@ -8,13 +8,12 @@
   </head>
   <body>
     <header class="topbar">
-      <div>
-        <p class="eyebrow">Stage 4 · verified evidence inspection</p>
+      <div>        
         <h1>Event Sonification Workbench</h1>
       </div>
       <div class="topbar-actions">
         <label class="session-picker" for="sessionSelect">
-          <span>Retained session</span>
+          <span>Session Dataset</span>
           <select id="sessionSelect" disabled>
             <option>Opening catalogue…</option>
           </select>
@@ -31,11 +30,11 @@
         <article class="panel viewer-panel">
           <div class="panel-heading">
             <div>
-              <p class="eyebrow">Source sequence</p>
+              <p class="eyebrow">Session Dataset</p>
               <h2 id="sequenceTitle">Loading…</h2>
             </div>
             <div class="frame-readout">
-              <span id="frameKind">Playback frame</span>
+              <span id="frameKind">Playback Frame</span>
               <strong id="frameNumber">—</strong>
               <span id="frameTime">—</span>
             </div>
@@ -46,16 +45,15 @@
             <div class="viewer-loading" id="viewerLoading">Loading source frame</div>
           </div>
           <div class="legend" aria-label="Overlay legend">
-            <span><i class="legend-mark represented"></i>Cue generated</span>
-            <span><i class="legend-mark suppressed"></i>Intentionally suppressed</span>
+            <span><i class="legend-mark represented"></i>Cue Generated</span>
+            <span><i class="legend-mark suppressed"></i>Intentionally Suppressed</span>
           </div>
           <p class="integrity-warning" id="integrityWarning" role="alert" hidden></p>
         </article>
 
         <aside class="panel metrics-panel">
           <div class="panel-heading">
-            <div>
-              <p class="eyebrow">Verified Stage 3 report</p>
+            <div>              
               <h2>Technical Metrics</h2>
             </div>
             <span class="evidence-tag" id="evaluationState">Checking</span>
@@ -77,7 +75,7 @@
           <span class="timecode" id="currentTime">00:00.000</span>
           <input id="seek" type="range" min="0" max="1" step="0.001" value="0" aria-label="Seek audio">
           <span class="timecode muted" id="duration">00:00.000</span>
-          <button id="mute" class="icon-button" type="button" aria-label="Mute">Audio on</button>
+          <button id="mute" class="icon-button" type="button" aria-label="Mute">Audio On</button>
         </div>
         
       </section>
@@ -97,11 +95,10 @@
           <canvas id="timeline" height="198" aria-label="Synchronised event, cue and suppression timeline"></canvas>
         </div>
         <details class="evidence-help">
-          <summary>Timeline lane help</summary>
-          <p>
-            EVENT = Stage 1 normalised annotation · CUE = Stage 2 cue generated from that event ·
-            SUPPRESS = Stage 2 event intentionally not sonified. Only CUE markers are selectable.
-          </p>
+          <summary>Timeline Info</summary>
+          <p> EVENT = Stage 1 - normalised annotation </p>
+          <p> CUE = Stage 2 - cue generated from that event </p>
+          <p> SUPPRESS = Stage 2 - event intentionally not sonified. Only CUE markers are selectable </p>
         </details>
         <p class="nearby-label">Cues at selected/current frame <span id="frameCueSummary">—</span></p>
         <div class="nearby-cues" id="frameCues" aria-label="All cues at the displayed source frame" aria-live="polite"></div>
@@ -117,15 +114,8 @@
             <span class="evidence-tag neutral" id="traceState">Select a cue</span>
           </div>
           <div id="traceContent" class="trace-empty">
-            Choose a cue marker or frame cue to inspect its verified source and rendered sample chain.
-          </div>
-          <details class="evidence-help">
-            <summary>How this cue is encoded</summary>
-            <p>
-              Technical baseline mapping; not perceptually validated. Bounding-box area is an apparent-scale
-              input, not true distance or depth.
-            </p>
-          </details>
+            Choose a cue marker or frame cue to inspect its verified source and rendered sample.
+          </div>          
         </article>
 
         <aside class="panel session-panel">
