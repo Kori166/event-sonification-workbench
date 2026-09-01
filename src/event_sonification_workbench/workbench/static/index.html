@@ -18,10 +18,6 @@
             <option>Opening catalogue…</option>
           </select>
         </label>
-        <div class="session-state" aria-live="polite">
-          <span class="status-dot"></span>
-          <span id="verificationState">Opening verified session…</span>
-        </div>
       </div>
     </header>
 
@@ -53,16 +49,12 @@
 
         <aside class="panel metrics-panel">
           <div class="panel-heading">
-            <div>              
-              <h2>Technical Metrics</h2>
-            </div>
-            <span class="evidence-tag" id="evaluationState">Checking</span>
+            <div><h2>Technical Metrics</h2></div>
           </div>
           <div class="metric-grid" id="metricGrid">
             <div class="skeleton"></div><div class="skeleton"></div>
             <div class="skeleton"></div><div class="skeleton"></div>
           </div>
-          <p class="evidence-note"></p>
         </aside>
       </section>
 
@@ -83,7 +75,7 @@
       <section class="panel timeline-panel">
         <div class="panel-heading timeline-heading">
           <div>
-            <p class="eyebrow">Synchronised evidence window</p>
+            <p class="eyebrow">Synchronised Evidence Window</p>
             <h2>Events · Cues · Suppressions</h2>
           </div>
           <span id="windowLabel" class="mono">—</span>
@@ -96,11 +88,11 @@
         </div>
         <details class="evidence-help">
           <summary>Timeline Info</summary>
-          <p> EVENT = Stage 1 - normalised annotation </p>
-          <p> CUE = Stage 2 - cue generated from that event </p>
-          <p> SUPPRESS = Stage 2 - event intentionally not sonified. Only CUE markers are selectable </p>
+          <p> EVENT = Stage 1 - Normalised annotation. </p>
+          <p> CUE = Stage 2 - Cue generated from that event. </p>
+          <p> SUPPRESS = Stage 2 - Event intentionally not sonified. Only CUE markers can be selected. </p>
         </details>
-        <p class="nearby-label">Cues at selected/current frame <span id="frameCueSummary">—</span></p>
+        <p class="nearby-label">Cues At Selected / Current Frame <span id="frameCueSummary">—</span></p>
         <div class="nearby-cues" id="frameCues" aria-label="All cues at the displayed source frame" aria-live="polite"></div>
       </section>
 
@@ -108,20 +100,20 @@
         <article class="panel trace-panel">
           <div class="panel-heading">
             <div>
-              <p class="eyebrow">End-to-end provenance</p>
+              <p class="eyebrow">End-To-End Provenance</p>
               <h2>Cue Trace Inspector</h2>
             </div>
-            <span class="evidence-tag neutral" id="traceState">Select a cue</span>
+            <span class="evidence-tag neutral" id="traceState">Select A Cue</span>
           </div>
           <div id="traceContent" class="trace-empty">
-            Choose a cue marker or frame cue to inspect its verified source and rendered sample.
+            Choose a cue marker or frame cue to inspect its retained source and rendered sample.
           </div>          
         </article>
 
         <aside class="panel session-panel">
           <div class="panel-heading">
             <div>
-              <p class="eyebrow">Session contract 0.1.0</p>
+              <p class="eyebrow">Session Contract 0.1.0</p>
               <h2>Session Overview</h2>
             </div>
           </div>
