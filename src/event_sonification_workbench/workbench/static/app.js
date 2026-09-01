@@ -359,7 +359,7 @@ function renderOverlay(frame) {
 function setFrameContext(context) {
   if (context === state.frameContext) return;
   state.frameContext = context;
-  $("#frameKind").textContent = context === "cue" ? "Cue Source Frame" : "Playback Frame";
+  $("#frameKind").textContent = context === "cue" ? "Current Frame" : "Playback Frame";
 }
 
 async function loadFrame(frameNumber, context = "playback") {
