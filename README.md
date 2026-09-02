@@ -8,7 +8,7 @@ This repository contains the MSc Data Science project:
 
 The workbench is research infrastructure. It is **not** a validated accessibility, navigation, usability or assistive system.
 
-## Try the Workbench
+## Try The Workbench
 
 ### Hosted Workbench
 
