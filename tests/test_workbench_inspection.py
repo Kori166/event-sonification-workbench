@@ -323,6 +323,26 @@ def test_indexed_model_projects_frame_timeline_trace_and_report(
     }
     assert trace["render"]["start_sample"] == 0
     assert trace["render"]["end_sample_exclusive"] == 2000
+
+    suppression_trace = model.suppression_trace(
+        timeline["suppressions"][0]["source_event_id"]
+    )
+    assert suppression_trace["suppression"]["suppression_code"] == "class_excluded"
+    assert suppression_trace["suppression"]["reason"] == "The event class is excluded."
+    assert suppression_trace["event"]["event_id"] == timeline["suppressions"][0][
+        "source_event_id"
+    ]
+    assert suppression_trace["source_annotation"] == {
+        "logical_path": "MOT17/train/SYNTHETIC/gt/gt.txt",
+        "row": 2,
+        "sha256": "a" * 64,
+    }
+    assert suppression_trace["configuration"]["preset"] == {
+        "name": "baseline",
+        "version": "0.1.0",
+        "sha256": "c" * 64,
+    }
+    assert "render" not in suppression_trace
     assert model.evaluation()["metrics"] == inspection_fixture.report["metrics"]
 
 
@@ -443,6 +463,17 @@ def test_unresolved_event_outcome_remains_detectable_as_integrity_evidence(
     assert unresolved["stage_2_outcome"] == {"status": "unresolved"}
 
 
+def test_broken_suppression_provenance_is_rejected(
+    inspection_fixture: SimpleNamespace,
+) -> None:
+    model = inspection_fixture.model
+    event_id = model.timeline(0.0, 1.0)["suppressions"][0]["source_event_id"]
+    model._events_by_id.pop(event_id)
+
+    with pytest.raises(InspectionError, match="suppression_trace_incomplete"):
+        model.suppression_trace(event_id)
+
+
 def test_boundary_cues_resolve_complete_retained_traces(
     inspection_fixture: SimpleNamespace,
 ) -> None:
@@ -467,6 +498,8 @@ def test_model_rejects_unbounded_queries_and_handles_unavailable_evaluation(
         inspection_fixture.model.timeline(2.0, 2.5)
     with pytest.raises(InspectionError, match="cue_not_found"):
         inspection_fixture.model.trace("cue:missing")
+    with pytest.raises(InspectionError, match="suppression_not_found"):
+        inspection_fixture.model.suppression_trace("event:missing")
 
     opened = replace(
         inspection_fixture.opened,
@@ -547,6 +580,17 @@ def test_read_only_service_serves_path_free_json_media_and_exact_wav(
     assert [cue["cue_id"] for cue in frame["cues"]] == [
         inspection_fixture.cues[0]["cue_id"]
     ]
+
+    suppressed_event_id = inspection_fixture.model.timeline(0.0, 1.0)[
+        "suppressions"
+    ][0]["source_event_id"]
+    with urllib.request.urlopen(
+        f"{inspection_url}/api/trace?suppression_event_id={suppressed_event_id}"
+    ) as response:
+        suppression_trace = json.load(response)
+    assert suppression_trace["suppression"]["reason"] == "The event class is excluded."
+    assert suppression_trace["event"]["event_id"] == suppressed_event_id
+    assert "render" not in suppression_trace
 
     with urllib.request.urlopen(f"{inspection_url}/api/audio") as response:
         served_audio = response.read()
@@ -652,13 +696,14 @@ def test_frontend_scopes_requests_and_resets_cross_session_state(
         script = response.read().decode()
 
     assert 'url.searchParams.set("session_id", sessionId)' in script
-    assert "state.generation += 1" in script
+    assert "state.generation++" in script
     assert "state.frame = null" in script
     assert "state.timeline = null" in script
-    assert "state.selectedCue = null" in script
+    assert "state.selectedOutcomeType = null" in script
+    assert "state.selectedOutcomeId = null" in script
     assert 'audio.removeAttribute("src")' in script
     assert 'image.removeAttribute("src")' in script
-    assert 'document.querySelector("#sessionDetails").replaceChildren()' in script
+    assert '$("#sessionDetails").replaceChildren()' in script
 
 
 def test_frontend_freezes_boundary_cue_and_frame_inspection_contracts(
@@ -670,37 +715,34 @@ def test_frontend_freezes_boundary_cue_and_frame_inspection_contracts(
         page = response.read().decode()
 
     assert "function cachedTimelineCovers" in script
-    assert "state.timelinePendingKey !== null" in script
+    assert "state.timelinePending" in script
     assert "requestId !== state.timelineRequest" in script
-    assert "audio.currentTime = trace.cue.start_time_seconds" in script
-    assert 'loadFrame(trace.event.frame, "cue")' in script
-    assert "Math.floor(boundedTime * frameRate)" in script
-    assert "function cueAtCanvasPoint" in script
-    assert "CUE_HIT_RADIUS_PX" in script
+    assert "audio.currentTime = timestamp" in script
+    assert 'loadFrame(trace.event.frame, "outcome")' in script
+    assert "Math.floor(Math.max(0, timestamp) * frameRate)" in script
+    assert "function outcomeAtCanvasPoint" in script
+    assert "OUTCOME_HIT_RADIUS_PX = 7" in script
     assert "state.timeline.cues.reduce" not in script
     assert "drawFrameBoundaries" in script
-    assert "Cues at selected/current frame" in page
+    assert "Cues At Selected / Current Frame" in page
     assert 'id="frameCueSummary"' in page
     assert 'id="frameCues"' in page
     assert '<details class="evidence-help">' in page
-    assert "<summary>Timeline lane help</summary>" in page
-    assert 'class="evidence-key"' not in page
-    assert "Stage 1 event box" not in page
-    assert "Only CUE markers are selectable" in page
-    assert "How this cue is encoded" in page
-    assert "Technical baseline mapping; not perceptually validated." in page
-    assert "not true distance or depth" in page
-    assert "Recorded for traceability; not applied to waveform" in script
+    assert "<summary>Timeline Info</summary>" in page
+    assert "CUE and SUPPRESS markers can be selected" in page
+    assert "Recorded for traceability. Not applied to waveform." in script
 
 
-def test_frontend_uses_bounded_playback_work_and_stable_cue_controls(
+def test_frontend_uses_bounded_playback_work_and_stable_outcome_controls(
     inspection_url: str,
 ) -> None:
     with urllib.request.urlopen(f"{inspection_url}/assets/app.js") as response:
         script = response.read().decode()
 
     tick = script[script.index("function tick()") : script.index("playPause.addEventListener")]
-    trace = script[script.index("function renderTrace") : script.index("async function selectCue")]
+    trace = script[
+        script.index("function renderOutcomeTrace") : script.index("async function selectOutcome")
+    ]
     cue_render = script[
         script.index("function renderFrameCues") : script.index("function cachedTimelineCovers")
     ]
@@ -710,7 +752,7 @@ def test_frontend_uses_bounded_playback_work_and_stable_cue_controls(
     assert "rebuildTimelineBase" not in tick
     assert "renderFrameCues" not in tick
     assert "renderFrameCues" not in trace
-    assert "updateCueSelection" in trace
+    assert "updateOutcomeSelection" in trace
     assert ".sort(compareCueOrder)" in cue_render
     assert ".slice(" not in cue_render
     assert "state.frame?.cues" in cue_render
@@ -720,12 +762,12 @@ def test_frontend_uses_bounded_playback_work_and_stable_cue_controls(
     assert "await prepareFrameImage(frame.frame, imageUrl)" in script
     assert "preloadFollowingFrames(frame.frame, generation)" in script
     assert "state.preloadImages.size >= 2" in script
-    assert "state.timelinePendingKey !== null" in script
-    assert "if (!cueIsInCurrentWindow)" in script
-    assert 'timelineContext.strokeStyle = "#ffffff"' in script
+    assert "state.timelinePending" in script
+    assert "if (!outcomeInWindow)" in script
+    assert 'timelineContext.strokeStyle = "#fff"' in script
 
 
-def test_frontend_synchronises_transport_and_unifies_retained_cue_selection(
+def test_frontend_synchronises_transport_and_unifies_retained_outcome_selection(
     inspection_url: str,
 ) -> None:
     with urllib.request.urlopen(f"{inspection_url}/assets/app.js") as response:
@@ -733,17 +775,13 @@ def test_frontend_synchronises_transport_and_unifies_retained_cue_selection(
     with urllib.request.urlopen(f"{inspection_url}/assets/app.css") as response:
         stylesheet = response.read().decode()
 
-    transport = script[
-        script.index("function updateTransportPresentation") : script.index(
-            "function escapeHtml"
-        )
-    ]
+    transport = script[script.index("function updateTransport") : script.index("// Session And")]
     overlay_render = script[
         script.index("function renderOverlay") : script.index("function setFrameContext")
     ]
-    cue_selection = script[
-        script.index("async function selectCue") : script.index(
-            "function clearCueFrameAlignment"
+    outcome_selection = script[
+        script.index("async function selectOutcome") : script.index(
+            "function clearOutcomeFrameAlignment"
         )
     ]
     direct_seek = script[
@@ -755,31 +793,58 @@ def test_frontend_synchronises_transport_and_unifies_retained_cue_selection(
 
     assert "seek.value = seconds" in transport
     assert "currentTimeDisplay.textContent = formatTime(seconds)" in transport
-    assert "audio.currentTime = trace.cue.start_time_seconds" in cue_selection
-    assert "state.lastPlaybackTime = audio.currentTime" in cue_selection
-    assert "updateTransportPresentation(audio.currentTime)" in cue_selection
-    assert "seek.value = trace.cue.start_time_seconds" not in cue_selection
-    assert "updateTransportPresentation(audio.currentTime)" in direct_seek
-    assert "updateTransportPresentation(time)" in tick
-    assert "updateTransportPresentation(0)" in script
+    assert "audio.currentTime = timestamp" in outcome_selection
+    assert "state.lastPlaybackTime = audio.currentTime" in outcome_selection
+    assert "state.selectedOutcomeType = type" in outcome_selection
+    assert "state.selectedOutcomeId = id" in outcome_selection
+    assert "updateTransport(audio.currentTime)" in outcome_selection
+    assert "updateTransport(audio.currentTime)" in direct_seek
+    assert "updateTransport(time)" in tick
+    assert "updateTransport(0)" in script
 
-    assert 'outcome === "represented" ? event.stage_2_outcome?.cue_id : null' in (
-        overlay_render
-    )
+    assert 'outcome === "represented" ? "cue" : "suppression"' in overlay_render
     assert 'group.setAttribute("role", "button")' in overlay_render
     assert 'group.setAttribute("tabindex", "0")' in overlay_render
-    assert 'group.setAttribute("data-cue-id", cueId)' in overlay_render
-    assert "selectCue(cueId)" in overlay_render
+    assert 'group.setAttribute("data-outcome-type", outcomeType)' in overlay_render
+    assert 'group.setAttribute("data-outcome-id", outcomeId)' in overlay_render
+    assert "selectOutcome(outcomeType, outcomeId)" in overlay_render
     assert 'keyboardEvent.key !== "Enter"' in overlay_render
     assert 'keyboardEvent.key !== " "' in overlay_render
     assert "keyboardEvent.stopPropagation()" in overlay_render
-    assert "if (cueId)" in overlay_render
-    assert 'control.getAttribute("data-cue-id") === state.selectedCue' in script
-    assert 'button.addEventListener("click", () => selectCue(cue.cue_id))' in script
-    assert "if (cue) selectCue(cue.cue_id)" in script
-    assert ".event-cue-control { pointer-events: all; cursor: pointer;" in stylesheet
-    assert ".event-cue-control:focus-visible .event-box" in stylesheet
-    assert ".event-cue-control.selected .event-box" in stylesheet
+    assert 'return selectOutcome("cue", cueId)' in outcome_selection
+    assert "suppression_event_id" in outcome_selection
+    assert ".event-outcome-control { pointer-events: all; cursor: pointer;" in stylesheet
+    assert ".event-outcome-control:focus-visible .event-box" in stylesheet
+    assert ".event-outcome-control.selected .event-box" in stylesheet
+
+
+def test_frontend_renders_retained_suppression_without_render_stage(
+    inspection_url: str,
+) -> None:
+    with urllib.request.urlopen(f"{inspection_url}/assets/app.js") as response:
+        script = response.read().decode()
+    with urllib.request.urlopen(f"{inspection_url}/") as response:
+        page = response.read().decode()
+
+    trace = script[
+        script.index("function renderOutcomeTrace") : script.index("async function selectOutcome")
+    ]
+    suppression = trace[trace.index('traceNode("Suppression"') : trace.index("const content")]
+    timeline_hit_test = script[
+        script.index("function outcomeAtCanvasPoint") : script.index("// Frame Cues")
+    ]
+
+    assert 'traceNode("Event"' in script
+    assert 'traceNode("Annotation"' in script
+    assert 'traceNode("Configuration"' in suppression
+    assert '["Reason", trace.suppression.reason]' in suppression
+    assert '["Relevant Rule / Reason", trace.suppression.suppression_code]' in suppression
+    assert 'traceNode("Render"' not in suppression
+    assert "state.timeline.cues" in timeline_hit_test
+    assert "state.timeline.suppressions" in timeline_hit_test
+    assert 'type === "cue" ? closest.cue_id : closest.source_event_id' in timeline_hit_test
+    assert "Event Outcome Inspector" in page
+    assert "Complete Chain" not in page
 
 
 def test_frontend_presents_two_normal_outcomes_and_flags_unresolved_anomaly(
@@ -791,11 +856,12 @@ def test_frontend_presents_two_normal_outcomes_and_flags_unresolved_anomaly(
         page = response.read().decode()
 
     legend = page[page.index('class="legend"') : page.index("</div>", page.index('class="legend"'))]
-    assert "Cue generated" in legend
-    assert "Intentionally suppressed" in legend
+    assert "Cue Generated" in legend
+    assert "Intentionally Suppressed" in legend
     assert "unresolved" not in legend.lower()
     assert 'return "anomaly"' in script
-    assert "evidence_integrity_anomaly:unresolved_stage_2_outcome" in script
+    assert 'code = "unresolved_stage_2_outcome"' in script
+    assert 'reportIntegrityAnomaly(id, "suppression_trace_unresolved")' in script
     assert 'id="integrityWarning"' in page
-    assert "Stage 2 cue generated from that event" in page
-    assert "Stage 2 event intentionally not sonified" in page
+    assert "Stage 2 - Cue generated from that event" in page
+    assert "Stage 2 - Event intentionally not sonified" in page

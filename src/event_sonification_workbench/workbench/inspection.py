@@ -356,19 +356,13 @@ class InspectionModel:
             ],
         }
 
-    def trace(self, cue_id: str) -> dict[str, Any]:
-        cue = self._cues_by_id.get(cue_id)
-        if cue is None:
-            raise InspectionError("cue_not_found")
-        event = self._events_by_id.get(cue["source_event_id"])
-        render = self._renders_by_cue.get(cue_id)
-        if event is None or render is None:
-            raise InspectionError("cue_trace_incomplete")
+    def _trace_provenance(
+        self, event: Mapping[str, Any], error_code: str
+    ) -> dict[str, Any]:
         configurations = self._event_provenance.get("configuration_files")
         if not isinstance(configurations, list):
-            raise InspectionError("cue_trace_incomplete")
+            raise InspectionError(error_code)
         return {
-            "cue": _cue_projection(cue),
             "event": _event_projection(
                 event,
                 stage_2_outcome=self._event_outcome(event["event_id"]),
@@ -381,8 +375,22 @@ class InspectionModel:
             "configuration": {
                 "event_inputs": configurations,
                 "preset": self._sonification_metadata["preset"],
-                "renderer": self._renderer_metadata["renderer"],
             },
+        }
+
+    def trace(self, cue_id: str) -> dict[str, Any]:
+        cue = self._cues_by_id.get(cue_id)
+        if cue is None:
+            raise InspectionError("cue_not_found")
+        event = self._events_by_id.get(cue["source_event_id"])
+        render = self._renders_by_cue.get(cue_id)
+        if event is None or render is None:
+            raise InspectionError("cue_trace_incomplete")
+        provenance = self._trace_provenance(event, "cue_trace_incomplete")
+        provenance["configuration"]["renderer"] = self._renderer_metadata["renderer"]
+        return {
+            "cue": _cue_projection(cue),
+            **provenance,
             "render": {
                 "cue_id": render["cue_id"],
                 "source_event_id": render["source_event_id"],
@@ -393,6 +401,18 @@ class InspectionModel:
                 "duration_samples": render["duration_samples"],
                 "sample_rate_hz": self.sample_rate_hz,
             },
+        }
+
+    def suppression_trace(self, source_event_id: str) -> dict[str, Any]:
+        suppression = self._suppressions_by_event_id.get(source_event_id)
+        if suppression is None:
+            raise InspectionError("suppression_not_found")
+        event = self._events_by_id.get(source_event_id)
+        if event is None:
+            raise InspectionError("suppression_trace_incomplete")
+        return {
+            "suppression": _suppression_projection(suppression, event),
+            **self._trace_provenance(event, "suppression_trace_incomplete"),
         }
 
     def evaluation(self) -> dict[str, Any]:

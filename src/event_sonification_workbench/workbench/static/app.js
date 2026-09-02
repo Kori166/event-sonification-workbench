@@ -4,37 +4,32 @@
 
   This file loads retained sonification sessions and synchronises the
   source frames, event overlays, generated audio, timeline, technical
-  metrics and cue-level provenance information.
+  metrics and retained cue/suppression provenance information.
 
   The interface does not generate research results. It displays outputs
   already produced and retained by the processing and evaluation pipeline.
 
 
-  Technical References and Provenance:
+  Technical References And Provenance:
 
   MDN Web Docs (no date) 'Fetch API' [online]. Available from:
   https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
-
   Used for:
   - requesting session metadata
   - loading frame records
   - loading timeline windows
   - loading technical evaluation results
-  - retrieving cue provenance records
-
+  - retrieving cue and suppression provenance records
 
   MDN Web Docs (no date) 'URL' [online]. Available from:
   https://developer.mozilla.org/en-US/docs/Web/API/URL
-
   Used for:
   - constructing API request URLs
   - adding the selected session_id query parameter without manual
     string concatenation
 
-
   MDN Web Docs (no date) 'HTMLMediaElement' [online]. Available from:
   https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement
-
   Used for:
   - WAV playback
   - reading and setting the current playback time
@@ -42,95 +37,75 @@
   - audio muting
   - synchronising the visual inspection interface with the audio
 
-
   MDN Web Docs (no date) 'Window: requestAnimationFrame() method'
   [online]. Available from:
   https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame
-
   Used for:
   - keeping the playback position, displayed frame, timeline cursor
     and selected evidence synchronised while audio is playing
 
-
   MDN Web Docs (no date) 'Canvas API' [online]. Available from:
   https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API
-
   Used for:
   - drawing the synchronised event, cue and suppression timeline
   - drawing frame boundaries
   - drawing the current playback position
-  - highlighting the current frame and selected cue
-
+  - highlighting the current frame and selected outcome
 
   MDN Web Docs (no date) 'SVG' [online]. Available from:
   https://developer.mozilla.org/en-US/docs/Web/SVG
-
   Used for:
   - drawing event bounding boxes over source video frames
   - displaying object class and track labels
-  - making represented events selectable from the image overlay
-
+  - making represented and suppressed events selectable from the image overlay
 
   MDN Web Docs (no date) 'Document.createElementNS()' [online].
   Available from:
   https://developer.mozilla.org/en-US/docs/Web/API/Document/createElementNS
-
   Used for:
   - creating SVG groups, rectangles and text labels for the
     frame-level event overlay
 
-
   MDN Web Docs (no date) 'Image() constructor' [online]. Available from:
   https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image
-
   Used for:
   - preloading upcoming source frames
   - reducing visible delays when stepping through or playing
     consecutive frames
 
-
   MDN Web Docs (no date) 'Promise' [online]. Available from:
   https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
-
   Used for:
   - asynchronous API requests
   - waiting for source images to load
   - loading independent session components concurrently
 
-
   MDN Web Docs (no date) 'Map' [online]. Available from:
   https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
-
   Used for:
   - tracking source-frame image preload operations by frame number
 
-
   MDN Web Docs (no date) 'Set' [online]. Available from:
   https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
-
   Used for:
   - recording event identifiers that have already raised an
     evidence-integrity warning
   - preventing the same anomaly from being reported repeatedly
 
-
   MDN Web Docs (no date) 'EventTarget.addEventListener()' [online].
   Available from:
   https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener
-
   Used for:
   - playback controls
   - frame stepping
   - timeline interaction
-  - cue selection
+  - cue and suppression selection
   - session selection
   - keyboard controls
   - responsive timeline resizing
 
-
   MDN Web Docs (no date) 'KeyboardEvent' [online]. Available from:
   https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
-
   Used for:
   - Space-bar play/pause control
   - left/right frame navigation
@@ -138,9 +113,9 @@
 
   Project-Specific Implementation:
   The session state model, timeline-window logic, event/cue/suppression
-  display, cue trace structure, dataset-specific labels, technical metric
-  selection and evidence-integrity behaviour are specific to this MSc
-  project and its retained API outputs.
+  display, cue and suppression trace structures, dataset-specific labels,
+  technical metric selection and evidence-integrity behaviour are specific
+  to this MSc project and its retained API outputs.
 
   AI Assistance:
   Generative AI was used during development to support code review,
@@ -164,7 +139,7 @@ const overlay = $("#eventOverlay");
 
 const TIMELINE_HEIGHT = 198;
 const TIMELINE_EDGE_MARGIN_SECONDS = 0.25;
-const CUE_HIT_RADIUS_PX = 7;
+const OUTCOME_HIT_RADIUS_PX = 7;
 const SVG_NS = "http://www.w3.org/2000/svg";
 
 const state = {
@@ -179,9 +154,10 @@ const state = {
   timeline: null,
   timelinePending: false,
   timelineRequest: 0,
-  selectedCue: null,
-  selectedCueFrame: null,
-  selectedCueTime: null,
+  selectedOutcomeType: null,
+  selectedOutcomeId: null,
+  selectedOutcomeFrame: null,
+  selectedOutcomeTime: null,
   traceRequest: 0,
   integrityAnomalies: new Set(),
   lastPlaybackTime: null,
@@ -293,13 +269,15 @@ async function renderEvaluation(generation = state.generation) {
 
 // Event Overlay
 
-function reportIntegrityAnomaly(eventId) {
+function reportIntegrityAnomaly(eventId, code = "unresolved_stage_2_outcome") {
   if (state.integrityAnomalies.has(eventId)) return;
   state.integrityAnomalies.add(eventId);
   const warning = $("#integrityWarning");
-  warning.textContent = "Evidence-integrity warning: an event has no retained cue or suppression outcome.";
+  warning.textContent = code === "unresolved_stage_2_outcome"
+    ? "Evidence-integrity warning: an event has no retained cue or suppression outcome."
+    : "Evidence-integrity warning: retained suppression provenance could not be resolved.";
   warning.hidden = false;
-  console.error("evidence_integrity_anomaly:unresolved_stage_2_outcome");
+  console.error(`evidence_integrity_anomaly:${code}`);
 }
 
 function outcomeFor(event) {
@@ -328,30 +306,35 @@ function renderOverlay(frame) {
     label.setAttribute("y", Math.max(22, event.bbox.y - 7));
     label.setAttribute("class", "event-label");
     label.textContent = `${event.object_class} · t${event.track_id}`;
-    const cueId = outcome === "represented" ? event.stage_2_outcome?.cue_id : null;
-    if (cueId) {
-      group.setAttribute("class", "event-cue-control");
+    const outcomeType = outcome === "represented" ? "cue" : "suppression";
+    const outcomeId = outcome === "represented" ? event.stage_2_outcome?.cue_id : event.event_id;
+    if (outcome !== "anomaly" && outcomeId) {
+      group.setAttribute("class", "event-outcome-control");
       group.setAttribute("role", "button");
       group.setAttribute("tabindex", "0");
       group.setAttribute("focusable", "true");
-      group.setAttribute("data-cue-id", cueId);
+      group.setAttribute("data-outcome-type", outcomeType);
+      group.setAttribute("data-outcome-id", outcomeId);
       group.setAttribute(
         "aria-label",
-        `Select ${event.object_class} track ${event.track_id} cue at frame ${event.frame}`,
+        `Select ${event.object_class} track ${event.track_id} ${outcomeType} at frame ${event.frame}`,
       );
-      const select = () => selectCue(cueId).catch(error => notice(error.message));
-      group.addEventListener("click", select);
-      group.addEventListener("keydown", event => {
-        if (event.key !== "Enter" && event.key !== " ") return;
-        event.preventDefault();
-        event.stopPropagation();
+      const select = () => selectOutcome(outcomeType, outcomeId).catch(error => notice(error.message));
+      group.addEventListener("click", () => {
+        group.focus();
+        select();
+      });
+      group.addEventListener("keydown", keyboardEvent => {
+        if (keyboardEvent.key !== "Enter" && keyboardEvent.key !== " ") return;
+        keyboardEvent.preventDefault();
+        keyboardEvent.stopPropagation();
         select();
       });
     }
     group.append(rectangle, label);
     overlay.append(group);
   }
-  updateCueSelection();
+  updateOutcomeSelection();
 }
 
 // Frames
@@ -359,7 +342,7 @@ function renderOverlay(frame) {
 function setFrameContext(context) {
   if (context === state.frameContext) return;
   state.frameContext = context;
-  $("#frameKind").textContent = context === "cue" ? "Current Frame" : "Playback Frame";
+  $("#frameKind").textContent = context === "playback" ? "Playback Frame" : "Current Frame";
 }
 
 async function loadFrame(frameNumber, context = "playback") {
@@ -449,12 +432,12 @@ function frameForTime(timestamp, frameRate, frameCount) {
   );
 }
 
-function cueInspectionIsAligned() {
+function outcomeInspectionIsAligned() {
   return (
-    state.selectedCueFrame !== null &&
-    state.selectedCueTime !== null &&
+    state.selectedOutcomeFrame !== null &&
+    state.selectedOutcomeTime !== null &&
     audio.paused &&
-    Math.abs(audio.currentTime - state.selectedCueTime) <= 1e-6
+    Math.abs(audio.currentTime - state.selectedOutcomeTime) <= 1e-6
   );
 }
 
@@ -462,8 +445,8 @@ function drawCurrentFrameInterval(height, width) {
   if (!state.session || !state.timeline) return;
   const frameRate = state.session.timing.frame_rate;
   const { start_seconds: windowStart, end_seconds: windowEnd } = state.timeline.window;
-  const frame = cueInspectionIsAligned()
-    ? state.selectedCueFrame
+  const frame = outcomeInspectionIsAligned()
+    ? state.selectedOutcomeFrame
     : frameForTime(audio.currentTime, frameRate, state.session.counts.frames);
   const highlightStart = Math.max(windowStart, frame / frameRate);
   const highlightEnd = Math.min(windowEnd, (frame + 1) / frameRate);
@@ -546,12 +529,21 @@ function drawTimeline() {
     width,
     TIMELINE_HEIGHT,
   );
-  const selected = state.timeline.cues.find(cue => cue.cue_id === state.selectedCue);
+  const selectedItems = state.selectedOutcomeType === "cue"
+    ? state.timeline.cues
+    : state.timeline.suppressions;
+  const selected = selectedItems.find(item =>
+    (state.selectedOutcomeType === "cue" ? item.cue_id : item.source_event_id) === state.selectedOutcomeId
+  );
   if (selected) {
-    const x = timelineX(selected.start_time_seconds, width);
+    const lane = state.selectedOutcomeType === "cue" ? 1 : 2;
+    const timestamp = state.selectedOutcomeType === "cue"
+      ? selected.start_time_seconds
+      : selected.timestamp_seconds;
+    const x = timelineX(timestamp, width);
     timelineContext.strokeStyle = "#fff";
     timelineContext.lineWidth = 2;
-    timelineContext.strokeRect(x - 3.5, 76, 7, 46);
+    timelineContext.strokeRect(x - 3.5, lane * (TIMELINE_HEIGHT / 3) + 10, 7, 46);
   }
   const cursor = timelineX(audio.currentTime, width);
   timelineContext.strokeStyle = "#fff";
@@ -568,25 +560,33 @@ function drawTimeline() {
   timelineContext.fill();
 }
 
-function cueAtCanvasPoint(event) {
+function outcomeAtCanvasPoint(event) {
   if (!state.timeline) return null;
   const bounds = timelineCanvas.getBoundingClientRect();
   const x = event.clientX - bounds.left;
   const y = event.clientY - bounds.top;
   const laneHeight = bounds.height / 3;
-  if (y < laneHeight + 8 || y > 2 * laneHeight - 8) return null;
+  const lane = Math.floor(y / laneHeight);
+  if (lane < 1 || lane > 2 || y % laneHeight < 8 || y % laneHeight > laneHeight - 8) {
+    return null;
+  }
+  const type = lane === 1 ? "cue" : "suppression";
+  const items = type === "cue" ? state.timeline.cues : state.timeline.suppressions;
   let closest = null;
-  let closestDistance = CUE_HIT_RADIUS_PX + 1;
-  for (const cue of state.timeline.cues) {
-    const distance = Math.abs(
-      timelineX(cue.start_time_seconds, bounds.width) - x,
-    );
-    if (distance <= CUE_HIT_RADIUS_PX && distance < closestDistance) {
-      closest = cue;
+  let closestDistance = OUTCOME_HIT_RADIUS_PX + 1;
+  for (const item of items) {
+    const timestamp = type === "cue" ? item.start_time_seconds : item.timestamp_seconds;
+    const distance = Math.abs(timelineX(timestamp, bounds.width) - x);
+    if (distance <= OUTCOME_HIT_RADIUS_PX && distance < closestDistance) {
+      closest = item;
       closestDistance = distance;
     }
   }
-  return closest;
+  if (!closest) return null;
+  return {
+    type,
+    id: type === "cue" ? closest.cue_id : closest.source_event_id,
+  };
 }
 
 // Frame Cues
@@ -619,7 +619,7 @@ function renderFrameCues() {
   }
   for (const cue of cues) {
     const button = document.createElement("button");
-    const active = state.selectedCue === cue.cue_id;
+    const active = state.selectedOutcomeType === "cue" && state.selectedOutcomeId === cue.cue_id;
     button.type = "button";
     button.className = `cue-chip${active ? " active" : ""}`;
     button.setAttribute("aria-pressed", String(active));
@@ -676,16 +676,17 @@ async function loadTimeline(force = false) {
   }
 }
 
-// Cue Selection And Provenance
+// Outcome Selection And Provenance
 
-function updateCueSelection() {
+function updateOutcomeSelection() {
   for (const button of document.querySelectorAll("#frameCues .cue-chip")) {
-    const active = button.title === state.selectedCue;
+    const active = state.selectedOutcomeType === "cue" && button.title === state.selectedOutcomeId;
     button.classList.toggle("active", active);
     button.setAttribute("aria-pressed", String(active));
   }
-  for (const control of overlay.querySelectorAll(".event-cue-control")) {
-    const active = control.dataset.cueId === state.selectedCue;
+  for (const control of overlay.querySelectorAll(".event-outcome-control")) {
+    const active = control.dataset.outcomeType === state.selectedOutcomeType
+      && control.dataset.outcomeId === state.selectedOutcomeId;
     control.classList.toggle("selected", active);
     control.setAttribute("aria-pressed", String(active));
   }
@@ -698,20 +699,9 @@ function traceNode(title, lines) {
   return `<section class="trace-node"><h3>${escapeHtml(title)}</h3>${content}</section>`;
 }
 
-function renderTrace(trace) {  
-  const shortCue = trace.cue.cue_id.replace("cue:", "").slice(0, 12);
+function eventTraceNodes(trace) {
   const shortEvent = trace.event.event_id.split(":").slice(-3).join(":");
-  const content = $("#traceContent");
-  content.className = "trace-chain";
-  content.innerHTML = [
-    traceNode("Cue", [
-      ["ID", shortCue],
-      ["Start (Event Timestamp)", `${trace.cue.start_time_seconds.toFixed(6)} s`],
-      ["Frequency (Vertical Centre)", `${trace.cue.frequency_hz.toFixed(1)} Hz`],
-      ["Stereo Pan (Horizontal Centre)", trace.cue.stereo_pan],
-      ["Amplitude (Box Area)", trace.cue.amplitude],
-      ["Duration", `${trace.cue.duration_seconds.toFixed(3)} s`],
-    ]),
+  return [
     traceNode("Event", [
       ["ID", shortEvent],
       ["Source Frame / Track", `${trace.event.frame} / ${trace.event.track_id}`],
@@ -721,51 +711,104 @@ function renderTrace(trace) {
       ["Logical Source", trace.source_annotation.logical_path],
       ["Physical Row", trace.source_annotation.row],
     ]),
-    traceNode("Configuration", [
-      ["Preset", `${trace.configuration.preset.name} ${trace.configuration.preset.version}`],
-      ["Renderer", `${trace.configuration.renderer.name} ${trace.configuration.renderer.version}`],
-      ["Class Modifier", "Recorded for traceability. Not applied to waveform."],
-    ]),
-    traceNode("Render", [
-      ["Samples", `${trace.render.start_sample}–${trace.render.end_sample_exclusive}`],
-      ["Duration", `${trace.render.duration_samples} @ ${trace.render.sample_rate_hz} Hz`],
-    ]),
-  ].join("");
-  updateCueSelection();
+  ];
+}
+
+function renderOutcomeTrace(type, trace) {
+  const shortCue = type === "cue" ? trace.cue.cue_id.replace("cue:", "").slice(0, 12) : null;
+  const commonNodes = eventTraceNodes(trace);
+  const nodes = type === "cue"
+    ? [
+        traceNode("Cue", [
+          ["ID", shortCue],
+          ["Start (Event Timestamp)", `${trace.cue.start_time_seconds.toFixed(6)} s`],
+          ["Frequency (Vertical Centre)", `${trace.cue.frequency_hz.toFixed(1)} Hz`],
+          ["Stereo Pan (Horizontal Centre)", trace.cue.stereo_pan],
+          ["Amplitude (Box Area)", trace.cue.amplitude],
+          ["Duration", `${trace.cue.duration_seconds.toFixed(3)} s`],
+        ]),
+        ...commonNodes,
+        traceNode("Configuration", [
+          ["Preset", `${trace.configuration.preset.name} ${trace.configuration.preset.version}`],
+          ["Renderer", `${trace.configuration.renderer.name} ${trace.configuration.renderer.version}`],
+          ["Class Modifier", "Recorded for traceability. Not applied to waveform."],
+        ]),
+        traceNode("Render", [
+          ["Samples", `${trace.render.start_sample}–${trace.render.end_sample_exclusive}`],
+          ["Duration", `${trace.render.duration_samples} @ ${trace.render.sample_rate_hz} Hz`],
+        ]),
+      ]
+    : [
+        traceNode("Suppression", [
+          ["Timestamp", `${trace.suppression.timestamp_seconds.toFixed(6)} s`],
+          ["Reason Code", trace.suppression.suppression_code],
+          ["Reason", trace.suppression.reason],
+        ]),
+        ...commonNodes,
+        traceNode("Configuration", [
+          ["Preset", `${trace.configuration.preset.name} ${trace.configuration.preset.version}`],
+          ["Relevant Rule / Reason", trace.suppression.suppression_code],
+        ]),
+      ];
+  const content = $("#traceContent");
+  content.className = "trace-chain";
+  content.style.setProperty("--trace-node-count", nodes.length);
+  content.innerHTML = nodes.join("");
+  updateOutcomeSelection();
   drawTimeline();
 }
 
-async function selectCue(cueId) {
+async function selectOutcome(type, id) {
   const generation = state.generation;
   const requestId = ++state.traceRequest;
-  const cueInWindow =
-    state.timeline?.cues.some(cue => cue.cue_id === cueId) ?? false;
-  const trace = await getJson(
-    `/api/trace?cue_id=${encodeURIComponent(cueId)}`,
-  );
+  const items = type === "cue" ? state.timeline?.cues : state.timeline?.suppressions;
+  const outcomeInWindow = items?.some(item =>
+    (type === "cue" ? item.cue_id : item.source_event_id) === id
+  ) ?? false;
+  const parameter = type === "cue" ? "cue_id" : "suppression_event_id";
+  let trace;
+  try {
+    trace = await getJson(`/api/trace?${parameter}=${encodeURIComponent(id)}`);
+  } catch (error) {
+    if (
+      type === "suppression" &&
+      generation === state.generation &&
+      requestId === state.traceRequest
+    ) {
+      reportIntegrityAnomaly(id, "suppression_trace_unresolved");
+    }
+    throw error;
+  }
   if (generation !== state.generation || requestId !== state.traceRequest) return;
+  const outcome = type === "cue" ? trace.cue : trace.suppression;
+  const timestamp = type === "cue" ? outcome.start_time_seconds : outcome.timestamp_seconds;
   audio.pause();
-  audio.currentTime = trace.cue.start_time_seconds;
+  audio.currentTime = timestamp;
   state.lastPlaybackTime = audio.currentTime;
-  state.selectedCue = cueId;
-  state.selectedCueFrame = trace.event.frame;
-  state.selectedCueTime = trace.cue.start_time_seconds;
+  state.selectedOutcomeType = type;
+  state.selectedOutcomeId = id;
+  state.selectedOutcomeFrame = trace.event.frame;
+  state.selectedOutcomeTime = timestamp;
   updateTransport(audio.currentTime);
   drawTimeline();
-  await loadFrame(trace.event.frame, "cue");
+  await loadFrame(trace.event.frame, "outcome");
   if (generation !== state.generation || requestId !== state.traceRequest) return;
-  if (!cueInWindow) {
+  if (!outcomeInWindow) {
     await loadTimeline(true);
     if (generation !== state.generation || requestId !== state.traceRequest) return;
   }
-  renderTrace(trace);
+  renderOutcomeTrace(type, trace);
+}
+
+function selectCue(cueId) {
+  return selectOutcome("cue", cueId);
 }
 
 // Playback
 
-function clearCueFrameAlignment() {
-  state.selectedCueFrame = null;
-  state.selectedCueTime = null;
+function clearOutcomeFrameAlignment() {
+  state.selectedOutcomeFrame = null;
+  state.selectedOutcomeTime = null;
   setFrameContext("playback");
 }
 
@@ -774,7 +817,7 @@ function setAudioTime(value) {
     state.session?.timing.audio_duration_seconds ||
     audio.duration ||
     0;
-  clearCueFrameAlignment();
+  clearOutcomeFrameAlignment();
   audio.currentTime = Math.min(Math.max(value, 0), duration);
   updateTransport(audio.currentTime);
   loadTimeline().catch(error => notice(error.message));
@@ -799,9 +842,10 @@ function resetSessionState(sessionId) {
   state.framePending = false;
   state.timeline = null;
   state.timelinePending = false;
-  state.selectedCue = null;
-  state.selectedCueFrame = null;
-  state.selectedCueTime = null;
+  state.selectedOutcomeType = null;
+  state.selectedOutcomeId = null;
+  state.selectedOutcomeFrame = null;
+  state.selectedOutcomeTime = null;
   state.traceRequest++;
   state.frameRequest++;
   state.timelineRequest++;
@@ -835,12 +879,13 @@ function resetSessionState(sessionId) {
   $("#metricGrid").innerHTML =
     '<div class="skeleton"></div>'.repeat(4);
   const traceState = $("#traceState");
-  traceState.textContent = "Select A Cue";
+  traceState.textContent = "Select An Outcome";
   traceState.className = "evidence-tag neutral";
   const traceContent = $("#traceContent");
   traceContent.className = "trace-empty";
+  traceContent.style.removeProperty("--trace-node-count");
   traceContent.textContent =
-    "Choose a cue marker or frame cue to inspect its source and rendered sample.";
+    "Choose a cue or suppression marker, frame cue, or event box to inspect its retained provenance.";
   const noticeElement = $("#notice");
   noticeElement.textContent = "";
   noticeElement.classList.remove("show");
@@ -876,16 +921,16 @@ function tick() {
     if (time !== state.lastPlaybackTime) {
       state.lastPlaybackTime = time;
       updateTransport(time);
-      const inspectingCue = cueInspectionIsAligned();
-      const frame = inspectingCue
-        ? state.selectedCueFrame
+      const inspectingOutcome = outcomeInspectionIsAligned();
+      const frame = inspectingOutcome
+        ? state.selectedOutcomeFrame
         : frameForTime(
             time,
             state.session.timing.frame_rate,
             state.session.counts.frames,
           );
       if (frame !== state.frameNumber && !state.framePending) {
-        loadFrame(frame, inspectingCue ? "cue" : "playback")
+        loadFrame(frame, inspectingOutcome ? "outcome" : "playback")
           .catch(error => notice(error.message));
       }
       loadTimeline().catch(error => notice(error.message));
@@ -905,7 +950,7 @@ playPause.addEventListener("click", async () => {
   }
 });
 audio.addEventListener("play", () => {
-  clearCueFrameAlignment();
+  clearOutcomeFrameAlignment();
   playPause.textContent = "❚❚";
   playPause.setAttribute("aria-label", "Pause");
 });
@@ -923,14 +968,14 @@ $("#mute").addEventListener("click", event => {
   event.currentTarget.textContent = audio.muted ? "Muted" : "Audio on";
 });
 timelineCanvas.addEventListener("click", event => {
-  const cue = cueAtCanvasPoint(event);
-  if (cue) {
-    selectCue(cue.cue_id).catch(error => notice(error.message));
+  const outcome = outcomeAtCanvasPoint(event);
+  if (outcome) {
+    selectOutcome(outcome.type, outcome.id).catch(error => notice(error.message));
   }
 });
 timelineCanvas.addEventListener("mousemove", event => {
   timelineCanvas.style.cursor =
-    cueAtCanvasPoint(event) ? "pointer" : "default";
+    outcomeAtCanvasPoint(event) ? "pointer" : "default";
 });
 timelineCanvas.addEventListener("mouseleave", () => {
   timelineCanvas.style.cursor = "default";

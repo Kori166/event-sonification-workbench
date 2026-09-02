@@ -257,11 +257,11 @@ It provides:
 - playback of the retained Stage 2 audio;
 - synchronised EVENT, CUE and SUPPRESS timeline lanes;
 - frame-scoped cue controls;
-- cue-to-source provenance inspection;
+- cue- and suppression-to-source provenance inspection;
 - rendered sample-range information; and
 - technical metrics projected directly from the verified Stage 3 report.
 
-Selecting a cue pauses playback, seeks to the retained cue start and exposes its normalised event, native source reference, configuration and rendered sample range.
+Selecting a cue or suppression pauses playback and seeks to the retained outcome time. Cue inspection includes its rendered sample range; suppression inspection shows the retained reason and has no Render stage.
 
 ## Reproducing the Processing Pipeline
 

@@ -186,11 +186,16 @@ def inspection_handler(catalogue: InspectionCatalogue) -> type[BaseHTTPRequestHa
                 self._send_json(model.timeline(start, end))
                 return
             if path == "/api/trace":
-                try:
-                    cue_id = unquote(query["cue_id"][0])
-                except (KeyError, IndexError) as exc:
-                    raise InspectionError("cue_not_found") from exc
-                self._send_json(model.trace(cue_id))
+                cue_ids = query.get("cue_id", [])
+                suppression_event_ids = query.get("suppression_event_id", [])
+                if len(cue_ids) == 1 and not suppression_event_ids:
+                    self._send_json(model.trace(unquote(cue_ids[0])))
+                elif len(suppression_event_ids) == 1 and not cue_ids:
+                    self._send_json(
+                        model.suppression_trace(unquote(suppression_event_ids[0]))
+                    )
+                else:
+                    raise InspectionError("invalid_trace_identifier")
                 return
             if path == "/api/evaluation":
                 self._send_json(model.evaluation())
@@ -224,6 +229,7 @@ def inspection_handler(catalogue: InspectionCatalogue) -> type[BaseHTTPRequestHa
                         "cue_not_found",
                         "frame_image_unavailable",
                         "invalid_session_identifier",
+                        "suppression_not_found",
                     }
                     else HTTPStatus.BAD_REQUEST
                 )

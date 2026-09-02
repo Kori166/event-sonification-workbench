@@ -90,7 +90,7 @@
           <summary>Timeline Info</summary>
           <p> EVENT = Stage 1 - Normalised annotation. </p>
           <p> CUE = Stage 2 - Cue generated from that event. </p>
-          <p> SUPPRESS = Stage 2 - Event intentionally not sonified. Only CUE markers can be selected. </p>
+          <p> SUPPRESS = Stage 2 - Event intentionally not sonified. CUE and SUPPRESS markers can be selected. </p>
         </details>
         <p class="nearby-label">Cues At Selected / Current Frame <span id="frameCueSummary">—</span></p>
         <div class="nearby-cues" id="frameCues" aria-label="All cues at the displayed source frame" aria-live="polite"></div>
@@ -101,12 +101,12 @@
           <div class="panel-heading">
             <div>
               <p class="eyebrow">End-To-End Provenance</p>
-              <h2>Cue Trace Inspector</h2>
+              <h2>Event Outcome Inspector</h2>
             </div>
-            <span class="evidence-tag neutral" id="traceState">Select A Cue</span>
+            <span class="evidence-tag neutral" id="traceState">Select An Outcome</span>
           </div>
           <div id="traceContent" class="trace-empty">
-            Choose a cue marker or frame cue to inspect its retained source and rendered sample.
+            Choose a cue or suppression marker, frame cue, or event box to inspect its retained provenance.
           </div>          
         </article>
 
