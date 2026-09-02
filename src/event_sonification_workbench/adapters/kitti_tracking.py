@@ -1,4 +1,4 @@
-"""KITTI Tracking annotation parsing and common-event normalisation."""
+"""KITTI Tracking annotation parsing and common event normalisation."""
 
 from __future__ import annotations
 

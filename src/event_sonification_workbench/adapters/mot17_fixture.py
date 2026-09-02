@@ -1,4 +1,4 @@
-"""Manifest-driven generation of a private MOT17 annotation fixture."""
+"""Manifest driven generation of a private MOT17 annotation fixture."""
 
 from __future__ import annotations
 

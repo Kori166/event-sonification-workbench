@@ -1,4 +1,4 @@
-"""Bounded retained-session catalogue for cross-dataset inspection."""
+"""Bounded retained session catalogue for dataset inspection."""
 
 from __future__ import annotations
 

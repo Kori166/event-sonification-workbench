@@ -1,4 +1,4 @@
-"""Stage 4 workbench inspection and session-validation support."""
+"""Stage 4 workbench inspection and session validation support."""
 
 from .catalogue import InspectionCatalogue, load_session_catalogue
 from .inspection import InspectionError, InspectionModel
