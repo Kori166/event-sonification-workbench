@@ -26,8 +26,8 @@ data/processed/
 .local-fixtures/
 
 # Generated outputs
-outputs/*
-!outputs/README.md
+outputs/
+
 
 # Generated media
 *.wav
