@@ -10,7 +10,7 @@ The workbench is research infrastructure. It is **not** a validated accessibilit
 
 ## Try the Workbench
 
-### Hosted workbench
+### Hosted Workbench
 
 [**Open Live Workbench →**](https://event-sonification-workbench.onrender.com/)
 
@@ -35,7 +35,7 @@ The package is verified using its SHA-256 before being served. Dataset redistrib
 
 Render configuration is defined in `render.yaml`.
 
-### Full local workbench
+### Full Local Workbench
 
 The complete research workbench uses locally obtained MOT17 and KITTI Tracking media together with retained Stage 1-3 evidence packages. These large/private artefacts are deliberately not stored in Git.
 
@@ -43,7 +43,7 @@ See [Full Local Setup](#full-local-setup) below.
 
 ---
 
-## What the Workbench Does
+## What The Workbench Does
 
 The implemented research workflow is:
 
@@ -126,7 +126,7 @@ event-sonification-workbench/
 └── README.md
 ```
 
-## What Is Included in Git
+## What Is Included In Git
 
 The repository contains the material needed to inspect the implementation and its documented technical evidence:
 
@@ -192,7 +192,7 @@ Install the project and development dependencies:
 python -m pip install -e ".[dev]"
 ```
 
-## Run the Repository Tests
+## Run The Repository Tests
 
 Run linting and the normal test suite without private datasets:
 
@@ -243,7 +243,7 @@ Where:
 
 The `.env` file is ignored by Git and must not be committed.
 
-### Launch the local workbench
+### Launch The Local Workbench
 
 From the installed repository environment:
 
@@ -261,7 +261,7 @@ Before serving the interface, the command validates the retained Stage 1-3 evide
 
 The browser interface is read-only. It does not parse annotations, regenerate events, schedule new cues, render new audio or recalculate evaluation metrics.
 
-## Using the Inspection Workbench
+## Using The Inspection Workbench
 
 The workbench exposes the retained MOT17 and KITTI Tracking sessions through the same inspection architecture.
 
@@ -277,11 +277,11 @@ It provides:
 
 Selecting a cue or suppression pauses playback and seeks to the retained outcome time. Cue inspection includes its rendered sample range; suppression inspection shows the retained reason and has no Render stage.
 
-## Reproducing the Processing Pipeline
+## Reproducing The Processing Pipeline
 
 The commands below are the main processing path. Detailed contracts and field definitions are linked from the relevant documentation rather than duplicated here.
 
-### 1. Create validated event packages
+### 1. Create Validated Event Packages
 
 ```bash
 python -m event_sonification_workbench.cli mot17-package \
@@ -295,7 +295,7 @@ python -m event_sonification_workbench.cli kitti-package \
 
 See [`docs/data-model/output-package.md`](docs/data-model/output-package.md).
 
-### 2. Schedule cues and suppressions
+### 2. Schedule Cues And Suppressions
 
 ```bash
 python -m event_sonification_workbench.cli schedule-cues \
@@ -308,7 +308,7 @@ Each accepted valid event produces either one cue or one explicit suppression re
 
 See [`docs/data-model/sonification-preset.md`](docs/data-model/sonification-preset.md) and [`docs/data-model/cue-schedule.md`](docs/data-model/cue-schedule.md).
 
-### 3. Render deterministic audio
+### 3. Render Deterministic Audio
 
 ```bash
 python -m event_sonification_workbench.cli render-audio \
@@ -321,7 +321,7 @@ The baseline renderer produces stereo 44.1 kHz signed 16-bit PCM audio with dete
 
 See [`docs/data-model/audio-rendering.md`](docs/data-model/audio-rendering.md).
 
-### 4. Run technical evaluation
+### 4. Run Technical Evaluation
 
 A small committed synthetic oracle can be evaluated directly:
 
@@ -364,7 +364,7 @@ The implementation uses:
 
 Detailed evidence is recorded under [`docs/development/`](docs/development/) and [`docs/evaluation/`](docs/evaluation/).
 
-## Scope and Limitations
+## Scope And Limitations
 
 The completed research is deliberately bounded:
 
