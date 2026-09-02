@@ -19,21 +19,7 @@ The hosted read-only workbench provides one-click inspection of the two retained
 - **MOT17-02-DPM**
 - **KITTI Tracking sequence 0000**
 
-The deployment uses the verified retained evidence and bounded deployment package produced for the project. It provides convenient inspection of the research artefact and does not constitute additional usability, accessibility or perceptual evaluation.
-
-### Hosted Deployment
-
-The public Render deployment provides read-only inspection of the retained MOT17 and KITTI evaluation sessions. It does not regenerate research outputs.
-
-The bounded deployment package can be rebuilt with:
-
-```bash
-python scripts/build_hosted_workbench_bundle.py --acknowledge-media-redistribution
-```
-
-The package is verified using its SHA-256 before being served. Dataset redistribution terms must be reviewed before publishing source media.
-
-Render configuration is defined in `render.yaml`.
+The deployment uses the retained evidence and bounded deployment package produced for the project. It provides convenient inspection of the research artefact and does not constitute additional usability, accessibility or perceptual evaluation.
 
 ### Full Local Workbench
 
@@ -67,7 +53,7 @@ technical evaluation
 read-only inspection workbench
 ```
 
-The pipeline preserves source identity and provenance so that generated cues and suppressions can be traced back to the source annotation, configuration and rendered sample range.
+The pipeline preserves source identity and provenance so that generated cues and suppressions can be traced back to the source annotation, configuration and, for cues, rendered sample range.
 
 The bounded dataset cases used in the completed technical evaluation are:
 
@@ -76,15 +62,15 @@ The bounded dataset cases used in the completed technical evaluation are:
 
 ## Quick Access
 
-| Looking for | Location |
+| Looking For | Location |
 |---|---|
 | Workbench source code | [`src/event_sonification_workbench/`](src/event_sonification_workbench/) |
-| Dissertation working manuscript | [`docs/dissertation/working-manuscript.md`](docs/dissertation/working-manuscript.md) |
-| Dissertation chapters | [`docs/dissertation/chapters/`](docs/dissertation/chapters/) |
 | Canonical technical evaluation evidence | [`docs/evaluation/evidence/`](docs/evaluation/evidence/) |
 | Report-ready tables and figures | [`docs/evaluation/reporting/`](docs/evaluation/reporting/) |
 | Technical evaluation contract | [`docs/evaluation/technical-evaluation-contract-v0.1.0.md`](docs/evaluation/technical-evaluation-contract-v0.1.0.md) |
-| Common event schema documentation | [`docs/data-model/common-event-schema.md`](docs/data-model/common-event-schema.md) |
+| Common event schema and adapter contracts | [`docs/data-model/common-event-schema.md`](docs/data-model/common-event-schema.md) |
+| Sonification and rendering contract | [`docs/data-model/sonification-and-rendering.md`](docs/data-model/sonification-and-rendering.md) |
+| Workbench session contract | [`docs/data-model/workbench-session.md`](docs/data-model/workbench-session.md) |
 | Design decisions | [`docs/decisions/`](docs/decisions/) |
 | Project plan | [`docs/project-management/project-plan.md`](docs/project-management/project-plan.md) |
 | Progress log | [`docs/project-management/progress-log.md`](docs/project-management/progress-log.md) |
@@ -111,10 +97,9 @@ Stage 5 Phases A-D are complete. Remaining work is limited to researcher-control
 event-sonification-workbench/
 ├── configs/                         # schemas, mappings and renderer configuration
 ├── docs/
-│   ├── data-model/                  # technical contracts and formats
+│   ├── data-model/                  # consolidated technical contracts
 │   ├── decisions/                   # architecture and research decisions
 │   ├── development/                 # milestone and close-out evidence
-│   ├── dissertation/                # working manuscript, chapters and audits
 │   ├── evaluation/                  # canonical Stage 3 evidence and reporting outputs
 │   └── project-management/          # plan, progress, risks and stage records
 ├── src/event_sonification_workbench/
@@ -137,7 +122,7 @@ The repository contains the material needed to inspect the implementation and it
 - automated tests;
 - canonical Stage 3 technical evaluation reports;
 - audited report-ready tables and figures;
-- dissertation source material and audit records;
+- consolidated technical documentation;
 - design decisions and project-management evidence; and
 - path-free retained workbench session declarations.
 
@@ -272,14 +257,14 @@ It provides:
 - synchronised EVENT, CUE and SUPPRESS timeline lanes;
 - frame-scoped cue controls;
 - cue- and suppression-to-source provenance inspection;
-- rendered sample-range information; and
-- technical metrics projected directly from the verified Stage 3 report.
+- rendered sample-range information for cues; and
+- technical metrics projected directly from the retained Stage 3 report.
 
 Selecting a cue or suppression pauses playback and seeks to the retained outcome time. Cue inspection includes its rendered sample range; suppression inspection shows the retained reason and has no Render stage.
 
 ## Reproducing The Processing Pipeline
 
-The commands below are the main processing path. Detailed contracts and field definitions are linked from the relevant documentation rather than duplicated here.
+The commands below are the main processing path. Detailed contracts and field definitions are consolidated in the technical documentation rather than repeated here.
 
 ### 1. Create Validated Event Packages
 
@@ -293,7 +278,7 @@ python -m event_sonification_workbench.cli kitti-package \
   --output-directory outputs
 ```
 
-See [`docs/data-model/output-package.md`](docs/data-model/output-package.md).
+See [`docs/data-model/common-event-schema.md`](docs/data-model/common-event-schema.md).
 
 ### 2. Schedule Cues And Suppressions
 
@@ -306,7 +291,7 @@ python -m event_sonification_workbench.cli schedule-cues \
 
 Each accepted valid event produces either one cue or one explicit suppression record.
 
-See [`docs/data-model/sonification-preset.md`](docs/data-model/sonification-preset.md) and [`docs/data-model/cue-schedule.md`](docs/data-model/cue-schedule.md).
+See [`docs/data-model/sonification-and-rendering.md`](docs/data-model/sonification-and-rendering.md).
 
 ### 3. Render Deterministic Audio
 
@@ -319,7 +304,7 @@ python -m event_sonification_workbench.cli render-audio \
 
 The baseline renderer produces stereo 44.1 kHz signed 16-bit PCM audio with deterministic sample placement under the recorded configuration.
 
-See [`docs/data-model/audio-rendering.md`](docs/data-model/audio-rendering.md).
+See [`docs/data-model/sonification-and-rendering.md`](docs/data-model/sonification-and-rendering.md).
 
 ### 4. Run Technical Evaluation
 
@@ -364,6 +349,20 @@ The implementation uses:
 
 Detailed evidence is recorded under [`docs/development/`](docs/development/) and [`docs/evaluation/`](docs/evaluation/).
 
+## Hosted Deployment
+
+The public Render deployment provides read-only inspection of the retained MOT17 and KITTI evaluation sessions. It does not regenerate research outputs.
+
+The bounded deployment package can be rebuilt with:
+
+```bash
+python scripts/build_hosted_workbench_bundle.py --acknowledge-media-redistribution
+```
+
+The package is verified using its SHA-256 before being served. Dataset redistribution terms must be reviewed before publishing source media.
+
+Render configuration is defined in `render.yaml`.
+
 ## Scope And Limitations
 
 The completed research is deliberately bounded:
@@ -384,10 +383,8 @@ Participant evaluation, alternative mappings, density-control strategies, additi
 For deeper technical detail, begin with:
 
 - [`docs/data-model/common-event-schema.md`](docs/data-model/common-event-schema.md)
-- [`docs/data-model/mot17-adapter.md`](docs/data-model/mot17-adapter.md)
-- [`docs/data-model/kitti-tracking-adapter.md`](docs/data-model/kitti-tracking-adapter.md)
-- [`docs/data-model/sonification-preset.md`](docs/data-model/sonification-preset.md)
-- [`docs/data-model/audio-rendering.md`](docs/data-model/audio-rendering.md)
+- [`docs/data-model/sonification-and-rendering.md`](docs/data-model/sonification-and-rendering.md)
+- [`docs/data-model/workbench-session.md`](docs/data-model/workbench-session.md)
 - [`docs/evaluation/technical-evaluation-contract-v0.1.0.md`](docs/evaluation/technical-evaluation-contract-v0.1.0.md)
 - [`docs/development/stage-1-closeout.md`](docs/development/stage-1-closeout.md)
 - [`docs/development/stage-2-closeout.md`](docs/development/stage-2-closeout.md)
