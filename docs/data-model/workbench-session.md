@@ -2,207 +2,166 @@
 
 ## Purpose
 
-A workbench session records the deterministic identity of one compatible inspection chain spanning
-Stage 1 event data, Stage 2 cue and audio outputs and optional Stage 3 evaluation evidence. It does
-not contain raw dataset media or local absolute paths. Local paths are supplied separately when the
-session is opened.
+A workbench session identifies one retained inspection chain spanning Stage 1 events, Stage 2 cue/suppression and audio outputs, and optional Stage 3 technical evaluation evidence.
 
-The normative schema is
-`configs/workbench/workbench-session.schema.v0.1.0.json`.
+The session is a read-only inspection contract. It does not contain raw dataset media, regenerate research outputs or store machine-specific absolute paths.
 
-## Identity boundary
+The normative schema is:
 
-Two categories of information are deliberately separated.
+```text
+configs/workbench/workbench-session.schema.v0.1.0.json
+```
 
-**Deterministic content identity** includes the dataset and sequence, package run IDs, package and
-file SHA-256 values, preset and renderer identities and optional evaluation identity. These values
-contribute to `session_id`.
+## Identity And Runtime Bindings
 
-**Runtime bindings** locate packages, dataset media and optional repository evidence on the current
-machine. They do not contribute to `session_id` and are never returned in diagnostics. Supported
-runtime keys are:
+The contract separates deterministic content identity from local runtime locations.
 
-- `EVENT_PACKAGE_ROOT`: directory containing Stage 1 event-package run directories;
-- `CUE_PACKAGE_ROOT`: directory containing Stage 2 cue-package run directories;
-- `AUDIO_PACKAGE_ROOT`: directory containing Stage 2 audio-package run directories;
-- `OUTPUT_ROOT`: common-root fallback used when the three package types share one parent directory;
-- `MOT17_ROOT`: MOT17 dataset root;
-- `KITTI_TRACKING_ROOT`: KITTI Tracking dataset root; and
-- `REPOSITORY_ROOT`: optional root used to resolve a logical Stage 3 report path.
+Deterministic identity includes:
 
-If a package-specific root is supplied, it takes precedence for that package type. If it is omitted,
-`OUTPUT_ROOT` is used for that package type. Invalid explicit roots are rejected rather than silently
-replaced by the fallback.
+- dataset and sequence;
+- Stage 1 event-package identity and hashes;
+- Stage 2 cue-package identity and hashes;
+- Stage 2 audio-package identity and hashes;
+- preset and renderer identity;
+- optional Stage 3 evaluation identity.
 
-## Top-level fields
+These values contribute to the content-derived `session_id`.
 
-| Field | Type | Meaning | Session identity |
-|---|---|---|---|
-| `session_version` | string | Contract version. Fixed at `0.1.0`. | Yes |
-| `session_id` | string | Content-derived `session-<dataset>-<sequence>-<16 hex>` identity. | Derived |
-| `dataset` | string | `mot17` or `kitti_tracking`. | Yes |
-| `sequence` | string | Normalised logical sequence identifier used by the packages. | Yes |
-| `event_package` | object | Stage 1 package identity and exact file hashes. | Yes |
-| `cue_package` | object | Stage 2 cue-package identity, input link and exact file hashes. | Yes |
-| `audio_package` | object | Stage 2 audio identity, input link and exact file hashes. | Yes |
-| `evaluation` | object | Optional Stage 3 evaluation evidence. | Yes when available |
-| `configuration` | object | Preset and renderer identities used by the chain. | Yes |
-| `media` | object | Runtime dataset-media binding declaration. | No |
+Runtime bindings locate the retained packages and dataset media on the current machine. They do not contribute to `session_id` and are not exposed as provenance values. Supported bindings include:
 
-## Event package
+- `EVENT_PACKAGE_ROOT`;
+- `CUE_PACKAGE_ROOT`;
+- `AUDIO_PACKAGE_ROOT`;
+- `OUTPUT_ROOT` as a shared fallback;
+- `MOT17_ROOT`;
+- `KITTI_TRACKING_ROOT`;
+- `REPOSITORY_ROOT` for repository-held evaluation evidence.
 
-`event_package` identifies the verified Stage 1 package.
+Package-specific roots take precedence over `OUTPUT_ROOT` when supplied.
 
-| Field | Meaning |
+## Top-Level Structure
+
+| Field | Purpose |
 |---|---|
-| `run_id` | Content-derived Stage 1 run ID. |
-| `package_sha256` | SHA-256 identity derived from the complete package file-hash set. |
-| `format_version` | Stage 1 package format, fixed at `0.1.0`. |
-| `schema_version` | Common event schema, fixed at `0.2.0`. |
-| `events_sha256` | Exact SHA-256 of `events.json`. |
-| `events_csv_sha256` | Exact SHA-256 of `events.csv`. |
-| `run_metadata_sha256` | Exact SHA-256 of `run_metadata.json`. |
-| `provenance_log_sha256` | Exact SHA-256 of `provenance_log.json`. |
+| `session_version` | Identifies the session contract version. |
+| `session_id` | Content-derived retained-session identifier. |
+| `dataset` | Identifies `mot17` or `kitti_tracking`. |
+| `sequence` | Identifies the retained sequence. |
+| `event_package` | Declares the Stage 1 package identity. |
+| `cue_package` | Declares the Stage 2 cue/suppression package identity. |
+| `audio_package` | Declares the Stage 2 rendered-audio package identity. |
+| `evaluation` | Declares optional Stage 3 technical evaluation evidence. |
+| `configuration` | Declares preset and renderer identity. |
+| `media` | Declares runtime media requirements without storing local paths. |
 
-The Stage 1 loader remains authoritative for canonical serialisation, metadata consistency,
-validation status, deterministic ordering and the content-derived run ID.
+## Stage 1 Event Package
 
-## Cue package
+The event-package block records the retained Stage 1 run identifier, package identity, schema version and exact hashes for:
 
-`cue_package` identifies the verified Stage 2 scheduling package.
+- `events.json`;
+- `events.csv`;
+- `run_metadata.json`;
+- `provenance_log.json`.
 
-| Field | Meaning |
-|---|---|
-| `run_id` | Content-derived cue run ID. |
-| `package_sha256` | SHA-256 identity derived from all five cue-package file hashes. |
-| `format_version` | Cue-package format, fixed at `0.1.0`. |
-| `input_event_run_id` | Stage 1 run ID that the session expects the cue package to consume. |
-| `input_event_package_sha256` | Expected Stage 1 package identity. |
-| `cue_schedule_sha256` | Exact SHA-256 of `cue_schedule.json`. |
-| `cue_schedule_csv_sha256` | Exact SHA-256 of `cue_schedule.csv`. |
-| `cue_log_sha256` | Exact SHA-256 of `cue_log.json`. |
-| `suppression_log_sha256` | Exact SHA-256 of `suppression_log.json`. |
-| `sonification_metadata_sha256` | Exact SHA-256 of `sonification_metadata.json`. |
+The Stage 1 loader remains responsible for validating canonical serialisation, event ordering, package metadata, source provenance and the content-derived run identifier.
 
-The validator checks the declared input event identity against the independently verified Stage 1
-package and the input reference recorded by Stage 2 metadata.
+## Stage 2 Cue And Suppression Package
 
-## Audio package
+The cue-package block records:
 
-`audio_package` identifies the deterministic WAV-rendering package.
+- cue run identifier and package identity;
+- the Stage 1 input package identity it expects;
+- cue schedule hashes;
+- cue-log hash;
+- suppression-log hash;
+- sonification-metadata hash.
 
-| Field | Meaning |
-|---|---|
-| `run_id` | Content-derived audio run ID. |
-| `package_sha256` | SHA-256 identity derived from all three audio-package file hashes. |
-| `renderer_version` | Renderer version, fixed at `0.1.0`. |
-| `input_cue_run_id` | Expected cue-package run ID. |
-| `input_cue_package_sha256` | Expected cue-package identity. |
-| `cue_schedule_sha256` | Expected schedule hash carried into rendering. |
-| `wav_sha256` | Exact SHA-256 of `sonification.wav`. |
-| `render_log_sha256` | Exact SHA-256 of `render_log.json`. |
-| `renderer_metadata_sha256` | Exact SHA-256 of `renderer_metadata.json`. |
+The session validator checks that the declared Stage 1 identity matches the input identity recorded by Stage 2.
 
-The existing Stage 3 evidence-chain verifier is reused to check the audio package, WAV metadata,
-render bounds and cross-stage event-to-cue-to-render links.
+This preserves the explicit event-outcome relationship:
 
-## Evaluation block
+```text
+valid event
+→ cue
+or
+→ suppression
+```
 
-Evaluation evidence is optional.
+## Stage 2 Audio Package
 
-An unevaluated session contains only:
+The audio-package block records:
+
+- audio run identifier and package identity;
+- input cue-package identity;
+- cue-schedule hash;
+- WAV hash;
+- render-log hash;
+- renderer-metadata hash.
+
+The validation path checks the audio package against the retained cue package and verifies cue-to-render relationships and sample bounds.
+
+Suppressions have no audio-package record of their own because no waveform is generated for those event outcomes.
+
+## Evaluation Evidence
+
+Stage 3 evaluation evidence is optional at the contract level.
+
+An unevaluated session can declare:
 
 ```json
 {"available": false}
 ```
 
-This permits inspection of events, cues, suppressions and audio without implying that Stage 3
-metrics exist for that chain.
+A retained evaluated session instead records the logical evaluation-report reference and identity required by the workbench. The browser displays the retained report; it does not recalculate metrics.
 
-When `available` is `true`, the block additionally records the evaluation run ID, contract version,
-logical repository-relative report path, physical report SHA-256, referenced Stage 1 and Stage 2 run
-IDs, package identities and the principal input file hashes used by the Stage 3 report.
+## Configuration Identity
 
-The loader verifies the report against the versioned Stage 3 report schema and checks its dataset,
-sequence, evaluation run ID, contract version, input hashes and non-recursive output hash. Stage 3
-metrics are not recalculated by the session loader.
+The session records the sonification preset and audio renderer used by the retained chain, including their versions and hashes. This allows the workbench to display the exact configuration associated with a cue or suppression rather than relying on current default settings.
 
-## Configuration block
+## Media Boundary
 
-`configuration` records:
+Source media is bound at runtime and is not embedded in the session contract. This keeps the committed session declaration portable and avoids storing dataset copies or machine paths in Git.
 
-- `preset_name`;
-- `preset_version`;
-- `preset_sha256`;
-- `renderer_version`; and
-- `renderer_sha256`.
-
-These values must match the identities already present in the verified cue and audio packages.
-
-## Media block
-
-`media` declares how source imagery is located at runtime.
-
-| Field | Meaning |
-|---|---|
-| `binding` | Fixed at `runtime`. |
-| `root_environment` | `MOT17_ROOT` or `KITTI_TRACKING_ROOT`. |
-| `relative_path` | Safe POSIX-style path beneath that root leading to the sequence media directory. |
-
-The root value itself is never written into the session. For MOT17, the required environment name
-must be `MOT17_ROOT`; for KITTI Tracking it must be `KITTI_TRACKING_ROOT`. The Phase 1 loader checks
-that the resolved directory remains beneath the configured root and contains at least one regular
-file. Media-byte hashing is outside contract `0.1.0`.
-
-## Package runtime resolution
-
-Package storage is deliberately not encoded in `workbench-session.json`.
-
-For each package type, the validator resolves the declared `run_id` beneath its package-specific
-runtime root when supplied. Otherwise it resolves the run beneath `OUTPUT_ROOT`. This supports both
-the compact fixture layout used by committed tests and the retained Stage 2 evidence layout where
-event, cue and audio packages are stored under separate directories.
-
-A resolved package run directory must be a real directory beneath its declared root. Missing,
-invalid or symlinked runtime roots and run directories are rejected with path-free diagnostic codes.
-The package itself is then passed to the existing Stage 1 to 3 verification chain. Runtime roots are
-location metadata only and do not weaken package identity checks.
-
-## Session ID
-
-`session_id` has the form:
+The retained catalogue is defined by:
 
 ```text
-session-<dataset>-<sequence>-<16 hexadecimal characters>
+configs/workbench/retained-sessions.v0.1.0.json
 ```
 
-The suffix is the first 16 hexadecimal characters of SHA-256 over canonical JSON containing only
-identity-bearing session fields. The `media` block, local roots, current playback position, browser
-state, timestamps, machine names, usernames and random values are excluded.
+The completed workbench exposes the retained MOT17-02-DPM and KITTI Tracking 0000 cases through the same inspection interface.
 
-A session file whose stored `session_id` differs from the generated value is invalid.
+## Validation Boundary
 
-## Validation result
+A session must be validated before it is served. Validation checks include:
 
-`validate_workbench_session` returns a path-free structure:
+- session schema and supported versions;
+- package and file hashes;
+- cross-stage input identities;
+- dataset and sequence consistency;
+- preset and renderer identity;
+- cue and suppression provenance;
+- rendered cue sample ranges;
+- optional evaluation-report identity;
+- required source-media availability.
 
-```json
-{
-  "valid": true,
-  "session_id": "session-mot17-mot17-02-dpm-0123456789abcdef",
-  "components": {
-    "event_package": "verified",
-    "cue_package": "verified",
-    "audio_package": "verified",
-    "evaluation": "verified",
-    "media": "available"
-  },
-  "diagnostics": []
-}
-```
+A broken link prevents the retained chain from being treated as valid inspection evidence. Validation does not regenerate or repair any research output.
 
-Failures use stable codes such as `cue_event_package_mismatch`,
-`audio_cue_package_mismatch`, `hash_mismatch_cue_schedule`, `hash_mismatch_wav`,
-`event_package_runtime_root_unavailable`, `event_package_directory_unavailable` and
-`media_runtime_root_unavailable`. Diagnostics identify the component and field where useful but do
-not echo private path values.
+## Inspection Behaviour
+
+Once opened, the workbench provides read-only access to retained evidence including:
+
+- source frames and bounding boxes;
+- retained WAV playback;
+- synchronised event, cue and suppression timeline records;
+- selectable cues and suppressions;
+- source annotation provenance;
+- mapping/configuration identity;
+- rendered sample ranges for cues;
+- retained suppression reasons;
+- retained technical evaluation metrics.
+
+The workbench therefore acts as an inspection layer over previously generated evidence rather than as another processing stage.
+
+## Reproducibility Boundary
+
+The session contract makes the inspected evidence chain explicit and portable by recording logical identities and hashes separately from runtime storage paths. It supports verification that the same retained packages are being inspected, but does not by itself establish cross-platform byte identity or perceptual validity.
