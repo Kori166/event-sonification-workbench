@@ -1,4 +1,22 @@
-"""Deterministic evidence summaries for frozen technical-evaluation reports."""
+"""Purpose:
+
+Produce deterministic human readable summaries and selected traceability records from frozen
+technical evaluation reports. The module verifies report identity and selects representative,
+maximum error and peak overlap cases using explicit stable ordering rules.
+
+Technical References And Provenance:
+
+The evidence selection and presentation rules are project specific and operate only on validated
+reports produced under the frozen evaluation contract. No external analysis implementation was
+copied or adapted. Generated outputs are descriptive technical evidence rather than participant or
+perceptual evidence.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
 
 from __future__ import annotations
 

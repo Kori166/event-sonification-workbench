@@ -1,3 +1,20 @@
+"""Purpose:
+
+Protect deterministic PCM rendering, sample placement, clipping behaviour, package validation and
+exact repeat output under the frozen renderer configuration.
+
+Technical References And Provenance:
+
+WAVE and rounding references are attributed in audio_renderer.py. Expected signal and package
+behaviour is project specific and uses synthetic fixtures rather than participant evidence.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
+
 import copy
 import json
 import math

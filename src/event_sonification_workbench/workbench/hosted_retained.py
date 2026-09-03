@@ -1,4 +1,24 @@
-"""Public hosted entry point for the verified retained MOT17 and KITTI sessions."""
+"""Purpose:
+
+Start the public inspection service for the verified retained MOT17 and KITTI sessions. The entry
+point obtains the configured deployment bundle, verifies its SHA-256, extracts it to temporary
+storage, validates the retained catalogue and only then binds the HTTP server.
+
+Technical References And Provenance:
+
+Render (no date) 'Web Services' [online]. Available from:
+https://render.com/docs/web-services
+
+Used for the public host binding and PORT environment contract represented by render.yaml. Startup,
+bundle verification and the absence of a synthetic fallback are project specific fail closed
+controls.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
 
 from __future__ import annotations
 

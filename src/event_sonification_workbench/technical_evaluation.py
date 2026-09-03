@@ -1,4 +1,28 @@
-"""Versioned deterministic technical evaluation for event-to-audio evidence chains."""
+"""Purpose:
+
+Evaluate a verified event to audio evidence chain under the frozen technical evaluation contract.
+The module measures event accounting, eligible coverage, timing alignment, traceability, cue
+density, overlap and recorded same environment repeatability. It does not calculate participant,
+perceptual, accessibility, navigation or safety outcomes.
+
+Technical References And Provenance:
+
+JSON Schema (2022) 'JSON Schema Draft 2020-12' [online]. Available from:
+https://json-schema.org/draft/2020-12
+
+python-jsonschema (no date) 'Schema Validation' [online]. Available from:
+https://python-jsonschema.readthedocs.io/en/stable/validate/
+
+Used to validate the evaluation contract and resulting report structures. Metric definitions,
+interval handling, tie rules and claim boundaries are project specific and are defined by
+configs/evaluation/technical-evaluation-contract.v0.1.0.json.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
 
 from __future__ import annotations
 

@@ -1,4 +1,26 @@
-"""Headless validation for deterministic Stage 4 workbench inspection sessions."""
+"""Purpose:
+
+Open and validate a retained workbench session before any inspection data is exposed. The module
+resolves declared runtime roots, verifies configuration and package hashes, checks cross stage
+identity, and returns path free diagnostics when a session is unavailable or inconsistent.
+
+Technical References And Provenance:
+
+JSON Schema (2022) 'JSON Schema Draft 2020-12' [online]. Available from:
+https://json-schema.org/draft/2020-12
+
+python-jsonschema (no date) 'Schema Validation' [online]. Available from:
+https://python-jsonschema.readthedocs.io/en/stable/validate/
+
+Used to validate retained session declarations. Binding rules, required identities and the fail
+closed inspection boundary are project specific requirements of the workbench session contract.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
 
 from __future__ import annotations
 

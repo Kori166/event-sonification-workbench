@@ -1,4 +1,30 @@
-"""Verified deterministic assembly of Stage 1/2 packages for technical evaluation."""
+"""Purpose:
+
+Verify and assemble the retained event, cue and audio packages into one deterministic technical
+evaluation input. The module checks package identity, cross stage links, repeat package equality,
+configuration hashes and WAVE metadata before evaluation is allowed to proceed.
+
+Technical References And Provenance:
+
+JSON Schema (2022) 'JSON Schema Draft 2020-12' [online]. Available from:
+https://json-schema.org/draft/2020-12
+
+python-jsonschema (no date) 'Schema Validation' [online]. Available from:
+https://python-jsonschema.readthedocs.io/en/stable/validate/
+
+Python Software Foundation (no date) 'wave — Read and write WAV files' [online]. Available from:
+https://docs.python.org/3/library/wave.html
+
+Used for schema validation and independent inspection of the retained PCM WAVE properties. Package
+membership, identity and cross stage consistency checks are project specific requirements of the
+frozen evaluation protocol.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
 
 from __future__ import annotations
 

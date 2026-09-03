@@ -1,4 +1,21 @@
-"""Exact deterministic comparison for existing event, cue and audio packages."""
+"""Purpose:
+
+Compare two existing event, cue or audio packages using exact bytes and independently calculated
+SHA-256 values. The module recognises only complete known package contracts and returns a path free,
+deterministically ordered comparison report.
+
+Technical References And Provenance:
+
+Package recognition and comparison reporting are project specific reproducibility controls. Hashing
+is delegated to the project provenance module. No external comparison implementation was copied or
+adapted.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
 
 from __future__ import annotations
 

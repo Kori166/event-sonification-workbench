@@ -1,123 +1,87 @@
 /*
   Purpose:
-  JavaScript for the read-only workbench interface.
 
-  This file loads retained sonification sessions and synchronises the
-  source frames, event overlays, generated audio, timeline, technical
-  metrics and retained cue/suppression provenance information.
+  JavaScript for the read only workbench interface. It loads retained sessions,
+  displays source frames and event overlays, plays retained generated audio,
+  presents timeline information and technical metrics, and supports inspection
+  of cue and suppression provenance.
 
-  The interface does not generate research results. It displays outputs
-  already produced and retained by the processing and evaluation pipeline.
+  The interface does not generate research results. It displays outputs already
+  produced and retained by the processing and evaluation pipeline.
 
 
   Technical References And Provenance:
 
   MDN Web Docs (no date) 'Fetch API' [online]. Available from:
   https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
-  Used for:
-  - requesting session metadata
-  - loading frame records
-  - loading timeline windows
-  - loading technical evaluation results
-  - retrieving cue and suppression provenance records
 
   MDN Web Docs (no date) 'URL' [online]. Available from:
   https://developer.mozilla.org/en-US/docs/Web/API/URL
-  Used for:
-  - constructing API request URLs
-  - adding the selected session_id query parameter without manual
-    string concatenation
-
-  MDN Web Docs (no date) 'HTMLMediaElement' [online]. Available from:
-  https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement
-  Used for:
-  - WAV playback
-  - reading and setting the current playback time
-  - play and pause controls
-  - audio muting
-  - synchronising the visual inspection interface with the audio
-
-  MDN Web Docs (no date) 'Window: requestAnimationFrame() method'
-  [online]. Available from:
-  https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame
-  Used for:
-  - keeping the playback position, displayed frame, timeline cursor
-    and selected evidence synchronised while audio is playing
-
-  MDN Web Docs (no date) 'Canvas API' [online]. Available from:
-  https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API
-  Used for:
-  - drawing the synchronised event, cue and suppression timeline
-  - drawing frame boundaries
-  - drawing the current playback position
-  - highlighting the current frame and selected outcome
-
-  MDN Web Docs (no date) 'SVG' [online]. Available from:
-  https://developer.mozilla.org/en-US/docs/Web/SVG
-  Used for:
-  - drawing event bounding boxes over source video frames
-  - displaying object class and track labels
-  - making represented and suppressed events selectable from the image overlay
-
-  MDN Web Docs (no date) 'Document.createElementNS()' [online].
-  Available from:
-  https://developer.mozilla.org/en-US/docs/Web/API/Document/createElementNS
-  Used for:
-  - creating SVG groups, rectangles and text labels for the
-    frame-level event overlay
-
-  MDN Web Docs (no date) 'Image() constructor' [online]. Available from:
-  https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image
-  Used for:
-  - preloading upcoming source frames
-  - reducing visible delays when stepping through or playing
-    consecutive frames
 
   MDN Web Docs (no date) 'Promise' [online]. Available from:
   https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+
   Used for:
-  - asynchronous API requests
-  - waiting for source images to load
-  - loading independent session components concurrently
+
+  1. requesting retained session, frame, timeline, evaluation and provenance data
+  2. adding the selected session_id to API request URLs
+  3. loading independent session components and source images concurrently
+
+  MDN Web Docs (no date) 'HTMLMediaElement' [online]. Available from:
+  https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement
+
+  MDN Web Docs (no date) 'Window: requestAnimationFrame() method' [online].
+  Available from:
+  https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame
+
+  Used for:
+
+  1. retained WAVE playback, seeking, play, pause and muting
+  2. synchronising audio time with the displayed frame, timeline and evidence
+
+  MDN Web Docs (no date) 'Canvas API' [online]. Available from:
+  https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API
+
+  MDN Web Docs (no date) 'SVG' [online]. Available from:
+  https://developer.mozilla.org/en-US/docs/Web/SVG
+
+  MDN Web Docs (no date) 'Document.createElementNS()' [online]. Available from:
+  https://developer.mozilla.org/en-US/docs/Web/API/Document/createElementNS
+
+  MDN Web Docs (no date) 'Image() constructor' [online]. Available from:
+  https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image
+
+  Used for:
+
+  1. drawing timeline lanes, frame boundaries, playback position and selections
+  2. creating selectable SVG event boxes and labels over source frames
+  3. preloading upcoming source images
 
   MDN Web Docs (no date) 'Map' [online]. Available from:
   https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
-  Used for:
-  - tracking source-frame image preload operations by frame number
 
   MDN Web Docs (no date) 'Set' [online]. Available from:
   https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
-  Used for:
-  - recording event identifiers that have already raised an
-    evidence-integrity warning
-  - preventing the same anomaly from being reported repeatedly
 
-  MDN Web Docs (no date) 'EventTarget.addEventListener()' [online].
-  Available from:
+  MDN Web Docs (no date) 'EventTarget.addEventListener()' [online]. Available from:
   https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener
-  Used for:
-  - playback controls
-  - frame stepping
-  - timeline interaction
-  - cue and suppression selection
-  - session selection
-  - keyboard controls
-  - responsive timeline resizing
 
   MDN Web Docs (no date) 'KeyboardEvent' [online]. Available from:
   https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent
-  Used for:
-  - Space-bar play/pause control
-  - left/right frame navigation
-  - keyboard activation of selectable event overlays
 
-  Project-Specific Implementation:
-  The session state model, timeline-window logic, event/cue/suppression
-  display, cue and suppression trace structures, dataset-specific labels,
-  technical metric selection and evidence-integrity behaviour are specific
-  to this MSc project and its retained API outputs.
+  Used for:
+
+  1. tracking frame preload work and previously reported integrity anomalies
+  2. handling playback, frame, timeline, session and resize interactions
+  3. supporting Space bar playback, arrow navigation and overlay activation
+
+  Session state, timeline windows, trace structures, dataset labels, metric
+  selection and evidence integrity behaviour are project specific. No external
+  interface implementation was copied or adapted.
+
 
   AI Assistance:
+
   Generative AI was used during development to support code review,
   debugging and refactoring. Suggested changes were reviewed thoroughly
   prior to use.

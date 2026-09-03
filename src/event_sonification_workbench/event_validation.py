@@ -1,4 +1,27 @@
-"""Structural and semantic validation for common event records and collections."""
+"""Purpose:
+
+Validate common event records against the versioned JSON Schema and apply project specific semantic
+checks across individual records and ordered collections. The module reports deterministic errors
+and warnings without changing source events.
+
+Technical References And Provenance:
+
+JSON Schema (2022) 'JSON Schema Draft 2020-12' [online]. Available from:
+https://json-schema.org/draft/2020-12
+
+python-jsonschema (no date) 'Schema Validation' [online]. Available from:
+https://python-jsonschema.readthedocs.io/en/stable/validate/
+
+Used for Draft 2020-12 structural validation and deterministic traversal of validation errors. The
+geometry, ordering, source provenance and collection checks are project specific rules defined by
+the common event contract.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
 
 from __future__ import annotations
 

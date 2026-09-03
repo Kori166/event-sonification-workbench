@@ -1,4 +1,36 @@
-"""Verified cue-package loading and deterministic stereo PCM WAV rendering."""
+"""Purpose:
+
+Verify a cue package and render its scheduled cues as deterministic stereo signed 16 bit PCM WAVE
+audio. The renderer records exact sample placement, applies the frozen oscillator and envelope
+policy, and emits metadata and logs that connect the audio bytes to their configuration and cues.
+
+Technical References And Provenance:
+
+Microsoft (no date) 'Resource Interchange File Format (RIFF)' [online]. Available from:
+https://learn.microsoft.com/en-us/windows/win32/xaudio2/resource-interchange-file-format--riff-
+
+Used for the RIFF and WAVE container structure written by the renderer.
+
+Python Software Foundation (no date) 'struct — Interpret bytes as packed binary data' [online].
+Available from:
+https://docs.python.org/3/library/struct.html
+
+Used for explicit little endian RIFF headers and signed PCM sample packing.
+
+Python Software Foundation (no date) 'decimal — Decimal fixed point and floating point arithmetic'
+[online]. Available from:
+https://docs.python.org/3/library/decimal.html
+
+Used for the recorded ROUND_HALF_UP conversion from seconds to sample positions. Waveform synthesis,
+clipping, channel mapping and render logging are project specific implementations of the frozen
+renderer contract.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
 
 from __future__ import annotations
 

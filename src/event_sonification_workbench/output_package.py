@@ -1,4 +1,21 @@
-"""Deterministic JSON, CSV, metadata and provenance output packages."""
+"""Purpose:
+
+Write validated event collections as deterministic JSON, CSV, run metadata and provenance logs.
+The module enforces exact package membership, stable ordering and logical source paths so generated
+packages remain portable and do not disclose local dataset locations.
+
+Technical References And Provenance:
+
+Package membership, ordering, path restrictions and serialisation fields are project specific
+contracts. SHA-256 and canonical JSON operations are supplied by the project provenance module. No
+external package writer implementation was copied or adapted.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
 
 from __future__ import annotations
 

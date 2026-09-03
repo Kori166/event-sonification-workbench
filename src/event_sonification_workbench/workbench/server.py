@@ -1,4 +1,29 @@
-"""Read-only service for the synchronised inspection interface."""
+"""Purpose:
+
+Serve the read only inspection interface and its bounded session, frame, timeline, trace, metric,
+image and audio endpoints. The service supports byte range audio playback and applies restrictive
+response headers. It does not expose arbitrary files or generate research results.
+
+Technical References And Provenance:
+
+Python Software Foundation (no date) 'http.server — HTTP servers' [online]. Available from:
+https://docs.python.org/3/library/http.server.html
+
+Used for the local threaded HTTP service and request handler lifecycle.
+
+Internet Engineering Task Force (2022) 'RFC 9110: HTTP Semantics, Range Requests' [online].
+Available from:
+https://www.rfc-editor.org/rfc/rfc9110.html#name-range-requests
+
+Used for single byte range parsing, 206 responses, Content-Range and 416 failure behaviour. Routes,
+error codes, security headers and bounded model access are project specific.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
 
 from __future__ import annotations
 
@@ -13,6 +38,7 @@ from typing import Any
 from urllib.parse import parse_qs, unquote, urlsplit
 
 from .catalogue import InspectionCatalogue
+from .hosted_bundle import ATTRIBUTION_TEXT
 from .inspection import InspectionError, InspectionModel
 
 _FRAME_ROUTE = re.compile(r"^/api/frames/(?P<frame>[0-9]+)$")
@@ -80,6 +106,17 @@ def inspection_handler(catalogue: InspectionCatalogue) -> type[BaseHTTPRequestHa
             self._security_headers()
             self.send_header("Cache-Control", "no-store")
             self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            if self.command != "HEAD":
+                self.wfile.write(body)
+
+        def _send_text(self, value: str, status: HTTPStatus = HTTPStatus.OK) -> None:
+            body = value.encode("utf-8")
+            self.send_response(status)
+            self._security_headers()
+            self.send_header("Cache-Control", "no-store")
+            self.send_header("Content-Type", "text/plain; charset=utf-8")
             self.send_header("Content-Length", str(len(body)))
             self.end_headers()
             if self.command != "HEAD":
@@ -167,6 +204,9 @@ def inspection_handler(catalogue: InspectionCatalogue) -> type[BaseHTTPRequestHa
                 return
             if path == "/api/sessions":
                 self._send_json(catalogue.summary())
+                return
+            if path == "/dataset-attribution":
+                self._send_text(ATTRIBUTION_TEXT)
                 return
             query = parse_qs(request.query, keep_blank_values=True)
             session_values = query.get("session_id")

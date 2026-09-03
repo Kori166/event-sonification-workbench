@@ -1,3 +1,20 @@
+"""Purpose:
+
+Protect deterministic generation, claim mapping, formatting and hash auditing for reporting
+derivatives of canonical Stage 3 evidence.
+
+Technical References And Provenance:
+
+Expected outputs are governed by the project reporting manifest and canonical report identities.
+The tests do not modify retained evidence.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
+
 import csv
 import json
 from pathlib import Path

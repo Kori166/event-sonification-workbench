@@ -1,3 +1,20 @@
+"""Purpose:
+
+Protect retained session validation, path privacy, hash checks, configuration identity and failure
+diagnostics before workbench inspection is permitted.
+
+Technical References And Provenance:
+
+Expected behaviour is project specific and defined by the workbench session contract. Fault cases
+are constructed test inputs rather than research evidence.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
+
 import copy
 import json
 import re

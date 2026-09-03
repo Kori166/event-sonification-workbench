@@ -1,4 +1,21 @@
-"""Command-line entry point for the workbench."""
+"""Purpose:
+
+Expose the researcher facing commands for fixture preparation, dataset conversion, event package
+validation, cue scheduling, audio rendering, package comparison, technical evaluation, reporting
+evidence and local workbench inspection.
+
+Technical References And Provenance:
+
+Command structure, validation boundaries and JSON status output are project specific. The module
+delegates scientific and reproducibility behaviour to the corresponding project modules rather than
+reimplementing it at the command line boundary.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
 
 from __future__ import annotations
 

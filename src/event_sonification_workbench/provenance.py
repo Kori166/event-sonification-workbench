@@ -1,4 +1,25 @@
-"""Stable hashing utilities used by event and provenance records."""
+"""Purpose:
+
+Provide stable SHA-256 hashing and deterministic UTF-8 JSON serialisation for package identities,
+configuration identities and provenance records. Non finite numbers are rejected so invalid JSON
+values cannot silently enter a retained identity.
+
+Technical References And Provenance:
+
+Python Software Foundation (no date) 'hashlib — Secure hashes and message digests' [online].
+Available from:
+https://docs.python.org/3/library/hashlib.html
+
+Used for streamed file hashing and in memory SHA-256 calculation. The canonical JSON representation
+is a deliberately limited project contract based on sorted keys and compact separators. It is not
+claimed to implement an external JSON canonicalisation standard.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
 
 from __future__ import annotations
 

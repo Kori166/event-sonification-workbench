@@ -1,4 +1,21 @@
-"""Read-only, indexed projections for one already validated workbench session."""
+"""Purpose:
+
+Create read only indexed projections over one validated retained session. The model supplies frame,
+timeline, metric, cue, suppression and source provenance views without generating or modifying
+research outputs.
+
+Technical References And Provenance:
+
+The indexes, timeline windows, trace structures and integrity checks are project specific inspection
+logic. They operate only on records accepted by the workbench session validator. No external data
+viewer implementation was copied or adapted.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
 
 from __future__ import annotations
 

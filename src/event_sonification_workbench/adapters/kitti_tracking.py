@@ -1,4 +1,43 @@
-"""KITTI Tracking annotation parsing and common event normalisation."""
+"""Purpose:
+
+Parse KITTI Tracking annotations and convert valid observations into the common event schema. The
+adapter preserves class, truncation, occlusion, observation angle, three dimensional geometry and
+optional score fields. It also retains DontCare observations for explicit downstream suppression
+and obtains image dimensions from PNG headers.
+
+Technical References And Provenance:
+
+KITTI Vision Benchmark Suite (no date) 'Object Tracking Evaluation 2012' [online]. Available from:
+https://www.cvlibs.net/datasets/kitti/eval_tracking.php
+
+Used for interpreting tracking row fields, object classes, bounding boxes, truncation, occlusion,
+DontCare regions and optional result scores.
+
+KITTI Vision Benchmark Suite (no date) 'Sensor Setup' [online]. Available from:
+https://www.cvlibs.net/datasets/kitti/setup.php
+
+Used for the documented tracking frame rate applied when no explicit override is supplied.
+
+Geiger, Lenz and Urtasun (2012) 'Are we ready for Autonomous Driving? The KITTI Vision Benchmark
+Suite' [online]. Available from:
+https://www.cvlibs.net/publications/Geiger2012CVPR.pdf
+
+Used for dataset and benchmark context.
+
+World Wide Web Consortium (2025) 'Portable Network Graphics (PNG) Specification, Third Edition'
+[online]. Available from:
+https://www.w3.org/TR/png-3/
+
+Used for reading image width and height from the PNG signature and IHDR fields. Parsing,
+normalisation, validation and provenance behaviour are project specific. No TrackEval code is used
+or adapted.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
 
 from __future__ import annotations
 

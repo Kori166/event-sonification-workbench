@@ -1,4 +1,27 @@
-"""Versioned sonification-preset loading and structured validation."""
+"""Purpose:
+
+Load and validate a versioned sonification preset, including filter rules, mapping methods, numeric
+ranges, class modifiers and supported event schema identity. The validated object is immutable and
+is used by cue scheduling without silently supplying missing research parameters.
+
+Technical References And Provenance:
+
+JSON Schema (2022) 'JSON Schema Draft 2020-12' [online]. Available from:
+https://json-schema.org/draft/2020-12
+
+python-jsonschema (no date) 'Schema Validation' [online]. Available from:
+https://python-jsonschema.readthedocs.io/en/stable/validate/
+
+Used for structural validation of the preset before project specific consistency checks are
+applied. The baseline mapping values and acceptance rules come from the frozen project
+configuration, not from an external implementation.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
 
 from __future__ import annotations
 

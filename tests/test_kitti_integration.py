@@ -1,3 +1,20 @@
+"""Purpose:
+
+Protect the real KITTI Tracking adapter path from attributed fixture extraction through common
+event validation and provenance checks.
+
+Technical References And Provenance:
+
+KITTI semantics are exercised through the adapter contract and attributed in kitti_tracking.py.
+Test expectations are project specific and use the researcher configured private dataset.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
+
 import os
 from pathlib import Path
 

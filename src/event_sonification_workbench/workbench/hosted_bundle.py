@@ -1,4 +1,29 @@
-"""Deterministic packaging and verified loading for the hosted retained workbench."""
+"""Purpose:
+
+Build, acquire, verify and extract the bounded deployment bundle used by the hosted retained
+workbench. The module includes dataset attribution, rejects unsafe archive entries, enforces size
+limits and verifies every declared session before it can be served.
+
+Technical References And Provenance:
+
+Python Software Foundation (no date) 'zipfile — Work with ZIP archives' [online]. Available from:
+https://docs.python.org/3/library/zipfile.html
+
+Used for deterministic ZIP creation, archive inspection and controlled extraction.
+
+Python Software Foundation (no date) 'urllib.request — Extensible library for opening URLs'
+[online]. Available from:
+https://docs.python.org/3/library/urllib.request.html
+
+Used to download a configured HTTPS bundle when no local bundle is supplied. Archive safety rules,
+bundle contents, size limits, hash verification and fail closed behaviour are project specific.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
 
 from __future__ import annotations
 

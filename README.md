@@ -4,7 +4,7 @@ A reproducible workbench for converting annotated video tracking data into norma
 
 This repository contains the MSc Data Science project:
 
-**A Reproducible Workbench for Event-Based Sonification of Annotated Video Datasets**
+**A Reproducible Workbench for Event Based Sonification of Annotated Video Datasets**
 
 The workbench is research infrastructure. It is **not** a validated accessibility, navigation, usability or assistive system.
 
@@ -20,6 +20,10 @@ The hosted read-only workbench provides one-click inspection of the two retained
 - **KITTI Tracking sequence 0000**
 
 The deployment uses the retained evidence and bounded deployment package produced for the project. It provides convenient inspection of the research artefact and does not constitute additional usability, accessibility or perceptual evaluation.
+
+Availability depends on the external Render service. If the hosted service is sleeping or unavailable,
+use the full local workbench described below. The deployment verifies and extracts a 234 MiB retained
+bundle before its health endpoint becomes available, so a cold start can be slow.
 
 ### Full Local Workbench
 
@@ -64,6 +68,7 @@ The bounded dataset cases used in the completed technical evaluation are:
 
 | Looking For | Location |
 |---|---|
+| Marker documentation route | [`docs/README.md`](docs/README.md) |
 | Workbench source code | [`src/event_sonification_workbench/`](src/event_sonification_workbench/) |
 | Canonical technical evaluation evidence | [`docs/evaluation/evidence/`](docs/evaluation/evidence/) |
 | Report-ready tables and figures | [`docs/evaluation/reporting/`](docs/evaluation/reporting/) |
@@ -77,6 +82,37 @@ The bounded dataset cases used in the completed technical evaluation are:
 | Risk register | [`docs/project-management/risk-register.md`](docs/project-management/risk-register.md) |
 | Stage checklists | [`docs/project-management/`](docs/project-management/) |
 | Automated tests and fixtures | [`tests/`](tests/) |
+| Third party dataset attribution | [`THIRD_PARTY_DATASET_ATTRIBUTION.md`](THIRD_PARTY_DATASET_ATTRIBUTION.md) |
+
+### Marker Inspection Route
+
+For a concise inspection of the submitted artefact:
+
+1. Read the project boundary and architecture on this page.
+2. Review the [common event schema and adapter contract](docs/data-model/common-event-schema.md).
+3. Review the [sonification and rendering contract](docs/data-model/sonification-and-rendering.md).
+4. Inspect the [technical evaluation summary](docs/evaluation/stage-3-cross-dataset-technical-summary.md)
+   and [canonical evidence](docs/evaluation/evidence/).
+5. Open the [retained session contract](docs/data-model/workbench-session.md), then inspect the
+   browser workbench locally or through the hosted deployment when available.
+6. Use the [documentation index](docs/README.md) for decisions and project management evidence.
+
+### Direct Component Map
+
+| Component | Implementation |
+|---|---|
+| MOT17 adapter | [`src/event_sonification_workbench/adapters/mot17.py`](src/event_sonification_workbench/adapters/mot17.py) |
+| KITTI Tracking adapter | [`src/event_sonification_workbench/adapters/kitti_tracking.py`](src/event_sonification_workbench/adapters/kitti_tracking.py) |
+| Common event validation | [`src/event_sonification_workbench/event_validation.py`](src/event_sonification_workbench/event_validation.py) |
+| Sonification preset validation | [`src/event_sonification_workbench/sonification/preset.py`](src/event_sonification_workbench/sonification/preset.py) |
+| Cue scheduling and suppression | [`src/event_sonification_workbench/sonification/scheduler.py`](src/event_sonification_workbench/sonification/scheduler.py) |
+| Deterministic audio renderer | [`src/event_sonification_workbench/sonification/audio_renderer.py`](src/event_sonification_workbench/sonification/audio_renderer.py) |
+| Technical evaluation input | [`src/event_sonification_workbench/technical_evaluation_input.py`](src/event_sonification_workbench/technical_evaluation_input.py) |
+| Technical evaluator | [`src/event_sonification_workbench/technical_evaluation.py`](src/event_sonification_workbench/technical_evaluation.py) |
+| Reporting evidence generator | [`src/event_sonification_workbench/reporting_evidence.py`](src/event_sonification_workbench/reporting_evidence.py) |
+| Retained session validation | [`src/event_sonification_workbench/workbench/session.py`](src/event_sonification_workbench/workbench/session.py) |
+| Inspection model and service | [`src/event_sonification_workbench/workbench/inspection.py`](src/event_sonification_workbench/workbench/inspection.py), [`server.py`](src/event_sonification_workbench/workbench/server.py) |
+| Browser interface | [`index.html`](src/event_sonification_workbench/workbench/static/index.html), [`app.js`](src/event_sonification_workbench/workbench/static/app.js) |
 
 ## Project Status
 
@@ -87,9 +123,12 @@ The bounded dataset cases used in the completed technical evaluation are:
 | 2. Sonification | Complete |
 | 3. Technical evaluation | Complete |
 | 4. Artefact assembly and release | Complete |
-| 5. Reporting and viva preparation | In progress |
+| 5. Reporting and viva preparation | Report and artefact prepared for submission; viva preparation ongoing |
 
-Stage 5 Phases A-D are complete. Remaining work is limited to researcher-controlled review, viva preparation, final submission packaging and submission. Full stage history is recorded in [`docs/project-management/project-plan.md`](docs/project-management/project-plan.md).
+The technical artefact and technical evaluation are complete. The report and artefact are prepared
+for submission. Remaining activity is researcher controlled submission and viva preparation. Full
+historical stage status is preserved in
+[`docs/project-management/project-plan.md`](docs/project-management/project-plan.md).
 
 ## Repository Structure
 
@@ -106,6 +145,7 @@ event-sonification-workbench/
 │   └── workbench/                   # read-only inspection service and browser UI
 ├── tests/                           # unit, contract, fixture and integration tests
 ├── .env.example
+├── THIRD_PARTY_DATASET_ATTRIBUTION.md
 ├── pyproject.toml
 └── README.md
 ```
@@ -348,6 +388,18 @@ The implementation uses:
 
 Detailed evidence is retained under [`docs/evaluation/`](docs/evaluation/) and [`docs/project-management/`](docs/project-management/), with final technical contracts under [`docs/data-model/`](docs/data-model/).
 
+The retained Stage 3 evaluation environment is recorded in
+[`configs/evaluation/stage-3-real-data-environment-v0.1.0.json`](configs/evaluation/stage-3-real-data-environment-v0.1.0.json).
+It records Windows on AMD64, CPython 3.14.3, jsonschema 4.26.0, pytest 9.1.1 and Ruff 0.16.1.
+The byte identity claim is limited to that recorded environment. CI separately exercises the public
+test path on Python 3.11.
+
+The retained reporting package records generator commit
+`21f8cfb163935bce3faf899eefbdaf1a224ceee4`. To reproduce its exact retained bytes, pass that value
+through `generate-stage3-report-evidence --generator-commit`. Omitting the option selects the commit
+that most recently changed the generator and therefore changes the manifest identity even when the
+derived values are unchanged.
+
 ## Hosted Deployment
 
 The public Render deployment provides read-only inspection of the retained MOT17 and KITTI evaluation sessions. It does not regenerate research outputs.
@@ -358,9 +410,26 @@ The bounded deployment package can be rebuilt with:
 python scripts/build_hosted_workbench_bundle.py --acknowledge-media-redistribution
 ```
 
-The package is verified using its SHA-256 before being served. Dataset redistribution terms must be reviewed before publishing source media.
+The package is verified using its SHA-256 before being served. Dataset redistribution terms must be reviewed before publishing source media. The marker visible attribution record is
+[`THIRD_PARTY_DATASET_ATTRIBUTION.md`](THIRD_PARTY_DATASET_ATTRIBUTION.md), and a running workbench
+exposes the same deployment notice at `/dataset-attribution`.
 
-Render configuration is defined in `render.yaml`.
+Render configuration is defined in [`render.yaml`](render.yaml). Deployment requires the externally
+configured `WORKBENCH_BUNDLE_URL` and `WORKBENCH_BUNDLE_SHA256` values. The process downloads and
+verifies the complete bundle, validates both retained sessions, binds to Render's `PORT`, and then
+exposes `/api/sessions` as its health endpoint. Startup fails closed if the source, hash, archive or
+session evidence is unavailable or inconsistent.
+
+Check availability with:
+
+```bash
+curl --fail --show-error https://event-sonification-workbench.onrender.com/api/sessions
+```
+
+At the repository cleanup validation on 3 September 2026, a cold request to `/api/sessions`
+returned HTTP 200 after 192.3 seconds. This verified the deployed service and both retained session
+summaries, but also confirmed that a cold start can exceed three minutes. The local inspection route
+remains available when immediate access is required.
 
 ## Scope And Limitations
 
@@ -381,6 +450,7 @@ Participant evaluation, alternative mappings, density-control strategies, additi
 
 For deeper technical detail, begin with:
 
+- [`docs/README.md`](docs/README.md)
 - [`docs/data-model/common-event-schema.md`](docs/data-model/common-event-schema.md)
 - [`docs/data-model/sonification-and-rendering.md`](docs/data-model/sonification-and-rendering.md)
 - [`docs/data-model/workbench-session.md`](docs/data-model/workbench-session.md)
@@ -388,6 +458,7 @@ For deeper technical detail, begin with:
 - [`docs/evaluation/stage-3-cross-dataset-technical-summary.md`](docs/evaluation/stage-3-cross-dataset-technical-summary.md)
 - [`docs/project-management/project-plan.md`](docs/project-management/project-plan.md)
 - [`docs/project-management/progress-log.md`](docs/project-management/progress-log.md)
+- [`THIRD_PARTY_DATASET_ATTRIBUTION.md`](THIRD_PARTY_DATASET_ATTRIBUTION.md)
 
 ## Author
 

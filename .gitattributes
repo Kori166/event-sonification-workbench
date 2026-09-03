@@ -3,3 +3,6 @@ tests/fixtures/**/*.ini text eol=lf
 tests/fixtures/**/*.json text eol=lf
 tests/fixtures/**/*.txt text eol=lf
 configs/**/*.json text eol=lf
+docs/evaluation/reporting/**/*.csv text eol=lf
+docs/evaluation/reporting/**/*.md text eol=lf
+docs/evaluation/reporting/**/*.svg text eol=lf

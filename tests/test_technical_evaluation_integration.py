@@ -1,3 +1,20 @@
+"""Purpose:
+
+Protect complete real data technical evaluation for the retained MOT17 and KITTI cases, including
+their expected canonical report identities.
+
+Technical References And Provenance:
+
+Expected values and hashes come from the retained project evidence and frozen evaluation contract.
+This test does not regenerate or redefine that evidence.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
+
 import os
 from pathlib import Path
 

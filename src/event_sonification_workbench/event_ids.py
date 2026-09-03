@@ -1,4 +1,20 @@
-"""Deterministic identifiers for normalised event records."""
+"""Purpose:
+
+Build readable deterministic identifiers for normalised events from dataset, sequence, frame,
+track and source row values. The identifier keeps cross stage provenance stable without containing
+machine specific paths.
+
+Technical References And Provenance:
+
+The token normalisation and event identifier structure are project specific. No external identifier
+implementation or naming scheme was copied or adapted.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
 
 from __future__ import annotations
 

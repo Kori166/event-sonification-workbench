@@ -1,4 +1,23 @@
-"""Build the deterministic retained deployment bundle used by the Render workbench."""
+"""Purpose:
+
+Provide the researcher facing command that validates retained sessions and builds the bounded
+deployment ZIP used by the hosted workbench. The command requires explicit acknowledgement that
+dataset redistribution terms have been reviewed before source frames are packaged.
+
+Technical References And Provenance:
+
+Render (no date) 'Web Services' [online]. Available from:
+https://render.com/docs/web-services
+
+Used for the deployment context documented by this wrapper. Bundle construction, validation and
+attribution are implemented by the project hosted bundle module.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
 
 from __future__ import annotations
 

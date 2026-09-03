@@ -1,4 +1,20 @@
-"""Bounded retained session catalogue for dataset inspection."""
+"""Purpose:
+
+Load the declared retained session catalogue and expose a bounded set of validated inspection
+models. The catalogue provides stable session selection and prevents arbitrary paths or undeclared
+research runs from being opened through the workbench.
+
+Technical References And Provenance:
+
+Catalogue membership, default selection and error behaviour are project specific. The module relies
+on the project session validator and does not adapt an external catalogue implementation.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
 
 from __future__ import annotations
 

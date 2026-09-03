@@ -1,3 +1,20 @@
+"""Purpose:
+
+Protect technical metric calculation, deterministic report identity, claim boundaries and injected
+fault detection under the frozen evaluation contract.
+
+Technical References And Provenance:
+
+Expected behaviour is defined by the project evaluation contract and synthetic oracle. The tests do
+not introduce an external metric definition or participant claim.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
+
 import hashlib
 import json
 from copy import deepcopy

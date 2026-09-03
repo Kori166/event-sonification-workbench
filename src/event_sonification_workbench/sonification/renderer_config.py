@@ -1,4 +1,26 @@
-"""Versioned deterministic audio-renderer configuration validation."""
+"""Purpose:
+
+Load and validate the versioned audio renderer configuration used to create deterministic PCM
+output. The module checks supported package versions, sample format, channel layout, oscillator,
+envelope and clipping policies before rendering begins.
+
+Technical References And Provenance:
+
+JSON Schema (2022) 'JSON Schema Draft 2020-12' [online]. Available from:
+https://json-schema.org/draft/2020-12
+
+python-jsonschema (no date) 'Schema Validation' [online]. Available from:
+https://python-jsonschema.readthedocs.io/en/stable/validate/
+
+Used for structural validation of renderer configuration. The accepted rendering policy and fixed
+baseline values are project specific and are preserved in the frozen configuration.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
 
 from __future__ import annotations
 

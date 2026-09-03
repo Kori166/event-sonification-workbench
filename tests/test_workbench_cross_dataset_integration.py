@@ -1,3 +1,20 @@
+"""Purpose:
+
+Protect common inspection behaviour across the retained MOT17 and KITTI sessions and verify that
+both datasets remain accessible through one bounded workbench architecture.
+
+Technical References And Provenance:
+
+Expected session and trace behaviour is project specific and derives from retained session
+declarations and evidence packages.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
+
 import hashlib
 import json
 import os

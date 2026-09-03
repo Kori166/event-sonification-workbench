@@ -629,6 +629,22 @@ def test_service_is_loopback_only_and_frontend_uses_one_audio_clock(
     assert "setInterval" not in script
 
 
+def test_service_exposes_research_boundary_and_dataset_attribution(
+    inspection_url: str,
+) -> None:
+    with urllib.request.urlopen(f"{inspection_url}/") as response:
+        page = response.read().decode()
+    with urllib.request.urlopen(f"{inspection_url}/dataset-attribution") as response:
+        attribution = response.read().decode()
+
+    assert "research infrastructure" in page
+    assert "not been validated as an accessibility, navigation or safety system" in page
+    assert 'href="/dataset-attribution"' in page
+    assert "MOT17-02-DPM" in attribution
+    assert "KITTI Tracking" in attribution
+    assert "not an automated legal determination" in attribution
+
+
 def test_catalogue_routes_are_bounded_and_session_scoped(
     inspection_fixture: SimpleNamespace,
 ) -> None:

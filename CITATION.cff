@@ -1,8 +1,10 @@
 cff-version: 1.2.0
 message: "Please cite this software if you use it."
-title: "Event Sonification Workbench"
+title: "A Reproducible Workbench for Event Based Sonification of Annotated Video Datasets"
 type: software
-author: Kori Flowers
+authors:
+  - family-names: Flowers
+    given-names: Kori
 version: 0.1.0
 date-released: 2026-07-28
 repository-code: "https://github.com/Kori166/event-sonification-workbench"

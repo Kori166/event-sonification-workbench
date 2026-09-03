@@ -1,3 +1,20 @@
+"""Purpose:
+
+Protect exact byte and SHA-256 comparison for event, cue and audio packages, including rejection of
+incomplete or mismatched package structures.
+
+Technical References And Provenance:
+
+Expected package membership and comparison behaviour are project specific reproducibility controls.
+Constructed test packages are not retained research evidence.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
+
 import json
 from pathlib import Path
 

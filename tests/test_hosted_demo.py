@@ -1,3 +1,20 @@
+"""Purpose:
+
+Protect deterministic hosted bundle construction, archive safety, attribution integrity, retained
+session validation and fail closed hosted startup behaviour.
+
+Technical References And Provenance:
+
+Archive and deployment APIs are attributed in hosted_bundle.py and hosted_retained.py. Malformed
+archives and altered notices are constructed test cases, not retained research evidence.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
+
 import hashlib
 import json
 import stat

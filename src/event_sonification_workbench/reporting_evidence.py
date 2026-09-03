@@ -1,4 +1,31 @@
-"""Deterministic report-ready derivatives of canonical Stage 3 evidence."""
+"""Purpose:
+
+Generate deterministic marker readable tables, figures, findings, method summaries and audit files
+from the canonical Stage 3 technical evaluation reports. The module checks source identities and
+claim boundaries before producing reporting derivatives. It does not alter canonical evaluation
+evidence or create participant findings.
+
+Technical References And Provenance:
+
+JSON Schema (2022) 'JSON Schema Draft 2020-12' [online]. Available from:
+https://json-schema.org/draft/2020-12
+
+python-jsonschema (no date) 'Schema Validation' [online]. Available from:
+https://python-jsonschema.readthedocs.io/en/stable/validate/
+
+World Wide Web Consortium (2018) 'Scalable Vector Graphics (SVG) 2' [online]. Available from:
+https://www.w3.org/TR/SVG2/
+
+Used for validating evidence structures and constructing the retained SVG figures. Claim mappings,
+rounding, display formats, audit rules and figure composition are project specific and are tied to
+the frozen reports and reporting manifest.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
 
 from __future__ import annotations
 

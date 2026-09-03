@@ -1,4 +1,22 @@
-"""Deterministic event-package loading, cue mapping and schedule output."""
+"""Purpose:
+
+Load a validated event package and map each event to either a deterministic audio cue or an explicit
+suppression record. The module writes a stable schedule, cue log, suppression log and configuration
+identity for downstream rendering and evaluation.
+
+Technical References And Provenance:
+
+The scheduling, mapping and suppression rules in this module are project specific and implement the
+frozen baseline configuration used by the retained evaluation. No external sonification
+implementation was copied or adapted. External documentation is relied upon through the validated
+event and preset contracts rather than reproduced here.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
 
 from __future__ import annotations
 

@@ -1,4 +1,33 @@
-"""MOT17 ground-truth parsing and normalisation."""
+"""Purpose:
+
+Parse MOT17 ground truth rows and sequence metadata, then convert valid rows into the common event
+schema. The adapter converts one based source frames to zero based common frames, preserves the
+evaluation mark and visibility fields, and records logical source provenance without exposing a
+local dataset path.
+
+Technical References And Provenance:
+
+MOTChallenge (no date) 'Instructions' [online]. Available from:
+https://motchallenge.net/instructions/
+
+Used for:
+
+1. interpreting the nine field MOTChallenge ground truth format
+2. interpreting frame numbers, bounding boxes, evaluation marks, class identifiers and visibility
+
+Milan et al. (2016) 'MOT16: A Benchmark for Multi-Object Tracking' [online]. Available from:
+https://arxiv.org/abs/1603.00831
+
+Used for the benchmark context and annotation conventions inherited by MOT17. Parsing, validation,
+normalisation and provenance behaviour in this module are project specific implementations of the
+documented format. No TrackEval code is used or adapted.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
 
 from __future__ import annotations
 

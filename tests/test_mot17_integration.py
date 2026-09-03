@@ -1,3 +1,20 @@
+"""Purpose:
+
+Protect the real MOT17 adapter path from source fixture selection through common event validation
+and provenance checks.
+
+Technical References And Provenance:
+
+MOT17 semantics are exercised through the adapter contract and attributed in mot17.py. Test
+expectations are project specific and use the researcher configured private dataset.
+
+AI Assistance:
+
+Generative AI was used during development to support code review,
+debugging and refactoring. Suggested changes were reviewed thoroughly
+prior to use.
+"""
+
 import os
 from pathlib import Path
 
