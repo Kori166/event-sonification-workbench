@@ -2,7 +2,7 @@
 
 ## 1. Evaluation method
 
-RQ3 was evaluated through frozen contract `0.1.0`, a manually calculated synthetic oracle and two
+RQ3 was evaluated through contract `0.1.0`, a manually calculated synthetic oracle and two
 real technical case studies. The canonical reports, rather than presentation prose, are the
 numerical source. This document does not report participant or perceptual evaluation.
 

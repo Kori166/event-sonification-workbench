@@ -1,3 +1,0 @@
-figure_id,dataset,sequence,metric,unit,raw_value,displayed_value,manifest_id
-figure-3,MOT17,MOT17-02-DPM,normalised_overlap_burden,excess concurrent cues,160.0620643876535,160.06,mot17.overlap.normalised_burden
-figure-3,KITTI Tracking,0000,normalised_overlap_burden,excess concurrent cues,4.533073929961089,4.53,kitti.overlap.normalised_burden

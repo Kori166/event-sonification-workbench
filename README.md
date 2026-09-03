@@ -82,7 +82,6 @@ The bounded dataset cases used in the completed technical evaluation are:
 | Risk register | [`docs/project-management/risk-register.md`](docs/project-management/risk-register.md) |
 | Stage checklists | [`docs/project-management/`](docs/project-management/) |
 | Automated tests and fixtures | [`tests/`](tests/) |
-| Third party dataset attribution | [`THIRD_PARTY_DATASET_ATTRIBUTION.md`](THIRD_PARTY_DATASET_ATTRIBUTION.md) |
 
 ### Marker Inspection Route
 
@@ -118,12 +117,12 @@ For a concise inspection of the submitted artefact:
 
 | Stage | Status |
 |---|---|
-| 0. Project setup | Complete |
-| 1. Data ingestion and normalisation | Complete |
+| 0. Project Setup | Complete |
+| 1. Data Ingestion and Normalisation | Complete |
 | 2. Sonification | Complete |
-| 3. Technical evaluation | Complete |
-| 4. Artefact assembly and release | Complete |
-| 5. Reporting and viva preparation | Report and artefact prepared for submission; viva preparation ongoing |
+| 3. Technical Evaluation | Complete |
+| 4. Artefact Assembly, Validation and Release | Complete |
+| 5. Reporting and Viva Preparation | Report and artefact prepared for submission; viva preparation ongoing |
 
 The technical artefact and technical evaluation are complete. The report and artefact are prepared
 for submission. Remaining activity is researcher controlled submission and viva preparation. Full
@@ -145,7 +144,6 @@ event-sonification-workbench/
 │   └── workbench/                   # read-only inspection service and browser UI
 ├── tests/                           # unit, contract, fixture and integration tests
 ├── .env.example
-├── THIRD_PARTY_DATASET_ATTRIBUTION.md
 ├── pyproject.toml
 └── README.md
 ```
@@ -410,9 +408,9 @@ The bounded deployment package can be rebuilt with:
 python scripts/build_hosted_workbench_bundle.py --acknowledge-media-redistribution
 ```
 
-The package is verified using its SHA-256 before being served. Dataset redistribution terms must be reviewed before publishing source media. The marker visible attribution record is
-[`THIRD_PARTY_DATASET_ATTRIBUTION.md`](THIRD_PARTY_DATASET_ATTRIBUTION.md), and a running workbench
-exposes the same deployment notice at `/dataset-attribution`.
+The package is verified using its SHA-256 before being served. Dataset redistribution terms must be
+reviewed before publishing source media. The retained bundle contains its attribution notice, and a
+running workbench exposes that notice at `/dataset-attribution`.
 
 Render configuration is defined in [`render.yaml`](render.yaml). Deployment requires the externally
 configured `WORKBENCH_BUNDLE_URL` and `WORKBENCH_BUNDLE_SHA256` values. The process downloads and
@@ -458,7 +456,6 @@ For deeper technical detail, begin with:
 - [`docs/evaluation/stage-3-cross-dataset-technical-summary.md`](docs/evaluation/stage-3-cross-dataset-technical-summary.md)
 - [`docs/project-management/project-plan.md`](docs/project-management/project-plan.md)
 - [`docs/project-management/progress-log.md`](docs/project-management/progress-log.md)
-- [`THIRD_PARTY_DATASET_ATTRIBUTION.md`](THIRD_PARTY_DATASET_ATTRIBUTION.md)
 
 ## Author
 

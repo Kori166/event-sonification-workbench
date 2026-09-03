@@ -1,7 +1,13 @@
 # Stage 4 Progress Log
 
-This stage-specific log records Milestone 1 contract recovery and the bounded Phase 2 inspection
-candidate. The main project progress log remains the chronological project-wide record.
+This is a supporting Stage 4 development record. The canonical project-wide chronology is
+maintained in [progress-log.md](progress-log.md). This file retains detailed runtime-binding recovery,
+pull-request and reimplementation history, integration validation, timeline corrections,
+frame-scoped cue controls and browser-acceptance evidence that would be unnecessarily verbose in the
+main project log.
+
+Stage 4 was completed on 18 August 2026. Entries below retain the status and open actions that were
+accurate when each development step was recorded.
 
 ## 2026-08-07 - Milestone 1 Phase 1 runtime-binding recovery
 
@@ -166,11 +172,11 @@ candidate. The main project progress log remains the chronological project-wide 
 - Decision 0019 freezes stable edge windows, exact half-open frame timing, explicit cue/source-frame
   inspection, retained event-outcome projection and cue-only timeline interaction.
 - Added visible frame structure, reconciled evidence terminology, selected-cue parameters and a
-  frozen mapping key. R20 remains open and R21 records bounding-box area as an imperfect
+   mapping key. R20 remains open and R21 records bounding-box area as an imperfect
   apparent-scale proxy; no research output changed.
 - Ruff, frontend syntax, 22 focused tests and 274 non-integration tests / 6 deselected passed. The
   retained Phase 1, Phase 2 MOT17 and expanded Phase 3 cross-dataset private gates each passed once.
-- The privacy/frozen-scope audit passed with no research contract/configuration/result, retained WAV,
+- The privacy/scope audit passed with no research contract/configuration/result, retained WAV,
   private content or path-value change.
 - Codex browser preflight passed repeated first/final-time cue, rounded-frame and switching checks on
   both datasets. Researcher-controlled visual/semantic/console acceptance, CI and merge remain.
@@ -191,7 +197,7 @@ candidate. The main project progress log remains the chronological project-wide 
   EVENT/CUE/SUPPRESS language is simplified without changing research semantics.
 - Ruff and frontend syntax passed; 26 focused and 278 non-integration tests passed, with six private
   tests deselected. Phase 1, Phase 2 and the expanded all-frame Phase 3 private gates each passed.
-- Privacy/frozen-scope audit found no binary, media, private value or Stage 1-3 research change.
+- Privacy/scope audit found no binary, media, private value or Stage 1-3 research change.
   Exact-head hosted CI remains required before the revised 22-check Firefox/Chrome researcher
   retest. PR #40 remains draft and unmerged.
 
@@ -214,7 +220,7 @@ candidate. The main project progress log remains the chronological project-wide 
 - The permanent lane sentence moved behind native accessible help, the redundant legend lead-in was
   removed, and the thin white playback cursor plus previous performance architecture remain intact.
 - Ruff, JavaScript syntax, 27 focused tests and 279 non-integration tests passed. The three genuine
-  retained gates passed in 69.34s, 31.22s and 28.84s; privacy/frozen-scope audit found no media,
+  retained gates passed in 69.34s, 31.22s and 28.84s; privacy/scope audit found no media,
   private path value or Stage 1-3 research change.
 - Technical browser preflight exposed 35 MOT17 frame-0 cues, 37 on frame 599, the KITTI frame-0
   van/cyclist/pedestrian group and nine cues on frame 153. Marker context, stable sibling selection,
@@ -240,7 +246,7 @@ candidate. The main project progress log remains the chronological project-wide 
   retest. This is technical inspection evidence, not usability/accessibility/perceptual evaluation.
 - Ruff, JavaScript syntax, 28 focused tests and 280 non-integration tests passed. The three genuine
   retained integrations passed in 61.61s, 29.50s and 30.80s; exact WAV hashes remained verified.
-- Privacy/frozen-scope audit found nine presentation/test/record files, no media/binary/private path
+- Privacy/scope audit found nine presentation/test/record files, no media/binary/private path
   value and no Stage 1-3 research-contract/configuration/result change. Browser preflight confirmed
   immediate rounded transport text, exact video/button/marker identity, suppressed-box isolation,
   real KITTI cyclist selection, both ten-second runs and a clean in-app console.

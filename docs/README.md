@@ -54,6 +54,6 @@ development evidence remains in the project management and decision records abov
 
 ## Dataset Attribution
 
-Dataset ownership, citations, identified terms and deployment scope are recorded in
-[`../THIRD_PARTY_DATASET_ATTRIBUTION.md`](../THIRD_PARTY_DATASET_ATTRIBUTION.md). Dataset terms are
-separate from licensing of project authored source code.
+Dataset ownership, citations, identified terms and deployment scope are recorded in the retained
+hosted bundle attribution notice, which a running workbench exposes at `/dataset-attribution`.
+Dataset terms are separate from licensing of project authored source code.

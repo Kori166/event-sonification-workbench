@@ -1,9 +1,0 @@
-figure_id,dataset,sequence,outcome,count,denominator,proportion,displayed_percentage,count_manifest_id,proportion_manifest_id
-figure-1,MOT17,MOT17-02-DPM,represented,26960,30003,0.8985768089857681,89.86%,mot17.represented_events,mot17.outcomes.represented.proportion
-figure-1,MOT17,MOT17-02-DPM,intentionally_suppressed,3043,30003,0.10142319101423192,10.14%,mot17.suppressed_events,mot17.outcomes.suppressed.proportion
-figure-1,MOT17,MOT17-02-DPM,missed_eligible,0,30003,0.0,0.00%,mot17.missed_eligible_events,mot17.outcomes.missed_eligible.proportion
-figure-1,MOT17,MOT17-02-DPM,explicitly_excluded,0,30003,0.0,0.00%,mot17.excluded_events,mot17.outcomes.excluded.proportion
-figure-1,KITTI Tracking,0000,represented,711,1089,0.6528925619834711,65.29%,kitti.represented_events,kitti.outcomes.represented.proportion
-figure-1,KITTI Tracking,0000,intentionally_suppressed,378,1089,0.34710743801652894,34.71%,kitti.suppressed_events,kitti.outcomes.suppressed.proportion
-figure-1,KITTI Tracking,0000,missed_eligible,0,1089,0.0,0.00%,kitti.missed_eligible_events,kitti.outcomes.missed_eligible.proportion
-figure-1,KITTI Tracking,0000,explicitly_excluded,0,1089,0.0,0.00%,kitti.excluded_events,kitti.outcomes.excluded.proportion

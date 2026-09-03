@@ -1,3 +1,0 @@
-figure_id,dataset,sequence,metric,unit,raw_value,displayed_value,manifest_id
-figure-2,MOT17,MOT17-02-DPM,cues_per_second,cues/second,1342.1838698971126,1342.18,mot17.density.cues_per_second
-figure-2,KITTI Tracking,0000,cues_per_second,cues/second,46.10894941634241,46.11,kitti.density.cues_per_second

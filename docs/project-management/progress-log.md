@@ -1,32 +1,28 @@
 # Progress Log
 
-This log records completed work, decisions, problems, actions and next steps. Entries should remain
-brief and should be added when the project state changes materially. Detailed milestone records may
-be added where a short entry would omit important implementation evidence.
+This is the canonical project-wide chronological log. It records material work, decisions, risks,
+corrective actions, verification and changes of scope. Detailed stage-specific evidence is retained
+in the relevant checklists. In particular, [stage-4-progress-log.md](stage-4-progress-log.md) contains
+the detailed Stage 4 runtime-binding recovery, pull-request sequence and browser-validation history
+that would be unnecessarily verbose here.
 
-## Entry Template
+Earlier entries preserve the project state and next actions as understood on their dates. Later
+entries record their resolution where evidence exists. GitHub Issues, pull requests and commits
+retain lower-level command and branch history.
 
-### YYYY-MM-DD
+## Current Project Status
 
-**Work completed**
+| Stage | Current status |
+|---|---|
+| 0. Project Setup | Complete |
+| 1. Data Ingestion and Normalisation | Complete |
+| 2. Sonification | Complete |
+| 3. Technical Evaluation | Complete |
+| 4. Artefact Assembly, Validation and Release | Complete |
+| 5. Reporting and Viva Preparation | Report and artefact prepared for submission; viva preparation ongoing |
 
-- 
-
-**Decisions made**
-
-- 
-
-**Problems or risks**
-
-- 
-
-**Actions taken**
-
-- 
-
-**Next actions**
-
-- 
+The repository does not contain evidence that final submission has occurred. The final status
+therefore records submission readiness rather than submission.
 
 ---
 
@@ -335,7 +331,7 @@ be added where a short entry would omit important implementation evidence.
 
 ---
 
-## 2026-08-05 â€” Issue #4 normalised event collection validation
+## 2026-08-05 — Issue #4 normalised event collection validation
 
 **Work completed**
 
@@ -733,7 +729,7 @@ be added where a short entry would omit important implementation evidence.
   accounting and cross-stage links; no chain was regenerated.
 - Added a strict package-to-evaluator assembler, content-derived input/hash manifest, focused CI
   fixtures and a private cross-stage integration test.
-- Ran frozen contract `0.1.0` three times per dataset in isolated directories and generated
+- Ran contract `0.1.0` three times per dataset in isolated directories and generated
   canonical reports, JSON/CSV/Markdown summaries, three-run comparisons and deterministic
   record-level audits.
 - Committed a bounded cross-dataset technical summary, Decision 0014, excluded-evidence inventory
@@ -794,7 +790,7 @@ be added where a short entry would omit important implementation evidence.
 
 - Began from `origin/main` merge commit `5fcab3ad8465f960e1a217063deb8fa82314fa93` in a new clean
   worktree and branch, leaving the dirty original checkout and both preserved stashes untouched.
-- Recalculated the two canonical report hashes, validated both documents against the frozen report
+- Recalculated the two canonical report hashes, validated both documents against the report
   schema and confirmed report/run/contract/experiment/environment identities plus summary and repeat-
   comparison agreement before generating presentation material.
 - Defined the display-format and interpretation policy in Decision 0015 and the reporting README.
@@ -862,94 +858,28 @@ be added where a short entry would omit important implementation evidence.
 
 ## 2026-08-07 - Stage 4 Milestone 1 Phase 1 headless inspection contract
 
-**Work completed**
-
-- Began Stage 4 from merged Stage 3 `main` and kept browser/UI implementation out of Phase 1.
-- Added Workbench Session Contract `0.1.0`, field-level documentation, Decision 0016, the Stage 4
-  checklist and a headless `workbench.session` validator.
-- Added deterministic session identity, cross-stage package/hash checks, optional Stage 3 report
-  verification, runtime-only media binding and path-free machine-readable diagnostics.
-- Added an explicit `workbench` package interface and six focused tests covering valid loading,
-  cross-package mismatch, declared hash tampering, unavailable evaluation and runtime-path privacy.
-- Opened PR #28 and used pull-request CI as the clean-checkout quality gate.
-- Reconciled the project plan, project-management index, risk register and Stage 4 development record
-  with the new inspection-layer scope and evidence boundary.
-
-**Decisions made**
-
-- The browser will consume already validated sessions and remain read-only with respect to Stage 1-3
-  evidence.
-- Runtime roots and media paths are excluded from `session_id`; content and configuration identities
-  determine the deterministic session identity.
-- The Stage 4 interface is artefact inspection/demonstration infrastructure, not participant or
-  perceptual evidence and not an extension of the research questions.
-- The existing verified-chain logic is reused rather than duplicated; its current private API use is
-  recorded for review before the final release candidate.
-
-**Problems and actions**
-
-- PR #28 CI run 71 failed only at Ruff with three `TRY004` findings in `workbench/session.py`.
-- The affected invalid-type branches were corrected to raise `TypeError`, with matching exception
-  handling. No Stage 1-3 contract or research logic changed.
-- CI run 72 then passed. The first failed run did not execute pytest and is not used as test-pass
-  evidence.
-
-**Validation evidence**
-
-- PR #28 CI run 72 environment: Ubuntu 24.04, Python 3.11.15.
-- `ruff check .`: passed with no findings.
-- `python -m pytest -m "not integration"`: 258 passed, 3 deselected.
-- `tests/test_workbench_session.py`: 6 passed within the successful non-integration suite.
-- Editable installation of `.[dev]` succeeded, including the new `workbench` package.
-
-**Final Phase 1 acceptance and recovery sequence**
-
-- Post-merge review of PR #28 identified that one common `OUTPUT_ROOT` did not match the retained
-  event/cue/audio directory layout.
-- PR #30 corrected the runtime bindings but was merged before private acceptance; PR #31 reverted it
-  in full, Issue #29 was reopened, and PR #32 reapplied the bounded correction from reverted `main`.
-- PR #32 CI run 97 passed on Ubuntu 24.04 / Python 3.11.15 with editable installation, Ruff clean,
-  261 non-integration tests passed and 4 integration tests deselected.
-- On 7 August 2026, the dedicated retained-chain command exercised both MOT17-02-DPM and KITTI
-  Tracking 0000 and reported `1 passed in 81.89s`.
-- Each retained session validated twice identically with a stable deterministic `session_id`,
-  verified event/cue/audio components, available media, intentionally unavailable evaluation, and
-  empty path-free diagnostics.
-- The final branch privacy/scope audit found no private roots, dataset media, retained packages,
-  generated WAV files or browser/UI implementation.
-- Workbench Session Contract `0.1.0` and all Stage 1-3 contracts and research evidence remained
-  unchanged.
-
-**Next action**
-
-- Stage 4 remains active. Milestone 1 Phase 1 is complete; Phase 2 is to build one synchronised
-  inspection vertical slice over an already validated workbench session.
+- Added Workbench Session Contract `0.1.0`, Decision 0016 and a headless validator with deterministic
+  identity, cross-stage checks, runtime-only media binding and path-free diagnostics.
+- Established that the browser would consume validated sessions as a read-only inspection layer,
+  not create research results or participant evidence.
+- Post-merge testing exposed an incorrect single-root assumption for retained event, cue and audio
+  packages. PR #30 was reverted by PR #31 before the correction was reapplied and accepted through
+  PR #32.
+- CI, clean installation and the dedicated retained-chain gate passed. Both retained dataset chains
+  validated with stable session identities, and Stage 1-3 contracts and evidence remained unchanged.
+- Milestone 1 Phase 1 was complete. Detailed recovery and validation evidence is retained in
+  [stage-4-progress-log.md](stage-4-progress-log.md).
 
 ---
 
 ## 2026-08-07 - Stage 4 Milestone 1 Phase 2 inspection candidate
 
-**Work completed**
-
-- Opened Issue #35 and froze the local presentation/service architecture in Decision 0017.
-- Implemented a validated-only indexed inspection model, loopback read service, exact WAV range
-  delivery and local HTML/CSS/JavaScript interface over real MOT17-02-DPM evidence.
-- Added one-clock playback derived solely from audio `currentTime`, source imagery and SVG event
-  overlays, synchronized event/cue/suppression lanes, complete cue provenance and direct verified
-  Stage 3 metric projection.
-- Committed the path-free real session declaration
-  `session-mot17-mot17-02-dpm-3707826663b210c6` with evaluation available.
-- Added normal-CI model/service tests and a private real-session integration test without changing
-  Stage 1 to 3 research contracts or adding a production dependency.
-
-**Validation and status**
-
-- Ruff and frontend JavaScript syntax checks passed.
-- Non-integration suite: 265 passed and 5 deselected.
-- Existing Phase 1 and new Phase 2 private integration gates each passed.
-- The real loopback service launched and passed path-free model/API probes.
-- Mandatory controlled browser acceptance could not be run because the browser-control interface was
-  not exposed to this task. Phase 2 is therefore incomplete and unmerged; Phase 3 has not begun.
+- Issue #35 and Decision 0017 defined a validated-only inspection model, loopback service and local
+  browser interface over retained MOT17 evidence.
+- The candidate used retained WAV playback as its single clock and exposed source frames, event
+  overlays, cues, suppressions, provenance and technical metrics without changing Stage 1-3.
+- Automated and retained-session checks passed, but controlled browser acceptance was unavailable.
+  The candidate therefore remained incomplete pending the later acceptance entry.
 
 ---
 
@@ -958,85 +888,52 @@ be added where a short entry would omit important implementation evidence.
 - The researcher manually completed all twelve browser checks against real retained session
   `session-mot17-mot17-02-dpm-3707826663b210c6`.
 - A loading overlay remained visible even though the image API returned HTTP 200 JPEG data and the
-  frontend set its `hidden` state. The targeted
-  `.viewer-loading[hidden] { display: none; }` correction fixed the presentation and a static asset
-  regression test freezes the behaviour.
-- Genuine imagery, recorded Stage 1 geometry, unchanged verified WAV playback, the single audio
-  clock, frame stepping, timeline, cue trace, report metrics, responsive alignment, JSON privacy and
-  path-free failures passed.
-- No MOT17 screenshot or private media/path was committed. The dense-audio and extreme-zoom notes are
-  bounded informal/cosmetic observations, not participant, perceptual, usability or accessibility
-  evidence; R20 remains open and controlled.
-- Final local gates passed with Ruff clean, frontend JavaScript syntax valid, 266 non-integration
-  tests passed / 5 integrations deselected, and genuine single-pass Phase 1 and Phase 2 private
-  integration results of 83.56s and 34.93s respectively.
-- Final-head hosted CI run 105 passed with installation, Ruff and 266 tests / 5 deselected on Ubuntu
-  24.04 / Python 3.11.15. PR #36 merged as
-  `f9a3101f4eaef65b55d2efbdc1d8b0beaad489ec`, and Issue #35 auto-closed as completed with all 17
-  criteria checked.
-- All eight Phase 2 checklist items are complete. Stage 4 remains active; Milestone 1 Phase 3 is next
-  and has not begun.
+  frontend set its `hidden` state. A targeted CSS correction and regression test resolved it.
+- Genuine imagery, geometry, retained WAV playback, timing, traceability, metrics, responsive layout,
+  privacy and bounded failures passed. No screenshot, private media or private path was committed.
+- Final local and CI gates passed. PR #36 merged and Issue #35 closed, completing Phase 2 without
+  creating participant, perceptual, usability or accessibility evidence.
 
 ---
 
 ## 2026-08-14 - Stage 4 Milestone 1 Phase 3 cross-dataset candidate
 
-- Opened Issue #37 from main `16e20e811d4ed654fe60e36f2769b9884ad871ae` and froze the bounded
-  cross-dataset catalogue architecture in Decision 0018 without changing session contract `0.1.0`.
+- Issue #37 and Decision 0018 froze the bounded cross-dataset catalogue architecture without
+  changing session contract `0.1.0`.
 - Added the retained path-free KITTI Tracking session, two-session lookup/scoped routes and a minimal
-  browser selector that clears and generation-isolates all dataset-dependent state.
-- Ruff and JavaScript syntax passed. The final focused suite passed 19 tests; the complete
-  non-integration suite passed 271 tests with 6 integration tests deselected. The retained Phase 1,
-  Phase 2 MOT17 and new Phase 3 cross-dataset private gates each passed without an accepted skip.
-- Codex performed 13/13 KITTI browser checks plus both MOT17/KITTI switch sequences. Technical
-  presentation, exact retained media selection, traceability, direct metrics, privacy, failures and
-  responsive alignment passed; no screenshot or private browser artefact was retained.
-- A clean Python 3.14 environment installed and launched the primary command, which reported exactly
-  the two verified retained sessions. The Phase 3 privacy/redistribution audit passed with no private
-  path/value, media, WAV, screenshot, browser or test artefact and no Stage 1-3 canonical change.
-  R20 remains open and controlled.
-- Final-head CI run 31817924213 passed on
-  `7b27481241b9a97c0b67a4b402d49ac50df57d1e`. Reviewed PR #38 merged as release-candidate
-  `3c23a6b518fd33b1542145da06ab1939c7d676dc`; Issue #37 closed.
-- Post-merge `main` CI run 31818140887 passed with clean install, Ruff and 271 tests / 6 deselected
-  on Ubuntu 24.04 / Python 3.11.15. Phase 3 and Stage 4 Milestone 1 are complete. Stage 4 remains
-  active.
+  browser selector that isolates all dataset-dependent state.
+- Focused, full, retained integration, clean-environment, browser-switching and privacy gates passed
+  for MOT17 and KITTI. No private media, paths, screenshots or Stage 1-3 changes entered the release.
+- PR #38 merged and Issue #37 closed. Stage 4 Milestone 1 was complete, while Stage 4 remained active
+  for final inspection corrections.
 
 ---
 
 ## 2026-08-14 - Stage 4 Milestone 2 inspection-correction candidate
 
-- Began Issue #39 from clean main `799c5ef95d42040d05c2b7d7a757ec765b6d382c`.
-- Verified retained boundary traces and diagnosed repeated clamped-window requests/DOM replacement,
-  not a provenance-chain defect.
-- Decision 0019 bounds the correction to stable timeline caching, cue/source-frame alignment,
-  retained outcome projection, visible frame structure, cue-only interaction and clearer frozen
-  mapping/evidence language.
+- Issue #39 and Decision 0019 bounded the final correction to timeline caching, cue/source-frame
+  alignment, retained outcome projection and clearer evidence language.
+- Retained boundary traces showed that repeated window requests and interface replacement, rather
+  than the provenance chain, caused the observed problem.
 - R20 remains open; R21 records bounding-box area as an imperfect apparent-scale proxy. No Stage 1-3
   result, baseline preset or retained WAV is changed.
-- Ruff, frontend syntax, 22 focused tests, 274 non-integration tests and each of the Phase 1, Phase 2
-  and expanded cross-dataset private integrations passed. Privacy/frozen-scope audit also passed.
-- Codex technical browser preflight passed both dataset boundary/frame/switch paths. The separate
-  researcher-controlled visual/semantic/console acceptance, CI and merge gates remain pending.
+- Automated, retained integration, privacy and technical browser preflight gates passed. Independent
+  researcher-controlled browser acceptance and merge remained pending.
 
 ---
 
 ## 2026-08-15 - Stage 4 Milestone 2 follow-up correction
 
-- The first researcher browser gate on PR #40 head
-  `02130795678b991e07570b64052d6d1442aeb889` failed because Firefox playback lagged, Chrome
-  froze/stuttered more severely, cue controls reordered on selection, and the normal
-  unresolved/mapping wording remained confusing.
+- The first researcher browser gate found playback lag, more severe Chrome stuttering, reordered cue
+  controls and unclear unresolved-outcome wording.
 - Profiling separated display-rate cursor work from source-frame, timeline-window and DOM work. The
   dense static marker layer is now cached, frame/image work is transition-driven with one bounded
   next-frame preload, and cue controls are only rebuilt when their window changes.
 - Cue order is deterministic by time, track and cue ID. Unresolved backend outcomes remain
   detectable but surface as integrity anomalies; the visible evidence-chain and technical mapping
   wording is simpler and preserves R20/R21 limitations.
-- Ruff, frontend syntax, 26 focused tests, 278 non-integration tests and all three retained private
-  phases passed. Privacy/frozen-scope audit found no binary, private value or Stage 1-3 research
-  change. PR #40 stays draft pending exact-head hosted CI and a fresh researcher-controlled
-  22-check browser acceptance.
+- Automated, retained integration, privacy and scope checks passed. PR #40 remained draft for
+  a fresh researcher-controlled browser gate.
 
 ---
 
@@ -1049,15 +946,9 @@ be added where a short entry would omit important implementation evidence.
 - The existing frame view now projects every retained cue on that source frame. The canvas remains
   a bounded one-second context; frame controls have no arbitrary cap, preserve stable time/track/cue
   order and use the complete frame group to disambiguate coincident markers.
-- Lane detail is collapsed behind native keyboard-accessible help, the redundant legend lead-in is
-  removed, and the cached timeline, thin white cursor, boundary alignment and session isolation are
-  preserved. No Stage 1-3 research output or retained WAV is changed.
-- Ruff, JavaScript syntax, 27 focused tests, 279 non-integration tests and all three genuine retained
-  integrations passed. Privacy/frozen-scope audit was clean. Technical browser preflight covered
-  complete first/final/multi-class groups, marker context, stable selection, help, both ten-second
-  playback runs and an error-free in-app console.
-- PR #40 remains draft and unmerged pending exact-head hosted CI and the revised 28-check
-  researcher-controlled browser acceptance.
+- Help and timeline presentation were simplified without changing Stage 1-3 outputs or retained
+  audio. Automated, retained integration, privacy and browser-preflight checks passed; researcher
+  acceptance remained pending.
 
 ---
 
@@ -1072,27 +963,17 @@ be added where a short entry would omit important implementation evidence.
 - Represented overlay boxes use their projected exact cue ID and the common `selectCue()` path, with
   restrained hover/focus/selected states and Enter/Space operation. Suppressed and anomaly boxes do
   not become cue controls.
-- PR #40 stays draft and unmerged pending exact-head validation/CI and the focused 16-check
-  researcher-controlled Firefox/Chrome gate.
-- Ruff, JavaScript syntax, 28 focused tests and 280 non-integration tests passed; all three genuine
-  retained integrations passed in 61.61s, 29.50s and 30.80s. Privacy/frozen-scope audit was clean.
-- Technical browser preflight confirmed immediate `00:00.033` rounded display, exact common-route
-  cue identity, same-frame order stability, suppressed-box isolation, KITTI cyclist selection,
-  smooth ten-second runs and no in-app console warning/error.
+- Automated, retained integration, privacy and technical browser-preflight checks passed. PR #40
+  remained unmerged pending the focused researcher-controlled Firefox and Chrome gate.
 
 ---
 
 ## 2026-08-18 - Stage 4 Milestone 2 final researcher interaction acceptance
 
-- The researcher confirmed all 16 focused Firefox/Chrome checks against implementation candidate
-  `39cf6953b72c30a03e920f672a81259b44399c12`.
-- Transport presentation aligned with retained cue time, source frame and provenance in both
-  datasets, including the MOT17 `0.033333s` / frame-1 boundary case and immediate later-cue updates.
-- Represented MOT17, KITTI and cyclist/bicycle-related boxes selected their exact retained cues;
-  sibling order remained stable, suppressed boxes remained non-cue controls, and video/marker/frame
-  control routes converged on the same selected cue and source frame.
-- MOT17 frame 599 and KITTI frame 153 remained fully inspectable. Playback remained smooth and both
-  Firefox and Chrome consoles contained no workbench errors or warnings.
+- The researcher confirmed all 16 focused Firefox and Chrome checks. Cue time, source frame,
+  provenance, represented-box selection, sibling order, suppression isolation and final-frame
+  inspection behaved consistently across both retained datasets.
+- Playback remained smooth and both browser consoles contained no workbench errors or warnings.
 - This completes researcher-controlled technical browser acceptance without introducing usability,
   accessibility, participant or perceptual evidence. Documentation-head CI, PR merge, post-merge
   `main` CI and final Milestone 2 close-out recording remain.
@@ -1101,16 +982,11 @@ be added where a short entry would omit important implementation evidence.
 
 ## 2026-08-18 - Stage 4 Milestone 2 and Stage 4 close-out
 
-- Acceptance-record head `c76932ad16cbc0567e32af62d9b7e258ea8ff573` passed exact-head hosted
-  CI run 32135052175 with Ruff and 280 tests / 6 private integrations deselected in 21.15 seconds.
-- PR #40 merged as `b6c8310c9f8a731d2ef374e725ba6f99342e85e1`, closing Issue #39 only
-  after all researcher-controlled checks and exact-head CI had passed.
-- Post-merge `main` CI run 32135202315 passed with Ruff and 280 tests / 6 private integrations
-  deselected in 21.43 seconds.
+- Exact-head CI passed before PR #40 merged and closed Issue #39. Post-merge `main` CI also passed.
 - Workbench Session Contract `0.1.0`, Stage 1-3 evidence, cue schedules and retained WAV bytes remain
   unchanged. R20 and R21 remain explicit open limitations rather than evaluation findings.
-- Stage 4 Milestone 2 is complete. Stage 4 is complete; Stage 5 reporting and viva preparation
-  remains planned.
+- Stage 4 Milestone 2 and Stage 4 were complete. Stage 5 reporting and viva preparation became the
+  next stage.
 
 ---
 
@@ -1145,7 +1021,7 @@ be added where a short entry would omit important implementation evidence.
 - Verified 21 cited external sources against publisher, DOI, proceedings, dataset-owner or official
   documentation pages. The bidirectional audit found 21 reference entries, no citation mismatches and
   no unresolved markers. Corrected the older Ji article citation to *Sensors* 21(10), article 3558.
-- Completed claim, obsolete-history, scope, academic-quality and local-link audits. All three frozen
+- Completed claim, obsolete-history, scope, academic-quality and local-link audits. All three 
   RQs are used verbatim and explicitly answered; O1/O2 remain achieved and O3/O4 partially achieved.
   R20 remains informal researcher reflection and R21 remains an apparent-scale limitation.
 - Preserved the Stage 1–4 baseline: the two canonical evaluation-report hashes still match the Phase A
@@ -1169,7 +1045,7 @@ be added where a short entry would omit important implementation evidence.
   editable manuscript and matching PDF are stored under the private `Submission` directory as
   `24046378 report.docx` and `24046378 report.pdf`; an initial formatted candidate was backed up
   before the final reduction and layout corrections.
-- Preserved the three frozen RQs, O1/O2 achieved and O3/O4 partially achieved, threats to validity,
+- Preserved the three RQs, O1/O2 achieved and O3/O4 partially achieved, threats to validity,
   ethics, R20/R21 and all canonical Stage 3 values. The two canonical report SHA-256 hashes still
   match the Phase A baseline, and `docs/evaluation` has no Phase D modification.
 - Revalidated 21 cited sources against 21 reference entries with no bidirectional mismatch or
@@ -1182,3 +1058,62 @@ be added where a short entry would omit important implementation evidence.
 - Deterministic assembly, 104 local-link checks, Ruff, 280 tests with 6 private-data integrations
   skipped, accessibility/structure audits and `git diff --check` passed. Stage 5 remains in progress
   for supervisor feedback, viva preparation, submission packaging and researcher-controlled upload.
+
+---
+
+## 2026-08-21 - Retained hosted workbench deployment
+
+- PR #41 established a bounded hosted demonstration, after which PR #42 replaced its synthetic
+  content with the two verified retained workbench sessions.
+- The hosted entry point was changed to require a configured retained bundle and expected SHA-256,
+  validate the extracted session evidence and fail closed without a synthetic fallback.
+- Decision 0020 preserves the initial hosted approach as superseded. Decision 0021 records the
+  corrected retained deployment boundary.
+- Hosting remained a read-only inspection route over existing evidence. It did not regenerate the
+  Stage 1-3 outputs or add participant, usability, accessibility, perceptual or safety evidence.
+
+---
+
+## 2026-08-25 - Hosted verification, attribution and supervision follow-up
+
+- PRs #43-#45 completed retained-deployment hardening and added dataset attribution to the hosted
+  bundle.
+- Verified supervision feedback emphasised alignment with the marking criteria and a clear, focused
+  viva. Report emphasis and formatting were reviewed, while viva material was simplified around the
+  principal project outcomes.
+- Positive feedback on the artefact and progress was recorded without converting it into a grade,
+  submission or completion claim. Viva preparation remained ongoing.
+
+---
+
+## 2026-08-28 - Live hosted inspection route recorded
+
+- Recorded the live Render URL in the repository guidance after the retained hosted workbench became
+  available.
+- The hosted route remained a convenience for read-only inspection of the same two retained sessions,
+  not a new evaluation or evidence source.
+
+---
+
+## 2026-09-02 - Final technical documentation consolidation
+
+- Consolidated the common event schema, sonification and rendering, and retained workbench session
+  documentation into clearer marker-facing technical records.
+- Simplified the repository structure and redirected historical close-out references while retaining
+  the project-management, decision and evaluation evidence.
+- Continued bounded interface refinement, including suppression inspection, without changing the
+   research outputs or technical findings.
+
+---
+
+## 2026-09-03 - Submission-readiness review
+
+- Reviewed the final repository structure, provenance, citation metadata, dataset attribution,
+  documentation navigation and hosted research boundary.
+- Corrected Windows checkout handling for the hash-controlled reporting text through scoped LF rules.
+  An isolated checkout reproduced all 23 reporting-file hashes and both canonical technical-report
+  hashes without changing an expected hash or retained evidence file.
+- The full configured suite passed with 299 tests, including all 6 real-data integration tests. Both
+  retained sessions and the hosted bundle checksum also validated.
+- The report and artefact are prepared for submission. Submission itself is not recorded because no
+  repository evidence confirms it; viva preparation remains ongoing.

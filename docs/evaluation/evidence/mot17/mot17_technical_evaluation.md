@@ -2,7 +2,7 @@
 
 Canonical report SHA-256: `d847e805d0b2d7ccd50cd315bbcecfc0ad525f40e7c4c2013938f955d20f13e5`.
 
-The frozen contract report is **valid**. It accounts for 30003 valid events: 26960 represented, 3043 intentionally suppressed, 0 eligible but missed, and 0 explicitly excluded.
+The contract report is **valid**. It accounts for 30003 valid events: 26960 represented, 3043 intentionally suppressed, 0 eligible but missed, and 0 explicitly excluded.
 
 | Measure | Numerator | Denominator | Value |
 |---|---:|---:|---:|
@@ -25,7 +25,7 @@ The frozen contract report is **valid**. It accounts for 30003 valid events: 269
 
 ## Traceability, density, overlap and repeatability
 
-All 26960 of 26960 cues were fully traceable under contract 0.1.0. Supplemental mapping-rule, schedule and WAV link checks are reported separately and do not extend the frozen contract.
+All 26960 of 26960 cues were fully traceable under contract 0.1.0. Supplemental mapping-rule, schedule and WAV link checks are reported separately and do not extend the contract.
 
 The 20.086666666666666-second rendered timeline contains 26960 cues (1342.1838698971126 cues/second; 80531.03219382676 cues/minute). Peak concurrency is 203; overlap duration is 20.086666666666666 seconds and normalised overlap burden is 160.0620643876535.
 
