@@ -19,7 +19,6 @@ Used for single byte range parsing, 206 responses, Content-Range and 416 failure
 error codes, security headers and bounded model access are project specific.
 
 AI Assistance:
-
 Generative AI was used during development to support code review,
 debugging and refactoring. Suggested changes were reviewed thoroughly
 prior to use.

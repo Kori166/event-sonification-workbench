@@ -11,7 +11,6 @@ logic. They operate only on records accepted by the workbench session validator.
 viewer implementation was copied or adapted.
 
 AI Assistance:
-
 Generative AI was used during development to support code review,
 debugging and refactoring. Suggested changes were reviewed thoroughly
 prior to use.

@@ -19,7 +19,6 @@ Used to download a configured HTTPS bundle when no local bundle is supplied. Arc
 bundle contents, size limits, hash verification and fail closed behaviour are project specific.
 
 AI Assistance:
-
 Generative AI was used during development to support code review,
 debugging and refactoring. Suggested changes were reviewed thoroughly
 prior to use.

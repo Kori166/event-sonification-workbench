@@ -14,7 +14,6 @@ bundle verification and the absence of a synthetic fallback are project specific
 controls.
 
 AI Assistance:
-
 Generative AI was used during development to support code review,
 debugging and refactoring. Suggested changes were reviewed thoroughly
 prior to use.

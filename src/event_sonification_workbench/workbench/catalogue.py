@@ -10,7 +10,6 @@ Catalogue membership, default selection and error behaviour are project specific
 on the project session validator and does not adapt an external catalogue implementation.
 
 AI Assistance:
-
 Generative AI was used during development to support code review,
 debugging and refactoring. Suggested changes were reviewed thoroughly
 prior to use.
