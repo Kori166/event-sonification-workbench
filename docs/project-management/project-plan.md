@@ -145,8 +145,7 @@ Stage 1 is complete because:
 - invalid records remain covered by structured validation tests;
 - Ruff, both private integrations and the complete 123-test suite pass locally;
 - Stage 1 implementation pull requests passed CI; and
-- assumptions, warnings, limitations and evidence are documented in
-  `docs/development/stage-1-closeout.md`.
+- assumptions, warnings, limitations and evidence are retained in `docs/data-model/common-event-schema.md`, `docs/project-management/progress-log.md` and `docs/project-management/risk-register.md`.
 
 Completion was recorded on 5 August 2026. The generated full-data packages remain local and ignored
 by Git.
@@ -191,8 +190,7 @@ Milestone 2 required:
 These criteria passed CI and merged through pull request #22 on 5 August 2026. The 6 August
 close-out then ran the native-to-event-to-cue-to-WAV chain twice for real `MOT17-02-DPM` and KITTI
 Tracking `0000`. All 4 event, 5 cue and 3 audio package files repeated byte-for-byte for both
-datasets; all available tests passed. Exact counts, hashes, audio properties and limitations are in
-`docs/development/stage-2-closeout.md`.
+datasets; all available tests passed. Exact counts, hashes, audio properties and limitations are retained in `docs/project-management/progress-log.md`, `docs/data-model/sonification-and-rendering.md` and the canonical Stage 3 evaluation evidence.
 
 ## Stage 3 Complete Work
 
