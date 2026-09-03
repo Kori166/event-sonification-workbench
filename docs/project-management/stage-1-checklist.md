@@ -95,9 +95,7 @@
 - [x] Ruff, 121 non-integration tests, both private integrations and all 123 tests pass locally.
 - [x] Stage 1 implementation CI passed through pull request #17 and close-out CI passed through
   pull request #18.
-- [x] Assumptions and limitations are documented in the Stage 1 close-out record.
+- [x] Assumptions and limitations are retained in the common event documentation, progress log and risk register.
 - [x] Progress log and risk register reviewed at Stage 1 completion.
 
-Stage 1 completion criteria are satisfied as of 5 August 2026. At that close-out, Stage 2 was the
-next active stage and no sonification implementation was claimed by this checklist. Stage 2 was
-subsequently completed on 6 August 2026; see `docs/development/stage-2-closeout.md`.
+Stage 1 completion criteria are satisfied as of 5 August 2026. Stage 2 was subsequently completed on 6 August 2026; its completion evidence is retained in `stage-2-checklist.md`, `progress-log.md` and the later technical-evaluation evidence.
