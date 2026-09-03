@@ -99,7 +99,6 @@ event-sonification-workbench/
 ├── docs/
 │   ├── data-model/                  # consolidated technical contracts
 │   ├── decisions/                   # architecture and research decisions
-│   ├── development/                 # milestone and close-out evidence
 │   ├── evaluation/                  # canonical Stage 3 evidence and reporting outputs
 │   └── project-management/          # plan, progress, risks and stage records
 ├── src/event_sonification_workbench/
@@ -347,7 +346,7 @@ The implementation uses:
 - repeat-run package, audio and report comparisons; and
 - audited links between canonical results and dissertation tables/figures.
 
-Detailed evidence is recorded under [`docs/development/`](docs/development/) and [`docs/evaluation/`](docs/evaluation/).
+Detailed evidence is retained under [`docs/evaluation/`](docs/evaluation/) and [`docs/project-management/`](docs/project-management/), with final technical contracts under [`docs/data-model/`](docs/data-model/).
 
 ## Hosted Deployment
 
@@ -386,10 +385,9 @@ For deeper technical detail, begin with:
 - [`docs/data-model/sonification-and-rendering.md`](docs/data-model/sonification-and-rendering.md)
 - [`docs/data-model/workbench-session.md`](docs/data-model/workbench-session.md)
 - [`docs/evaluation/technical-evaluation-contract-v0.1.0.md`](docs/evaluation/technical-evaluation-contract-v0.1.0.md)
-- [`docs/development/stage-1-closeout.md`](docs/development/stage-1-closeout.md)
-- [`docs/development/stage-2-closeout.md`](docs/development/stage-2-closeout.md)
-- [`docs/development/stage-3-closeout.md`](docs/development/stage-3-closeout.md)
+- [`docs/evaluation/stage-3-cross-dataset-technical-summary.md`](docs/evaluation/stage-3-cross-dataset-technical-summary.md)
 - [`docs/project-management/project-plan.md`](docs/project-management/project-plan.md)
+- [`docs/project-management/progress-log.md`](docs/project-management/progress-log.md)
 
 ## Author
 
