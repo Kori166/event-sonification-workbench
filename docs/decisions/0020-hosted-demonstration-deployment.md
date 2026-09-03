@@ -6,7 +6,7 @@ Superseded by Decision 0021 on 21 August 2026.
 
 ## Context
 
-The Stage 4 workbench was designed as a local read only inspection tool over retained Stage 1 to 3 evidence.
+The Stage 4 workbench was designed as a local read onlly inspection tool over retained Stage 1 to 3 evidence.
 
 The full MOT17 and KITTI sessions depend on dataset media and generated evidence stored outside Git.
 
@@ -30,7 +30,7 @@ The following rules applied:
 * The hosted sequence was named `synthetic_hosted_demo`.
 * The sequence used the existing session validation path.
 * The documentation clearly stated that it was synthetic and not a real MOT17 sequence.
-* The generated package had to pass the normal Stage 4 session validation before being displayed.
+* The generated package had to pass the normal Stage 4 sesion validation before being displayed.
 * No Stage 3 evaluation report was attached.
 * The interface therefore showed evaluation results as unavailable rather than inventing replacement values.
 * Render deployment was defined through `render.yaml` and used only this bounded hosted entry point.
@@ -49,7 +49,7 @@ For that reason, it was later replaced by Decision 0021, which uses verified ret
 
 ## Consequences
 
-* The synthetic hosted sequence is no longer used as the public artefact demonstration.
+* The synthetic hosted sequence is no longer used as the public artfact demonstration.
 * Decision 0021 replaces it with a verified external bundle containing the retained MOT17 and KITTI sessions.
 * The local workbench remains restricted to loopback access by default.
 * The synthetic deployment remains part of the development history but is not part of the final research evidence.

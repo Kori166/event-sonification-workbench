@@ -2,168 +2,204 @@
 
 ## Purpose
 
-A workbench session identifies one retained inspection chain spanning Stage 1 events, Stage 2 cue/suppression and audio outputs, and optional Stage 3 technical evaluation evidence.
+A workbench session identifies one retained chain of evidence that can be inspected in the workbench.
 
-The session is a read-only inspection contract. It does not contain raw dataset media, regenerate research outputs or store machine-specific absolute paths.
+The chain can include:
 
-The normative schema is:
+* Stage 1 events
+* Stage 2 cues and suppressions
+* Stage 2 rendered audio
+* optional Stage 3 technical evaluation results
+
+The session is read only. It does not contain raw dataset media, regenerate research outputs or store absolute paths from the local machine.
+
+The formal session schema is:
 
 ```text
 configs/workbench/workbench-session.schema.v0.1.0.json
 ```
 
-## Identity And Runtime Bindings
+## Session Identity And Runtime Locations
 
-The contract separates deterministic content identity from local runtime locations.
+The contract keeps deterministic session identity separate from the local locations used to open files.
 
-Deterministic identity includes:
+The deterministic identity includes:
 
-- dataset and sequence;
-- Stage 1 event-package identity and hashes;
-- Stage 2 cue-package identity and hashes;
-- Stage 2 audio-package identity and hashes;
-- preset and renderer identity;
-- optional Stage 3 evaluation identity.
+* dataset and sequence
+* Stage 1 event package identity and hashes
+* Stage 2 cue package identity and hashes
+* Stage 2 audio package identity and hashes
+* sonification preset identity
+* renderer identity
+* optional Stage 3 evaluation identity
 
-These values contribute to the content-derived `session_id`.
+These values are used to create the content based `session_id`. Runtime settings tell the workbench where the retained packages and dataset media are stored on the current machine. These locations are not included in the `session_id` and are not recorded as provenance.
 
-Runtime bindings locate the retained packages and dataset media on the current machine. They do not contribute to `session_id` and are not exposed as provenance values. Supported bindings include:
+Supported runtime settings are:
 
-- `EVENT_PACKAGE_ROOT`;
-- `CUE_PACKAGE_ROOT`;
-- `AUDIO_PACKAGE_ROOT`;
-- `OUTPUT_ROOT` as a shared fallback;
-- `MOT17_ROOT`;
-- `KITTI_TRACKING_ROOT`;
-- `REPOSITORY_ROOT` for repository-held evaluation evidence.
+* `EVENT_PACKAGE_ROOT`
+* `CUE_PACKAGE_ROOT`
+* `AUDIO_PACKAGE_ROOT`
+* `OUTPUT_ROOT` as a shared fallback
+* `MOT17_ROOT`
+* `KITTI_TRACKING_ROOT`
+* `REPOSITORY_ROOT` for evaluation evidence stored in the repository
 
-Package-specific roots take precedence over `OUTPUT_ROOT` when supplied.
+When a package specific root is supplied, it takes priority over `OUTPUT_ROOT`.
 
-## Top-Level Structure
+## Session Structure
 
 | Field | Purpose |
 |---|---|
-| `session_version` | Identifies the session contract version. |
-| `session_id` | Content-derived retained-session identifier. |
+| `session_version` | Identifies the version of the session contract. |
+| `session_id` | Identifies the retained evidence chain using its content. |
 | `dataset` | Identifies `mot17` or `kitti_tracking`. |
-| `sequence` | Identifies the retained sequence. |
-| `event_package` | Declares the Stage 1 package identity. |
-| `cue_package` | Declares the Stage 2 cue/suppression package identity. |
-| `audio_package` | Declares the Stage 2 rendered-audio package identity. |
-| `evaluation` | Declares optional Stage 3 technical evaluation evidence. |
-| `configuration` | Declares preset and renderer identity. |
-| `media` | Declares runtime media requirements without storing local paths. |
+| `sequence` | Identifies the retained dataset sequence. |
+| `event_package` | Identifies the Stage 1 event package. |
+| `cue_package` | Identifies the Stage 2 cue and suppression package. |
+| `audio_package` | Identifies the Stage 2 rendered audio package. |
+| `evaluation` | Identifies optional Stage 3 evaluation evidence. |
+| `configuration` | Identifies the sonification preset and renderer. |
+| `media` | Describes the source media required at runtime without storing local paths. |
 
 ## Stage 1 Event Package
 
-The event-package block records the retained Stage 1 run identifier, package identity, schema version and exact hashes for:
+The event package section records the retained Stage 1 run and the exact identities of:
 
-- `events.json`;
-- `events.csv`;
-- `run_metadata.json`;
-- `provenance_log.json`.
+* `events.json`
+* `events.csv`
+* `run_metadata.json`
+* `provenance_log.json`
 
-The Stage 1 loader remains responsible for validating canonical serialisation, event ordering, package metadata, source provenance and the content-derived run identifier.
+It also records the event schema version and package identity.
+
+The Stage 1 loader remains responsible for checking:
+
+* canonical serialisation
+* event ordering
+* package metadata
+* source provenance
+* the content based run identifier
+
+The workbench does not repeat these processing rules.
 
 ## Stage 2 Cue And Suppression Package
 
-The cue-package block records:
+The cue package section records:
 
-- cue run identifier and package identity;
-- the Stage 1 input package identity it expects;
-- cue schedule hashes;
-- cue-log hash;
-- suppression-log hash;
-- sonification-metadata hash.
+* the cue run identifier
+* the cue package identity
+* the expected Stage 1 input package
+* cue schedule hashes
+* cue log hash
+* suppression log hash
+* sonification metadata hash
 
-The session validator checks that the declared Stage 1 identity matches the input identity recorded by Stage 2.
+The session validator checks that the Stage 1 package declared by the session matches the Stage 1 input recorded by Stage 2.
 
-This preserves the explicit event-outcome relationship:
+This preserves the event outcome relationship:
 
 ```text
 valid event
 → cue
+
 or
+
+valid event
 → suppression
 ```
 
+Each valid event should therefore have a traceable recorded outcome.
+
 ## Stage 2 Audio Package
 
-The audio-package block records:
+The audio package section records:
 
-- audio run identifier and package identity;
-- input cue-package identity;
-- cue-schedule hash;
-- WAV hash;
-- render-log hash;
-- renderer-metadata hash.
+* the audio run identifier
+* the audio package identity
+* the input cue package
+* cue schedule hash
+* WAV hash
+* render log hash
+* renderer metadata hash
 
-The validation path checks the audio package against the retained cue package and verifies cue-to-render relationships and sample bounds.
-
-Suppressions have no audio-package record of their own because no waveform is generated for those event outcomes.
+Validation checks that the audio package belongs to the retained cue package. It also checks the recorded relationship between cues and rendered sample ranges. Suppressions do not have audio records because they intentionally produce no waveform.
 
 ## Evaluation Evidence
 
-Stage 3 evaluation evidence is optional at the contract level.
+Stage 3 evaluation evidence is optional within the session contract.
 
-An unevaluated session can declare:
+A session without evaluation evidence can declare:
 
 ```json
-{"available": false}
+{
+  "available": false
+}
 ```
 
-A retained evaluated session instead records the logical evaluation-report reference and identity required by the workbench. The browser displays the retained report; it does not recalculate metrics.
+An evaluated session instead records the logical location and identity of the retained evaluation report. The workbench displays these saved results. It does not recalculate the evaluation metrics.
 
 ## Configuration Identity
 
-The session records the sonification preset and audio renderer used by the retained chain, including their versions and hashes. This allows the workbench to display the exact configuration associated with a cue or suppression rather than relying on current default settings.
+The session records the exact sonification preset and audio renderer associated with the retained outputs. This includes their versions and hashes. The workbench can therefore show the configuration that actually produced a cue or suppression rather than relying on the current default settings.
 
-## Media Boundary
+## Source Media
 
-Source media is bound at runtime and is not embedded in the session contract. This keeps the committed session declaration portable and avoids storing dataset copies or machine paths in Git.
+Source images and other dataset media are provided at runtime. They are not stored inside the session declaration. This keeps the session portable and avoids committing dataset copies or local machine paths to Git.
 
-The retained catalogue is defined by:
+The retained session catalogue is stored at:
 
 ```text
 configs/workbench/retained-sessions.v0.1.0.json
 ```
 
-The completed workbench exposes the retained MOT17-02-DPM and KITTI Tracking 0000 cases through the same inspection interface.
+The final workbench contains retained sessions for:
 
-## Validation Boundary
+* MOT17 sequence `MOT17-02-DPM`
+* KITTI Tracking sequence `0000`
 
-A session must be validated before it is served. Validation checks include:
+Both are opened through the same inspection interface.
 
-- session schema and supported versions;
-- package and file hashes;
-- cross-stage input identities;
-- dataset and sequence consistency;
-- preset and renderer identity;
-- cue and suppression provenance;
-- rendered cue sample ranges;
-- optional evaluation-report identity;
-- required source-media availability.
+## Session Validation
 
-A broken link prevents the retained chain from being treated as valid inspection evidence. Validation does not regenerate or repair any research output.
+A session must pass validation before the workbench treats it as valid retained evidence.
 
-## Inspection Behaviour
+Validation checks include:
 
-Once opened, the workbench provides read-only access to retained evidence including:
+* session structure and supported versions
+* package and file hashes
+* links between Stage 1 and Stage 2 packages
+* dataset and sequence consistency
+* preset and renderer identity
+* cue provenance
+* suppression provenance
+* rendered sample ranges
+* optional evaluation report identity
+* availability of required source media
 
-- source frames and bounding boxes;
-- retained WAV playback;
-- synchronised event, cue and suppression timeline records;
-- selectable cues and suppressions;
-- source annotation provenance;
-- mapping/configuration identity;
-- rendered sample ranges for cues;
-- retained suppression reasons;
-- retained technical evaluation metrics.
+A broken link causes the session to fail validation. The validator does not regenerate, alter or repair research outputs.
 
-During playback, the retained audio time is the single live synchronisation clock. Source-frame selection, timeline position and playback presentation are derived from that time rather than advancing through independent timers.
+## Workbench Inspection
 
-The workbench therefore acts as an inspection layer over previously generated evidence rather than as another processing stage.
+Once a valid session is opened, the workbench provides read only inspection of retained evidence.
 
-## Reproducibility Boundary
+This includes:
 
-The session contract makes the inspected evidence chain explicit and portable by recording logical identities and hashes separately from runtime storage paths. It supports verification that the same retained packages are being inspected, but does not by itself establish cross-platform byte identity or perceptual validity.
+* source frames
+* bounding boxes
+* retained WAV playback
+* event timeline records
+* cue timeline records
+* suppression timeline records
+* selectable cues and suppressions
+* source annotation provenance
+* sonification configuration
+* rendered sample ranges
+* suppression reasons
+* retained technical evaluation results
+
+During playback, the retained audio time acts as the main synchronisation clock. The displayed source frame, timeline position and related evidence are derived from this audio time. Independent timers are not used to advance these elements separately. The workbench therefore presents previously generated evidence rather than creating another processing stage.
+
+## Reproducibility Limits
+
+The session contract makes the retained evidence chain explicit by recording logical identities and hashes separately from local storage locations. This supports checking that the same retained packages are being inspected across repeated use of the workbench. It does not demonstrate cross platform byte identity. It also does not provide evidence of perceptual validity, usability or human benefit.

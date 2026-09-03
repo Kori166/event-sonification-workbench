@@ -10,13 +10,13 @@ The baseline mapping, scheduler and renderer are technical research components. 
 
 The baseline sonification preset is defined by:
 
-- `configs/sonification/schemas/preset.schema.v0.1.0.json`;
-- `configs/sonification/presets/baseline-v0.1.0.json`.
+- `configs/sonification/schemas/preset.schema.v0.1.0.json`
+- `configs/sonification/presets/baseline-v0.1.0.json`
 
 The baseline renderer is defined by:
 
-- `configs/sonification/renderers/renderer.schema.v0.1.0.json`;
-- `configs/sonification/renderers/baseline-v0.1.0.json`.
+- `configs/sonification/renderers/renderer.schema.v0.1.0.json`
+- `configs/sonification/renderers/baseline-v0.1.0.json`
 
 Preset, mapper, cue-package and renderer versions are recorded independently so that one component can change without silently redefining the others.
 
@@ -34,10 +34,10 @@ duration_seconds = configured cue duration
 
 The baseline configuration uses:
 
-- cue duration: `0.12` seconds;
-- frequency range: `220–1760 Hz`;
-- amplitude range: `0.1–0.8`;
-- stereo pan range: `-1–1`.
+- cue duration: `0.12` seconds
+- frequency range: `220–1760 Hz`
+- amplitude range: `0.1–0.8`
+- stereo pan range: `-1–1`
 
 Horizontal centre therefore controls stereo position, vertical centre controls frequency and normalised bounding-box area controls amplitude. Bounding-box area represents apparent image scale, not physical distance or depth.
 
@@ -47,11 +47,11 @@ A class modifier is retained in cue records for traceability. Under renderer pol
 
 Each event is evaluated against the preset in a fixed priority order. The baseline can suppress events because of:
 
-1. excluded `dont_care` observations;
-2. absence from an explicit inclusion list;
-3. presence in an exclusion list;
-4. available confidence below the configured threshold; or
-5. frame-stride exclusion.
+1. excluded `dont_care` observations
+2. absence from an explicit inclusion list
+3. presence in an exclusion list
+4. available confidence below the configured threshold
+5. frame-stride exclusion
 
 The baseline excludes `dont_care`, distractor, occluder variants and reflection, applies the configured native confidence threshold where confidence is available, and uses every frame.
 
@@ -59,11 +59,11 @@ Every excluded event produces one explicit suppression record. Events are never 
 
 Suppression records retain the source event identity, dataset, sequence, frame, track, class, preset identity and source provenance together with a stable suppression code and human-readable reason. Supported codes are:
 
-- `dont_care_excluded`;
-- `class_not_included`;
-- `class_excluded`;
-- `confidence_below_minimum`;
-- `frame_stride`.
+- `dont_care_excluded`
+- `class_not_included`
+- `class_excluded`
+- `confidence_below_minimum`
+- `frame_stride`
 
 ## Cue And Suppression Package
 
@@ -86,11 +86,11 @@ event_count = cue_count + suppression_count
 
 Cue records retain:
 
-- stable `cue_id` and `source_event_id`;
-- dataset, sequence, frame, track and class;
-- start time, duration, frequency, amplitude and stereo pan;
-- preset name, version and SHA-256;
-- logical source file and source row.
+- stable `cue_id` and `source_event_id`
+- dataset, sequence, frame, track and class
+- start time, duration, frequency, amplitude and stereo pan
+- preset name, version and SHA-256
+- logical source file and source row
 
 Cue identifiers are content-derived from the source event and exact preset identity. They contain no time, random or machine-specific input.
 

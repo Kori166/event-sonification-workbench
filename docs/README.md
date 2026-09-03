@@ -17,11 +17,11 @@ and direct implementation map.
 
 1. [`evaluation/technical-evaluation-contract-v0.1.0.md`](evaluation/technical-evaluation-contract-v0.1.0.md)
    explains the frozen metrics and interpretation boundary.
-2. [`evaluation/stage-3-real-data-evaluation-protocol.md`](evaluation/stage-3-real-data-evaluation-protocol.md)
+2. [`evaluation/stage-3-evaluation-protocol.md`](evaluation/stage-3-evaluation-protocol.md)
    records the accepted real data evaluation procedure.
-3. [`evaluation/stage-3-cross-dataset-technical-summary.md`](evaluation/stage-3-cross-dataset-technical-summary.md)
+3. [`evaluation/stage-3-dataset-results-summary.md`](evaluation/stage-3-dataset-results-summary.md)
    summarises the retained MOT17 and KITTI results.
-4. [`evaluation/stage-3-real-data-traceability-audit.md`](evaluation/stage-3-real-data-traceability-audit.md)
+4. [`evaluation/stage-3-traceability-audit.md`](evaluation/stage-3-traceability-audit.md)
    documents the end to end traceability audit.
 5. [`evaluation/evidence/`](evaluation/evidence/) contains canonical retained reports and manifests.
 6. [`evaluation/reporting/README.md`](evaluation/reporting/README.md) explains the concise audited
