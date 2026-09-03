@@ -1,36 +1,23 @@
 # Project Management Records
 
-This directory contains the working evidence used to plan, track and review the MSc project.
+This directory contains the retained evidence used to plan, track and review the MSc project.
 
 - `project-plan.md`: stages, work order, milestones and completion criteria.
-- `stage-1-checklist.md`: completed operational checklist and close-out gate for Stage 1.
-- `stage-2-checklist.md`: completed sonification milestones and real-data close-out gate.
 - `progress-log.md`: dated project-wide record of work, decisions, problems, actions and next steps.
-- `stage-4-progress-log.md`: Stage 4 Milestone 1 Phase 1 recovery record for the runtime-binding
-  correction, premature merge/revert sequence and final acceptance gate.
-- `../development/milestone-2-mot17-vertical-slice.md`: detailed implementation, diagnostic and
-  validation evidence for the MOT17 vertical slice.
-- `../development/milestone-3-kitti-extension.md`: KITTI audit, fixture, parser and integration evidence.
-- `../development/stage-1-closeout.md`: real-package, repeat-run and complete-suite close-out evidence.
-- `../development/stage-2-milestone-1-cue-scheduling.md`: preset, mapping, fixture, output and test
-  evidence for the first Stage 2 vertical slice.
-- `../data-model/audio-rendering.md`: Milestone 2 renderer, synthesis, WAV and traceability contract.
-- `../development/stage-2-milestone-2-audio-rendering.md`: implementation, fixture hashes and local
-  validation evidence for deterministic WAV rendering.
-- `../development/stage-2-closeout.md`: real MOT17/KITTI event-to-cue-to-WAV repeat-run evidence,
-  exact hashes, quality results, limitations and Stage 3 handover.
-- `stage-3-checklist.md`: completed contract, real-data and report-ready evaluation gates.
-- `../evaluation/reporting/`: report-ready tables/figures, presentation-value manifest, claim matrix
-  and automated/manual audit records.
-- `../development/stage-3-closeout.md`: Stage 3 identities, reporting hashes, quality evidence,
-  bounded RQ3 answer, limitations and Stage 4 handover.
-- `stage-4-checklist.md`: active workbench contract, synchronised inspection and release gates.
-- `../data-model/workbench-session.md`: Workbench Session Contract `0.1.0`, deterministic identity
-  fields and runtime binding boundary.
-- `../development/stage-4-milestone-1-phase-1.md`: Phase 1 implementation, validation design,
-  quality gate and Phase 2 handover.
+- `stage-1-checklist.md`: completed data-ingestion and normalisation gates.
+- `stage-2-checklist.md`: completed sonification and deterministic rendering gates.
+- `stage-3-checklist.md`: completed technical-evaluation and reporting-evidence gates.
+- `stage-4-checklist.md`: completed workbench assembly, inspection and release gates.
+- `stage-4-progress-log.md`: focused Stage 4 runtime-binding recovery history.
 - `risk-register.md`: identified risks, mitigations and review status.
 - `supervision-log.md`: verified supervision feedback and resulting actions.
 
-GitHub Issues and commits provide the task and implementation history. Significant technical,
-methodological and scope decisions are recorded separately under `docs/decisions/`.
+Final technical contracts are consolidated under:
+
+- `../data-model/common-event-schema.md` for the common schema, dataset adapters, validation and deterministic Stage 1 package;
+- `../data-model/sonification-and-rendering.md` for mapping, suppressions, cue scheduling and deterministic audio rendering; and
+- `../data-model/workbench-session.md` for retained-session identity, validation and read-only inspection behaviour.
+
+Canonical Stage 3 evaluation evidence and audited reporting derivatives are retained under `../evaluation/`. Significant technical, methodological and scope decisions are recorded under `../decisions/`.
+
+GitHub Issues, commits and pull requests provide the detailed implementation history. The project-management records retain the final stage history without duplicating milestone-specific development documents.
