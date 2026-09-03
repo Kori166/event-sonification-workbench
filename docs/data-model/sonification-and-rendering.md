@@ -110,7 +110,7 @@ duration_samples = max(1, round_half_up(duration_seconds × sample_rate_hz))
 end_sample_exclusive = start_sample + duration_samples
 ```
 
-The baseline renders stereo 44.1 kHz signed 16-bit PCM audio.
+The baseline renders stereo 44.1 kHz signed 16-bit PCM audio. An empty valid cue schedule produces a deterministic zero-frame WAV containing the standard 44-byte WAV header together with empty render logs and metadata, rather than being treated as an error.
 
 ### Waveform And Panning
 
