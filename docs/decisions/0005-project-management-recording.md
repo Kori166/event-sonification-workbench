@@ -1,33 +1,45 @@
-# 0005: Project Management Recording
+# 0005: Project Management Records
 
 ## Status
 
-Accepted
+Accepted.
 
 ## Context
 
-The project must provide clear evidence of planning, implementation progress, risk management, supervision and changes in direction. This evidence should not create unnecessary duplicate administration.
+The project needs clear evidence of planning, development progress, risks, supervision and important changes.
+
+This evidence should be useful and traceable without creating unnecessary duplicate paperwork.
 
 ## Decision
 
-Project-management evidence will be recorded through:
+Project management will be recorded using:
 
-- GitHub Issues for planned and active tasks;
-- commits and pull requests for implementation history;
-- `project-plan.md` for stage status and completion criteria;
-- `progress-log.md` for dated activity, decisions, problems and next actions;
-- `risk-register.md` for active risks and mitigations;
-- `supervision-log.md` for verified meeting feedback and agreed actions; and
-- decision records for significant technical, methodological or scope choices.
+* GitHub Issues for planned and active work
+* commits and pull requests for implementation history
+* `project-plan.md` for stage timing, status and completion criteria
+* `progress-log.md` for dated progress, decisions, problems and next steps
+* `risk-register.md` for project risks and mitigations
+* `supervision-log.md` for confirmed supervisor feedback and agreed actions
+* decision records for important technical, methodological or scope choices
 
-These records must be updated when an issue is completed, the scope changes, a risk is revised or a project stage begins or ends.
+These records should be updated when:
+
+* a major task is completed
+* project scope changes
+* a risk changes
+* a project stage starts
+* a project stage finishes
 
 ## Rationale
 
-This record set was selected to create a traceable chain from planning to implementation and evaluation. It also keeps the administrative burden proportionate to the MSc project.
+This provides a clear record from project planning through development and evaluation.
+
+It also keeps project management proportionate to the MSc scope rather than creating several documents that record the same thing in slightly different ways, humanity having already invented enough paperwork.
 
 ## Consequences
 
-- Progress entries must describe actual work rather than reconstructed activity.
-- Supervision records must not be created without supporting notes or correspondence.
-- Completed issues must be reflected in the project plan or progress log where they affect stage status.
+* Progress records should describe work that actually took place.
+* Supervision records should be based on genuine meeting notes, feedback or correspondence.
+* Completed work should be reflected in the project plan or progress log where it changes the status of a stage.
+* Important technical or methodological changes should be recorded separately as decision records.
+* The different project management documents should support each other without unnecessarily repeating the same information.

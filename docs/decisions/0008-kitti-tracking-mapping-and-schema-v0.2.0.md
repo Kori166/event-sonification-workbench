@@ -1,60 +1,98 @@
-# 0008: KITTI Tracking Mapping and Common Schema v0.2.0
+# 0008: KITTI Tracking Support And Schema 0.2.0
 
 ## Status
 
-Accepted for Stage 1 Milestone 3 on 5 August 2026 and merged through PR #15 after successful CI.
+Accepted for Stage 1 Milestone 3 on 5 August 2026.
+
+The implementation passed CI and was merged through PR #15.
 
 ## Context
 
-KITTI Tracking training rows use zero-based frames, sequence-level track IDs, native object types,
-integer truncation/occlusion, left/top/right/bottom geometry, 3D attributes and optional result
-scores. `DontCare` rows use negative sentinels and meaningful 2D ignore-region geometry.
+KITTI Tracking uses a different annotation structure from MOT17.
 
-The common schema 0.1.0 already supports shared time, identity, class, 2D geometry and provenance,
-and its open metadata object can retain dataset-specific quality and 3D attributes. Its confidence
-field, however, allowed only values in `[0,1]`. The official KITTI devkit says the evaluation server
-determines the submitted score range automatically, so valid scores may be outside that interval.
+Its records include:
+
+* zero based frame numbers
+* track IDs
+* object classes
+* truncation and occlusion values
+* left, top, right and bottom bounding box coordinates
+* 3D information
+* optional confidence scores
+* `DontCare` regions
+
+Common event schema `0.1.0` already supports shared timing, identity, class, 2D geometry and provenance.
+
+Dataset specific information can also be retained in metadata.
+
+However, schema `0.1.0` limited confidence values to the range `[0, 1]`.
+
+KITTI scores cannot safely be assumed to use that range, so the schema needed a small revision.
 
 ## Decision
 
+The KITTI adapter will accept 17 required fields and one optional score.
+
+Every numeric value is converted and validated explicitly.
+
 The adapter will:
 
-- accept exactly 17 required fields plus an optional score;
-- explicitly convert and validate every numeric field;
-- preserve zero-based source frames as common frames and calculate `frame / frame_rate` timestamps;
-- derive common width/height by subtracting left/top from right/bottom;
-- preserve native and mapped common classes;
-- preserve truncation, occlusion, alpha, dimensions, location and rotation in metadata;
-- preserve optional scores without clipping or normalising them;
-- accept official unused-field sentinels only on scored result rows;
-- set visibility to `null` rather than infer a ratio from occlusion;
-- reject unsupported classes and malformed semantic values with coded row diagnostics;
-- retain out-of-image positive boxes with a warning rather than clip them; and
-- preserve `DontCare` rows as explicit `dont_care` events with track `-1` and metadata flags.
+* keep KITTI zero based frames unchanged
+* calculate timestamps using `frame / frame_rate`
+* calculate width from `right - left`
+* calculate height from `bottom - top`
+* preserve the original KITTI class
+* map supported classes to the common class vocabulary
+* preserve truncation and occlusion
+* preserve alpha
+* preserve 3D dimensions and location
+* preserve rotation
+* preserve optional scores without clipping or normalising them
+* set common visibility to `null`
+* reject unsupported classes and invalid values with coded diagnostics
+* retain valid boxes that extend outside the image and report a warning
+* preserve `DontCare` rows as explicit `dont_care` events
 
-Schema 0.2.0 will retain the 0.1.0 structure but permit any JSON number or `null` for confidence.
-Both current adapters will emit 0.2.0. Schema 0.1.0 will remain available as a historical contract.
+`DontCare` events retain track ID `-1` and suitable metadata so later processing can identify them clearly.
+
+## Common Schema 0.2.0
+
+Common event schema `0.2.0` keeps the same overall event structure as version `0.1.0`.
+
+The only required schema change is to allow confidence to contain:
+
+* any valid JSON number
+* `null`
+
+Confidence is therefore no longer restricted to `[0, 1]`.
+
+Both MOT17 and KITTI adapters now produce schema `0.2.0`.
+
+Schema `0.1.0` remains available as a historical version rather than being changed in place.
 
 ## Rationale
 
-Filtering `DontCare` during ingestion would remove source evidence and hide a consequential policy
-choice. Retention keeps the adapter loss-aware and lets later, logged processing apply an explicit
-filter. Occlusion is categorical and is not mathematically equivalent to MOT17 visibility, so an
-invented conversion would weaken comparability. Metadata preserves dataset-specific values without
-expanding the common top-level interface.
+Removing `DontCare` records during ingestion would hide information that exists in the original dataset.
 
-Relaxing the confidence range is the smallest change that preserves legal KITTI scores faithfully.
-A schema version change makes the revised contract visible while avoiding an in-place alteration to
-0.1.0.
+Keeping them as explicit events allows later processing to suppress them deliberately and record that decision.
+
+KITTI occlusion is also categorical and is not equivalent to the MOT17 visibility value.
+
+Creating an artificial visibility ratio would therefore introduce information that is not present in the source data.
+
+Dataset specific fields are retained in metadata so the common event structure remains simple.
+
+Relaxing the confidence range is the smallest schema change needed to preserve valid KITTI scores without changing their meaning.
 
 ## Consequences
 
-- Consumers must treat confidence scale as dataset-specific and must not assume a probability.
-- MOT17 events remain unchanged except for their declared common schema version; confidence stays
-  `null`.
-- `DontCare` events are available to downstream code and must be intentionally retained or filtered.
-- KITTI truncation and occlusion remain accessible without becoming misleading shared ratios.
-- The shared event shape has now been exercised against real MOT17 and KITTI rows but remains
-  pre-1.0 until Stage 1 structured outputs and its quality gate are complete.
-- Fixture rows are redistributed with KITTI attribution and CC BY-NC-SA 3.0 notice; no full dataset
-  or media is committed.
+* Confidence must be interpreted according to the source dataset.
+* Confidence must not automatically be treated as a probability.
+* MOT17 events remain otherwise unchanged and continue to use `null` confidence.
+* `DontCare` events remain available to later processing.
+* Any later suppression of `DontCare` must be explicit and recorded.
+* KITTI truncation and occlusion remain available as dataset specific metadata.
+* Both MOT17 and KITTI now use the same common event structure.
+* Common event schema `0.2.0` remains a pre `1.0` contract until the Stage 1 output and validation work is complete.
+* Only small documented fixture rows are retained in the repository with the required KITTI attribution and licence notice.
+* Full KITTI datasets and media are not committed.

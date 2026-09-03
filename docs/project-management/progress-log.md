@@ -1,1119 +1,591 @@
 # Progress Log
 
-This is the canonical project-wide chronological log. It records material work, decisions, risks,
-corrective actions, verification and changes of scope. Detailed stage-specific evidence is retained
-in the relevant checklists. In particular, [stage-4-progress-log.md](stage-4-progress-log.md) contains
-the detailed Stage 4 runtime-binding recovery, pull-request sequence and browser-validation history
-that would be unnecessarily verbose here.
+This document records the main progress of the project against the planned project timeline.
 
-Earlier entries preserve the project state and next actions as understood on their dates. Later
-entries record their resolution where evidence exists. GitHub Issues, pull requests and commits
-retain lower-level command and branch history.
+It summarises important work, decisions, problems, corrections and testing. More detailed technical evidence is retained in the relevant stage checklists, decision records, evaluation documents, GitHub Issues and pull requests.
+
+Some project stages overlap because research, development, evaluation and reporting continued alongside each other.
 
 ## Current Project Status
 
-| Stage | Current status |
+| Stage | Status |
 |---|---|
-| 0. Project Setup | Complete |
-| 1. Data Ingestion and Normalisation | Complete |
-| 2. Sonification | Complete |
-| 3. Technical Evaluation | Complete |
-| 4. Artefact Assembly, Validation and Release | Complete |
-| 5. Reporting and Viva Preparation | Report and artefact prepared for submission; viva preparation ongoing |
+| Research Planning And Literature Review | Complete |
+| Stage 0: Project Setup | Complete |
+| Stage 1: Data Ingestion And Normalisation | Complete |
+| Stage 2: Audio Cue Generation | Complete |
+| Stage 3: Technical Evaluation | Complete |
+| Stage 4: Workbench Development | Complete |
+| Stage 5: Report And Submission Preparation | In Progress |
+| Viva Preparation | In Progress |
 
-The repository does not contain evidence that final submission has occurred. The final status
-therefore records submission readiness rather than submission.
+## 7 April To 29 June 2026: Define The Project
 
----
+### Work Completed
 
-## 2026-07-28 — Stage 0 completion
+* Defined the project area around event based sonification of annotated video datasets.
+* Refined the project aim, objectives and research questions.
+* Established MOT17 and KITTI Tracking as the two main dataset cases.
+* Defined the project as technical research infrastructure rather than a validated assistive technology.
+* Established reproducibility, traceability and deterministic processing as core requirements.
+* Reviewed the project scope with the supervisor.
 
-**Work completed**
+### Main Decisions
 
-- Created the new `event-sonification-workbench` repository.
-- Added the README, Python project configuration, environment example and ignore rules.
-- Added the package scaffold, command-line entry point and smoke test.
-- Corrected the README structure and installation guidance.
-- Added the project plan, progress log, risk register and supervision log.
-- Created Stage 1 Issues #1 to #4.
-- Marked Stage 0 as complete.
+* The project will focus on annotated tracking datasets rather than live video.
+* MOT17 and KITTI Tracking will provide two different annotation formats for testing the common workflow.
+* The project will evaluate technical behaviour rather than participant outcomes.
+* Accessibility, usability, navigation and safety claims will remain outside the evidence unless participant research is carried out.
+* Three research questions will cover data normalisation, deterministic sonification and technical evaluation.
 
-**Decisions made**
+### Outcome
 
-- GitHub Issues, commits and project records will provide evidence of project management.
-- MOT17 and KITTI Tracking remain the core dataset scope.
-- Full datasets will be stored locally rather than committed to GitHub.
-- Stage 1 will begin with the common event schema and MOT17 parser.
+The aim, objectives, research questions and project scope were sufficiently defined to support implementation.
 
-**Problems or risks**
+## 7 April To 31 July 2026: Literature Review And Research Gap
 
-- CI initially failed because the smoke-test file was empty and no test was collected.
-- The previous repository deletion reduced the remaining development time.
+### Work Completed
 
-**Actions taken**
+* Reviewed literature on sonification, auditory display and event based audio representation.
+* Reviewed work on visual to auditory mappings.
+* Reviewed reproducibility and provenance in data processing systems.
+* Reviewed MOTChallenge and KITTI Tracking documentation.
+* Compared existing work with the proposed workbench.
+* Identified a gap around reproducible and traceable conversion of annotated video events into deterministic audio outputs.
+* Continued literature review alongside early technical development.
 
-- Added a valid package import test and the package files required by `pyproject.toml`.
-- Added scope and data-loss risks to the risk register.
+### Main Decisions
 
-**Next actions**
+* The workbench should not be presented as proving that the generated audio is useful to listeners.
+* Mapping choices should be explicit, deterministic and traceable.
+* Technical evaluation should measure properties such as coverage, timing, traceability, density, overlap and repeatability.
+* Dataset differences should be described rather than treated as controlled experimental differences.
 
-- Begin Stage 1 by defining the common event schema.
+### Outcome
 
----
+The literature review established the research context and supported the final project scope and evaluation design.
 
-## 2026-07-28 — Stage 1 initiation
+## 1 June To 28 June 2026: Stage 0 Project Setup
 
-**Work completed**
+### Work Completed
 
-- Reviewed repository readiness after Stage 0 completion.
-- Marked Stage 1 as in progress in the README and project plan.
-- Added a Stage 1 work order and completion criteria.
-- Added decision records for project scope, dataset storage, Python package layout,
-  implementation order and project-management evidence.
-- Added Stage 1 Issues #5 and #6 for KITTI parsing and structured event and provenance outputs.
-- Reviewed and extended the risk register.
+* Created the `event-sonification-workbench` repository.
+* Added the README and Python project structure.
+* Added environment configuration and Git ignore rules.
+* Added the command line entry point and initial smoke test.
+* Added the project plan, progress log, risk register and supervision log.
+* Created the initial GitHub Issues.
+* Established CI and automated testing.
+* Added early decision records covering project scope, dataset storage and implementation structure.
 
-**Decisions made**
+### Main Decisions
 
-- A schema-first implementation sequence will be used before dataset-specific parsers are treated
-  as stable.
-- The installable Python package will remain under `src/event_sonification_workbench/`.
-- Full datasets will remain outside Git. Only small documented fixtures may be committed where
-  permitted.
-- The workbench will be evaluated technically without participant-based accessibility claims.
+* GitHub Issues, commits and project records will provide evidence of project management.
+* Full MOT17 and KITTI datasets will remain outside Git.
+* Only small fixtures may be committed where licensing allows.
+* The Python package will remain under `src/event_sonification_workbench/`.
+* Development will move from common data representation to dataset adapters, sonification, evaluation and finally the inspection workbench.
 
-**Problems or risks**
+### Problems And Corrections
 
-- A schema designed only around MOT17 could require disruptive changes when KITTI Tracking is
-  added.
-- GitHub Issues and project records could drift from the actual implementation status.
+The initial CI check failed because the smoke test file did not contain a runnable test.
 
-**Actions taken**
+A valid package import test and the required package files were added.
 
-- Added these risks and mitigations to the risk register.
-- Recorded the significant decisions under `docs/decisions/`.
-- Added a Stage 1 checklist and project-management index.
+The earlier loss of the original repository also reduced the available implementation time. This was recorded as a project risk.
 
-**Next actions**
+### Outcome
 
-- Complete Issue #1 by defining the common event schema.
-- Complete Issue #3 by creating the fixed MOT17 test fixture.
-- Implement and test the MOT17 parser under Issue #2.
-- Implement the KITTI Tracking parser under Issue #5.
-- Add validation and provenance outputs under Issues #4 and #6.
+The repository, development structure and basic project management evidence were established.
 
----
+Stage 0 was complete.
 
-## 2026-07-29 — Stage 1 Milestone 1: schema and synthetic fixture
+## 15 June To 5 August 2026: Stage 1 Data Ingestion And Normalisation
 
-**Work completed**
+Stage 1 developed the common event representation and converted MOT17 and KITTI Tracking annotations into that format.
 
-- Added provisional common event schema version `0.1.0` under `configs/schemas/`.
-- Added a documented synthetic source annotation and manually constructed expected event under
-  `tests/fixtures/synthetic/`.
-- Added deterministic event-ID, canonical hashing and event-validation modules under
-  `src/event_sonification_workbench/`.
-- Added automated tests for schema validity, semantic calculations, source traceability and
-  deterministic hashing.
-- Added the common-event data-model document and Decision 0006.
-- Ran the complete local test suite successfully, with eight tests passing.
-
-**Decisions made**
-
-- The common event will use a flat record to simplify parser outputs and later JSON and CSV export.
-- The common frame index will be zero-based. Timestamps will be derived in seconds from the
-  declared frame rate.
-- Native and common object classes will be stored separately.
-- Schema version `0.1.0` will remain provisional until it has been reviewed against both real
-  datasets.
-- Out-of-frame normalised centres will be permitted and reported as warnings rather than rejected
-  automatically.
-
-**Problems or risks**
-
-- The synthetic fixture cannot provide evidence of compatibility with MOT17 or KITTI Tracking.
-- The common class vocabulary and treatment of KITTI-specific quality fields remain unresolved.
-- Later schema changes could be concealed if the initial schema task is treated as permanently
-  complete rather than provisionally complete.
-
-**Actions taken**
-
-- Recorded the provisional status and open questions in the data-model document and Decision 0006.
-- Kept the separate MOT17 fixture and parser work outstanding.
-- Added an explicit checklist item requiring cross-dataset review before schema version `1.0.0`.
-
-**Next actions**
-
-- Review the provisional schema against the exact MOT17 and KITTI Tracking field definitions.
-- Complete the fixed MOT17 fixture under Issue #3.
-- Implement the first MOT17 row-to-event vertical slice under Issue #2.
-- Revisit Decision 0006 if parser evidence requires a schema change.
-
----
-
-## 2026-07-29 — Stage 1 Milestone 2 implementation: MOT17 vertical slice
-
-**Work completed**
-
-- Implemented the MOT17 ground-truth adapter and sequence-metadata parser.
-- Added the provisional MOT17 class mapping and configuration hashes.
-- Added controlled valid and invalid MOT17-format rows for unit testing.
-- Added a local `mot17-check` command for parser and event-validation summaries.
-- Added deterministic extraction of explicit source rows into a fixture with a provenance manifest.
-- Extended event validation to resolve source files from a configured dataset root.
-- Added adapter, command-line, fixture-extraction and common-schema integration tests.
-- Added Decision 0007, adapter documentation and a detailed Milestone 2 work log.
-- Ran the combined Milestone 1 and Milestone 2 local suite successfully, with 20 tests passing.
-
-**Decisions made**
-
-- The adapter will accept the nine-column MOT17 ground-truth format only.
-- The provisional implementation converted frames and bounding-box origins. Real-data review on
-  4 August 2026 retained frame conversion but superseded the coordinate-origin conversion.
-- The MOT17 ground-truth evaluation mark will remain in metadata and will not be used as common
-  confidence.
-- Structurally valid marked and unmarked rows will be retained during ingestion.
-- A real-data fixture and local sequence run are required before Milestone 2 can be completed.
+### Common Event Schema
 
-**Problems or risks**
-
-- The earlier branch-building environment did not have access to the local dataset. The files were
-  available during the 4 August 2026 real-data review.
-- The `conf` name used in format descriptions can be mistaken for detector confidence even though
-  the ground-truth value is an evaluation mark.
-- MOT17 ground truth and tracker-result files use different field counts.
-- A dataset-derived fixture cannot be selected responsibly without inspecting the source rows and
-  redistribution conditions.
-
-**Actions taken**
-
-- Recorded the semantic and indexing decisions in Decision 0007.
-- Added strict field-count and value validation with structured row diagnostics.
-- Added a synthetic format fixture while clearly excluding it from real-data evidence.
-- Added a deterministic fixture-extraction command that records source rows and hashes.
-- Updated the risk register and milestone completion criteria.
-
-**Next actions**
-
-- Obtain `seqinfo.ini` and `gt/gt.txt` for the selected local MOT17 sequence.
-- Inspect and select representative physical rows for the fixed fixture.
-- Generate the dataset-derived fixture and expected common events.
-- Run `mot17-check` against the real sequence.
-- Run the complete suite in CI and then review Issues #2 and #3 for closure.
-
----
-
-## 2026-08-04 — Stage 1 Milestone 2 real-data verification
-
-**Work completed**
-
-- Inspected `MOT17-02-DPM` sequence metadata and all 30,003 ground-truth rows.
-- Recorded a deterministic 12-line real-data selection and both source and generated hashes.
-- Added manifest-driven private fixture generation under an ignored directory.
-- Replaced the five-row format sample with a 12-row structurally equivalent synthetic fixture.
-- Added independently calculated expected-event projections and controlled malformed rows.
-- Corrected coordinate preservation, authoritative class support and out-of-frame warnings.
-- Added unit, golden, determinism, command-line and private integration tests.
-- Completed the MOT17 adapter, mapping, decision, fixture and development documentation.
-
-**Decisions made**
-
-- Native bounding-box coordinates are preserved; only the frame index is converted.
-- The ground-truth evaluation mark remains metadata and common confidence remains `null`.
-- Native class identifiers outside the authoritative range 1 to 12 are rejected.
-- Copied MOT17 rows remain outside Git because redistribution permission is unresolved.
-- A committed manifest and synthetic CI fixture provide reproducibility without claiming permission.
-
-**Problems or risks**
-
-- Rebuilt `origin/main` and the legacy local `main` had no common ancestor.
-- GitHub CLI was unavailable.
-- Windows line endings invalidated the existing synthetic source hash.
-- The first full event-validation command timed out because the same source file was re-hashed for
-  every event.
-- Issue #3 cannot close while the fixture redistribution criterion remains unresolved.
-
-**Actions taken**
-
-- Preserved the legacy worktree artefacts and used the rebuilt remote history without joining it.
-- Used connected GitHub operations where the absent CLI would otherwise be required.
-- Enforced LF for hashed fixture files and normalised the affected source fixture.
-- Cached the compiled schema and source hash within a validation run without removing checks.
-- Recorded the licence limitation explicitly and kept dataset-derived rows ignored.
-
-**Validation evidence**
-
-- Normal tests: 45 passed and 1 integration test deselected.
-- Real-data integration selection: 1 passed and 45 tests deselected.
-- Complete suite: 46 passed twice, with zero failures, skips or pytest warnings.
-- Full real sequence: 30,003 valid events, zero invalid events and 988 geometry warnings.
-- Fixture generation: 12 rows with SHA-256
-  `a4d5ec744f02febec5a2887080cc95c2f49b09189fa600d2e37c3252210f835f`.
-- Ruff: passed.
-- GitHub Actions CI run 28: passed on implementation head `d17e891`.
-- Repeated synthetic conversion: identical order, event IDs, canonical JSON and event hashes.
-
-**Remaining work**
-
-- Complete the final documentation-only branch CI check before merge.
-- Issue #2 closed after all parser acceptance criteria were evidenced.
-- Keep Issue #3 and Milestone 2 open until the redistribution criterion is resolved.
-- Do not begin KITTI implementation until the Milestone 2 status is settled.
-
-**Next actions**
-
-- Publish and review the MOT17 parser changes.
-- Resolve the fixture redistribution or acceptance-criterion question recorded in Issue #3.
-- Begin Milestone 3 only after Milestone 2 can be marked complete.
-
----
-
-## 2026-08-05 — Stage 1 Milestone 3 KITTI Tracking extension
-
-**Work completed**
-
-- Audited the configured KITTI Tracking root before implementation and discovered the actual
-  `training/label_02` layout, sequences `0000`–`0020`, 17-field rows and missing local terms files.
-- Reviewed the official KITTI tracking format, evaluation implementation, sensor rate, copyright,
-  attribution and licence sources.
-- Selected 12 deterministic rows from training sequence `0000` and recorded original source lines,
-  field order, method, source/fixture hashes, metadata, attribution and CC BY-NC-SA 3.0 terms.
-- Added separately identified synthetic malformed rows.
-- Implemented explicit 17/18-field KITTI parsing, coded structured diagnostics, class mapping,
-  common-event conversion, source provenance and sequence-image metadata inspection.
-- Preserved `DontCare` as explicit events and retained truncation, occlusion, alpha, 3D geometry,
-  rotation and optional scores.
-- Added schema `0.2.0`, retaining the event shape and relaxing only the native confidence range.
-- Updated the common schema, adapter, decisions, milestone evidence, project plan, checklist, risks,
-  fixture documentation and README.
-
-**Decisions made**
-
-- KITTI source frames remain zero-based common frames; timestamps use the official 10 Hz rate.
-- Right/bottom coordinates become width/height through subtraction and are treated as continuous
-  edges that may equal image width/height.
-- `DontCare` rows are not silently filtered; later processing must record any exclusion.
-- Occlusion is not converted to a fabricated MOT17-style visibility ratio.
-- Optional KITTI scores are preserved without clipping or probability semantics.
-- Schema 0.1.0 remains historical; both adapters now emit 0.2.0.
-
-**Problems and actions**
-
-- The process environment did not initially inherit the ignored local root configuration. The
-  value was exported only into private integration commands, and no absolute path was committed.
-- PowerShell did not provide `Path.GetRelativePath`; audit reporting used a root-relative fallback.
-- An initial integration assertion exposed nine boundary alerts. All ended exactly at image width
-  or height, so the check was aligned with continuous right/bottom edge geometry and the common
-  validator. The final run had zero warnings; truly outside geometry still warns.
-- GitHub CLI remained unavailable. Implementation and local evidence were completed; publication
-  uses the connected capability if available or remains explicitly blocked.
-
-**Validation evidence**
-
-- Ruff: `ruff check .` passed.
-- Non-integration suite: 76 passed, 2 deselected.
-- Dedicated KITTI integration: 1 passed.
-- All private integrations: 2 passed, 76 deselected.
-- Complete available Python suite with both private roots: 78 passed, zero failures or skips.
-- KITTI sequence `0000`: 1,089 physical/valid rows, 378 `DontCare`, 0 confidence rows, 0 errors,
-  0 final warnings and 1,089 schema/provenance-valid events.
-- Fixture: 12 rows; source SHA-256
-  `97f772a27181dfc7ef51b3e64b86bd42e682753b6855fdc58d259ecbed501fd4`; fixture SHA-256
-  `fe67e4e689ff4431464bf4ee040e79454bb2e9f0e9dd0331a594b9e6a3aab1b7`.
-- Repeated fixture conversion produced identical event order, IDs, canonical JSON and hashes.
-
-**Remaining work**
-
-- Audit the final staged scope for private paths, media and undocumented dataset-derived files.
-- Commit and push only Milestone 3 changes; preserve unrelated interface work.
-- Open a draft pull request and wait for CI before treating the milestone as merge-ready.
-- Do not merge until CI, acceptance, provenance and privacy gates all pass.
-
----
-
-## 2026-08-05 — Issue #4 normalised event collection validation
-
-**Work completed**
-
-- Started from the latest `origin/main`, which includes the merged MOT17 and KITTI adapters.
-- Refactored validation internals so single-event and collection checks share schema, semantic,
-  provenance and canonical-hash logic.
-- Added coded error/warning diagnostics with zero-based event indexes and available event/source
-  context.
-- Added duplicate-ID detection, finite-number protection and collection summary counts.
-- Added canonical JSON report writing and exact-byte SHA-256 calculation without runtime state.
-- Reused the complete 12-event MOT17 and KITTI fixtures and added declarative synthetic invalid
-  collection cases.
-- Documented the validation API, codes, deterministic ordering, warning policy and schema decision.
-
-**Decisions made**
-
-- The first event-ID occurrence remains the reference; each later occurrence is invalidated.
-- Warning-only events and collections remain valid; out-of-image positive geometry stays preserved.
-- Diagnostics follow supplied event order, fixed within-event policy and stable machine codes.
-- Common schema `0.2.0` remains unchanged because uniqueness and cross-field arithmetic are
-  collection-semantic constraints rather than schema defects.
-- Report format and validator versions begin independently at `0.1.0`.
-
-**Problems or risks**
-
-- The requested branch transition initially stopped because unrelated local README and web
-  interface changes would have been overwritten. The two tracked edits were temporarily shelved,
-  restored after branching and verified; untracked web files were untouched.
-- The standalone `ruff` executable was not on this PowerShell PATH. The installed module entry point
-  was used instead and returned the same Ruff check.
-- The complete pytest invocation skipped both private-data integration tests, so this Issue #4 run
-  records fixture-collection evidence rather than new full-dataset integration evidence.
-
-**Validation evidence**
-
-- Targeted event and collection validation: 27 passed.
-- Ruff: `python -m ruff check .` passed.
-- Non-integration suite: 98 passed, 2 deselected.
-- Complete available suite: 98 passed, 2 private integrations skipped.
-- Repeated validation produced identical report objects, canonical JSON bytes and SHA-256 hashes.
-- Tests confirm that validation does not modify, remove or reorder supplied event collections.
-
-**Next actions**
-
-- Audit the staged scope for local paths, ignored configuration, datasets and media.
-- Open a draft pull request that closes Issue #4 and wait for CI before merge.
-- Keep Issue #6 event-package output and all sonification/audio work out of this change.
-
----
-
-## 2026-08-05 — Issue #6 deterministic event and provenance outputs
-
-**Work completed**
-
-- Started from the latest `origin/main`, including the merged Issue #4 collection validator.
-- Reused the common canonical JSON, hashing, parser and validation components to add one output
-  writer rather than a parallel pipeline.
-- Added canonical `events.json`, fixed-column LF-delimited `events.csv`, `run_metadata.json` and
-  `provenance_log.json` under a content-derived run ID.
-- Added deterministic cross-adapter ordering, logical-only source/configuration references,
-  output hashes, validation summaries, conversion assumptions and decision-record references.
-- Added MOT17 and KITTI package CLI commands that parse, validate and write only valid collections.
-- Covered both complete committed fixtures, nested CSV values, field preservation, ordering,
-  repeated-run byte identity, metadata, provenance, hashes and unsafe input/output rejection.
-- Documented output format version `0.1.0`; common event schema `0.2.0` remains unchanged.
-
-**Decisions made**
-
-- The run ID is derived from deterministic input identities and event-output hashes; wall-clock
-  time, machine paths and randomness are excluded.
-- Events use the required `(dataset, sequence, frame, track_id, source_row, event_id)` ordering;
-  string track IDs retain common-schema lexical semantics for both adapters.
-- Nested CSV values use the shared canonical JSON representation.
-- `run_metadata.json` cannot embed its own hash without recursion, so its exact-byte hash is
-  returned by the writer while metadata records the scope explicitly.
-- Existing deterministic run directories may contain only the four expected regular files.
-
-**Problems and actions**
-
-- The repository virtual environment initially had Ruff and pytest but lacked the declared
-  `jsonschema` runtime dependency, so the first non-integration run stopped during collection with
-  nine `ModuleNotFoundError` reports. Installing the repository's declared `.[dev]` dependencies
-  into that ignored environment repaired it; no dependency files required changes.
-- Both complete-suite integration tests skipped clearly because private dataset roots were not
-  available to that test process. No private-data results or full-dataset output claims were made.
-- Unrelated local web-interface and launcher changes remain outside this Issue #6 scope.
-
-**Validation evidence**
-
-- Output-package coverage: 23 tests passed as part of each final suite run.
-- Ruff: `ruff check .` passed.
-- Non-integration suite after environment repair: 121 passed, 2 deselected.
-- Complete available suite: 121 passed, 2 private-data integrations skipped.
-- Reversing supplied fixture events and writing to separate roots produced identical run IDs,
-  bytes and SHA-256 values for all four package files.
-
-**Outcome recorded at close-out**
-
-- Issue #6 was isolated from interface work, passed CI and merged through pull request #17.
-- The following close-out entry supersedes the earlier pending Stage 1 status.
-
----
-
-## 2026-08-05 - Stage 1 close-out
-
-**Work completed**
-
-- Confirmed Issues #4, #5 and #6 are closed and pull requests #16, #15 and #17 are merged.
-- Confirmed common event schema `0.2.0` remains current.
-- Generated ignored real-data packages for `MOT17-02-DPM` and KITTI Tracking `0000`.
-- Verified exact four-file membership, validation, physical/output hashes, sorted events and absence
-  of the private root strings in package content.
-- Repeated both package commands in a separate ignored location and compared all four files byte by
-  byte before moving the comparison artefacts out of the workspace.
-- Reviewed Stage 1 criteria, project status and risks; prepared a planning-only Stage 2 checklist.
-
-**Real package evidence**
-
-- MOT17: run `run-mot17-mot17-02-dpm-03074d7ff016652e`; 30,003 valid events; 0 errors;
-  988 permitted `bbox_outside_image` warnings; schema `0.2.0`; parser `0.1.0`.
-- MOT17 hashes: source `2e3ecb488da8886d3200d402b2b08890c6d2879923839444e9b74fa43a551440`;
-  JSON `880232f6ea0696a8c74600f51fe46e8221ff8ee40536dbef4570921a8779b96e`; CSV
-  `2b4b5e3dac8e70661719b555fc6578a088e8b3aa18758f99447d3137dd43f3ee`; metadata
-  `e247260608d4aaac72f2b5d3e3a602ebe29d7b8e8d2dedd10a2320b6456c7bee`; provenance
-  `6b44534de1c9ffb9f1f4b7f2d033fa954e08c4dab219e68d8333ef649f55ae5f`.
-- KITTI: run `run-kitti_tracking-0000-94a4cdc57ff00109`; 1,089 valid events; 0 errors;
-  0 warnings; schema `0.2.0`; parser `0.1.0`.
-- KITTI hashes: source `97f772a27181dfc7ef51b3e64b86bd42e682753b6855fdc58d259ecbed501fd4`;
-  JSON `542389e4a783380191fdc228b83c37309fa4d483d58913978881ee3cfb6f57a2`; CSV
-  `5068c491c8feace0ba39b91f9398e7b96b6310174c5d63b28a1792c4d8fb0db5`; metadata
-  `89cefd74709226303257f6c315368b75b8bb52e84c4c473c03f0f5bf9a37a47b`; provenance
-  `916703854628b24b0503a56f5bb754204691fe6aa517169fadb3dd5bc2968325`.
-
-**Reproducibility and validation evidence**
-
-- Both repeats produced the same run ID, deterministic event ordering, identical metadata and
-  byte-identical JSON, CSV, metadata and provenance files with the same hashes.
-- `python -m ruff check .`: passed.
-- `python -m pytest -m "not integration"`: 121 passed, 2 deselected.
-- `python -m pytest -m integration`: 2 passed, 121 deselected; neither integration skipped.
-- `python -m pytest`: 123 passed.
-
-**Problems and limitations**
-
-- The desktop process did not inherit the roots, so only the two allowed variables were loaded into
-  command processes from the ignored local environment file without printing their values.
-- Local `main` had separate unpublished history; the branch was based directly on fetched
-  `origin/main` without changing that history.
-- MOT17 retains 988 permitted out-of-image source boxes. Selected-sequence evidence does not claim
-  every sequence was converted, and generated full-data packages remain local and ignored.
-- Sonification, audio rendering and evaluation remain unimplemented.
-
-**Next actions**
-
-- Publish the documentation-only close-out pull request and require its CI to pass before merge.
-- Begin Stage 2 from versioned preset and deterministic cue-mapping design; do not treat the new
-  checklist as completed implementation.
-
----
-
-## 2026-08-05 - Stage 2 Milestone 1 cue scheduling
-
-**Work completed**
-
-- Created and assigned Issue #19 for versioned presets and deterministic cue schedules.
-- Started from fetched `origin/main` on `stage-2/milestone-1-cue-scheduling` while preserving
-  unrelated local interface changes outside milestone scope.
-- Added preset schema `0.1.0` and baseline preset `0.1.0` with explicit bounds, mapping methods,
-  class modifiers, suppression policy, priority and event order.
-- Added structured preset diagnostics and exact-file/configuration hashes.
-- Reused Stage 1 validation, ordering, canonical JSON, CSV and SHA-256 code for package consumption
-  and deterministic cue output.
-- Added cue/suppression accounting, stable cue IDs, content-derived run IDs, canonical JSON logs,
-  fixed LF CSV and path-free metadata.
-- Added `schedule-cues` with strict event-package, validation, schema, preset and output-path gates.
-- Added a five-event synthetic fixture with hand-calculated expected cues/suppressions and tests
-  against the complete committed MOT17 and KITTI collections.
-- Documented formulas, constants, confidence semantics, suppression treatment, file contracts,
-  limitations and Decision 0011. Common event schema `0.2.0` remains unchanged.
-
-**Decisions made**
-
-- Normalised mapping inputs clamp to `[0, 1]`; cue parameters round using preset precision.
-- Class modifiers remain explicit renderer inputs and do not silently alter another cue parameter.
-- Each event yields exactly one cue or one suppression record in preset-defined priority.
-- A verified Stage 1 package is revalidated without reopening private dataset files; default event
-  validation still verifies physical source existence and hash.
-- Preset settings are technical configuration and carry no perceptual or accessibility claim.
-
-**Problems and actions**
-
-- GitHub CLI remained unavailable; the connected GitHub capability created Issue #19.
-- Unrelated README, web and launcher work was retained without staging it into this milestone.
-- The package gate was tightened to compare `events.csv` bytes with the shared Stage 1 serialiser,
-  in addition to recorded hashes and schema/semantic validation.
-
-**Validation evidence**
-
-- `python -m ruff check .`: passed.
-- `python -m pytest -m "not integration"`: 144 passed, 2 deselected.
-- `python -m pytest`: 144 passed, 2 private-data integrations skipped clearly.
-- Focused preset/scheduler tests: 23 passed within the final suite.
-- Separate output roots produced identical cue run IDs, order, bytes and file hashes.
-
-**Next actions**
-
-- Audit and stage only Issue #19 implementation and documentation files.
-- Open pull request `Stage 2: add deterministic cue scheduling` and require CI before merge.
-- Keep audio rendering and technical evaluation outside this milestone.
-
----
-
-## 2026-08-05 - Stage 2 Milestone 2 deterministic WAV rendering
-
-**Work completed**
-
-- Confirmed Milestone 1 merged through PR #20 and created assigned Issue #21.
-- Added renderer schema/configuration `0.1.0` with coded validation diagnostics.
-- Added strict cue-package integrity, identity, count, ordering, parameter and preset verification.
-- Implemented Decimal half-up sample placement, fixed-phase sine synthesis, linear envelopes/pan,
-  ordered overlap summation, conditional peak gain and explicit PCM16 conversion.
-- Added minimal deterministic WAV, canonical render log and renderer metadata beneath a
-  content-derived audio run ID, including a zero-frame empty-schedule policy.
-- Added a manual three-cue fixture/oracle, committed-fixture end-to-end chain and complete committed
-  MOT17/KITTI compatibility tests without committing generated audio.
-- Documented the renderer/WAV contract, Decision 0012, project status and evidence boundary.
-
-**Decisions made**
-
-- Cue end samples are exclusive and all second-to-sample conversions use Decimal half-up.
-- Baseline pan is linear balance; class modifier is retained only for traceability in policy 0.1.0.
-- Global target-peak gain applies only when needed; PCM quantisation follows mixing and gain.
-- Empty valid schedules produce a zero-frame WAV rather than failing.
-- Cross-platform byte identity is not claimed beyond environments actually tested.
-
-**Problems and risks**
-
-- GitHub CLI remained unavailable, so the connected GitHub capability created Issue #21.
-- Complete pytest skipped two private-data integrations; skips are not treated as evidence of pass.
-- Floating-point/libm differences near quantisation boundaries remain a monitored portability risk.
-
-**Validation evidence**
-
-- `python -m ruff check .`: passed.
-- `python -m pytest -m "not integration"`: 178 passed, 2 deselected.
-- `python -m pytest`: 178 passed, 2 private-data integration tests skipped clearly.
-- 34 audio-renderer tests passed within the final suites.
-- Repeated separate fixture outputs had identical run IDs, WAV/JSON bytes and SHA-256 hashes.
-- Actual manual fixture WAV SHA-256:
-  `041aa0be80f18ddc770cf0fee1cd4c426509972cc4d386eee72b7b2397081beb`.
-
-**Next actions**
-
-- Audit and stage only Issue #21 changes, preserving unrelated interface work.
-- Open draft pull request `Stage 2: add deterministic WAV rendering`, closing Issue #21.
-- Require CI and acceptance evidence before merge; leave Stage 3 evaluation out of this branch.
-
----
-
-## 2026-08-06 - Stage 2 close-out
-
-**Work completed**
-
-- Confirmed PR #22 merged at `488e4eb70c8faf7527b327926b3b2ebc4e1af957`, its CI workflow
-  concluded successfully and Issue #21 closed.
-- Ran two independent full native-annotation to event-package to cue-package to audio-package chains
-  for real MOT17 `MOT17-02-DPM` and KITTI Tracking `0000` data.
-- Added a reusable exact package-comparison command because the repository had no existing utility;
-  it reports stable path-free byte/hash results and exits nonzero for mismatches.
-- Independently verified package loaders, declared and calculated hashes, event order, unique IDs,
-  cue/suppression accounting, cue and render logs, source file/row links and WAV headers/PCM peaks.
-- Recorded exact run IDs, all 24 output-file hashes, configuration hashes, counts, audio properties,
-  environment, problems and limitations in `docs/development/stage-2-closeout.md`.
-- Marked Stage 2 complete and Stage 3 technical evaluation as the next active stage without adding
-  metrics, thresholds or evaluation claims.
-
-**Actual real-data evidence**
-
-- MOT17: 30,003 valid events, 0 errors, 988 warnings, 26,960 cues, 3,043 coded suppressions
-  and 26,960 rendered cues. WAV: 885,822 stereo frames at 44,100 Hz; peak limiting applied.
-- KITTI Tracking: 1,089 valid events, 0 errors/warnings, 711 cues, 378 coded `DontCare`
-  suppressions and 711 rendered cues. WAV: 680,022 stereo frames at 44,100 Hz; no limiting needed.
-- For both datasets, independent runs reproduced the same event/cue/audio run IDs and exact bytes
-  and hashes for all four event files, five cue files and three audio files.
-- Both datasets had zero eligible events without cues, zero unlinked cues and zero source-location
-  or render-link mismatches.
-- Generated content contained no configured private root, username or OneDrive marker and remained
-  beneath an ignored `.local-fixtures/` tree.
-
-**Quality evidence**
-
-- `python -m ruff check .`: passed.
-- `python -m pytest -m "not integration"`: 184 passed, 2 deselected.
-- `python -m pytest -m integration`: 2 passed, 184 deselected; neither private test skipped.
-- Cue-scheduling/renderer/comparison focused tests: 55 passed.
-- `python -m pytest`: 186 passed with no skips.
-
-**Problems and limitations**
-
-- The first evidence-audit command used two incorrect configuration-schema paths; it was corrected
-  and rerun, after which every configuration hash matched. No package defect was found.
-- Full MOT17 runs were slower than fixture tests but completed twice without reusing output trees.
-- Byte identity is established for Windows `10.0.26200`, AMD64 and Python `3.14.3`, not for an
-  untested platform/runtime.
-- Baseline mapping/rendering remains a technical reference. Perceptual quality, accessibility,
-  participant evidence and technical metric results remain untested.
-
-**Next actions**
-
-- Begin Stage 3 by defining formulas, units, denominators and controlled fixtures for coverage,
-  alignment, density/overlap, traceability and reproducibility metrics.
-- Preserve the distinction between intentional suppressions, eligible events without cues and
-  unlinked cues in every evaluation report.
-- Do not claim participant, perceptual, accessibility or safety outcomes from technical measures.
-
----
-
-## 2026-08-06 - Stage 3 Milestone 1 close-out
-
-**Work completed**
-
-- Confirmed the Stage 2 close-out merged through PR #23 and began from clean merged `main` state.
-- Added schema-validated technical-evaluation contract/report format `0.1.0` and Decision 0013.
-- Implemented deterministic event accounting/coverage, three timing domains, resolved-link
-  traceability, density, half-open overlap and four-level reproducibility reports.
-- Added a canonical CLI report writer with content-derived evaluation identity and explicit input/
-  output hash scopes.
-- Authored a five-event, five-cue, one-suppression 10 Hz oracle and calculated every expected rate,
-  sample, interval, percentile, density and overlap value before freezing the golden report.
-- Added named miss, orphan, conflicting-outcome, unknown-suppression, broken-provenance,
-  one-sample-displacement, empty, zero-duration and malformed tests.
-- Updated the README, project plan, Stage 3 checklist, risk register and milestone close-out without
-  adding real-data or perceptual findings.
-
-**Decisions made**
-
-- Intentional suppressions are outside eligible-coverage misses; a valid event with no explicit
-  outcome is eligible and missed.
-- Multiple cues may represent one event, but cue plus suppression is a conflicting outcome.
-- Rates always include numerator/denominator and use null for zero denominators.
-- Timing uses source, schedule and rendered sample references separately with renderer half-up
-  rounding; p95 is nearest rank.
-- Rendered zero-based duration and integer half-open intervals are preferred for density/overlap.
-- Semantic, byte, audio and configuration repeat evidence remain separate and environment-bounded.
-
-**Actual synthetic evidence**
-
-- Oracle coverage: eligible `4/4`, source representation `4/5`, suppression `1/5`, accounting
-  `5/5`, missed `0/4`.
-- Peak concurrency 2; overlap and excess concurrency 1.2 seconds; both normalised values 0.4.
-- Evaluation run ID: `evaluation-synthetic-evaluation_oracle-e1ee06d3a671ee1b`.
-- Canonical report SHA-256:
-  `b5bcf1fc39987dfd7b61475e67d075312bd060f6dfb8adf2fa3f8300badaf908`.
-
-**Quality evidence**
-
-- `python -m ruff check .`: passed.
-- Focused evaluation suite: 25 passed.
-- `python -m pytest -m "not integration"`: 209 passed, 2 deselected.
-- `python -m pytest -m integration`: 2 skipped because private root variables were unavailable;
-  skips are not pass evidence.
-- `python -m pytest`: 209 passed, 2 skipped for those unavailable roots.
-- Current-Ruff format check passed for all three changed Python files. No static type checker is
-  configured or installed; whole-repository format checking exposes older out-of-scope drift.
-
-**Problems and limitations**
-
-- The original checkout contained unrelated interface files. They were preserved separately and
-  a clean worktree prevented them entering this branch.
-- The milestone CLI consumes prepared validated record-chain input; verified real-package input
-  preparation belongs to Milestone 2.
-- No MOT17/KITTI technical evaluation was run. RQ3 remains incomplete.
-- No cross-environment, perceptual, participant, accessibility, usability, navigation or safety
-  result is claimed.
-
-**Next actions**
-
-- Run Stage 3 Milestone 2 against selected verified real MOT17 and KITTI Tracking evidence packages
-  using unchanged contract `0.1.0`.
-- Produce repeated deterministic dataset-level reports and investigate every diagnostic before
-  interpretation.
-
----
-
-## 2026-08-06 - Stage 3 Milestone 2 real-data technical evaluation
-
-**Work completed**
-
-- Started from clean `main` commit `c1b3d676`, preserving the unrelated dirty checkout and both
-  stashes in place.
-- Wrote the evaluation protocol before metric calculation and added a schema-validated experiment
-  manifest plus path-free environment manifest.
-- Verified both retained Stage 2 event/cue/audio chains for MOT17-02-DPM and KITTI 0000 against
-  exact file membership, canonical serialisation, all documented hashes, identities, ordering,
-  accounting and cross-stage links; no chain was regenerated.
-- Added a strict package-to-evaluator assembler, content-derived input/hash manifest, focused CI
-  fixtures and a private cross-stage integration test.
-- Ran contract `0.1.0` three times per dataset in isolated directories and generated
-  canonical reports, JSON/CSV/Markdown summaries, three-run comparisons and deterministic
-  record-level audits.
-- Committed a bounded cross-dataset technical summary, Decision 0014, excluded-evidence inventory
-  and Milestone 2 close-out without committing private/full-data inputs or WAVs.
-
-**Actual real-data evidence**
-
-- MOT17: 30,003 valid events; 26,960 represented; 3,043 intentionally suppressed; 0 missed or
-  excluded; report ID `evaluation-mot17-mot17-02-dpm-2636a438409d649e`; report SHA-256
-  `d847e805d0b2d7ccd50cd315bbcecfc0ad525f40e7c4c2013938f955d20f13e5`.
-- KITTI: 1,089 valid events; 711 represented; 378 intentionally suppressed `DontCare` events; 0
-  missed or excluded; report ID `evaluation-kitti_tracking-0000-d997cdc8f6467c1d`; report SHA-256
-  `b5589590a8c645bd7b5654d0318bf90fdb412f987719c26c2374bf3e487f9ff2`.
-- Both eligible-event coverage and accounting completeness rates were 1.0; all contract
-  traceability rates and supplemental resolved mapping/schedule/WAV checks were 1.0; no broken link
-  or evaluation diagnostic was recorded.
-- MOT17/KITTI cue density was 1342.1838698971126/46.10894941634241 cues per second; peak
-  concurrency was 203/24; normalised overlap burden was 160.0620643876535/4.533073929961089.
-- All six reports were semantically and byte-identical within their dataset. Comparison-report
-  hashes are `a21990ef56e1e82516babf248c7ac782384ba39cb88b896a25fc30da2a8b38b7`
-  and `42205454e27c1df71669e1d2b75c1928d2986232e46ed4e48fb08c4d9940dd79`.
-
-**Quality evidence**
-
-- `python -m ruff check .`: exit 0.
-- `python -m pytest tests/test_technical_evaluation.py -q`: 26 passed.
-- `python -m pytest -m "not integration"`: 231 passed, 3 deselected.
-- `python -m pytest -m integration`: 3 passed, 231 deselected; no private test skipped.
-- `python -m pytest`: 234 passed with no skip or deselection.
-
-**Problems and decisions**
-
-- A four-minute tool timeout yielded no integration result; the unchanged test and final matrices
-  completed under longer bounds.
-- One unsafe `..` output argument was correctly rejected and produced no accepted report. Resolved
-  regular paths were then used.
-- Native/common MOT17 sequence identity was clarified before accepted assembly. A superseded KITTI
-  pre-correction input remains ignored and inventoried.
-- KITTI's emitted summary filename link and lossless diagnostic-array retention were corrected;
-  affected real summaries were rebuilt twice with identical bytes.
-- No contract defect was found, and no definition, denominator, threshold or schema was tuned after
-  observing results.
-
-**Evidence boundary and next action**
-
-- RQ3 is now supported by real technical case-study evidence for the selected sequences, baseline
-  preset/renderer and recorded environment. No perceptual, participant, accessibility, usability,
-  navigation, mobility, safety or cross-environment byte-identity result is claimed.
-- Next: Stage 3 Milestone 3: convert the verified technical-evaluation evidence into audited
-  report-ready tables, figures and bounded RQ3 findings, with every presented value linked to its
-  canonical source report.
-
----
-
-## 2026-08-06 - Stage 3 Milestone 3 audited reporting and close-out
-
-**Work completed**
-
-- Began from `origin/main` merge commit `5fcab3ad8465f960e1a217063deb8fa82314fa93` in a new clean
-  worktree and branch, leaving the dirty original checkout and both preserved stashes untouched.
-- Recalculated the two canonical report hashes, validated both documents against the report
-  schema and confirmed report/run/contract/experiment/environment identities plus summary and repeat-
-  comparison agreement before generating presentation material.
-- Defined the display-format and interpretation policy in Decision 0015 and the reporting README.
-- Added a deterministic CLI generator that verifies source/configuration hashes, resolves structural
-  JSON Pointers, preserves canonical raw values, generates CSV/Markdown/SVG derivatives and rejects
-  private paths or an unauditable presentation.
-- Generated three principal tables, a complete timing supplement, three source-data CSV files,
-  three SVG figures, table/figure captions, a presentation-value manifest, bounded RQ3 method and
-  findings, a claim-to-evidence matrix, a replacement note and automated/hash audits.
-- Added 21 focused tests for source hashes/schema, pointer failures, direct/derived values,
-  formatting/nulls, table/figure/claim completeness, SVG determinism, source preservation, private-
-  path detection, repeat bytes and the CLI.
-- Rendered and visually inspected all SVGs, independently recalculated every principal presentation
-  row/data point and reconciled the Stage 3 checklist, plan, README, risk register and close-out.
-
-**Evidence and audit results**
-
-- Canonical MOT17 report SHA-256:
-  `d847e805d0b2d7ccd50cd315bbcecfc0ad525f40e7c4c2013938f955d20f13e5`.
-- Canonical KITTI report SHA-256:
-  `b5589590a8c645bd7b5654d0318bf90fdb412f987719c26c2374bf3e487f9ff2`.
-- Reporting manifest SHA-256:
-  `5de4e72aa9dc014aa714a206879a3f5674abf1b1400c0f0fc5198761e0a73c66`.
-- Terminal generated-file hash-manifest SHA-256:
-  `ee7c773fc14274f69f69a74878795c297e0a3d928fdc1c705221f3cd72b3942d`.
-- Automated audit: pass; 134 values, 104 direct, 30 derived, 136 table cells, 20 figure
-  data points, 12 claims, zero mismatch/missing/formatting/private-path findings.
-- Independent audit: pass; all 68 table rows, 20 figure data points, 12 claims, seven captions and
-  23 terminal file hashes checked with zero remaining mismatch.
-- Two separate empty-directory CLI builds: exit 0, identical 24-file sets and byte-identical content.
-
-**Quality evidence**
-
-- `python -m ruff check .`: exit 0.
-- `python -m pytest tests/test_technical_evaluation.py -q`: 26 passed.
-- `python -m pytest -m "not integration"`: 252 passed, 3 deselected.
-- Final `python -m pytest -m integration` with all private roots: 3 passed, 252 deselected; no skip.
-- Final `python -m pytest` with all private roots: 255 passed; no skip or deselection.
-
-**Problems and decisions**
-
-- Initial Figure 1 visual inspection found an overlapping count/axis label and a redundant MOT17
-  label. The SVG layout was fixed before evidence was accepted.
-- Independent arithmetic found one binary-float last-digit difference for KITTI normalised overlap
-  burden. Canonical raw scalars are now preserved while declared formula results are checked with a
-  bounded representation tolerance.
-- Early manual-audit scripts contained one Markdown-row indexing error and one whitespace-sensitive
-  phrase check; corrected audit-side checks passed and did not alter evidence.
-- An integration invocation without configured roots skipped three tests, and a two-root invocation
-  passed two while skipping the retained-chain test. Neither was reported as pass evidence; final
-  configured runs used all three roots and had no skips.
-- Contract `0.1.0`, canonical reports, dataset logic, preset and renderer were not changed or rerun.
-
-**Boundary and next action**
-
-- Stage 3 technical evaluation is complete within the selected case-study and recorded-environment
-  scope. RQ3 is supported by audited technical evidence, not participant or perceptual evidence.
-- No accessibility, usability, navigation, mobility, safety or cross-environment byte-identity result
-  is claimed. The overall project is not yet submission-ready.
-- Next: Stage 4 Milestone 1 - assemble a versioned artefact release candidate and verify
-  installation, configuration, evidence availability and end-to-end execution from a clean
-  environment.
-
----
-
-## 2026-08-07 - Stage 4 Milestone 1 Phase 1 headless inspection contract
-
-- Added Workbench Session Contract `0.1.0`, Decision 0016 and a headless validator with deterministic
-  identity, cross-stage checks, runtime-only media binding and path-free diagnostics.
-- Established that the browser would consume validated sessions as a read-only inspection layer,
-  not create research results or participant evidence.
-- Post-merge testing exposed an incorrect single-root assumption for retained event, cue and audio
-  packages. PR #30 was reverted by PR #31 before the correction was reapplied and accepted through
-  PR #32.
-- CI, clean installation and the dedicated retained-chain gate passed. Both retained dataset chains
-  validated with stable session identities, and Stage 1-3 contracts and evidence remained unchanged.
-- Milestone 1 Phase 1 was complete. Detailed recovery and validation evidence is retained in
-  [stage-4-progress-log.md](stage-4-progress-log.md).
-
----
-
-## 2026-08-07 - Stage 4 Milestone 1 Phase 2 inspection candidate
-
-- Issue #35 and Decision 0017 defined a validated-only inspection model, loopback service and local
-  browser interface over retained MOT17 evidence.
-- The candidate used retained WAV playback as its single clock and exposed source frames, event
-  overlays, cues, suppressions, provenance and technical metrics without changing Stage 1-3.
-- Automated and retained-session checks passed, but controlled browser acceptance was unavailable.
-  The candidate therefore remained incomplete pending the later acceptance entry.
-
----
-
-## 2026-08-14 - Stage 4 Milestone 1 Phase 2 browser acceptance
-
-- The researcher manually completed all twelve browser checks against real retained session
-  `session-mot17-mot17-02-dpm-3707826663b210c6`.
-- A loading overlay remained visible even though the image API returned HTTP 200 JPEG data and the
-  frontend set its `hidden` state. A targeted CSS correction and regression test resolved it.
-- Genuine imagery, geometry, retained WAV playback, timing, traceability, metrics, responsive layout,
-  privacy and bounded failures passed. No screenshot, private media or private path was committed.
-- Final local and CI gates passed. PR #36 merged and Issue #35 closed, completing Phase 2 without
-  creating participant, perceptual, usability or accessibility evidence.
-
----
-
-## 2026-08-14 - Stage 4 Milestone 1 Phase 3 cross-dataset candidate
-
-- Issue #37 and Decision 0018 froze the bounded cross-dataset catalogue architecture without
-  changing session contract `0.1.0`.
-- Added the retained path-free KITTI Tracking session, two-session lookup/scoped routes and a minimal
-  browser selector that isolates all dataset-dependent state.
-- Focused, full, retained integration, clean-environment, browser-switching and privacy gates passed
-  for MOT17 and KITTI. No private media, paths, screenshots or Stage 1-3 changes entered the release.
-- PR #38 merged and Issue #37 closed. Stage 4 Milestone 1 was complete, while Stage 4 remained active
-  for final inspection corrections.
-
----
-
-## 2026-08-14 - Stage 4 Milestone 2 inspection-correction candidate
-
-- Issue #39 and Decision 0019 bounded the final correction to timeline caching, cue/source-frame
-  alignment, retained outcome projection and clearer evidence language.
-- Retained boundary traces showed that repeated window requests and interface replacement, rather
-  than the provenance chain, caused the observed problem.
-- R20 remains open; R21 records bounding-box area as an imperfect apparent-scale proxy. No Stage 1-3
-  result, baseline preset or retained WAV is changed.
-- Automated, retained integration, privacy and technical browser preflight gates passed. Independent
-  researcher-controlled browser acceptance and merge remained pending.
-
----
-
-## 2026-08-15 - Stage 4 Milestone 2 follow-up correction
-
-- The first researcher browser gate found playback lag, more severe Chrome stuttering, reordered cue
-  controls and unclear unresolved-outcome wording.
-- Profiling separated display-rate cursor work from source-frame, timeline-window and DOM work. The
-  dense static marker layer is now cached, frame/image work is transition-driven with one bounded
-  next-frame preload, and cue controls are only rebuilt when their window changes.
-- Cue order is deterministic by time, track and cue ID. Unresolved backend outcomes remain
-  detectable but surface as integrity anomalies; the visible evidence-chain and technical mapping
-  wording is simpler and preserves R20/R21 limitations.
-- Automated, retained integration, privacy and scope checks passed. PR #40 remained draft for
-  a fresh researcher-controlled browser gate.
-
----
-
-## 2026-08-18 - Stage 4 Milestone 2 frame-scoped cue follow-up
-
-- The next researcher gate confirmed the cross-browser performance correction but found that final
-  MOT17/KITTI and some cyclist-related cues had no buttons, because one-second window controls were
-  deterministically sorted and then truncated to ten. Marker selection inside the cached window
-  also preserved that broad group instead of establishing a frame-local context.
-- The existing frame view now projects every retained cue on that source frame. The canvas remains
-  a bounded one-second context; frame controls have no arbitrary cap, preserve stable time/track/cue
-  order and use the complete frame group to disambiguate coincident markers.
-- Help and timeline presentation were simplified without changing Stage 1-3 outputs or retained
-  audio. Automated, retained integration, privacy and browser-preflight checks passed; researcher
-  acceptance remained pending.
-
----
-
-## 2026-08-18 - Stage 4 Milestone 2 final interaction correction
-
-- The latest researcher pass confirmed nearly all 28 checks. The remaining defect was stale numeric
-  transport text after cue selection; represented video cue boxes were also requested as a bounded
-  additional route to the retained inspector.
-- Transport slider/text presentation is now centralised and invoked immediately for explicit cue,
-  seek/step, reset and playback changes. Retained timestamps and half-open frame semantics are
-  unchanged.
-- Represented overlay boxes use their projected exact cue ID and the common `selectCue()` path, with
-  restrained hover/focus/selected states and Enter/Space operation. Suppressed and anomaly boxes do
-  not become cue controls.
-- Automated, retained integration, privacy and technical browser-preflight checks passed. PR #40
-  remained unmerged pending the focused researcher-controlled Firefox and Chrome gate.
-
----
-
-## 2026-08-18 - Stage 4 Milestone 2 final researcher interaction acceptance
-
-- The researcher confirmed all 16 focused Firefox and Chrome checks. Cue time, source frame,
-  provenance, represented-box selection, sibling order, suppression isolation and final-frame
-  inspection behaved consistently across both retained datasets.
-- Playback remained smooth and both browser consoles contained no workbench errors or warnings.
-- This completes researcher-controlled technical browser acceptance without introducing usability,
-  accessibility, participant or perceptual evidence. Documentation-head CI, PR merge, post-merge
-  `main` CI and final Milestone 2 close-out recording remain.
-
----
-
-## 2026-08-18 - Stage 4 Milestone 2 and Stage 4 close-out
-
-- Exact-head CI passed before PR #40 merged and closed Issue #39. Post-merge `main` CI also passed.
-- Workbench Session Contract `0.1.0`, Stage 1-3 evidence, cue schedules and retained WAV bytes remain
-  unchanged. R20 and R21 remain explicit open limitations rather than evaluation findings.
-- Stage 4 Milestone 2 and Stage 4 were complete. Stage 5 reporting and viva preparation became the
-  next stage.
-
----
-
-## 2026-08-19 - Stage 5 Phase B core dissertation drafting
-
-- Added repository-side, transfer-ready drafts for Methodology and Research Design, Workbench Design
-  and Implementation, Technical Evaluation and Results, Discussion, and Conclusion and Future Work.
-- No canonical post-implementation dissertation manuscript was present in the repository. A transfer
-  note therefore records the intended chapter order, editorial boundaries and reuse of the audited
-  Stage 3 tables and figures; external pre-implementation Word documents were not edited.
-- Updated the Phase A evidence map, report structure and reconciliation to use the researcher-confirmed
-  final RQ wording verbatim. No Stage 1-4 implementation or evaluation evidence was changed.
-- The five assessed-body drafts contain approximately 3,886 words before Word transfer and final
-  word-processor counting. Local links and exact RQ occurrences passed validation; Ruff and the full
-  automated suite passed with 280 tests and 6 private-data integration tests skipped.
-- Stage 5 is now in progress. Literature integration, ethics/governance, final assembly, bibliography
-  verification and viva preparation remain for subsequent phases.
-
----
-
-## 2026-08-19 - Stage 5 Phase C academic synthesis and manuscript integration
-
-- Added the Introduction, critical Literature Review, Ethical Considerations and Critical Reflection,
-  Abstract and verified UWE Harvard reference list; integrated scholarly citations and strengthened
-  validity analysis across the five Phase B chapters.
-- Assembled `docs/dissertation/working-manuscript.md` in canonical chapter order using a deterministic
-  assembly script that rebases chapter-relative links. The assessed Chapters 1–8 contain approximately
-  8,603 working words before the later submission-length compression pass.
-- Added an author-created architecture/provenance SVG and documentary Tables 1–3. Retained audited
-  Stage 3 Figures 2–4 and Tables 4–6 without changing their data. Excluded the optional workbench
-  screenshot because source-image reproduction/privacy clearance remains unresolved.
-- Verified 21 cited external sources against publisher, DOI, proceedings, dataset-owner or official
-  documentation pages. The bidirectional audit found 21 reference entries, no citation mismatches and
-  no unresolved markers. Corrected the older Ji article citation to *Sensors* 21(10), article 3558.
-- Completed claim, obsolete-history, scope, academic-quality and local-link audits. All three 
-  RQs are used verbatim and explicitly answered; O1/O2 remain achieved and O3/O4 partially achieved.
-  R20 remains informal researcher reflection and R21 remains an apparent-scale limitation.
-- Preserved the Stage 1–4 baseline: the two canonical evaluation-report hashes still match the Phase A
-  baseline, and no configuration, implementation, test, development, decision or evaluation-evidence
-  file was modified.
-- Ruff, JavaScript syntax checking and the full automated suite passed with 280 tests and 6 private-data
-  integrations skipped. Local link validation checked 29 links with no breakage; final `git diff
-  --check` and working-tree review passed after record assembly.
-- Phase C is complete. Stage 5 remains in progress for Word/PDF transfer, final compression,
-  proofreading, supervisor review, viva preparation and submission packaging.
-
----
-
-## 2026-08-19 - Stage 5 Phase D final manuscript and academic QA
-
-- Created the compression plan before editing, then reduced Chapters 1–8 from the Phase C estimate
-  of 8,603 words to 5,294 repository-source words. The authoritative formatted count is 5,650 words,
-  including headings, captions and embedded table content but excluding front matter, Abstract and
-  References: a reduction of 2,953 words (34.3%).
-- Created a new private submission container instead of overwriting the obsolete proposal. The final
-  editable manuscript and matching PDF are stored under the private `Submission` directory as
-  `24046378 report.docx` and `24046378 report.pdf`; an initial formatted candidate was backed up
-  before the final reduction and layout corrections.
-- Preserved the three RQs, O1/O2 achieved and O3/O4 partially achieved, threats to validity,
-  ethics, R20/R21 and all canonical Stage 3 values. The two canonical report SHA-256 hashes still
-  match the Phase A baseline, and `docs/evaluation` has no Phase D modification.
-- Revalidated 21 cited sources against 21 reference entries with no bidirectional mismatch or
-  unresolved issue. Claim-strength, terminology, obsolete-history, RQ, objective and placeholder
-  scans passed; the Word package contains no tracked changes or comments.
-- The 24-page A4 manuscript contains a verified Contents page, Lists of Figures and Tables, four
-  figures and six tables. Successive render checks corrected image cropping, list styling, reference
-  alignment and an avoidable widow page. Every page of the final candidate was visually inspected;
-  figures and tables are readable and unclipped.
-- Deterministic assembly, 104 local-link checks, Ruff, 280 tests with 6 private-data integrations
-  skipped, accessibility/structure audits and `git diff --check` passed. Stage 5 remains in progress
-  for supervisor feedback, viva preparation, submission packaging and researcher-controlled upload.
-
----
-
-## 2026-08-21 - Retained hosted workbench deployment
-
-- PR #41 established a bounded hosted demonstration, after which PR #42 replaced its synthetic
-  content with the two verified retained workbench sessions.
-- The hosted entry point was changed to require a configured retained bundle and expected SHA-256,
-  validate the extracted session evidence and fail closed without a synthetic fallback.
-- Decision 0020 preserves the initial hosted approach as superseded. Decision 0021 records the
-  corrected retained deployment boundary.
-- Hosting remained a read-only inspection route over existing evidence. It did not regenerate the
-  Stage 1-3 outputs or add participant, usability, accessibility, perceptual or safety evidence.
-
----
-
-## 2026-08-25 - Hosted verification, attribution and supervision follow-up
-
-- PRs #43-#45 completed retained-deployment hardening and added dataset attribution to the hosted
-  bundle.
-- Verified supervision feedback emphasised alignment with the marking criteria and a clear, focused
-  viva. Report emphasis and formatting were reviewed, while viva material was simplified around the
-  principal project outcomes.
-- Positive feedback on the artefact and progress was recorded without converting it into a grade,
-  submission or completion claim. Viva preparation remained ongoing.
-
----
-
-## 2026-08-28 - Live hosted inspection route recorded
-
-- Recorded the live Render URL in the repository guidance after the retained hosted workbench became
-  available.
-- The hosted route remained a convenience for read-only inspection of the same two retained sessions,
-  not a new evaluation or evidence source.
-
----
-
-## 2026-09-02 - Final technical documentation consolidation
-
-- Consolidated the common event schema, sonification and rendering, and retained workbench session
-  documentation into clearer marker-facing technical records.
-- Simplified the repository structure and redirected historical close-out references while retaining
-  the project-management, decision and evaluation evidence.
-- Continued bounded interface refinement, including suppression inspection, without changing the
-   research outputs or technical findings.
-
----
-
-## 2026-09-03 - Submission-readiness review
-
-- Reviewed the final repository structure, provenance, citation metadata, dataset attribution,
-  documentation navigation and hosted research boundary.
-- Corrected Windows checkout handling for the hash-controlled reporting text through scoped LF rules.
-  An isolated checkout reproduced all 23 reporting-file hashes and both canonical technical-report
-  hashes without changing an expected hash or retained evidence file.
-- The full configured suite passed with 299 tests, including all 6 real-data integration tests. Both
-  retained sessions and the hosted bundle checksum also validated.
-- The report and artefact are prepared for submission. Submission itself is not recorded because no
-  repository evidence confirms it; viva preparation remains ongoing.
+* Added provisional common event schema `0.1.0`.
+* Added a synthetic annotation and manually calculated expected event.
+* Added deterministic event IDs and canonical hashing.
+* Added event validation.
+* Tested source traceability and deterministic conversion.
+* Reviewed the schema against both real datasets.
+* Updated the common event schema to `0.2.0`.
+
+### Main Schema Decisions
+
+* Common frame numbers use zero based indexing.
+* Timestamps are calculated from frame number and frame rate.
+* Native and common object classes are stored separately.
+* Source annotation information is preserved.
+* Geometry outside the image may be retained where it exists in the source data but is reported appropriately.
+
+### MOT17 Support
+
+* Implemented the MOT17 annotation adapter.
+* Added sequence metadata parsing.
+* Added the MOT17 class mapping.
+* Added the `mot17-check` command.
+* Added valid, invalid and synthetic fixture tests.
+* Inspected all 30,003 rows of `MOT17-02-DPM`.
+* Added deterministic source row selection and fixture generation.
+* Preserved native bounding box coordinates.
+* Converted one based source frames to zero based common frames.
+* Preserved the MOT17 evaluation mark as metadata rather than treating it as confidence.
+
+### MOT17 Verification
+
+The selected sequence produced:
+
+* 30,003 valid events
+* 0 invalid events
+* 988 permitted geometry warnings
+
+Repeated conversion produced the same event order, IDs, JSON and hashes.
+
+### KITTI Tracking Support
+
+* Inspected the KITTI Tracking annotation structure.
+* Confirmed the local dataset contained 21 annotation sequences.
+* Reviewed the official annotation format and licence information.
+* Implemented KITTI parsing with explicit type conversion.
+* Preserved frames, tracks, classes, truncation, occlusion, alpha, 2D and 3D geometry, rotation and optional scores.
+* Preserved `DontCare` records as explicit events.
+* Added deterministic KITTI fixtures and malformed test cases.
+
+### KITTI Verification
+
+KITTI Tracking sequence `0000` produced:
+
+* 1,089 valid events
+* 378 `DontCare` events
+* 0 errors
+* 0 final warnings
+
+Repeated fixture conversion produced identical event records, IDs and hashes.
+
+### Collection Validation
+
+* Added validation for complete event collections.
+* Added duplicate ID detection.
+* Added stable error and warning codes.
+* Added deterministic validation reports and hashes.
+* Confirmed validation does not modify or reorder supplied events.
+
+### Event And Provenance Outputs
+
+* Added deterministic event package generation.
+* Produced `events.json`.
+* Produced `events.csv`.
+* Produced `run_metadata.json`.
+* Produced `provenance_log.json`.
+* Added deterministic run IDs.
+* Recorded source, configuration and output hashes.
+* Added MOT17 and KITTI package commands.
+
+### Repeatability
+
+For both datasets, repeated package runs produced:
+
+* the same run IDs
+* the same event order
+* identical JSON
+* identical CSV
+* identical metadata
+* identical provenance records
+* identical SHA 256 values
+
+### Stage 1 Verification
+
+* Ruff passed.
+* 121 tests excluding integrations passed.
+* Both private dataset integrations passed.
+* All 123 configured tests passed.
+
+### Outcome
+
+Both selected datasets could be converted into validated common schema `0.2.0` event packages with retained provenance.
+
+Stage 1 was complete.
+
+## 29 July To 6 August 2026: Stage 2 Audio Cue Generation
+
+Stage 2 converted validated events into deterministic audio cues and rendered WAV output.
+
+### Cue Generation
+
+* Added sonification preset schema `0.1.0`.
+* Added baseline preset `0.1.0`.
+* Defined mapping rules, parameter limits and suppression rules.
+* Added deterministic cue IDs.
+* Added cue and suppression records.
+* Added the `schedule-cues` command.
+* Added a five event synthetic fixture with manually calculated expected outputs.
+* Tested both MOT17 and KITTI event collections.
+
+### Main Mapping Decisions
+
+* Mapping inputs are limited to the range `[0, 1]`.
+* Mapping precision is defined by the preset.
+* Every valid event produces either a cue or an explicit suppression.
+* Suppressed events are never silently removed.
+* Mapping settings are technical configuration and do not establish perceptual quality.
+
+### Audio Rendering
+
+* Added renderer configuration and schema `0.1.0`.
+* Added cue package and renderer validation.
+* Implemented deterministic sample placement.
+* Implemented fixed phase sine synthesis.
+* Added attack and release envelopes.
+* Added stereo pan.
+* Added deterministic overlap mixing.
+* Added conditional peak gain.
+* Added PCM16 conversion.
+* Produced deterministic WAV files.
+* Added render logs and renderer metadata.
+
+### Renderer Decisions
+
+* Cue end samples are exclusive.
+* Time to sample conversion uses decimal half up rounding.
+* Empty valid schedules produce a valid zero frame WAV.
+* Class modifiers remain retained for traceability.
+* Cross platform byte identity is not claimed without testing.
+
+### Real Dataset Results
+
+MOT17 produced:
+
+* 30,003 valid events
+* 26,960 cues
+* 3,043 intentional suppressions
+* 26,960 rendered cues
+* 885,822 stereo frames at 44,100 Hz
+
+KITTI produced:
+
+* 1,089 valid events
+* 711 cues
+* 378 `DontCare` suppressions
+* 711 rendered cues
+* 680,022 stereo frames at 44,100 Hz
+
+### Repeatability And Traceability
+
+For both datasets:
+
+* repeated runs produced the same event, cue and audio run IDs
+* event, cue and audio files were byte identical
+* all recorded hashes matched
+* no eligible events were missed
+* no cues were unlinked
+* source and render links agreed
+* generated evidence contained no private dataset paths
+
+### Verification
+
+* Ruff passed.
+* 184 tests excluding integrations passed.
+* Both private integrations passed.
+* 55 focused Stage 2 tests passed.
+* All 186 tests passed.
+
+### Outcome
+
+Both datasets were converted from validated events into deterministic cue schedules and WAV outputs with retained provenance.
+
+Stage 2 was complete.
+
+## 6 To 17 August 2026: Stage 3 Technical Evaluation
+
+Stage 3 defined, tested and applied the technical evaluation method.
+
+### Define And Test The Evaluation
+
+* Added Technical Evaluation Contract `0.1.0`.
+* Added the evaluation report schema.
+* Defined event accounting and coverage.
+* Defined timing alignment measures.
+* Defined traceability checks.
+* Defined cue density measures.
+* Defined overlap measures.
+* Defined repeatability checks.
+* Created a five event synthetic test case.
+* Manually calculated the expected results.
+* Added deliberate faults for missed cues, orphan cues, conflicting outcomes, broken provenance and timing errors.
+
+### Main Evaluation Decisions
+
+* Intentional suppressions are separate from missed events.
+* Multiple cues may represent one event.
+* An event cannot be both represented and suppressed.
+* Zero denominators return `null`.
+* Timing uses event, schedule and rendered sample references.
+* Repeatability evidence is separated into semantic, file byte, audio and configuration checks.
+
+### Synthetic Test Results
+
+The manual test case produced:
+
+* eligible coverage `4 / 4`
+* source representation `4 / 5`
+* suppression `1 / 5`
+* accounting completeness `5 / 5`
+* missed eligible events `0 / 4`
+* peak concurrency `2`
+* overlap duration `1.2` seconds
+
+The evaluator reproduced the expected results.
+
+### Real Dataset Evaluation
+
+Technical Evaluation Contract `0.1.0` was applied unchanged to both retained dataset evidence chains.
+
+#### MOT17
+
+* 30,003 valid events
+* 26,960 represented events
+* 3,043 intentional suppressions
+* 0 missed eligible events
+* 100% accounting completeness
+* 100% eligible event coverage
+* 1,342.18 cues per second
+* peak concurrency 203
+* normalised overlap burden 160.06
+* no broken traceability links
+
+#### KITTI Tracking
+
+* 1,089 valid events
+* 711 represented events
+* 378 intentional suppressions
+* 0 missed eligible events
+* 100% accounting completeness
+* 100% eligible event coverage
+* 46.11 cues per second
+* peak concurrency 24
+* normalised overlap burden 4.53
+* no broken traceability links
+
+### Timing
+
+All sample placement errors were zero for both datasets.
+
+MOT17 contained very small decimal differences when timing was expressed in seconds, but these did not alter rendered sample positions.
+
+### Reporting Audit
+
+The final reporting evidence was checked against the canonical evaluation reports.
+
+The audit covered:
+
+* 134 reported values
+* 136 table cells
+* 12 principal claims
+* 23 generated file hashes
+
+No remaining numerical, provenance or private path mismatch was found.
+
+Repeated reporting builds produced identical files.
+
+### Verification
+
+* Ruff passed.
+* 252 tests excluding integrations passed.
+* All private evaluation integrations passed.
+* All 255 configured tests passed.
+
+### Outcome
+
+Stage 3 provided technical evidence for RQ3 covering accounting, timing, traceability, density, overlap and repeatability.
+
+The evaluation does not provide participant or perceptual evidence.
+
+Stage 3 was complete.
+
+## 20 July To 18 August 2026: Stage 4 Workbench Development
+
+Stage 4 assembled the retained evidence into a read only inspection workbench.
+
+### Session Validation
+
+* Added Workbench Session Contract `0.1.0`.
+* Added deterministic session identity.
+* Added validation across event, cue, audio and evaluation evidence.
+* Added runtime media binding.
+* Prevented private machine paths from entering session identities and diagnostics.
+
+### Runtime Correction
+
+Initial validation incorrectly assumed that event, cue and audio packages were stored under one shared output directory.
+
+The retained evidence used separate package directories.
+
+The runtime binding was corrected and tested without changing Stage 1 to 3 evidence.
+
+Both retained sessions then validated with stable session identities.
+
+### Inspection Interface
+
+* Added the local inspection service.
+* Added the browser interface.
+* Displayed source frames and bounding boxes.
+* Played the retained WAV without modification.
+* Used audio playback time as the single synchronisation clock.
+* Displayed events, cues and suppressions.
+* Displayed provenance information.
+* Displayed retained technical evaluation results.
+
+### Add KITTI Support
+
+* Added the retained KITTI session.
+* Added a two session catalogue.
+* Added a dataset selector.
+* Used the same validation and browser architecture for both datasets.
+* Added cross dataset session switching tests.
+
+### Browser Problems Found
+
+Researcher inspection identified several technical interface problems:
+
+* dense timeline rendering caused unnecessary browser work
+* cue controls could change order
+* only the first ten cues on some frames were displayed
+* final frame cues could be unavailable
+* cue selection did not always update the displayed time
+* represented bounding boxes were not directly selectable
+
+### Corrections
+
+* Cached the static timeline marker layer.
+* Limited frame processing to frame changes.
+* Added bounded frame preloading.
+* Made cue ordering deterministic.
+* Displayed every retained cue on the current frame.
+* Corrected final frame cue selection.
+* Updated transport values immediately after selection.
+* Made represented bounding boxes select their exact retained cue.
+* Kept suppressed and anomalous boxes as contextual evidence.
+* Added keyboard operation for represented boxes.
+* Simplified interface terminology and help.
+
+None of these corrections changed the retained event records, cue schedules, WAV files or Stage 3 findings.
+
+### Final Browser Checks
+
+The researcher completed final Firefox and Chrome checks using both retained datasets.
+
+The checks covered:
+
+* source imagery
+* bounding boxes
+* audio playback
+* synchronisation
+* cue selection
+* provenance
+* suppression behaviour
+* final frame inspection
+* technical metrics
+* session switching
+* privacy
+* path free error handling
+
+These were engineering checks rather than participant usability or accessibility testing.
+
+### Outcome
+
+The workbench could inspect both retained dataset cases through the same validated interface.
+
+Stage 4 was complete on 18 August 2026.
+
+## 19 August To 3 September 2026: Stage 5 Report And Submission Preparation
+
+### Dissertation Drafting
+
+* Drafted Methodology And Research Design.
+* Drafted Workbench Design And Implementation.
+* Drafted Technical Evaluation And Results.
+* Drafted Discussion.
+* Drafted Conclusion And Future Work.
+* Added the Introduction.
+* Added the Literature Review.
+* Added Ethical Considerations And Critical Reflection.
+* Added the Abstract.
+* Added the UWE Harvard reference list.
+
+### Academic Review
+
+* Integrated citations across the dissertation.
+* Confirmed all three research questions were addressed.
+* Verified cited sources against the reference list.
+* Reviewed claims against retained evidence.
+* Preserved the project limitations and evidence boundaries.
+* Confirmed no Stage 1 to 4 research evidence was changed during report preparation.
+
+### Word Count And Final Document
+
+The working manuscript was reduced from approximately 8,603 words to a final formatted count within the required assessment limit.
+
+The reduction preserved:
+
+* all three research questions
+* project objectives
+* technical evaluation findings
+* ethical boundaries
+* threats to validity
+* documented limitations
+
+The final Word and PDF versions were prepared and visually reviewed.
+
+### References
+
+The reference audit confirmed that cited sources and reference entries matched in both directions.
+
+### Outcome
+
+The dissertation and artefact were prepared for submission.
+
+## 21 To 28 August 2026: Hosted Workbench And Final Review
+
+### Hosted Deployment
+
+* Added a hosted Render deployment.
+* Replaced initial demonstration content with the two retained verified sessions.
+* Required a verified retained bundle and expected SHA 256 value.
+* Prevented fallback to unverified synthetic evidence.
+* Added dataset attribution.
+* Recorded the live hosted route in repository guidance.
+
+The hosted interface remained a read only copy of the existing inspection evidence.
+
+It did not regenerate research outputs or create new evaluation evidence.
+
+### Supervisor Feedback
+
+Supervisor feedback focused on:
+
+* alignment with the marking criteria
+* clear report presentation
+* a focused viva
+* concentration on the main project outcomes
+
+Positive feedback was recorded without treating it as a grade or assessment result.
+
+## 2 To 3 September 2026: Final Checks And Submission Readiness
+
+### Work Completed
+
+* Consolidated technical documentation.
+* Simplified repository navigation.
+* Reviewed provenance records.
+* Reviewed citation metadata.
+* Reviewed dataset attribution.
+* Reviewed the hosted workbench boundary.
+* Reproduced the reporting file hashes in an isolated checkout.
+* Reproduced both canonical evaluation report hashes.
+* Validated both retained workbench sessions.
+* Validated the hosted bundle checksum.
+

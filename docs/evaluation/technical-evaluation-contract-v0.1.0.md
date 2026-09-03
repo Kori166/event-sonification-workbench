@@ -1,121 +1,293 @@
 # Technical Evaluation Contract 0.1.0
 
-## Purpose and evidence boundary
+## Purpose And Scope
 
-This contract fixes the Stage 3 technical measures before they are applied to real MOT17 or KITTI
-Tracking packages. It measures record accounting, temporal placement, traceability, schedule
-burden and exact repeat evidence. It does not measure or establish accessibility, usability,
-navigation, perceptual effectiveness or safety.
+This contract defines the Stage 3 technical evaluation rules before they are applied to the real MOT17 and KITTI Tracking evidence.
 
-The normative machine-readable policy is
-`configs/evaluation/technical-evaluation-contract.v0.1.0.json`, validated by its adjacent schema.
-Reports conform to `configs/evaluation/technical-evaluation-report.schema.v0.1.0.json`. Contract,
-report and evaluator versions are independent and all begin at `0.1.0`.
+It measures:
 
-## Required inputs
+* event accounting and coverage
+* timing alignment
+* traceability
+* cue density
+* overlap
+* repeatability within the tested environment
 
-An evaluation needs validated common-schema `0.2.0` event records, cue-package `0.1.0` cue and
-suppression records, renderer-metadata/render-log `0.1.0` records, and their package identities.
-The identity includes dataset, sequence, event/cue/renderer versions, sample rate, rendered frame
-count, event-package hash, preset hash, cue-schedule hash, suppression-log hash, render-log hash,
-WAV hash when supplied, and renderer/evaluation configuration hashes. A missing optional WAV is
-reported as absent evidence; a declared WAV whose hash cannot be resolved is a broken link.
+It does not measure accessibility, usability, navigation, perceptual effectiveness or safety.
 
-Events supply event ID, timestamp, dataset/sequence, source annotation path/hash and source row.
-Cues supply cue/source-event IDs, scheduled interval, matching source location and preset identity.
-Suppressions supply source-event ID, coded reason, matching source location and preset identity.
-Render entries supply cue/source-event IDs and integer start, duration and exclusive-end samples.
-Identifiers must resolve to records whose linked fields agree; plausible text alone is not proof.
+The main machine readable contract is:
 
-## Event accounting and eligibility
+`configs/evaluation/technical-evaluation-contract.v0.1.0.json`
 
-Every valid source event has one primary outcome: represented by one or more distinct cues,
-intentionally suppressed by one explicit record, missed, or explicitly excluded before evaluation
-by one validation record. Multiple cues for one event form one represented outcome. A cue and a
-suppression for the same event, duplicate suppression/exclusion records, duplicate cue IDs, orphan
-cues and references from suppressions/exclusions to unknown events are errors.
+This is checked against its accompanying schema.
 
-Under contract `0.1.0`, the Stage 2 mapper is total: any valid input event not explicitly
-suppressed or excluded is cue-eligible. Such an event is represented when it has at least one cue
-and missed when it has none. Suppressed events are never silently reclassified as missed.
+Evaluation reports must follow:
 
-Rates are objects containing `numerator`, `denominator` and `value`. A zero denominator always
-produces `value: null` (not 0 or 1):
+`configs/evaluation/technical-evaluation-report.schema.v0.1.0.json`
 
-- cue-eligible coverage = represented eligible events / eligible events;
-- source representation = unique represented events / valid source events;
-- suppression = intentionally suppressed events / valid source events;
-- accounting completeness = represented, suppressed or explicitly excluded events / valid source
-  events; and
-- missed-eligible rate = missed eligible events / eligible events.
+The contract, report schema and evaluator each have their own version. All began at version `0.1.0`.
 
-## Timing alignment
+## Required Evidence
 
-For every resolvable cue, scheduling error is `abs(cue_start_seconds - event_timestamp_seconds)`.
-For every resolvable render entry, render-placement error is
-`abs(render_start_sample / sample_rate - cue_start_seconds)`, and end-to-end error is
-`abs(render_start_sample / sample_rate - event_timestamp_seconds)`.
+An evaluation requires:
 
-Sample errors compare integer positions after the renderer's existing decimal `ROUND_HALF_UP`
-conversion: scheduling compares rounded cue and event times; render placement compares actual
-start with rounded cue start; end-to-end compares actual start with rounded event time. Thus a
-correctly rounded half-sample placement can have zero integer-sample error and a non-zero
-seconds-domain quantisation difference. Cue ends remain exclusive.
+* validated common event schema `0.2.0` records
+* cue and suppression records from cue package `0.1.0`
+* renderer metadata and render log records from renderer `0.1.0`
+* the identities and hashes of the related packages
 
-Each domain reports count, minimum, maximum, arithmetic mean, median and p95. Empty summaries use
-`null` for all five statistics. Median is the middle value or the arithmetic midpoint of the two
-middle values. P95 uses nearest rank: sort ascending and select index `ceil(0.95*n)-1`.
+The retained identity information includes:
 
-## Timeline, density and overlap
+* dataset and sequence
+* event, cue and renderer versions
+* sample rate
+* total rendered frames
+* event package hash
+* preset hash
+* cue schedule hash
+* suppression log hash
+* render log hash
+* WAV hash where available
+* renderer and evaluation configuration hashes
 
-The evaluated timeline begins at zero. Its preferred end is rendered total frame count divided by
-sample rate, including recorded trailing silence. If render metadata is unavailable, the fallback
-is the maximum scheduled half-open cue end; an empty schedule ends at zero.
+A missing optional WAV is recorded as missing evidence.
 
-Cue density is cue count / duration; per-minute density is the same rate multiplied by 60; unique
-represented-event density uses unique source-event count. Zero duration makes these values null.
-The maximum one-second start count uses half-open windows `[t,t+1)` whose candidate `t` values are
-the distinct cue starts; an empty schedule returns zero.
+If a WAV is declared but its hash cannot be verified, this is treated as a broken evidence link.
 
-Overlap prefers integer rendered intervals `[start_sample,end_sample_exclusive)`. Scheduled
-seconds are the fallback. The deterministic sweep groups equal boundaries; duration since the
-previous boundary is accumulated with the previous active count, which is equivalent to applying
-ends before starts. It reports peak concurrency, time with concurrency at least two, that time /
-timeline duration, the integral of `max(concurrency-1,0)`, and that integral / duration. Zero
-duration makes both proportions null.
+Events provide the event ID, timestamp, dataset, sequence, source annotation, source hash and source row.
 
-## Traceability and diagnostics
+Cues provide the cue ID, source event ID, scheduled timing, source location and preset identity.
 
-Cue-to-event traceability requires a resolvable source event and matching dataset/sequence.
-Cue-to-annotation additionally requires matching source file and row. Cue-to-render requires one
-render entry with matching cue/event IDs and valid sample bounds. Full traceability additionally
-requires matching preset/mapping identity, schedule membership, cue-package/renderer identities,
-declared hashes and a supplied WAV hash. Suppression traceability requires an existing event,
-matching source location and preset identity. Every rate includes counts; broken links are grouped
-by stable reason code.
+Suppressions provide the source event ID, reason for suppression, source location and preset identity.
 
-Integrity findings use stable codes and deterministic ordering. Errors make the report invalid;
-warnings record permitted missing evidence or suspicious results. Missed eligible events are
-warnings because the evaluator can still calculate a method result, while orphans,
-contradictory outcomes, duplicate IDs and incompatible versions are errors. Malformed top-level
-records or an unsupported contract fail before metric calculation.
+Render records provide cue and event IDs together with the start sample, duration and exclusive end sample.
 
-## Reproducibility
+Identifiers must link to records whose details agree. Matching text alone is not considered sufficient evidence.
 
-Repeat evidence is reported separately for semantic equality of canonically normalised records and
-metrics, byte/hash equality of output files, byte/hash equality of WAV files, and equality of all
-relevant configuration versions/hashes. Each compared file reports its name, level, booleans,
-expected/observed hashes and mismatch detail. A level without evidence is `null`, never inferred
-from successful execution. Claims are limited to the recorded tested environment.
+## Event Accounting And Coverage
 
-## Deterministic report
+Every valid source event must have one main outcome:
 
-Inputs and diagnostics are ordered by documented identifiers; grouped reasons and repeat files are
-ordered lexically. JSON uses the shared compact, UTF-8 canonical serializer. The evaluation run ID
-is content-derived from the contract and input identities. `report_payload_sha256` hashes the
-canonical report before the hash-scope fields are appended, avoiding recursion. The writer also
-returns the SHA-256 of the final exact report bytes.
+* represented by one or more cues
+* intentionally suppressed
+* missed
+* explicitly excluded before evaluation
 
-Empty input is valid and produces zero counts, null rate/statistic values, a zero timeline, zero
-peak concurrency and no warnings. A zero-duration non-empty input is permitted but produces a
-`zero_duration_timeline` warning and null duration-based rates.
+Several cues linked to one event still count as one represented event.
+
+The following are treated as errors:
+
+* the same event having both a cue and suppression
+* duplicate suppression or exclusion records
+* duplicate cue IDs
+* cues linked to unknown events
+* suppressions or exclusions linked to unknown events
+
+Under contract `0.1.0`, every valid event that is not intentionally suppressed or excluded is eligible to produce a cue.
+
+An eligible event is represented when at least one cue exists.
+
+It is missed when no cue exists.
+
+An intentionally suppressed event is never counted as missed.
+
+Rates are recorded using a numerator, denominator and calculated value.
+
+If the denominator is zero, the result is `null`.
+
+The main rates are:
+
+* **Eligible event coverage** = represented eligible events / eligible events
+* **Source representation** = represented events / valid source events
+* **Suppression rate** = intentionally suppressed events / valid source events
+* **Accounting completeness** = represented, suppressed or excluded events / valid source events
+* **Missed eligible rate** = missed eligible events / eligible events
+
+## Timing Alignment
+
+Timing is checked for scheduling, rendering and the complete event to audio path.
+
+### Scheduling Error
+
+Scheduling error is the absolute difference between the cue start time and source event timestamp:
+
+`abs(cue_start_seconds - event_timestamp_seconds)`
+
+### Render Placement Error
+
+Render placement error compares the rendered audio start position with the scheduled cue time:
+
+`abs(render_start_sample / sample_rate - cue_start_seconds)`
+
+### End To End Error
+
+End to end error compares the rendered audio position with the original event timestamp:
+
+`abs(render_start_sample / sample_rate - event_timestamp_seconds)`
+
+Timing is also checked directly in audio samples.
+
+Sample positions use the renderer's existing decimal `ROUND_HALF_UP` rule.
+
+This means a cue can have an exact sample position while still showing a very small decimal difference when expressed in seconds.
+
+Cue end positions remain exclusive.
+
+For each timing measure the evaluator records:
+
+* count
+* minimum
+* maximum
+* mean
+* median
+* p95
+
+If there are no values, these statistics are recorded as `null`.
+
+The median uses the middle value or the average of the two middle values when the count is even.
+
+P95 uses the nearest rank method.
+
+## Timeline, Density And Overlap
+
+The evaluated timeline starts at zero.
+
+Where render metadata is available, the timeline ends at:
+
+`total rendered frames / sample rate`
+
+This includes any recorded trailing silence.
+
+If render metadata is unavailable, the final scheduled cue end is used instead.
+
+An empty cue schedule has a duration of zero.
+
+### Cue Density
+
+Cue density is:
+
+`cue count / duration`
+
+Cue density per minute is the same value multiplied by 60.
+
+Represented event density uses the number of unique source events instead of cue count.
+
+If duration is zero, these values are recorded as `null`.
+
+The maximum number of cue starts in one second is calculated using fixed one second windows beginning at each distinct cue start time.
+
+An empty schedule returns zero.
+
+### Overlap
+
+Overlap is calculated using rendered sample intervals where possible.
+
+Each cue uses the interval:
+
+`[start_sample, end_sample_exclusive)`
+
+Scheduled times are used only when rendered sample information is unavailable.
+
+The evaluator records:
+
+* peak number of simultaneous cues
+* time containing two or more simultaneous cues
+* proportion of the timeline containing overlap
+* excess concurrent cue time
+* normalised overlap burden
+
+If timeline duration is zero, duration based proportions are recorded as `null`.
+
+## Traceability Checks
+
+Cue traceability checks whether each cue can be linked back through the retained evidence.
+
+A cue must link to:
+
+* its source event
+* the correct dataset and sequence
+* the correct source annotation and row
+* its render record
+* the correct preset and mapping information
+* the cue schedule
+* the cue and renderer package identities
+* the required hashes
+* the WAV hash where WAV evidence is supplied
+
+A fully traceable cue must satisfy all required links.
+
+Suppression traceability checks that each suppression links to:
+
+* an existing source event
+* the correct source location
+* the correct preset
+
+Broken links are grouped using stable reason codes.
+
+## Errors And Warnings
+
+Integrity findings use stable codes and deterministic ordering.
+
+Errors make the evaluation report invalid.
+
+Warnings identify issues where the evaluator can still produce meaningful technical results.
+
+For example, a missed eligible event is recorded as a warning because the evaluator can still calculate coverage.
+
+The following are treated as errors:
+
+* orphan cues
+* conflicting event outcomes
+* duplicate identifiers
+* incompatible versions
+* malformed required records
+
+Unsupported contract versions or invalid top level records stop evaluation before metrics are calculated.
+
+## Repeatability Checks
+
+Repeatability evidence is recorded separately for:
+
+* semantic equality of records and metrics
+* exact file byte and hash equality
+* WAV byte and hash equality
+* configuration version and hash equality
+
+Each file comparison records its filename, comparison level, result, expected hash, observed hash and any mismatch details.
+
+If no evidence exists for a comparison level, the result is `null`.
+
+Repeatability claims are limited to the recorded tested environment.
+
+## Deterministic Evaluation Report
+
+Evaluation reports are produced deterministically.
+
+Inputs and diagnostics use fixed ordering rules.
+
+Grouped reasons and repeated file comparisons are ordered alphabetically.
+
+JSON uses the shared canonical UTF-8 serialisation format.
+
+The evaluation run ID is generated from the contract and input identities rather than from time or random values.
+
+`report_payload_sha256` is calculated before the report hash fields are added. This avoids the report attempting to hash a value that includes itself.
+
+The final exact report bytes are also assigned a SHA-256 hash.
+
+## Empty And Zero Duration Cases
+
+An empty input is valid.
+
+It produces:
+
+* zero event counts
+* `null` rate values
+* `null` timing statistics
+* a zero length timeline
+* zero peak concurrency
+* no warnings
+
+A non empty input with a zero duration timeline is also permitted.
+
+In this case, the evaluator records a `zero_duration_timeline` warning and any rate that requires duration is recorded as `null`.

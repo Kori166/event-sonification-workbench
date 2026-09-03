@@ -1,4 +1,4 @@
-# 0001: Project Scope and Evaluation Boundary
+# 0001: Project Scope And Evaluation Limits
 
 ## Status
 
@@ -6,7 +6,9 @@ Accepted
 
 ## Context
 
-The project must deliver a technically credible MSc artefact within the available project time. The wider sonification domain includes accessibility, navigation and assistive-technology applications. Claims in these areas require participant-based evidence that is outside the current evaluation design.
+The project needs to deliver a realistic and technically strong MSc artefact within the available time. Sonification can be applied to areas such as accessibility, navigation and assistive technology.
+
+However, claims about benefits to people would require participant based evidence, which is outside the current evaluation design.
 
 ## Decision
 
@@ -16,7 +18,7 @@ The project will not claim validated accessibility, usability, navigation or saf
 
 ## Rationale
 
-This boundary was selected to keep the project achievable and align the evaluation with evidence that can be generated through software tests, controlled experiments and reproducibility checks.
+This scope keeps the project achievable within the available time. It also keeps the evaluation aligned with evidence that can actually be produced through software testing, controlled technical experiments and reproducibility checks. This avoids making claims that the project has not been designed to support.
 
 ## Consequences
 

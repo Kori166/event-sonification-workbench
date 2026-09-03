@@ -1,84 +1,116 @@
-# 0016: Workbench session and inspection layer
+# 0016: Workbench Session And Inspection Layer
 
 ## Status
 
 Accepted for Stage 4 Milestone 1 Phase 1 on 7 August 2026.
 
-Implementation clarification added on 7 August 2026 after PR #28 merged: runtime package storage may
-use separate event, cue and audio roots. This does not change Workbench Session Contract `0.1.0` or
-the deterministic identity boundary.
+A clarification was added later the same day to support separate event, cue and audio package locations.
 
-Implementation history: PR #30 applied this clarification but was merged before the private retained-
-chain acceptance gate was run. PR #31 reverted PR #30 in full. The correction was then reapplied on
-a fresh branch under reopened Issue #29 so that clean CI and private retained-chain acceptance could
-both be evidenced before the final merge. This history changes neither the decision nor the frozen
-session contract.
+This did not change Workbench Session Contract `0.1.0` or the way session identity is calculated.
 
-Final implementation note, 7 August 2026: PR #32's separate runtime-root clarification passed the
-retained-chain acceptance test for both MOT17 and KITTI Tracking. Workbench Session Contract `0.1.0`
-remained unchanged, and runtime storage locations continue to be non-identity state.
+The corrected implementation was verified against both retained MOT17 and KITTI sessions before final acceptance.
 
 ## Context
 
-Stages 1 to 3 already define and verify deterministic event packages, cue and suppression packages,
-audio packages, provenance links and technical-evaluation reports. Stage 4 requires a local
-inspection interface that can present those artefacts together with dataset media. Reimplementing
-parsing, cue mapping, audio rendering or evaluation logic in the interface would create a second
-research pipeline and weaken traceability to the verified evidence.
+Stages 1 to 3 already produce and verify:
 
-The Stage 4 interface is therefore research infrastructure for inspection and demonstration. It is
-not participant evidence and does not establish accessibility, usability, navigation, perceptual
-effectiveness or safety.
+* event packages
+* cue and suppression packages
+* rendered audio packages
+* provenance links
+* technical evaluation reports
+
+Stage 4 needs to bring this evidence together in one inspection interface.
+
+The interface must not repeat parsing, cue generation, rendering or evaluation logic because that would create a second research pipeline and weaken traceability to the verified outputs.
+
+The workbench is therefore a read only inspection tool for research evidence.
+
+It does not provide participant evidence and does not establish usability, accessibility, navigation, perceptual effectiveness or safety.
 
 ## Decision
 
-Workbench Session Contract `0.1.0` is frozen before browser code is introduced.
+Workbench Session Contract `0.1.0` is fixed before browser development begins.
 
-A session identifies one compatible Stage 1 event package, Stage 2 cue package, Stage 2 audio
-package and, optionally, one Stage 3 technical-evaluation report. The headless Python session loader
-must validate the session schema, reuse the established Stage 1 to 3 package-validation path, verify
-cross-stage identities and hashes, and resolve dataset media only after the deterministic evidence
-chain has been accepted.
+A workbench session links:
 
-The browser layer will receive only an already validated session representation. It will be
-read-only with respect to Stage 1 to 3 packages and will not recalculate research metrics or
-regenerate sonification outputs.
+* one Stage 1 event package
+* one Stage 2 cue package
+* one Stage 2 audio package
+* optionally, one Stage 3 technical evaluation report
 
-The deterministic session identity is content-derived from the dataset, sequence, package run IDs,
-package and file hashes, configuration identities and optional evaluation identity. Runtime storage
-locations are excluded from that identity. Dataset and package roots are supplied separately through
-runtime bindings.
+The Python session loader must validate the complete evidence chain before it is passed to the browser.
 
-Package resolution may use `EVENT_PACKAGE_ROOT`, `CUE_PACKAGE_ROOT` and `AUDIO_PACKAGE_ROOT` when
-the three package types are stored separately. `OUTPUT_ROOT` remains a common-root fallback when a
-single directory contains all run directories. Dataset media continues to use `MOT17_ROOT` or
-`KITTI_TRACKING_ROOT`. None of these runtime values contributes to `session_id` or appears in
-returned diagnostics.
+This includes:
+
+* checking the session structure
+* reusing existing Stage 1 to 3 package validation
+* checking identities and hashes across stages
+* resolving source media only after the evidence chain has passed validation
+
+The browser receives only an already validated session.
+
+It cannot modify Stage 1 to 3 packages, regenerate audio or recalculate evaluation results.
+
+## Session Identity
+
+Each session receives a deterministic `session_id`.
+
+The identity is based on retained evidence such as:
+
+* dataset and sequence
+* package run IDs
+* package hashes
+* file hashes
+* configuration identities
+* evaluation identity where available
+
+Local storage locations are not part of the session identity.
+
+This means the same retained evidence can be moved to another directory or machine without changing its identity.
+
+## Runtime File Locations
+
+Event, cue and audio packages may be stored in separate locations.
+
+The following runtime settings can be used:
+
+* `EVENT_PACKAGE_ROOT`
+* `CUE_PACKAGE_ROOT`
+* `AUDIO_PACKAGE_ROOT`
+
+If all packages are stored beneath one common directory, `OUTPUT_ROOT` can still be used as a fallback.
+
+Dataset media continue to use:
+
+* `MOT17_ROOT`
+* `KITTI_TRACKING_ROOT`
+
+These runtime paths are not included in `session_id` and are not returned in diagnostics.
 
 ## Rationale
 
-This boundary preserves the existing reproducibility and provenance model. A package can move to a
-different machine or directory without changing the identity of the evidence it contains. The
-interface can also change independently without changing the Stage 1 to 3 research contracts.
+This design keeps the workbench separate from the research processing pipeline.
 
-Reusing the existing package validators prevents Stage 4 from defining a weaker interpretation of
-package validity. A session is accepted only when its underlying evidence chain is already valid and
-the session's declared identities match the verified files.
+Stage 4 displays evidence that has already been created and verified rather than creating a second interpretation of it.
 
-The separate package-root clarification is required because retained Stage 2 evidence stores event,
-cue and audio packages beneath distinct stage directories. Treating that storage layout as runtime
-state avoids encoding a historical local directory convention into the frozen session contract.
+Reusing the existing package validators also means Stage 4 cannot silently accept evidence that earlier stages would reject.
+
+Keeping storage paths outside the session identity improves portability. The retained evidence can move between machines or directories without becoming a different research session.
+
+The separate package location support was required because the retained Stage 2 event, cue and audio packages are stored in different directories.
+
+This is treated as a runtime storage detail rather than part of the research evidence.
 
 ## Consequences
 
-- Mismatched, missing or tampered package chains are rejected before UI rendering.
-- Absolute local paths, machine names and usernames must not enter `session_id` or exported
-  diagnostics.
-- Runtime package layout can change without changing Workbench Session Contract `0.1.0`.
-- Raw MOT17 and KITTI Tracking media remain runtime dependencies outside Git.
-- An unavailable Stage 3 report does not prevent package inspection; the session records
-  `evaluation.available = false` and no substitute metric is calculated.
-- Display-only waveform, spectrogram or timeline visualisations do not become technical-evaluation
-  evidence merely because they appear beside verified metrics.
-- Stage 4 may add presentation and media-serving components, but Stage 1 to 3 contracts remain
-  unchanged unless a separate explicit decision supersedes them.
+* Missing, mismatched or altered evidence is rejected before the interface loads.
+* Local paths, usernames and machine names do not become part of the session identity.
+* Runtime storage locations can change without changing Workbench Session Contract `0.1.0`.
+* MOT17 and KITTI source media remain outside Git.
+* A missing Stage 3 report does not prevent inspection of valid Stage 1 and Stage 2 evidence.
+* When no evaluation report is available, the session records `evaluation.available = false`.
+* No replacement evaluation values are calculated.
+* Display only timelines, waveforms or similar visualisations are not treated as evaluation evidence.
+* Stage 4 can add presentation and media serving features without changing Stage 1 to 3 contracts or results.
+``

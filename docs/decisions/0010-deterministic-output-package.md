@@ -1,57 +1,126 @@
-# 0010: Deterministic Event and Provenance Output Package
+# 0010: Deterministic Event And Provenance Package
 
 ## Status
 
-Accepted for Stage 1 Issue #6 on 5 August 2026 and merged through PR #17 after successful CI.
+Accepted for Stage 1 Issue #6 on 5 August 2026.
+
+The implementation passed CI and was merged through PR #17.
 
 ## Context
 
-MOT17 and KITTI Tracking now produce schema `0.2.0` events and Issue #4 validates complete
-collections. Stage 1 still needs an inspectable hand-off that preserves full events, provides a flat
-CSV view, records run-level provenance and remains byte-identical across repeated runs.
+MOT17 and KITTI Tracking now produce validated common event schema `0.2.0` records.
 
-Changing timestamps, machine paths or random run IDs would prevent direct hash comparison. Metadata
-also cannot contain its own exact hash without a recursive definition.
+Stage 1 also needs a clear output package that:
+
+* preserves the complete event records
+* provides an easier CSV view
+* records provenance for the processing run
+* produces identical files when the same inputs are processed again
+
+Using timestamps, random run IDs or local machine paths would prevent direct comparison between repeated runs.
+
+The metadata file also cannot contain its own final hash because that would create a recursive value.
 
 ## Decision
 
-- Write one dataset sequence to `outputs/<run-id>/` with `events.json`, `events.csv`,
-  `run_metadata.json` and `provenance_log.json`.
-- Derive the run ID from canonical deterministic inputs and event-output hashes; do not use time or
-  randomness.
-- Sort events by dataset, sequence, frame, lexical track ID, source row and event ID.
-- Use the shared canonical JSON and SHA-256 utilities for JSON content and hashing.
-- Use schema `0.2.0` required-field order as the fixed CSV contract, LF endings and canonical JSON
-  for nested cells.
-- Record only logical relative input/configuration paths and reject absolute local paths.
-- Consume an Issue #4 validation report when available and refuse reports marked invalid; do not
-  reproduce collection validation inside the writer.
-- Put source, schema, mapping, optional sequence-metadata and output hashes in deterministic metadata
-  and provenance.
-- Return the `run_metadata.json` hash externally rather than embedding a recursive self-hash.
-- Permit exact deterministic rewrites but reject unexpected files or unsafe path types in an
-  existing run directory.
-- Keep common event schema version `0.2.0` unchanged.
+Each dataset sequence is written to:
+
+`outputs/<run-id>/`
+
+The package contains:
+
+* `events.json`
+* `events.csv`
+* `run_metadata.json`
+* `provenance_log.json`
+
+The run ID is created from deterministic input information and event output hashes.
+
+Time and random values are not used.
+
+## Event Ordering
+
+Events are stored in a fixed order using:
+
+* dataset
+* sequence
+* frame
+* track ID
+* source row
+* event ID
+
+Track IDs are ordered as text because the common schema stores them as strings.
+
+## JSON And CSV Output
+
+JSON files use the shared canonical JSON format and SHA 256 hashing.
+
+The CSV uses the required field order from common event schema `0.2.0`.
+
+CSV files use LF line endings.
+
+Nested values are stored using canonical JSON rather than creating different dataset specific column structures.
+
+## Provenance
+
+The package records deterministic provenance including:
+
+* source file identity
+* source hash
+* schema identity
+* class mapping identity
+* sequence metadata where available
+* output hashes
+
+Only logical relative paths are recorded.
+
+Absolute local paths are rejected so private machine locations are not included in reproducible outputs.
+
+## Validation
+
+The writer uses the existing Stage 1 collection validation result when one is available.
+
+A collection marked as invalid is not written.
+
+The writer does not implement a second validation system. It relies on the validation rules already defined for Stage 1.
+
+Common event schema `0.2.0` remains unchanged.
+
+## Package Identity
+
+The run ID changes when the deterministic inputs or event outputs change.
+
+This makes repeated runs with identical evidence easy to compare while still producing different identities when the source data or configuration changes.
+
+The exact hash of `run_metadata.json` is returned separately rather than being stored inside the same file.
+
+Existing deterministic run directories may be rewritten only when their expected contents match.
+
+Unexpected files or unsafe paths cause the write to be rejected.
 
 ## Rationale
 
-Canonical JSON preserves the complete nested event representation. CSV gives an inspectable,
-tool-friendly projection while canonical nested cells avoid dataset-specific flattening. A
-content-derived run ID makes output directories repeatable and distinguishable when inputs or
-configuration change.
+Canonical JSON keeps the complete common event structure without losing nested information.
 
-Logical references retain traceability without exposing private storage. Separating validation from
-writing keeps Issue #4 as the single policy implementation and lets the writer record either a valid
-summary or an explicit absence of validation evidence.
+CSV provides a simpler form for inspection and analysis.
+
+Using one consistent nested representation avoids creating different CSV structures for MOT17 and KITTI.
+
+A content based run ID also makes repeated runs directly comparable.
+
+Logical paths preserve provenance without exposing private storage locations.
+
+Keeping validation separate from output writing avoids duplicating Stage 1 validation rules in multiple places.
 
 ## Consequences
 
-- Consumers must use `format_version` to interpret package documents independently of event schema
-  version.
-- `track_id` sorts lexically because its common type is string.
-- CSV readers must JSON-decode `conversion_notes`, `metadata`, null and boolean values as documented.
-- Package content intentionally contains no generation timestamp; operational timing belongs in a
-  separate non-reproducibility log if introduced later.
-- The writer result is the authority for the metadata file's own exact-byte hash.
-- Generated run directories remain ignored and are not committed, including full-dataset outputs.
-- This package is the Stage 1 data hand-off and contains no cues, audio or evaluation results.
+* Package documents use their own `format_version`, separate from the common event schema version.
+* `track_id` is ordered lexically because it is stored as a string.
+* Nested CSV values must be interpreted as documented JSON values.
+* Generation timestamps are intentionally excluded from reproducible package files.
+* The writer provides the authoritative hash for `run_metadata.json`.
+* Generated run directories remain outside Git.
+* Full dataset outputs are not committed.
+* This package is the final Stage 1 data hand off.
+* It contains events and provenance only.
+* It does not contain audio cues, rendered audio or evaluation results.

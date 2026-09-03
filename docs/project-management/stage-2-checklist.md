@@ -2,9 +2,7 @@
 
 ## Sonification
 
-Stage 2 was completed on 6 August 2026. Milestone 1 merged through PR #20 and Milestone 2 merged through PR #22 after successful CI, closing Issue #21.
-
-Detailed repeat run evidence for the real datasets is retained in `progress-log.md` and the canonical Stage 3 evaluation evidence. Stage 3 later fixed and checked the evaluation method using synthetic data before applying it to the selected real evidence chains.
+Milestone 1 merged through PR #20 and Milestone 2 merged through PR #22 after successful CI, closing Issue #21.
 
 - [x] Defined and documented a versioned sonification preset format.
 - [x] Implemented deterministic mapping from validated schema `0.2.0` events to cue records.

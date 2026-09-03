@@ -1,4 +1,4 @@
-# 0020: Hosted demonstration deployment boundary
+# 0020: Hosted Demonstration Deployment
 
 ## Status
 
@@ -6,52 +6,50 @@ Superseded by Decision 0021 on 21 August 2026.
 
 ## Context
 
-The Stage 4 inspection workbench was intentionally implemented as a loopback-only read service over
-retained Stage 1-3 evidence. The complete local sessions depend on externally stored MOT17 and KITTI
-Tracking media and retained generated packages that are deliberately excluded from Git. A Render web
-service, by contrast, must bind to a public interface and cannot depend on the researcher's local dataset
-or evidence paths.
+The Stage 4 workbench was designed as a local read only inspection tool over retained Stage 1 to 3 evidence.
 
-Publishing the retained real-data tree would weaken the established storage, redistribution and evidence
-boundaries. Making the normal inspection command publicly bindable by default would also weaken the
-local security boundary merely to satisfy deployment infrastructure.
+The full MOT17 and KITTI sessions depend on dataset media and generated evidence stored outside Git.
+
+A public Render service cannot use the researcher's local paths, and publishing the full retained data would weaken the existing storage and redistribution boundaries.
+
+The local inspection server also should not be made publicly accessible by default just to support hosting.
 
 ## Decision
 
-A separate bounded hosted-demonstration path will be used.
+A separate hosted demonstration was created using synthetic data.
 
-- The existing inspection server remains loopback-only by default.
-- Public wildcard binding is accepted only when a caller explicitly enables hosted binding, and only for
-  `0.0.0.0` or `::`.
-- The hosted entry point generates a small deterministic deployment chain from the committed synthetic
-  Stage 2 fixture using the existing event-package, cue-scheduling and audio-rendering implementations.
-- Four synthetic normalised events are used: two produce cues and two produce explicit suppressions under
-  the frozen baseline preset.
-- Synthetic PNG frames are generated at startup so that no MOT17 or KITTI source imagery is redistributed.
-- The hosted sequence is named `synthetic_hosted_demo`. It uses the existing MOT17 session-contract branch
-  only because Workbench Session Contract `0.1.0` admits the two implemented dataset families; the
-  conversion notes explicitly state that the sequence is synthetic and is not a real MOT17 sequence.
-- The generated package is validated through the unchanged Stage 4 session-opening path before the browser
-  service is exposed.
-- No Stage 3 technical-evaluation report is attached to the hosted synthetic session. The hosted interface
-  therefore reports evaluation as unavailable rather than substituting synthetic values for the canonical
-  dissertation evidence.
-- Render deployment is declared in the repository through `render.yaml` and launches only the bounded
-  hosted entry point.
+The following rules applied:
+
+* The normal inspection server remained local only by default.
+* Public binding was allowed only when hosted mode was explicitly enabled.
+* The hosted demonstration generated a small deterministic example using the existing event, cue and audio pipeline.
+* Four synthetic events were used.
+* Two events produced cues.
+* Two events produced explicit suppressions.
+* Synthetic PNG frames were generated so no MOT17 or KITTI source images were redistributed.
+* The hosted sequence was named `synthetic_hosted_demo`.
+* The sequence used the existing session validation path.
+* The documentation clearly stated that it was synthetic and not a real MOT17 sequence.
+* The generated package had to pass the normal Stage 4 session validation before being displayed.
+* No Stage 3 evaluation report was attached.
+* The interface therefore showed evaluation results as unavailable rather than inventing replacement values.
+* Render deployment was defined through `render.yaml` and used only this bounded hosted entry point.
 
 ## Rationale
 
-This separated deployment convenience from research evidence, but the resulting public service did not
-represent the retained workbench used for Stage 4 inspection. It exposed a four-event synthetic sequence,
-synthetic images and no Stage 3 metrics. This made the deployment unsuitable as the intended hosted form
-of the completed artefact.
+This approach provided a safe way to test public deployment without exposing private dataset paths or retained research data.
 
-The synthetic chain was built with the production package writer, scheduler, renderer and session
-validator, so it remained useful as a development experiment. It is no longer the public deployment path.
+It also reused the package writer, cue scheduler, renderer and session validator, so the demonstration remained technically useful during development.
+
+However, the hosted version did not represent the completed artefact.
+
+It showed only a four event synthetic example, synthetic images and no Stage 3 technical results.
+
+For that reason, it was later replaced by Decision 0021, which uses verified retained MOT17 and KITTI evidence.
 
 ## Consequences
 
-- The synthetic hosted sequence must not be used as the public artefact demonstration.
-- Decision 0021 replaces the synthetic deployment with a verified external bundle containing the accepted
-  retained MOT17-02-DPM and KITTI Tracking 0000 inspection inputs.
-- The loopback-only default for the local workbench remains unchanged.
+* The synthetic hosted sequence is no longer used as the public artefact demonstration.
+* Decision 0021 replaces it with a verified external bundle containing the retained MOT17 and KITTI sessions.
+* The local workbench remains restricted to loopback access by default.
+* The synthetic deployment remains part of the development history but is not part of the final research evidence.

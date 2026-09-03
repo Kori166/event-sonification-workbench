@@ -1,170 +1,119 @@
 # Stage 4 Checklist
 
-## Status
+## Milestone 1: Build the Inspection Workbench
 
-Stage 4 is complete. Milestone 1 Phase 1 froze the workbench inspection contract and established the
-headless validation layer before browser implementation. PR #28 merged after clean CI but
-before the retained Stage 2 evidence layout was exercised. Post-merge review identified a bounded
-runtime-binding mismatch: the validator assumed all package run directories shared one
-`OUTPUT_ROOT`, whereas retained Stage 2 evidence stores event, cue and audio packages beneath
-separate stage directories.
+### Phase 1: Define and Validate Workbench Sessions
 
-PR #30 implemented the correction and passed clean CI, but it was merged before the private retained-
-chain acceptance gate was run. PR #31 then reverted PR #30 in full. Issue #29 was reopened and PR
-#32 reapplied the same bounded runtime correction from the reverted `main` state. Workbench Session
-Contract `0.1.0` remains unchanged. PR #32 passed its repository CI gate, and the retained local
-real-data acceptance run then passed for both MOT17 and KITTI Tracking. Milestone 1 Phase 1 is
-complete. The Phase 2 implementation and researcher-performed controlled browser acceptance now
-support all eight acceptance items. Final local/private gates, the privacy/scope audit and hosted CI
-run 105 passed; PR #36 merged and Issue #35 closed. Stage 4 Milestone 1 Phase 2 is complete; Phase 3
-is next and has not begun.
+- [x] Defined Workbench Session Contract `0.1.0` using a strict JSON Schema.
+- [x] Recorded the inspection architecture and evidence boundary in Decision 0016.
+- [x] Kept deterministic session identity separate from local runtime paths.
+- [x] Generated `session_id` only from deterministic evidence fields.
+- [x] Reused the existing Stage 1 to 3 validation logic rather than creating weaker Stage 4 checks.
+- [x] Checked that event, cue and audio package identities agree across stages.
+- [x] Checked declared file hashes against the retained package files.
+- [x] Validated available Stage 3 evaluation reports against their schema and recorded evidence.
+- [x] Allowed sessions without evaluation evidence without creating replacement metrics.
+- [x] Restricted MOT17 and KITTI media access to their configured dataset roots.
+- [x] Kept local package paths, dataset roots and usernames outside the deterministic session identity.
+- [x] Returned stable diagnostics without exposing private machine paths.
+- [x] Added separate runtime roots for event, cue and audio packages.
+- [x] Kept `OUTPUT_ROOT` as a fallback for simpler fixture layouts.
+- [x] Confirmed separate and shared package layouts produce the same deterministic session identity.
+- [x] Added tests for invalid package roots and path isolation.
+- [x] Added private integration coverage using the retained Stage 2 evidence layout.
+- [x] Confirmed Ruff and the full test suite excluding private integration tests passed.
+- [x] Validated both retained MOT17 and KITTI sessions twice with identical session IDs.
+- [x] Confirmed event, cue and audio packages were verified and required media was available.
+- [x] Confirmed validation diagnostics remained empty and contained no private paths.
 
-## Milestone 1: versioned artefact release candidate
+### Runtime Binding Correction
 
-### Phase 1: workbench contract and headless validation
+Initial validation assumed that event, cue and audio packages shared one `OUTPUT_ROOT`. The retained evidence instead stored these package types in separate stage directories.
 
-- [x] Freeze Workbench Session Contract `0.1.0` under a strict JSON Schema.
-- [x] Record the inspection-layer architecture and evidence boundary in Decision 0016.
-- [x] Document deterministic session fields separately from runtime environmental bindings.
-- [x] Generate `session_id` deterministically from canonical identity fields only.
-- [x] Reuse existing Stage 1 to 3 package loaders and evidence-chain verification rather than
-      implementing weaker Stage 4 validation rules.
-- [x] Reject mismatched Stage 1 event and Stage 2 cue-package identities.
-- [x] Reject mismatched Stage 2 cue and audio-package identities.
-- [x] Reject declared file hashes that differ from verified package files.
-- [x] Validate an available Stage 3 report against its schema, identity and recorded input hashes.
-- [x] Permit `evaluation.available = false` without calculating substitute metrics.
-- [x] Resolve MOT17 media only beneath `MOT17_ROOT` and KITTI Tracking media only beneath
-      `KITTI_TRACKING_ROOT`.
-- [x] Keep package roots, dataset roots, usernames and machine-specific paths outside `session_id`.
-- [x] Return stable path-free diagnostic codes for rejected sessions.
-- [x] Support separate `EVENT_PACKAGE_ROOT`, `CUE_PACKAGE_ROOT` and `AUDIO_PACKAGE_ROOT` runtime
-      bindings for retained evidence layouts.
-- [x] Retain `OUTPUT_ROOT` as a common-root fallback for compact fixture/output layouts.
-- [x] Add automated tests proving separate and common-root package layouts preserve the same
-      deterministic session identity.
-- [x] Add path-isolation coverage for invalid explicit package roots.
-- [x] Add a private integration test aligned with the retained `STAGE2_EVIDENCE_ROOT` layout.
-- [x] Pass `python -m ruff check .` on final corrective PR #32 CI.
-- [x] Pass the non-integration test suite without regressions on final corrective PR #32 CI.
-- [x] Run the retained Stage 4 integration test locally with `STAGE2_EVIDENCE_ROOT` and at least one
-      configured dataset root.
-- [x] Confirm one retained real MOT17 or KITTI session validates twice with the same `session_id`,
-      verified package components, available media and no path-bearing diagnostics.
-- [x] Reconcile Phase 1 records with the accepted PR #30 -> PR #31 -> PR #32 history before merge.
+PR #30 introduced separate package roots and passed CI, but it was merged before the required private evidence check. PR #31 therefore reverted it. Issue #29 was reopened and PR #32 reapplied the same correction after the retained evidence layout had been checked.
 
-### Phase 1 acceptance gate
+The correction did not change Workbench Session Contract `0.1.0` or any retained Stage 1 to 3 research evidence.
 
-Phase 1 is complete only when a clean checkout can validate one compatible retained package chain,
-reject deliberately inconsistent or tampered session definitions, resolve local dataset media
-without exposing its absolute path, reproduce the same session ID from identical evidence, and pass
-the existing automated quality gates. Browser or UI code is not part of this phase.
+### Phase 2: Build the Inspection Interface
 
-PR #28 CI run 72 passed on Ubuntu 24.04 / Python 3.11.15 with Ruff clean and 258 non-integration
-tests passed, 3 integration tests deselected. That evidence remains valid for the original contract
-and fixture validation, but it did not exercise the retained Stage 2 package-directory layout.
+- [x] Exposed validated retained sessions through a small local inspection service.
+- [x] Displayed source imagery using runtime dataset bindings.
+- [x] Displayed retained Stage 1 bounding boxes without recalculating annotations.
+- [x] Played the verified Stage 2 WAV without modification.
+- [x] Used the audio playback time as the single synchronisation clock.
+- [x] Displayed events, cues and suppressions on a synchronised timeline.
+- [x] Allowed selected cues to be traced back to their event, source annotation and rendered sample range.
+- [x] Displayed Stage 3 technical metrics directly from the retained evaluation report.
+- [x] Corrected a browser loading overlay problem found during researcher inspection.
+- [x] Added a regression test for the loading overlay correction.
+- [x] Completed the controlled browser acceptance checks.
+- [x] Confirmed final local tests, private integrations, privacy checks and hosted CI passed.
 
-PR #30 later passed clean CI with Ruff and 261 non-integration tests, including all nine Stage 4
-non-integration session tests, but that PR was reverted by PR #31 because the private retained-chain
-gate had not yet been run. Its CI evidence demonstrates the correction was test-clean at that head;
-it does not substitute for the private retained-chain acceptance action.
+The browser checks were engineering acceptance tests. They were not participant, usability, accessibility or perceptual evaluations.
 
-PR #32 CI run 97 passed on Ubuntu 24.04 / Python 3.11.15. Editable installation succeeded, Ruff
-reported no findings and `python -m pytest -m "not integration"` completed with 261 passed and 4
-integration tests deselected. All nine Stage 4 non-integration session tests passed. The additional
-deselected Stage 4 integration test is deliberately private and was exercised locally on 7 August
-2026 with both retained datasets: `1 passed in 81.89s`. Both sessions validated twice identically,
-all event/cue/audio components were verified, media was available and diagnostics were empty and
-path-free. Phase 1 is complete; PR #32 still requires green CI on the close-out records before merge.
+### Phase 3: Add Both Dataset Cases
 
-### Phase 2: synchronised inspection vertical slice
+- [x] Recorded the Phase 3 scope and architecture in Decision 0018.
+- [x] Kept Workbench Session Contract `0.1.0` unchanged.
+- [x] Added a retained KITTI Tracking session alongside the existing MOT17 session.
+- [x] Limited the catalogue to the two retained evaluation cases.
+- [x] Used the same validation, service and browser architecture for both datasets.
+- [x] Kept all Stage 1 to 3 contracts, evaluation results and WAV files unchanged.
+- [x] Reset dataset specific browser state when switching sessions.
+- [x] Added tests covering catalogue behaviour, routing, session switching and frontend reset.
+- [x] Passed the existing retained evidence integrations and the new KITTI checks.
+- [x] Completed controlled KITTI and cross session browser checks.
+- [x] Verified the main release launch process.
+- [x] Confirmed configuration failures remain free from private path information.
+- [x] Updated the README and supporting project records.
+- [x] Passed the privacy, redistribution and hosted CI checks.
+- [x] Merged the release candidate through PR #38.
 
-- [x] Expose one validated session through a small local inspection API.
-- [x] Display source sequence imagery using runtime media binding.
-- [x] Overlay Stage 1 event geometry without recalculating annotations.
-- [x] Play the verified Stage 2 WAV unchanged.
-- [x] Use one playback clock for media, annotation state and timeline position.
-- [x] Display Stage 1 events, Stage 2 cues and Stage 2 suppressions on the synchronised timeline.
-- [x] Resolve at least one selected cue through cue, source event, source annotation and render log.
-- [x] Display available Stage 3 metrics directly from the verified report.
+Milestone 1 was complete after both retained datasets could be inspected through the same validated workbench architecture.
 
-### Phase 2 acceptance state
+## Milestone 2: Refine and Finalise the Workbench
 
-Issue #35 and Decision 0017 define the slice. The researcher manually completed all twelve browser
-checks against `session-mot17-mot17-02-dpm-3707826663b210c6`. Source imagery rendered after the
-targeted `.viewer-loading[hidden] { display: none; }` correction; geometry, unchanged WAV playback,
-the single audio clock, frame stepping, timeline, trace, metrics, responsive alignment, privacy and
-path-free failures passed. A CSS asset contract test covers the loading-overlay regression. These
-checks are engineering/browser acceptance, not participant, perceptual, usability or accessibility
-evidence. Final-head CI run 105 passed with 266 tests and 5 deselected, and PR #36 merged as
-`f9a3101f4eaef65b55d2efbdc1d8b0beaad489ec`.
+Final researcher inspection identified several presentation and interaction problems that did not change the underlying research evidence. These were corrected before release.
 
-Final local close-out gates on Windows / Python 3.14.3 passed: Ruff clean, frontend JavaScript syntax
-valid, 266 non-integration tests passed with 5 integrations deselected, the Phase 1 retained-chain
-integration passed once in 83.56s and the Phase 2 real-session integration passed once in 34.93s.
+- [x] Recorded the correction scope in Decision 0019.
+- [x] Corrected timeline behaviour at the beginning and end of retained sessions.
+- [x] Aligned selected cue time, source frame and provenance display.
+- [x] Documented and tested the frame timing rules.
+- [x] Displayed stable retained Stage 2 outcomes for events on the current frame.
+- [x] Made EVENT, CUE and SUPPRESS terminology consistent across the interface.
+- [x] Limited direct timeline selection to cue markers.
+- [x] Added complete cue controls for the displayed frame.
+- [x] Displayed the selected cue's technical mapping parameters.
+- [x] Documented the limitation of using bounding box area as an apparent scale input.
+- [x] Recorded researcher acceptance problems without treating them as participant findings.
+- [x] Improved dense timeline performance through caching.
+- [x] Limited source frame processing to frame changes and explicit inspection.
+- [x] Added bounded frame preloading.
+- [x] Made cue ordering deterministic by time, track and cue ID.
+- [x] Treated unresolved evidence as an integrity problem rather than a normal outcome.
+- [x] Removed the fixed limit that previously displayed only the first ten cues on a frame.
+- [x] Confirmed complete cue controls for frames containing zero, one or many cues.
+- [x] Checked the final retained frames for both MOT17 and KITTI.
+- [x] Simplified timeline help and removed redundant interface text.
+- [x] Corrected the displayed time after cue selection, seeking and frame stepping.
+- [x] Made represented video bounding boxes select their exact retained cue.
+- [x] Kept suppressed and anomalous boxes as contextual information rather than playable cues.
+- [x] Added keyboard interaction for represented video boxes.
+- [x] Passed the final 16 browser checks in Firefox and Chrome for both datasets.
+- [x] Passed the final privacy and frozen research scope checks.
+- [x] Passed final hosted CI and post merge `main` CI.
+- [x] Merged Milestone 2 through PR #40.
 
-**Stage 4 Milestone 1 Phases 1-2 complete; Phase 3 close-out recorded below.**
+## Stage 4 Completion
 
-### Phase 3: cross-dataset completion and release preparation
+Stage 4 completed the inspection artefact without changing the research outputs generated during Stages 1 to 3.
 
-- [x] Freeze the Phase 3 architecture and scope in Decision 0018.
-- [x] Retain Workbench Session Contract `0.1.0` unchanged.
-- [x] Declare one path-free retained real KITTI Tracking session.
-- [x] Expose only the retained MOT17 and KITTI sessions through bounded catalogue/lookup behaviour.
-- [x] Use the same validated-session, inspection-model, loopback-service and browser-client path for
-      both dataset families.
-- [x] Preserve Stage 1-3 contracts, canonical results and exact retained WAV bytes unchanged.
-- [x] Reset all dataset-dependent browser state when session selection changes.
-- [x] Add focused catalogue, routing, frontend-reset and cross-dataset automated tests.
-- [x] Pass existing Phase 1 and Phase 2 private integrations plus a new KITTI/cross-dataset gate.
-- [x] Complete controlled KITTI and cross-session browser acceptance.
-- [x] Verify the primary release launch and path-free configuration failures.
-- [x] Reconcile README, launch/evidence documentation, project plan, progress log and risk register.
-- [x] Pass the Phase 3 privacy/redistribution audit and final-head hosted CI.
-- [x] Merge the focused PR, close Issue #37 and pass post-merge `main` CI.
-- [x] Record release-candidate merge `3c23a6b518fd33b1542145da06ab1939c7d676dc` and mark Stage 4
-      Milestone 1 complete.
-
-**Stage 4 Milestone 1 complete; Stage 4 remains active.**
-
-### Milestone 2: inspection corrections and final release refinement
-
-- [x] Audit clean `main` and record starting SHA `799c5ef95d42040d05c2b7d7a757ec765b6d382c`.
-- [x] Characterise the boundary provenance defect and verify retained backend traces.
-- [x] Freeze the correction architecture and research boundary in Decision 0019.
-- [x] Stabilise clamped start/end timeline windows and boundary cue controls.
-- [x] Align selected cue time, source frame and provenance without changing timestamps.
-- [x] Document/test half-open frame timing and display frame structure distinctly from the cursor.
-- [x] Project stable retained Stage 2 outcomes for source-frame events.
-- [x] Reconcile overlay and EVENT/CUE/SUPPRESS terminology.
-- [x] Make only cue markers selectable and expose complete frame-scoped cue controls.
-- [x] Expose selected-cue technical parameters and the technical baseline mapping accurately.
-- [x] Record the bounding-box-area limitation and retain R20 without redesigning audio.
-- [x] Record the failed first researcher acceptance without treating it as perceptual evidence.
-- [x] Profile playback work and cache dense static timeline drawing outside the display-rate path.
-- [x] Restrict source-frame work to frame transitions/explicit inspection and bound preloading.
-- [x] Make cue controls deterministic by time, track and cue ID without selection reordering.
-- [x] Present unresolved evidence as an integrity anomaly, not a normal Stage 2 category.
-- [x] Pass focused, complete-suite and all retained private integration gates.
-- [x] Remove fixed-count cue truncation and project all retained cues on the displayed frame.
-- [x] Cover zero-, one- and multi-cue frames plus retained final frames 599 and 153.
-- [x] Move lane detail behind accessible help and remove the redundant legend lead-in.
-- [x] Record the second researcher acceptance findings without treating them as perceptual evidence.
-- [x] Record the mostly passed third researcher acceptance and remaining transport/video-box work.
-- [x] Synchronise numeric transport presentation on explicit cue, seek and frame-step actions.
-- [x] Make represented video boxes select their exact retained cue through the common interaction.
-- [x] Keep suppressed/anomaly video boxes contextual and add represented-box keyboard operation.
-- [x] Pass final focused 16-check Firefox/Chrome, two-dataset browser acceptance.
-- [x] Pass the Milestone 2 privacy and frozen-research-scope audit.
-- [x] Pass final-head hosted CI.
-- [x] Merge the focused PR and pass post-merge `main` CI.
-- [x] Record Milestone 2 merge `b6c8310c9f8a731d2ef374e725ba6f99342e85e1` and mark Milestone 2 complete.
-
-**Stage 4 Milestone 2 complete; Stage 4 complete.**
-
-## Scope boundary
-
-Stage 4 assembles and presents existing research outputs. It does not redefine parsing, event
-normalisation, cue mapping, rendering or the Stage 3 technical-evaluation contract. No participant,
-accessibility, usability, navigation, perceptual-effectiveness or safety conclusion is introduced by
-this stage.
+The final workbench can:
+- inspect retained MOT17 and KITTI Tracking sessions
+- display source frames and recorded bounding boxes
+- play the retained generated WAV
+- show synchronised event, cue and suppression records
+- trace cues and suppressions back to their source events
+- display retained technical evaluation results
+- switch between the two retained dataset cases
+- verify the evidence chain before displaying a session

@@ -1,50 +1,95 @@
-# 0006: Provisional Common Event Schema v0.1.0
+# 0006: Initial Common Event Schema
 
 ## Status
 
-Superseded for current adapter output by Decision 0008 and schema version `0.2.0`. Version `0.1.0`
-remains a historical Stage 1 Milestone 1 contract.
+Superseded by Decision 0008 and common event schema `0.2.0`.
+
+Schema `0.1.0` remains part of the Stage 1 development history.
 
 ## Context
 
-MOT17 and KITTI Tracking expose different annotation fields and indexing conventions. Both dataset parsers require one representation that later sonification and evaluation components can consume without dataset-specific logic.
+MOT17 and KITTI Tracking use different annotation formats and indexing rules.
 
-The representation must preserve provenance, support deterministic processing and remain realistic for the MSc scope. A synthetic fixture can test the structure and calculations. It cannot demonstrate full compatibility with both real datasets.
+Both datasets therefore need to be converted into one shared event structure before later sonification and evaluation stages can process them consistently.
+
+The common structure must:
+
+* preserve provenance
+* support deterministic processing
+* remain simple enough for the MSc project
+* support both JSON and CSV output
+
+A synthetic fixture can test the structure and calculations, but it cannot prove that the schema works correctly with both real datasets.
 
 ## Decision
 
-The initial common event schema will:
+The initial common event schema will use a flat JSON record.
 
-- use a flat JSON record to support straightforward JSON and CSV export;
-- use semantic version `0.1.0` while the structure remains provisional;
-- use a zero-based common `frame` and a seconds-based `timestamp`;
-- represent bounding boxes as top-left `x`, `y`, `width`, `height` values in pixels;
-- store source and common object classes separately;
-- include derived centre and area values in pixel and normalised forms;
-- permit unavailable confidence and visibility values to be `null` rather than fabricated;
-- generate deterministic event identifiers from stable source attributes;
-- preserve source file, source hash, source row, parser and conversion information; and
-- retain dataset-specific values in `metadata` when they do not belong in the shared core.
+It will include:
 
-Normalised centre coordinates will not be restricted to `[0, 1]`. Truncated or out-of-frame annotations may legitimately extend beyond image boundaries. These values will be reported as validation warnings.
+* zero based `frame`
+* timestamp in seconds
+* bounding box `x`, `y`, `width` and `height`
+* native object class
+* common object class
+* centre coordinates
+* bounding box area
+* normalised centre and area values
+* confidence where available
+* visibility where available
+* deterministic event ID
+* source file
+* source hash
+* source row
+* parser information
+* conversion information
+* dataset specific metadata
+
+Unavailable confidence and visibility values are stored as `null` rather than estimated.
+
+Event IDs are generated from stable source information so repeated processing produces the same identifiers.
+
+Dataset specific information that does not belong in the common structure is retained in `metadata`.
+
+## Geometry Handling
+
+Normalised centre coordinates are allowed to fall outside `[0, 1]`.
+
+Some tracking annotations contain objects that extend beyond the image boundaries.
+
+These records are retained rather than clipped or rejected automatically.
+
+The condition is reported as a validation warning.
 
 ## Rationale
 
-A flat record was selected to keep the parser contract and later tabular exports straightforward. Explicit derived fields allow the values used by sonification to be inspected and tested independently. Provenance fields allow each event to be traced to the annotation and conversion process that produced it.
+A flat record keeps the interface between dataset adapters and later processing stages simple.
 
-The provisional version is retained because one synthetic event is not sufficient evidence that the schema fully supports MOT17 and KITTI Tracking.
+It also makes JSON and CSV export easier.
+
+Explicit centre and area fields make the values later used for sonification visible and testable.
+
+Provenance fields make it possible to trace each common event back to the original annotation and conversion process.
+
+Schema version `0.1.0` remains provisional because a synthetic example alone is not enough to demonstrate compatibility with both MOT17 and KITTI Tracking.
 
 ## Consequences
 
-- Each dataset parser must produce the documented common fields.
-- The schema version, documentation, fixture and tests must be updated together when the structure changes.
-- The schema must be reviewed against real MOT17 and KITTI Tracking rows before version `1.0.0` is declared stable.
-- The synthetic fixture may support claims about the schema contract and calculations only. It does not demonstrate that either dataset parser is correct.
-- Sonification filtering and cue settings will remain outside the common event schema.
+* Each dataset adapter must produce the same documented common fields.
+* Schema documentation, tests and fixtures must be updated together when the structure changes.
+* The schema must be tested against real MOT17 and KITTI annotations before being considered stable.
+* Synthetic tests provide evidence about the schema structure and calculations only.
+* They do not prove that either real dataset adapter is correct.
+* Sonification rules and suppression policies remain outside the common event schema.
 
-## KITTI review outcome
+## KITTI Review Outcome
 
-Real KITTI Tracking evidence confirmed that the structure supports both adapters. The optional
-KITTI result score is not constrained to `[0,1]`, so the 0.1.0 confidence range could not preserve
-all legal values. Decision 0008 introduces schema 0.2.0 with only that validation constraint
-relaxed. The schema remains pre-1.0 pending Stage 1 output and quality-gate work.
+Testing with real KITTI Tracking records confirmed that the common event structure could support both datasets.
+
+However, KITTI optional scores are not necessarily limited to `[0, 1]`.
+
+Schema `0.1.0` therefore could not preserve every valid KITTI score without changing its meaning.
+
+Decision 0008 introduced schema `0.2.0`, which keeps the same structure but relaxes the confidence restriction.
+
+The schema remained below version `1.0.0` until the remaining Stage 1 output and validation work was complete.

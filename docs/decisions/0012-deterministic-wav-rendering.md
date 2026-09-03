@@ -1,49 +1,123 @@
-# 0012: Deterministic WAV Rendering Policy
+# 0012: Deterministic Audio Rendering
 
 ## Status
 
-Accepted for Stage 2 Milestone 2 on 5 August 2026 and merged through PR #22 after successful CI.
-Real MOT17 and KITTI Tracking repeat-run evidence closed Stage 2 on 6 August 2026.
+Accepted for Stage 2 Milestone 2 on 5 August 2026.
+
+The implementation passed CI and was merged through PR #22.
+
+Repeat runs using MOT17 and KITTI Tracking completed Stage 2 on 6 August 2026.
 
 ## Context
 
-Milestone 1 produces verified, deterministic cue schedules but deliberately assigns no audio
-semantics to rendering. Audio output now needs an inspectable versioned configuration, exact
-sample-placement and PCM policies, traceability to cues/events, and stable content identities.
-Technical reproducibility must remain separate from future perceptual or participant evaluation.
+Stage 2 Milestone 1 produces verified and deterministic cue schedules.
+
+The next step is to convert those cues into audio in a way that is repeatable, traceable and easy to inspect.
+
+The renderer therefore needs:
+
+* a versioned configuration
+* exact time to sample conversion
+* fixed audio generation rules
+* links back to cues and source events
+* deterministic output identities
+
+Technical repeatability must remain separate from any future participant or perceptual evaluation.
 
 ## Decision
 
-- Introduce renderer schema/configuration `0.1.0` and validate it with structured stable codes.
-- Verify all Milestone 1 package files, hashes, identities, counts, projections, ordering, preset
-  identity and cue parameters before synthesis.
-- Convert time using decimal half-up; make cue ends exclusive; force a positive cue to at least one
-  sample; and apply the same conversion to envelopes and trailing silence.
-- Use fixed zero phase, sine synthesis, linear attack/release and linear-balance pan. Preserve but
-  do not apply the Milestone 1 class modifier under an explicit policy.
-- Process cues by start sample then cue ID, sum overlaps, apply master gain, and add one global gain
-  only when the configured peak target would otherwise be exceeded.
-- Quantise after mixing/gain using signed full-scale PCM16, half-away-from-zero rounding, clamping,
-  little-endian bytes and left/right interleaving.
-- Write a minimal metadata-free WAV plus canonical render log and metadata beneath a content-derived
-  audio run ID. A verified empty schedule produces a zero-frame WAV.
-- Record only deterministic logical provenance and output hashes; exclude execution time, physical
-  paths, randomness and machine identity.
+Renderer configuration `0.1.0` is introduced and validated using stable error codes.
+
+Before audio is generated, the renderer checks:
+
+* cue package files
+* hashes
+* package identities
+* counts
+* ordering
+* preset identity
+* cue parameters
+
+## Sample Placement
+
+Cue times are converted to audio samples using decimal half up rounding.
+
+Cue end samples are exclusive.
+
+Any positive cue duration must produce at least one audio sample.
+
+The same conversion rules are used for envelopes and trailing silence.
+
+## Audio Generation
+
+The renderer uses:
+
+* sine wave synthesis
+* fixed zero phase
+* linear attack and release
+* linear stereo pan
+
+The Stage 2 class modifier is retained for traceability but does not affect the waveform in renderer version `0.1.0`.
+
+Cues are processed in a stable order based on start sample and cue ID.
+
+Overlapping cues are summed.
+
+Master gain is then applied.
+
+If the result exceeds the configured peak target, one global gain adjustment is applied to the complete output.
+
+## PCM16 Output
+
+Audio is converted to PCM16 only after mixing and gain have been applied.
+
+The conversion uses:
+
+* signed PCM16 values
+* half away from zero rounding
+* clamping to the valid PCM16 range
+* little endian byte order
+* left and right channel interleaving
+
+## Output Files
+
+The renderer produces:
+
+* a minimal WAV file
+* a canonical render log
+* renderer metadata
+
+These outputs are stored beneath a content based audio run ID.
+
+A valid empty cue schedule produces a zero frame WAV rather than an error.
+
+Only deterministic provenance and output hashes are recorded.
+
+Execution time, physical file paths, random values and machine identity are excluded from the output identity.
 
 ## Rationale
 
-These policies make each conversion boundary explicit and independently testable. Global peak
-limiting preserves overlap relationships better than per-cue clipping, while reporting its gain.
-Minimal RIFF output avoids optional chunks whose content can vary. Keeping renderer configuration
-separate from the cue preset avoids redesigning or silently changing Milestone 1 mapping.
+These rules make each stage of audio generation explicit and testable.
+
+Using one global gain adjustment preserves the relative balance between overlapping cues better than clipping individual cues separately.
+
+The applied gain is also recorded.
+
+A minimal WAV structure avoids optional metadata that could introduce unnecessary differences between repeated files.
+
+Keeping renderer configuration separate from the cue mapping preset also prevents audio rendering changes from silently changing the Stage 2 mapping rules.
 
 ## Consequences
 
-- Configuration changes alter configuration and audio run identities and require a version review.
-- The class modifier remains trace-only until a later policy assigns it audio meaning.
-- Floating-point sine and mixing bytes are claimed repeatable only in environments actually tested;
-  broader platform equivalence requires separate evidence.
-- The baseline is a technical reference, not evidence of accessibility or perceptual quality.
-- Stage 3 metrics and participant evaluation remain outside this milestone.
-- Close-out evidence establishes byte identity on Windows 10.0.26200, AMD64 and Python 3.14.3;
-  it does not broaden the cross-platform claim.
+* Changes to renderer configuration change the configuration and audio run identities.
+* Significant renderer changes require a version review.
+* The class modifier remains traceability information only in version `0.1.0`.
+* Audio byte repeatability is claimed only for environments that were actually tested.
+* Cross platform byte identity is not established.
+* The baseline renderer is a technical reference rather than evidence of perceptual quality or accessibility.
+* Stage 3 technical evaluation remains separate from audio generation.
+* Participant evaluation remains outside Stage 2.
+
+Stage 2 close out confirmed byte identical repeated audio output on Windows `10.0.26200`, AMD64 and Python `3.14.3`.
+
+This evidence applies only to that recorded environment.
