@@ -71,7 +71,7 @@ The bounded dataset cases used in the completed technical evaluation are:
 | Marker documentation route | [`docs/README.md`](docs/README.md) |
 | Workbench source code | [`src/event_sonification_workbench/`](src/event_sonification_workbench/) |
 | Canonical technical evaluation evidence | [`docs/evaluation/evidence/`](docs/evaluation/evidence/) |
-| Report-ready tables and figures | [`docs/evaluation/reporting/`](docs/evaluation/reporting/) |
+| Report-ready summary and tables | [`docs/evaluation/reporting/`](docs/evaluation/reporting/) |
 | Technical evaluation contract | [`docs/evaluation/technical-evaluation-contract-v0.1.0.md`](docs/evaluation/technical-evaluation-contract-v0.1.0.md) |
 | Common event schema and adapter contracts | [`docs/data-model/common-event-schema.md`](docs/data-model/common-event-schema.md) |
 | Sonification and rendering contract | [`docs/data-model/sonification-and-rendering.md`](docs/data-model/sonification-and-rendering.md) |
@@ -158,7 +158,7 @@ The repository contains the material needed to inspect the implementation and it
 - fixed public/synthetic test fixtures;
 - automated tests;
 - canonical Stage 3 technical evaluation reports;
-- audited report-ready tables and figures;
+- audited report-ready summary and tables;
 - consolidated technical documentation;
 - design decisions and project-management evidence; and
 - path-free retained workbench session declarations.
@@ -382,7 +382,7 @@ The implementation uses:
 - sample-level rendering logs;
 - manual-oracle and injected-fault evaluation tests;
 - repeat-run package, audio and report comparisons; and
-- audited links between canonical results and dissertation tables/figures.
+- deterministic reporting derivatives with source and generated-file hashes.
 
 Detailed evidence is retained under [`docs/evaluation/`](docs/evaluation/) and [`docs/project-management/`](docs/project-management/), with final technical contracts under [`docs/data-model/`](docs/data-model/).
 
@@ -392,11 +392,9 @@ It records Windows on AMD64, CPython 3.14.3, jsonschema 4.26.0, pytest 9.1.1 and
 The byte identity claim is limited to that recorded environment. CI separately exercises the public
 test path on Python 3.11.
 
-The retained reporting package records generator commit
-`21f8cfb163935bce3faf899eefbdaf1a224ceee4`. To reproduce its exact retained bytes, pass that value
-through `generate-stage3-report-evidence --generator-commit`. Omitting the option selects the commit
-that most recently changed the generator and therefore changes the manifest identity even when the
-derived values are unchanged.
+The compact reporting manifest records the source-report hashes, retained values, claim boundaries,
+generator identity and hashes of the readable reporting files. Its README gives the exact rebuild
+command used for the retained package.
 
 ## Hosted Deployment
 

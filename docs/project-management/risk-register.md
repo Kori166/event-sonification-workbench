@@ -18,7 +18,7 @@
 | R14 | Floating-point oscillator or mixing implementations differ at a PCM quantisation boundary on another runtime/platform | Medium | Medium | Pin renderer/policy versions, record tested environments and hashes, avoid unsupported cross-platform claims, and add cross-platform evidence before making one. | Open; Stage 2 audio and Stage 3 reports repeat exactly only in their recorded Windows/AMD64/Python 3.14.3 environments; broader-platform evidence remains absent |
 | R15 | A technical metric implementation appears plausible but uses the wrong denominator, boundary or percentile rule | Low | High | Freeze formulas before real-data use and compare every result with a manually calculated synthetic oracle plus fault cases. | Reduced by contract `0.1.0`, Decision 0013, 26 focused oracle tests and unchanged real-data application; retain the golden gate |
 | R16 | Private paths or prohibited full-data derivatives enter committed evaluation evidence | Low | High | Keep full chains/inputs/WAVs ignored, commit only bounded reports/manifests/summaries, and scan every object and final diff for path markers. | Reduced; canonical and report-ready generators reject private path shapes, generated evidence reports zero matches and the final branch scan remains mandatory |
-| R17 | Dissertation tables, figures or prose drift from canonical technical evidence through copying, rounding or denominator changes | Low | High | Generate presentation derivatives from canonical reports, retain raw values and JSON Pointers, audit every displayed value and maintain a claim-to-evidence matrix. | Reduced; 134 values, 136 table cells, 20 figure data points and 12 claims passed automated and independent audits with zero remaining mismatch |
+| R17 | Dissertation tables or prose drift from canonical technical evidence through copying, rounding or denominator changes | Low | High | Generate concise reporting derivatives from hash-checked canonical reports; retain exact values and claim boundaries in a compact manifest; verify calculations, displayed table values and generated-file hashes. | Reduced; the final seven-file package passed source, value, calculation, claim-boundary, private-path, hash and repeat-generation checks with zero remaining mismatch |
 | R18 | The Stage 4 inspection layer bypasses or weakens Stage 1-3 package validation and presents mismatched evidence as one session | Low | High | Freeze Workbench Session Contract `0.1.0`, reuse the verified cross-stage chain checks, compare declared hashes/identities and reject invalid sessions before UI rendering. | Reduced; both retained dataset sessions pass the same validator/model path before immutable catalogue exposure |
 | R19 | Runtime dataset/output paths, usernames or machine-specific state leak into session identities or frontend diagnostics | Low | High | Keep runtime roots outside the deterministic session payload, resolve only safe logical children and return machine-readable path-free diagnostics. | Reduced; bounded session lookup, scoped MOT17/KITTI projections and the final Phase 3 repository audit are path-free |
 | R20 | A browser demonstration is mistaken for participant or perceptual validation | Medium | High | Define the UI as a read-only inspection and demonstration layer, source Stage 3 metrics from verified reports only and retain explicit evidence-boundary wording in documentation and presentation. | Open and controlled; informal researcher inspection found dense overlapping cues difficult to distinguish, but no participant or perceptual evaluation has been conducted and the canonical audio remains unchanged |
@@ -26,15 +26,16 @@
 
 ## Review
 
-Last reviewed: 18 August 2026, during Stage 4 Milestone 2 close-out.
+Last reviewed: 3 September 2026, during the final reporting-evidence clean-up.
 
 R9 remains an explicit redistribution limitation. R4 is reduced by real technical values but those
 values are not perceptual evidence. R5 and R15 are reduced by the frozen manual oracle and unchanged
 real-data gate. R13 is reduced by complete real-data schedule-to-audio repeat evidence. R14 records
 the deliberately bounded cross-platform claim and remains open. R16 is reduced by ignored storage,
 hash manifests, generator validation and path scans, all of which remain mandatory. R17 is reduced
-by the deterministic reporting build and separate manual audit; those controls must remain active
-when material is transferred into the dissertation.
+by deterministic generation from hash-checked reports, a compact result and claim manifest, and a
+separate reporting check; those controls must remain active when material is transferred into the
+dissertation.
 
 Stage 4 adds R18-R21. Post-merge review of PR #28 showed that R18 also includes runtime package-layout
 compatibility: a valid verification design is insufficient if retained packages cannot be resolved

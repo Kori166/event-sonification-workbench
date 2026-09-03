@@ -24,8 +24,8 @@ and direct implementation map.
 4. [`evaluation/stage-3-real-data-traceability-audit.md`](evaluation/stage-3-real-data-traceability-audit.md)
    documents the end to end traceability audit.
 5. [`evaluation/evidence/`](evaluation/evidence/) contains canonical retained reports and manifests.
-6. [`evaluation/reporting/README.md`](evaluation/reporting/README.md) explains the audited reporting
-   derivatives, tables and figures.
+6. [`evaluation/reporting/README.md`](evaluation/reporting/README.md) explains the concise audited
+   reporting summary, tables and manifest.
 
 These records contain technical case study evidence only. They do not establish accessibility,
 usability, navigation, listener comprehension or safety outcomes.
