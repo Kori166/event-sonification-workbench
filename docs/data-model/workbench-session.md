@@ -160,6 +160,8 @@ Once opened, the workbench provides read-only access to retained evidence includ
 - retained suppression reasons;
 - retained technical evaluation metrics.
 
+During playback, the retained audio time is the single live synchronisation clock. Source-frame selection, timeline position and playback presentation are derived from that time rather than advancing through independent timers.
+
 The workbench therefore acts as an inspection layer over previously generated evidence rather than as another processing stage.
 
 ## Reproducibility Boundary
