@@ -6,7 +6,7 @@
 | Cue count | cues | 26,960 | 711 |
 | Cues per second | cues/second | 1342.18 | 46.11 |
 | Cues per minute | cues/minute | 80531.03 | 2766.54 |
-| Maximum starts within one second | cue starts; half-open window | 1,500 | 116 |
+| Maximum starts within one second | cue starts with half-open window | 1,500 | 116 |
 | Peak concurrency | cues | 203 | 24 |
 | Overlap duration | seconds | 20.086667 | 15.420000 |
 | Overlap proportion | rendered duration | 100.00% | 100.00% |

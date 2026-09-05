@@ -1,20 +1,19 @@
-# Synthetic common-event fixture
+# Synthetic Common Event fixture
 
 ## Purpose
 
 This fixture demonstrates that one manually constructed annotation can be represented by the
-common event shape and validated deterministically. It now declares schema `0.2.0`; the fixture
-values are unchanged from the historical `0.1.0` contract.
+common event shape and validated deterministically. It now declares schema `0.2.0`. The fixture values are unchanged from the historical `0.1.0` contract.
 
 The fixture is synthetic and contains no copied MOT17 or KITTI Tracking content. It is not evidence
-of either dataset parser; each adapter has separate fixture and private-integration coverage.
+of either dataset parser as each adapter has separate fixture and private-integration coverage.
 
 ## Files
 
 - `source_annotation.csv`: one hand-authored source annotation.
 - `expected_event.json`: the expected manually normalised event for that source row.
 
-## Source and selection method
+## Source and Selection Method
 
 The source row was created specifically for this test. The values allow each transformation to be checked manually while exercising time, identity, class, geometry, quality and provenance fields.
 
@@ -22,7 +21,7 @@ The SHA-256 digest of `source_annotation.csv` is:
 
 `5e32570210ebb652e6fcfa943664209007dff58aecc178b1af37c6c5db5db5e4`
 
-## Manual transformation record
+## Manual Transformation Record
 
 | Output field | Calculation or decision | Result |
 |---|---|---|

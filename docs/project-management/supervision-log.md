@@ -73,8 +73,7 @@ Complete.
 
 **Main topics**
 
-- Alignment of the final report with the marking criteria, a clear and focused viva, and review of
-  the artefact and project progress.
+- Alignment of the final report with the marking criteria, a clear and focused viva, and review of the artefact and project progress.
 
 **Feedback**
 
@@ -95,4 +94,4 @@ Complete.
 
 **Status**
 
-Report review complete; viva preparation ongoing.
+Report review complete and viva preparation is ongoing.

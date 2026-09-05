@@ -24,7 +24,7 @@ alignment, traceability and reproducibility?
 | 2. Sonification | Map validated events into cues and render deterministic audio | Baseline preset, cue and suppression records, PCM WAV renderer, traceability logs, repeated real-data chains and [Stage 2 checklist](stage-2-checklist.md) | Complete, 6 August 2026 |
 | 3. Technical Evaluation | Evaluate retained outputs using the technical contract | Synthetic oracle, two real-data reports, repeat comparisons, concise audited reporting tables, compact claim boundaries and [Stage 3 checklist](stage-3-checklist.md) | Complete, 6 August 2026 |
 | 4. Artefact Assembly, Validation and Release | Assemble and validate the read-only inspection workbench without changing the research pipeline | Retained session contract, two-session catalogue, inspection service, browser interface, technical browser acceptance, release checks and [Stage 4 checklist](stage-4-checklist.md) | Complete, 18 August 2026 |
-| 5. Reporting and Viva Preparation | Prepare the dissertation, artefact submission material and focused viva explanation | Final report candidate, artefact documentation, evidence reconciliation and viva preparation | Report and artefact prepared for submission; viva preparation ongoing |
+| 5. Reporting and Viva Preparation | Prepare the dissertation, artefact submission material and focused viva explanation | Final report candidate, artefact documentation, evidence reconciliation and viva preparation | Report and artefact prepared for submission. The viva preparation is ongoing |
 
 Completion dates above are supported by the [progress log](progress-log.md) and stage
 checklists. They record completion of the defined stage gates rather than a claim that later
@@ -41,17 +41,17 @@ maintenance or presentation refinement could not occur.
 | Technical evaluation completed | The contract, synthetic oracle, audited reporting evidence and bounded RQ3 findings passed the Stage 3 gate | Complete, 6 August 2026 |
 | Two retained dataset cases evaluated | MOT17-02-DPM and KITTI Tracking sequence 0000 were evaluated as bounded case studies | Complete, 6 August 2026 |
 | Inspection workbench completed | Both retained sessions passed headless, integration and researcher-controlled technical browser checks | Complete, 18 August 2026 |
-| Submission and viva preparation | The report and artefact were prepared for submission; final submission remains researcher controlled and viva preparation continues | In progress |
+| Submission and viva preparation | The report and artefact were prepared for submission and final submission remains researcher controlled and viva preparation continues | In progress |
 
 ## Working Method
 
 Development used bounded iterative stages supported by:
 
-- GitHub Issues and pull requests for scoped implementation and review;
-- automated tests, including configured real-data integration tests;
-- versioned technical contracts and configuration;
-- the [progress log](progress-log.md) and stage checklists;
-- verified [supervision feedback](supervision-log.md); and
+- GitHub Issues and pull requests for scoped implementation and review
+- automated tests, including configured real-data integration tests
+- versioned technical contracts and configuration
+- the [progress log](progress-log.md) and stage checklists
+- verified [supervision feedback](supervision-log.md)
 - significant methodological and technical [decision records](../decisions/).
 
 Issues, pull requests and commits retain lower-level engineering history. This plan records the final
@@ -62,23 +62,18 @@ criteria.
 
 The completed project is bounded to:
 
-- MOT17 and KITTI Tracking, with one retained sequence from each used for technical evaluation;
-- one common event schema and dataset-specific adapters;
-- one baseline mapping, cue and suppression policy;
-- one deterministic PCM WAV renderer;
-- technical evaluation of coverage, alignment, traceability, density, overlap and repeatability;
-- same-environment repeatability rather than cross-platform byte identity; and
-- a read-only workbench for inspecting retained evidence.
+- MOT17 and KITTI Tracking, with one retained sequence from each used for technical evaluation
+- one common event schema and dataset-specific adapters
+- one baseline mapping, cue and suppression policy
+- one deterministic PCM WAV renderer
+- technical evaluation of coverage, alignment, traceability, density, overlap and repeatability
+- same environment repeatability rather than cross-platform byte identity
+- a read only workbench for inspecting retained evidence.
 
-The project does not include a participant study and does not establish accessibility, usability,
-navigation, perceptual effectiveness or safety. It does not claim compatibility with every annotated
-video dataset or validate the workbench as assistive technology.
+The project does not include a participant study and does not establish accessibility, usability, navigation, perceptual effectiveness or safety. It does not claim compatibility with every annotated video dataset or validate the workbench as assistive technology.
 
 ## Final Status
 
-The research implementation, technical evaluation and read-only workbench are complete. The final
-report and artefact are prepared for submission. Repository records retain the technical
-evidence, explicit scope limits and the project history.
+The research implementation, technical evaluation and read only workbench are complete. The final report and artefact are prepared for submission. Repository records retain the technical evidence, explicit scope limits and the project history.
 
-Final submission is not recorded as complete because no repository evidence confirms that it has
-occurred. Viva preparation remains ongoing.
+Final submission is not recorded as complete because no repository evidence confirms that it has occurred. Viva preparation remains ongoing.

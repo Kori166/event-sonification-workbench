@@ -8,5 +8,4 @@ them as UTF-8 text and normalises universal newlines to LF so the review identit
 checks out Markdown with platform-native line endings. All other content remains byte-sensitive.
 
 The fixture is project-authored and contains no MOT17, KITTI, private path or media content. The
-repeated package/configuration hash strings inside `input.json` are deliberate test identities;
-only the SHA-256 values in `manifest.json` claim canonical reviewed fixture-text identity.
+repeated package/configuration hash strings inside `input.json` are deliberate test identities. Only the SHA-256 values in `manifest.json` claim canonical reviewed fixture-text identity.

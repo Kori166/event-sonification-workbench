@@ -13,9 +13,9 @@ absent from every committed file.
 
 The selection algorithm scans the source file in row order and records:
 
-1. the first row for every native class present in sequence `0000`;
-2. the first row for every distinct `(truncation, occlusion)` pair present; and
-3. the sorted union of those rows, with duplicate selections removed.
+1. the first row for every native class present in sequence `0000`
+2. the first row for every distinct `(truncation, occlusion)` pair present
+3. the sorted union of those rows, with duplicate selections removed
 
 This produces 12 rows: `1, 3, 4, 5, 25, 31, 48, 52, 286, 310, 601, 629`. The rows span frames 0
 to 112, tracks `-1`, 0, 1, 2, 3 and 5, and the native classes `DontCare`, `Van`, `Cyclist`,

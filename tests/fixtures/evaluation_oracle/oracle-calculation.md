@@ -1,4 +1,4 @@
-# Manually Calculated Technical-Evaluation Oracle
+# Manually Calculated Technical Evaluation
 
 ## Construction
 
@@ -22,10 +22,10 @@ implementing the evaluator.
 There are five valid events, four eligible events, four unique represented events, one suppressed
 event and no misses. Therefore:
 
-- eligible coverage = `4/4 = 1`;
-- source representation = `4/5 = 0.8`;
-- suppression = `1/5 = 0.2`;
-- accounting completeness = `5/5 = 1`; and
+- eligible coverage = `4/4 = 1`
+- source representation = `4/5 = 0.8`
+- suppression = `1/5 = 0.2`
+- accounting completeness = `5/5 = 1`
 - missed eligible = `0/4 = 0`.
 
 The fault `eligible_missed_event` removes cue 5 and its render entry. Its expected eligible
@@ -42,10 +42,10 @@ coverage is `3/4 = 0.75`, accounting completeness is `4/5 = 0.8`, and missed eli
 | 4 | event 4 | `[2.0,2.5)` | `[20,25)` | cue 3 touches, not overlaps |
 | 5 | event 5 | `[2.25,2.75)` | `[23,28)` | `2.25*10=22.5`, half-up to 23 |
 
-Scheduling errors in seconds are `[0,0.5,0,0,0]`; in rounded samples they are `[0,5,0,0,0]`.
+Scheduling errors in seconds are `[0,0.5,0,0,0]`. In rounded samples they are `[0,5,0,0,0]`.
 Their summaries are count 5, min 0, max 0.5/5, mean 0.1/1, median 0 and p95 0.5/5.
 
-Render-placement errors in seconds are `[0,0,0,0,0.05]`: cue 5 is physically at 2.3 s after
+Render-placement errors in seconds are `[0,0,0,0,0.05]`. Cue 5 is physically at 2.3 s after
 correct half-up quantisation. Integer placement errors are all zero because every rendered start
 equals the correctly rounded scheduled start. Seconds summary: count 5, min 0, max 0.05, mean
 0.01, median 0, p95 0.05. Sample summary: count 5 and every statistic 0.
@@ -82,7 +82,7 @@ starts contain at most two starts: `[0,1)` has cues 1 and 2, while the cue at 1 
 
 Every cue resolves to the expected event, source file/row, preset, schedule entry, render entry,
 cue-package/renderer identity and supplied WAV identity. Each of the four cue traceability rates is
-`5/5 = 1`; suppression traceability is `1/1 = 1`; broken-link groups are empty.
+`5/5 = 1`. Suppression traceability is `1/1 = 1`. Broken-link groups are empty.
 
 The supplied repeat evidence makes semantic, byte, audio and configuration results true. This is a
 synthetic same-process test only and is not cross-environment evidence. Empty input has zero counts,
@@ -91,5 +91,4 @@ null duration-based rates plus the `zero_duration_timeline` warning.
 
 After reviewing the assembled report against every calculation above, the frozen evaluation run ID
 is `evaluation-synthetic-evaluation_oracle-e1ee06d3a671ee1b`. Its non-recursive canonical payload
-hash is `302b97643f1f39b4adee63c9e78bc053640b8d6c4d56f818ad1e6896bb82cb21`; the final canonical
-report-byte SHA-256 is `b5bcf1fc39987dfd7b61475e67d075312bd060f6dfb8adf2fa3f8300badaf908`.
+hash is `302b97643f1f39b4adee63c9e78bc053640b8d6c4d56f818ad1e6896bb82cb21`. The final canonical report-byte SHA-256 is `b5bcf1fc39987dfd7b61475e67d075312bd060f6dfb8adf2fa3f8300badaf908`.

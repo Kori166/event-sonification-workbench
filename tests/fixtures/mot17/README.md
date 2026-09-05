@@ -35,9 +35,7 @@ The metadata-file SHA-256 is
 
 ## Licence decision
 
-The official MOTChallenge website states that datasets provided on the site are published under the
-Creative Commons Attribution-NonCommercial-ShareAlike 3.0 licence. This permits redistribution for
-non-commercial use when attribution is provided and adaptations use the same licence.
+The official MOTChallenge website states that datasets provided on the site are published under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 licence. This permits redistribution for non-commercial use when attribution is provided and adaptations use the same licence.
 
 The 12-row extract is committed for non-commercial academic testing. Attribution and licence links
 are recorded in `dataset-derived/NOTICE.md`. Images and complete annotation files are not included.
@@ -62,7 +60,7 @@ out-of-frame warnings under parser version `0.1.0`.
 - Parser: `mot17_gt` version `0.1.0`.
 - Fixture generator: version `0.1.0`.
 - Class mapping: `mot17.v0.1.0.json`.
-- Common schema: `0.2.0` (same event shape; KITTI review relaxed the confidence range).
+- Common schema: `0.2.0` (same event shape, KITTI review relaxed the confidence range).
 
 ## Manual transformation example
 
@@ -82,11 +80,9 @@ python -m event_sonification_workbench.cli mot17-fixture \
   --output .local-fixtures/mot17
 ```
 
-The command verifies the original source and metadata hashes, selects only the declared physical
-lines, preserves source order, writes LF-terminated annotation rows, and verifies the generated
-fixture hash. The generated file must match the committed dataset-derived fixture.
+The command verifies the original source and metadata hashes, selects only the declared physical lines, preserves source order, writes LF-terminated annotation rows, and verifies the generated fixture hash. The generated file must match the committed dataset-derived fixture.
 
-The real-data test is run separately:
+The data test is run separately:
 
 ```bash
 python -m pytest -m integration
@@ -94,6 +90,4 @@ python -m pytest -m integration
 
 ## Limitations
 
-The selection is compact and deterministic but not statistically representative. Images are not
-included or required. Normal CI verifies parser mechanics with fixed data; the full local integration
-run remains necessary to test all 30,003 source rows.
+The selection is compact and deterministic but not statistically representative. Images are not included or required. Normal CI verifies parser mechanics with fixed data and the full local integration run remains necessary to test all 30,003 source rows.

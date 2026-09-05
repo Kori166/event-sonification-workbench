@@ -25,4 +25,4 @@ The command verifies the report hashes and identities before writing anything. G
 
 The retained evaluation covers two selected cases: MOT17-02-DPM and KITTI Tracking 0000. Both use one fixed baseline mapping and one renderer. Repeatability claims apply only to the recorded Stage 3 environment.
 
-No participant, perceptual, usability, accessibility, navigation or safety evaluation was performed. Density and overlap are technical measures of generated audio load; they are not evidence of listener difficulty or effectiveness. Cross-platform byte identity was not tested.
+No participant, perceptual, usability, accessibility, navigation or safety evaluation was performed. Density and overlap are technical measures of generated audio load, but they are not evidence of listener difficulty or effectiveness. Cross-platform byte identity was not tested.
