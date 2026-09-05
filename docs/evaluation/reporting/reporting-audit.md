@@ -2,7 +2,7 @@
 
 ## Purpose
 
-A separate read-only reporting check was used to confirm that values transferred from the retained Stage 3 evidence into these reporting outputs remained consistent. It checked correspondence and provenance; it did not repeat the technical evaluation.
+A separate read-only reporting check was used to confirm that values transferred from the retained Stage 3 evidence into these reporting outputs remained consistent. It checked correspondence and provenance and it did not repeat the technical evaluation.
 
 ## Checks
 
@@ -26,6 +26,6 @@ The compact reporting package passed with no mismatch, missing source, private-p
 
 An earlier check found that KITTI overlap burden could differ in its final binary-float digit when recalculated. The generator now preserves the exact scalar while checking the calculation within numerical tolerance. This clean-up also removed a stale hash list that named figure files no longer present.
 
-## Boundary
+## Scope Limitations
 
 This audit verifies transfer, calculation, file identity and evidence limits. It does not establish participant outcomes, perceptual quality, accessibility, usability, navigation benefit, safety or repeatability outside the recorded environment.
