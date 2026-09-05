@@ -21,7 +21,7 @@ The existing Stage 2 evidence chains for MOT17 and KITTI will be used only after
 These checks include:
 
 * expected package files
-* canonical file formatting
+* file formatting
 * recorded file hashes
 * package identities
 * deterministic ordering
@@ -48,7 +48,7 @@ Each dataset is evaluated three times in separate output directories.
 
 This provides repeatability evidence without changing the evaluation method after seeing the results.
 
-One canonical evaluation report is retained for each dataset.
+An evaluation report is retained for each dataset.
 
 Supporting evaluation evidence includes:
 
@@ -79,7 +79,7 @@ They are kept separate from the measures formally defined by Technical Evaluatio
 
 This approach keeps the repository small enough to manage while preserving the evidence needed to verify the evaluation.
 
-The canonical reports retain the complete technical results, including:
+The reports retain the complete technical results, including:
 
 * metric values
 * numerators and denominators
@@ -92,7 +92,7 @@ A researcher with access to the original datasets can reproduce the excluded pro
 
 ## Consequences
 
-* One canonical technical evaluation report is retained for each dataset.
+* One technical evaluation report is retained for each dataset.
 * Private datasets and large generated packages remain outside Git.
 * Evaluation inputs can be reconstructed from the documented process and retained identities.
 * Repeated evaluation provides same environment repeatability evidence.

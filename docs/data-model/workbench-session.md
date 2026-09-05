@@ -75,7 +75,7 @@ It also records the event schema version and package identity.
 
 The Stage 1 loader remains responsible for checking:
 
-* canonical serialisation
+* serialisation
 * event ordering
 * package metadata
 * source provenance

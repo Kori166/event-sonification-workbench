@@ -16,4 +16,4 @@
 | Retained Stage 2 audio byte equality | repeat chain | Yes | Yes |
 | Repeatability boundary | scope | recorded environment | recorded environment |
 
-Sample placement was exact under decimal round-half-up. The small MOT17 decimal-second differences remain visible. Repeatability is limited to the recorded environment. Values come from the [canonical reports](../../evidence/).
+Sample placement was exact under decimal round-half-up. The small MOT17 decimal-second differences remain visible. Repeatability is limited to the recorded environment. Values come from the [reports](../../evidence/).

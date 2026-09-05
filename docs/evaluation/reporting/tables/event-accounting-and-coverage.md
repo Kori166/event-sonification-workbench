@@ -12,4 +12,4 @@
 | Source representation | represented / valid source events | 26,960 / 30,003 (89.86%) | 711 / 1,089 (65.29%) |
 | Suppression rate | suppressed / valid source events | 3,043 / 30,003 (10.14%) | 378 / 1,089 (34.71%) |
 
-Eligible-event coverage excludes intentional suppressions from its denominator; source representation does not. Values come from the [canonical reports](../../evidence/).
+Eligible-event coverage excludes intentional suppressions from its denominator. Source representation does not. Values come from the [reports](../../evidence/).

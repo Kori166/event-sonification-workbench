@@ -4,7 +4,7 @@
 
 Evaluation Contract `0.1.0` was fixed before the retained real-data evaluation. A manually calculated synthetic case and deliberate fault cases first checked the evaluator against known outcomes.
 
-The unchanged measures were then applied to MOT17-02-DPM and KITTI Tracking 0000. They cover event accounting, eligible-event coverage, timing, traceability, cue density, overlap and repeatability. The canonical reports contain the complete calculations and remain the numerical source.
+The unchanged measures were then applied to MOT17-02-DPM and KITTI Tracking 0000. They cover event accounting, eligible-event coverage, timing, traceability, cue density, overlap and repeatability. The reports contain the complete calculations and remain the numerical source.
 
 ## Main Results
 

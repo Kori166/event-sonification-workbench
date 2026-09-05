@@ -13,4 +13,4 @@
 | Excess concurrent cue-seconds | cue-seconds | 3215.113333 | 69.900000 |
 | Normalised overlap burden | excess concurrent cues | 160.06 | 4.53 |
 
-These measures describe technical audio load for the selected sequences, not listener difficulty. Values come from the [canonical reports](../../evidence/).
+These measures describe technical audio load for the selected sequences, not listener difficulty. Values come from the [reports](../../evidence/).

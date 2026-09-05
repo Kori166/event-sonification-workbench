@@ -445,9 +445,9 @@ def _validate_event_with_issues(
         checks["event_sha256"] = False
         issues.append(
             _ValidationIssue(
-                code="canonical_json_invalid",
+                code="json_invalid",
                 severity="error",
-                message=f"Event cannot be represented as canonical JSON: {exc}",
+                message=f"Event cannot be represented as JSON: {exc}",
                 field="metadata",
             )
         )

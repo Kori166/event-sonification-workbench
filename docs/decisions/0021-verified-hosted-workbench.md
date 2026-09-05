@@ -55,6 +55,6 @@ The bundle hash and existing Stage 4 validation provide checks that the hosted v
 * The bundle must be created from the existing retained Stage 2 evidence and configured MOT17 and KITTI dataset locations.
 * The bundle SHA 256 must be retained as part of the deployment record.
 * Dataset media can only be publicly hosted after the relevant redistribution terms have been reviewed.
-* Hosting does not change the canonical Stage 3 evaluation results.
+* Hosting does not change the Stage 3 evaluation results.
 * The hosted workbench remains a read only inspection tool.
 * Hosting does not provide evidence about accessibility, usability, navigation, perceptual effectiveness or safety.

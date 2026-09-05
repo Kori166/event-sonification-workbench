@@ -14,7 +14,7 @@ The results need to remain traceable to the original evaluation evidence so that
 
 ## Decision
 
-The canonical Stage 3 evaluation reports will remain the main numerical source for technical findings.
+The Stage 3 evaluation reports will remain the main numerical source for technical findings.
 
 The identity and integrity of each report must be verified using its recorded schema and hash.
 
@@ -28,7 +28,7 @@ Where a value is calculated or rounded, the original value and calculation must 
 
 Direct values and calculated values must remain distinguishable.
 
-The canonical reports must not be changed to support a later interpretation.
+The reports must not be changed to support a later interpretation.
 
 ## Interpretation Rules
 
@@ -51,7 +51,7 @@ The results do not show that one dataset, mapping or audio output is better for 
 
 ## Rationale
 
-Using the canonical Stage 3 reports as the main evidence source preserves a clear link between the evaluation process and the findings drawn from it.
+Using the Stage 3 reports as the main evidence source preserves a clear link between the evaluation process and the findings drawn from it.
 
 Keeping original values alongside any calculated or displayed values also prevents rounding or later interpretation from changing the underlying evidence.
 
@@ -59,12 +59,12 @@ This allows the technical results to be checked without changing the evaluation 
 
 ## Consequences
 
-* Technical findings must remain traceable to the canonical Stage 3 evaluation reports.
+* Technical findings must remain traceable to the Stage 3 evaluation reports.
 * Rounded values do not replace the original exact values.
 * Small non zero values must not be treated as zero without justification.
 * `null` values remain different from numerical zero.
 * Technical Evaluation Contract `0.1.0` remains unchanged.
-* The canonical evaluation reports remain unchanged.
+* The evaluation reports remain unchanged.
 * Comparisons between datasets remain descriptive and limited to the tested cases.
 * The results provide technical evidence only.
 * No participant, perceptual, accessibility, usability, navigation or safety claims are supported by this evaluation.

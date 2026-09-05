@@ -44,7 +44,7 @@ The main rules are:
 * Traceability is checked by resolving linked records and hashes, not simply by checking that identifiers exist.
 * Repeatability is checked separately for semantic results, file bytes, audio bytes and configuration.
 * Untested repeatability levels remain `null`.
-* Evaluation reports use canonical JSON and content based identities.
+* Evaluation reports use JSON and content based identities.
 * Repeatability claims are limited to the recorded tested environment.
 
 ## Rationale

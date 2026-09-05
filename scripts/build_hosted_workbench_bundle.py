@@ -1,8 +1,8 @@
 """Purpose:
 
-Provide the researcher facing command that validates retained sessions and builds the bounded
-deployment ZIP used by the hosted workbench. The command requires explicit acknowledgement that
-dataset redistribution terms have been reviewed before source frames are packaged.
+This command allows researchers to validate saved sessions and compile the restricted deployment ZIP 
+file for the hosted workbench. Before packaging the source frames, the user must explicitly confirm 
+that they have reviewed the dataset's redistribution terms.
 
 Technical References And Provenance:
 

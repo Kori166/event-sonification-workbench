@@ -1,14 +1,14 @@
 """Purpose:
 
-Expose the researcher facing commands for fixture preparation, dataset conversion, event package
-validation, cue scheduling, audio rendering, package comparison, technical evaluation, reporting
-evidence and local workbench inspection.
+Provides command-line tools for researchers to prepare test fixtures, convert datasets, validate event packages, 
+schedule cues, render audio, compare packages, evaluate technical performance, generate evidence reports, and 
+inspect local workbenches.
 
 Technical References And Provenance:
 
-Command structure, validation boundaries and JSON status output are project specific. The module
-delegates scientific and reproducibility behaviour to the corresponding project modules rather than
-reimplementing it at the command line boundary.
+This module manages the command structures, input validation rules, and JSON status formatting specific to the 
+project. Instead of duplicating complex calculations at the command-line level, it passes all scientific 
+processing and reproducibility tasks directly to specialized backend modules.
 
 AI Assistance:
 
@@ -259,7 +259,7 @@ def _build_parser() -> argparse.ArgumentParser:
 
     report_evidence = subparsers.add_parser(
         "generate-stage3-report-evidence",
-        help="Verify canonical Stage 3 reports and write deterministic audited presentation files.",
+        help="Verify  Stage 3 reports and write deterministic audited presentation files.",
     )
     report_evidence.add_argument(
         "--mot17-report", type=Path, default=DEFAULT_MOT17_EVALUATION_REPORT

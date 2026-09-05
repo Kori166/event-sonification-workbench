@@ -2,14 +2,14 @@
 
 ## Purpose
 
-This folder contains concise, readable summaries and tables derived from the canonical Stage 3 technical evaluation evidence. The evidence in [`../evidence/`](../evidence/) remains authoritative. These files neither rerun the evaluation nor redefine its measures.
+This folder contains concise, readable summaries and tables derived from the Stage 3 technical evaluation evidence. The evidence in [`../evidence/`](../evidence/) remains authoritative. These files neither rerun the evaluation nor redefine its measures.
 
 ## Contents
 
 - [`results-summary.md`](results-summary.md) explains the method, main findings, interpretation and limitations.
 - [`reporting-audit.md`](reporting-audit.md) records the checks applied when values were transferred into the reporting files.
 - [`reporting-manifest.json`](reporting-manifest.json) records source identities, exact retained results, claim boundaries and generated-file hashes.
-- [`tables/`](tables/) contains the three marker-facing result tables.
+- [`tables/`](tables/) contains the three result tables.
 
 ## Reproducing The Reporting Files
 
@@ -19,7 +19,7 @@ From the repository root, run:
 event-sonification generate-stage3-report-evidence --output docs/evaluation/reporting --generator-commit ad4e3f82a7d9e625c87f419a5f84d2fd6bb1cc77 --replace-generated
 ```
 
-The command verifies the canonical report hashes and identities before writing anything. Given the same evidence and generator identity, repeated runs produce the same bytes.
+The command verifies the report hashes and identities before writing anything. Given the same evidence and generator identity, repeated runs produce the same bytes.
 
 ## Evidence Boundary
 

@@ -108,7 +108,7 @@ Stage 1 developed the common event representation and converted MOT17 and KITTI 
 
 * Added provisional common event schema `0.1.0`.
 * Added a synthetic annotation and manually calculated expected event.
-* Added deterministic event IDs and canonical hashing.
+* Added deterministic event IDs and hashing.
 * Added event validation.
 * Tested source traceability and deterministic conversion.
 * Reviewed the schema against both real datasets.

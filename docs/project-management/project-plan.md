@@ -26,7 +26,7 @@ alignment, traceability and reproducibility?
 | 4. Artefact Assembly, Validation and Release | Assemble and validate the read-only inspection workbench without changing the research pipeline | Retained session contract, two-session catalogue, inspection service, browser interface, technical browser acceptance, release checks and [Stage 4 checklist](stage-4-checklist.md) | Complete, 18 August 2026 |
 | 5. Reporting and Viva Preparation | Prepare the dissertation, artefact submission material and focused viva explanation | Final report candidate, artefact documentation, evidence reconciliation and viva preparation | Report and artefact prepared for submission; viva preparation ongoing |
 
-Completion dates above are supported by the [canonical progress log](progress-log.md) and stage
+Completion dates above are supported by the [progress log](progress-log.md) and stage
 checklists. They record completion of the defined stage gates rather than a claim that later
 maintenance or presentation refinement could not occur.
 
@@ -50,8 +50,7 @@ Development used bounded iterative stages supported by:
 - GitHub Issues and pull requests for scoped implementation and review;
 - automated tests, including configured real-data integration tests;
 - versioned technical contracts and configuration;
-- the [canonical progress log](progress-log.md) and stage checklists;
-- the [risk register](risk-register.md);
+- the [progress log](progress-log.md) and stage checklists;
 - verified [supervision feedback](supervision-log.md); and
 - significant methodological and technical [decision records](../decisions/).
 

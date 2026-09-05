@@ -23,7 +23,7 @@ and direct implementation map.
    summarises the retained MOT17 and KITTI results.
 4. [`evaluation/stage-3-traceability-audit.md`](evaluation/stage-3-traceability-audit.md)
    documents the end to end traceability audit.
-5. [`evaluation/evidence/`](evaluation/evidence/) contains canonical retained reports and manifests.
+5. [`evaluation/evidence/`](evaluation/evidence/) contains retained reports and manifests.
 6. [`evaluation/reporting/README.md`](evaluation/reporting/README.md) explains the concise audited
    reporting summary, tables and manifest.
 

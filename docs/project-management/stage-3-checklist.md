@@ -33,7 +33,7 @@
 
 ## Milestone 3: Verify and Prepare the Final Results
 
-- [x] Linked reported values to their canonical evaluation evidence and source hashes.
+- [x] Linked reported values to their evaluation evidence and source hashes.
 - [x] Produced report ready tables and detailed timing evidence from the canonical reports.
 - [x] Recorded the source, raw value, displayed value, calculation and formatting rules for reported results.
 - [x] Independently recalculated the main reported values.

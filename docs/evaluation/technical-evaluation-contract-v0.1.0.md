@@ -267,7 +267,7 @@ Inputs and diagnostics use fixed ordering rules.
 
 Grouped reasons and repeated file comparisons are ordered alphabetically.
 
-JSON uses the shared canonical UTF-8 serialisation format.
+JSON uses the shared UTF-8 serialisation format.
 
 The evaluation run ID is generated from the contract and input identities rather than from time or random values.
 

@@ -84,7 +84,7 @@ The conversion uses:
 The renderer produces:
 
 * a minimal WAV file
-* a canonical render log
+* a render log
 * renderer metadata
 
 These outputs are stored beneath a content based audio run ID.

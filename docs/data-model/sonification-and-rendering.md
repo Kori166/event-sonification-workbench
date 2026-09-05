@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The sonification stage converts validated common events into one explicit outcome per event: either a generated cue or a recorded suppression. The rendering stage converts retained cues into deterministic stereo PCM audio while preserving cue-level provenance.
+The sonification stage converts validated common events into one explicit outcome per event: either a generated cue or a recorded suppression. The rendering stage converts retained cues into deterministic stereo PCM audio while preserving cue level provenance.
 
 The baseline mapping, scheduler and renderer are technical research components. Their parameter values have not been perceptually validated and do not establish accessibility, usability or assistive effectiveness.
 
@@ -18,7 +18,7 @@ The baseline renderer is defined by:
 - `configs/sonification/renderers/renderer.schema.v0.1.0.json`
 - `configs/sonification/renderers/baseline-v0.1.0.json`
 
-Preset, mapper, cue-package and renderer versions are recorded independently so that one component can change without silently redefining the others.
+Preset, mapper, cue package and renderer versions are recorded independently so that one component can change without silently redefining the others.
 
 ## Baseline Mapping
 
@@ -39,7 +39,7 @@ The baseline configuration uses:
 - amplitude range: `0.1–0.8`
 - stereo pan range: `-1–1`
 
-Horizontal centre therefore controls stereo position, vertical centre controls frequency and normalised bounding-box area controls amplitude. Bounding-box area represents apparent image scale, not physical distance or depth.
+Horizontal centre therefore controls stereo position, vertical centre controls frequency and normalised bounding-box area controls amplitude. Bounding box area represents apparent image scale, not physical distance or depth.
 
 A class modifier is retained in cue records for traceability. Under renderer policy `trace_only_not_applied`, it is not applied to the waveform.
 
@@ -51,13 +51,13 @@ Each event is evaluated against the preset in a fixed priority order. The baseli
 2. absence from an explicit inclusion list
 3. presence in an exclusion list
 4. available confidence below the configured threshold
-5. frame-stride exclusion
+5. frame stride exclusion
 
 The baseline excludes `dont_care`, distractor, occluder variants and reflection, applies the configured native confidence threshold where confidence is available, and uses every frame.
 
 Every excluded event produces one explicit suppression record. Events are never silently dropped.
 
-Suppression records retain the source event identity, dataset, sequence, frame, track, class, preset identity and source provenance together with a stable suppression code and human-readable reason. Supported codes are:
+Suppression records retain the source event identity, dataset, sequence, frame, track, class, preset identity and source provenance together with a stable suppression code and human readable reason. Supported codes are:
 
 - `dont_care_excluded`
 - `class_not_included`
@@ -92,9 +92,9 @@ Cue records retain:
 - preset name, version and SHA-256
 - logical source file and source row
 
-Cue identifiers are content-derived from the source event and exact preset identity. They contain no time, random or machine-specific input.
+Cue identifiers are derived from the source event and exact preset identity. They contain no time, random or machine specific input.
 
-The cue package preserves the deterministic event order established by Stage 1. Metadata records input-package identity, preset identity, mapping methods, suppression-rule priority, counts and file hashes.
+The cue package preserves the deterministic event order established by Stage 1. Metadata records input package identity, preset identity, mapping methods, suppression rule priority, counts and file hashes.
 
 ## Deterministic Audio Rendering
 
@@ -114,7 +114,7 @@ The baseline renders stereo 44.1 kHz signed 16-bit PCM audio. An empty valid cue
 
 ### Waveform And Panning
 
-Each cue uses a sine oscillator that starts at phase zero. A configured linear attack and release are applied to the cue-relative samples.
+Each cue uses a sine oscillator that starts at phase zero. A configured linear attack and release are applied to the cue relative samples.
 
 Linear-balance stereo panning uses:
 
@@ -123,11 +123,11 @@ left = (1 - pan) / 2
 right = (1 + pan) / 2
 ```
 
-Cues are processed deterministically by `(start_sample, cue_id)`. Overlapping cues use ordered floating-point summation. The renderer is single-threaded and does not use randomness, wall-clock time or machine paths in the generated audio.
+Cues are processed deterministically by `(start_sample, cue_id)`. Overlapping cues use ordered floating point summation. The renderer is single threaded and does not use randomness, wall clock time or machine paths in the generated audio.
 
 ### Peak Handling And PCM Conversion
 
-After mixing, master gain is applied and the absolute stereo peak is measured. Global normalisation is applied only when the peak exceeds the configured target. The renderer records the pre-normalisation peak, applied gain and post-normalisation peak.
+After mixing, master gain is applied and the absolute stereo peak is measured. Global normalisation is applied only when the peak exceeds the configured target. The renderer records the prenormalisation peak, applied gain and post normalisation peak.
 
 Quantisation occurs after mixing and gain handling. Samples are clamped to `[-1, 1]`, converted to signed PCM16 and written as interleaved little-endian stereo samples.
 
@@ -144,7 +144,7 @@ Rendering produces:
 └── renderer_metadata.json
 ```
 
-The audio run identifier is content-derived from the cue package, cue schedule, renderer configuration and renderer policy.
+The audio run identifier is derived from the cue package, cue schedule, renderer configuration and renderer policy.
 
 `render_log.json` records the source event, cue identity, time and sample bounds, frequency, amplitude, stereo pan, channel gains and rendering configuration for each cue. `renderer_metadata.json` records input hashes, renderer identity, audio format, counts, duration, gain/peak information and output hashes.
 
@@ -161,6 +161,6 @@ A suppression has no Render stage because no waveform is generated for that even
 
 ## Reproducibility Boundary
 
-Repeated runs with the same validated inputs and configuration are designed to select the same content-derived run identifiers and produce the same package bytes in the recorded execution environment.
+Repeated runs with the same validated inputs and configuration are designed to select the same derived run identifiers and produce the same package bytes in the recorded execution environment.
 
 The project does not claim cross-platform byte identity beyond the environments actually tested. The deterministic technical behaviour also does not establish that the baseline sounds are perceptually optimal or suitable for an assistive application.

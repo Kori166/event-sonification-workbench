@@ -1,6 +1,6 @@
 # mot17 mot17-02-dpm technical evaluation
 
-Canonical report SHA-256: `d847e805d0b2d7ccd50cd315bbcecfc0ad525f40e7c4c2013938f955d20f13e5`.
+Report SHA-256: `d847e805d0b2d7ccd50cd315bbcecfc0ad525f40e7c4c2013938f955d20f13e5`.
 
 The contract report is **valid**. It accounts for 30003 valid events: 26960 represented, 3043 intentionally suppressed, 0 eligible but missed, and 0 explicitly excluded.
 

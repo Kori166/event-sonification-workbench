@@ -60,7 +60,7 @@ The report also records common event schema `0.2.0`.
 
 ## Deterministic Reports
 
-Validation reports use the existing canonical JSON format.
+Validation reports use the existing JSON format.
 
 The exact report bytes are assigned a SHA 256 hash.
 

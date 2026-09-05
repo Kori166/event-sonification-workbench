@@ -1,6 +1,6 @@
 # kitti_tracking 0000 technical evaluation
 
-Canonical report SHA-256: `b5589590a8c645bd7b5654d0318bf90fdb412f987719c26c2374bf3e487f9ff2`.
+Report SHA-256: `b5589590a8c645bd7b5654d0318bf90fdb412f987719c26c2374bf3e487f9ff2`.
 
 The contract report is **valid**. It accounts for 1089 valid events: 711 represented, 378 intentionally suppressed, 0 eligible but missed, and 0 explicitly excluded.
 

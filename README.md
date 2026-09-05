@@ -27,7 +27,7 @@ The deployment is hosted on Render's free service, so a cold start can take seve
 |---|---|
 | Documentation index | [`docs/README.md`](docs/README.md) |
 | Technical results summary | [`docs/evaluation/stage-3-dataset-results-summary.md`](docs/evaluation/stage-3-dataset-results-summary.md) |
-| Canonical evaluation evidence | [`docs/evaluation/evidence/`](docs/evaluation/evidence/) |
+| Evaluation evidence | [`docs/evaluation/evidence/`](docs/evaluation/evidence/) |
 | Common event schema | [`docs/data-model/common-event-schema.md`](docs/data-model/common-event-schema.md) |
 | Sonification and rendering contract | [`docs/data-model/sonification-and-rendering.md`](docs/data-model/sonification-and-rendering.md) |
 | Workbench session contract | [`docs/data-model/workbench-session.md`](docs/data-model/workbench-session.md) |
@@ -195,7 +195,7 @@ The repository contains:
 - synthetic and public test fixtures
 - automated tests
 - technical contracts
-- canonical evaluation reports
+- evaluation reports
 - audited reporting outputs
 - decision records
 - project plans and progress records
@@ -217,7 +217,7 @@ This keeps the repository portable while avoiding unnecessary redistribution of 
 
 ## Local Installation
 
-The hosted workbench is the simplest route for marker inspection.
+The hosted workbench is the simplest route for inspection.
 
 A complete local workbench additionally requires locally obtained MOT17 and KITTI data and the retained Stage 2 evidence tree.
 
@@ -401,7 +401,7 @@ The project uses:
 - a manually checked evaluation case
 - deliberate fault injection tests
 - repeat run package, audio and report comparisons
-- retained canonical evaluation evidence
+- retained evaluation evidence
 
 The recorded Stage 3 environment is stored in:
 

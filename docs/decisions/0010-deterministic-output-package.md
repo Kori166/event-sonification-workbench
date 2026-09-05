@@ -53,13 +53,13 @@ Track IDs are ordered as text because the common schema stores them as strings.
 
 ## JSON And CSV Output
 
-JSON files use the shared canonical JSON format and SHA 256 hashing.
+JSON files use the shared JSON format and SHA 256 hashing.
 
 The CSV uses the required field order from common event schema `0.2.0`.
 
 CSV files use LF line endings.
 
-Nested values are stored using canonical JSON rather than creating different dataset specific column structures.
+Nested values are stored using JSON rather than creating different dataset specific column structures.
 
 ## Provenance
 
@@ -100,7 +100,7 @@ Unexpected files or unsafe paths cause the write to be rejected.
 
 ## Rationale
 
-Canonical JSON keeps the complete common event structure without losing nested information.
+JSON keeps the complete common event structure without losing nested information.
 
 CSV provides a simpler form for inspection and analysis.
 
